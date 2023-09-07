@@ -1,11 +1,11 @@
 # Sugar Factory
-Sugar Factory is a service that allows dev teams to easily build, test, and deploy prompts as an API. It provides a frontend UI for managing prompts and underlying LLMs.
-
+Sugar Factory is a service that allows dev teams to easily build, test, deploy and share prompts over an API. It provides a frontend UI for managing prompts and underlying LLMs.
 
 ## Dev Setup
     - Clone the repo 
     - Run `npm install` to install dependencies
     - `cp .env.example .env` and populate environment variables in `.env`
+    - Setup db `npx prisma db push`
     - Run `npm run dev` to start service
 
 ## References

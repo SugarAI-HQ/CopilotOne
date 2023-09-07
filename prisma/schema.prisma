@@ -95,6 +95,35 @@ model PromptDataset {
   updatedAt DateTime @updatedAt @map("updated_at")
 }
 
+model PromptPackage {
+  id     String @id @default(cuid())
+  userId String
+
+  name        String
+  description String
+
+  templates     PromptTemplate[]
+  datasets      PromptDataset[]
+  User          User             @relation(fields: [userId], references: [id])
+  PromptVersion PromptVersion[]
+}
+
+model PromptTemplate {
+  id     String @id @default(cuid())
+  userId String
+
+  name        String
+  description String
+
+  releaseVersion    String
+  preReleaseVersion String
+
+  versions        PromptVersion[]
+  dataset         PromptDataset[]
+  promptPackage   PromptPackage   @relation(fields: [promptPackageId], references: [id])
+  promptPackageId String
+}
+
 model PromptVersion {
   id     String @id @default(cuid())
   userId String
@@ -125,37 +154,11 @@ model PromptVersion {
   // Managed States
   // state
 
-  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  PromptTemplate   PromptTemplate? @relation(fields: [promptTemplateId], references: [id])
-  promptTemplateId String?
-}
-
-model PromptPackage {
-  id     String @id @default(cuid())
-  userId String
-
-  name        String
-  description String
-
-  prompts       PromptTemplate[]
-  PromptDataset PromptDataset[]
-  User          User             @relation(fields: [userId], references: [id])
-}
-
-model PromptTemplate {
-  id     String @id @default(cuid())
-  userId String
-
-  name        String
-  description String
-
-  releaseVersion    String
-  preReleaseVersion String
-
-  versions        PromptVersion[]
-  PromptDataset   PromptDataset[]
-  PromptPackage   PromptPackage?  @relation(fields: [promptPackageId], references: [id])
-  promptPackageId String?
+  user             User           @relation(fields: [userId], references: [id])
+  promptPackage    PromptPackage  @relation(fields: [promptPackageId], references: [id])
+  promptTemplate   PromptTemplate @relation(fields: [promptTemplateId], references: [id])
+  promptPackageId  String
+  promptTemplateId String
 }
 
 model User {

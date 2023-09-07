@@ -8,6 +8,7 @@
  */
 
 import { initTRPC, TRPCError } from "@trpc/server";
+import { OpenApiMeta } from 'trpc-openapi';
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
@@ -70,7 +71,12 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * errors on the backend.
  */
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+// const t = initTRPC.meta<OpenApiMeta>().create({
+
+const t = initTRPC
+.context<typeof createTRPCContext>()
+.meta<OpenApiMeta>()
+.create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -98,6 +104,21 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
  */
 export const createTRPCRouter = t.router;
 
+const loggerMiddleware = t.middleware(async (opts) => {
+  const start = Date.now();
+ 
+  const result = await opts.next();
+ 
+  const durationMs = Date.now() - start;
+  const meta = { path: opts.path, type: opts.type, durationMs };
+ 
+  result.ok
+    ? console.log('OK request timing:', meta)
+    : console.error('Non-OK request timing', meta);
+ 
+  return result;
+});
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -105,7 +126,7 @@ export const createTRPCRouter = t.router;
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(loggerMiddleware);
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
