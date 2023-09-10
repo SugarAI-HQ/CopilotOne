@@ -6,76 +6,10 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { getPackagesSchema, createPackageSchema, deletePackageSchema} from "~/validators/prompt";
 
-const RESERVED_NAMES = [
-  "sign-up",
-  "sign-in",
-  "claim",
-  "api",
-  "actions",
-  "app",
-  "create-link",
-  "twitter",
-  "github",
-  "linkedin",
-  "instagram",
-  "telegram",
-  "discord",
-  "youtube",
-  "twitch",
-  "about",
-  "pricing",
-  "contact",
-  "privacy",
-  "terms",
-  "legal",
-  "blog",
-  "docs",
-  "support",
-  "help",
-  "status",
-  "jobs",
-  "press",
-  "partners",
-  "developers",
-  "security",
-  "cookies",
-  "settings",
-  "profile",
-  "account",
-  "dashboard",
-  "admin",
-  "login",
-  "logout",
-  "signout",
-  "auth",
-  "oauth",
-  "bio",
-];
 
-export const PromptPackageCreateInput = z.object({
-  name: z.string()
-  .min(3, {
-    message: "Name must be at least 3 characters long.",
-  })
-  .max(30, {
-    message: "Name must be at most 30 characters long.",
-  })
-  .regex(/^[a-z0-9-]+$/, {
-    message: "Name must only contain lowercase letters, numbers, and dashes.",
-  })
-  .transform((value) => value.toLowerCase())
-  .refine((value) => !RESERVED_NAMES.includes(value), {
-    message: "This name is reserved.",
-  }),
-  description: z.string() 
-});
-
-export const PromptPackageDeleteInput = z.object({
-  id: z.string(),
-});
-
-export const promptPackageRouter = createTRPCRouter({
+export const promptRouter = createTRPCRouter({
 
   getAll: publicProcedure
   .meta({
@@ -86,11 +20,7 @@ export const promptPackageRouter = createTRPCRouter({
       summary: 'Read all packages',
     },
   })
-  .input(
-    z.object({
-      userId: z.string().uuid().optional(),
-    }),
-  )
+  .input(getPackagesSchema)
   .output(
     z.object({
       packages: z.array(
@@ -102,13 +32,17 @@ export const promptPackageRouter = createTRPCRouter({
       ),
     }),
   )
-  .query(({ input, ctx }) => {
-    console.log(input);
-    return ctx.prisma.promptPackage.findMany({
+  .query(async ({ ctx, input }) => {
+    // console.log(`got the reques -------------- ${JSON.stringify(input)}`);
+    const packages = await ctx.prisma.promptPackage.findMany({
       where: {
         userId: ctx.session?.user.id,
       },
     });
+
+    // console.log(`packages -------------- ${JSON.stringify(packages)}`);
+
+    return {packages: packages}
     
   }),
 
@@ -124,8 +58,18 @@ export const promptPackageRouter = createTRPCRouter({
     
   }),
 
-  createPromptPackage: publicProcedure
-  .input(PromptPackageCreateInput)
+  createPackage: publicProcedure
+  .input(createPackageSchema)
+  .mutation(async ({ ctx, input }) => {
+    
+    const promptPackage = await ctx.prisma.promptPackage.create({
+      data: input
+    });
+    return promptPackage;
+  }),
+
+  createTemplate: publicProcedure
+  .input(createPackageSchema)
   .mutation(async ({ ctx, input }) => {
     // const validatedInput = PromptPackageCreateInput.parse(input);
     const promptPackage = await ctx.prisma.promptPackage.create({data: input});
@@ -137,3 +81,4 @@ export const promptPackageRouter = createTRPCRouter({
   // }),
 
 });
+

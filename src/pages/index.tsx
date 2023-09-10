@@ -3,11 +3,16 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { api } from "~/utils/api";
+import { CreatePackageButton } from "./prompt";
 
 
 
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+
+  const handlePackageCreate = async () => {
+    console.log
+  }
 
   return (
     <>
@@ -22,6 +27,10 @@ export default function Home() {
             Sugar <span className="text-[hsl(280,100%,70%)]">Factory</span>
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+            
+          <div>
+            <CreatePackageButton onPackageSubmit={handlePackageCreate} />
+          </div>
             <Link 
               href="/prompt"
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20" 

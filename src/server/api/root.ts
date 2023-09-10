@@ -1,7 +1,7 @@
 import { exampleRouter } from "~/server/api/routers/example";
 import { postsRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
-import { promptPackageRouter } from "./routers/prompt";
+import { promptRouter } from "./routers/prompt";
 
 /**
  * This is the primary router for your server.
@@ -10,7 +10,7 @@ import { promptPackageRouter } from "./routers/prompt";
  */
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
-  promptPackage: promptPackageRouter,
+  prompt: promptRouter,
   post: postsRouter
 });
 
