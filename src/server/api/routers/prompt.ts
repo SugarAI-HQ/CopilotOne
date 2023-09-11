@@ -6,7 +6,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { getPackagesSchema, createPackageSchema, deletePackageSchema} from "~/validators/prompt";
+import { getPackagesSchema, createPackageSchema, deletePackageSchema, packageListSchema} from "~/validators/prompt";
 
 
 export const promptRouter = createTRPCRouter({
@@ -21,18 +21,29 @@ export const promptRouter = createTRPCRouter({
     },
   })
   .input(getPackagesSchema)
-  .output(
-    z.object({
-      packages: z.array(
-        z.object({
-          id: z.string(),
-          // userId: z.string(),
-          name: z.string(),
-          description: z.string(),
-        }),
-      ),
-    }),
-  )
+  // .output(
+  //     z.array(
+  //       z.object({
+  //         id: z.string(),
+  //         // userId: z.string(),
+  //         name: z.string(),
+  //         description: z.string(),
+  //       }),
+  //     )
+  // )
+  .output(packageListSchema)
+  // .output(
+  //   z.object({
+  //     packages: z.array(
+  //       z.object({
+  //         id: z.string(),
+  //         // userId: z.string(),
+  //         name: z.string(),
+  //         description: z.string(),
+  //       }),
+  //     ),
+  //   }),
+  // )
   .query(async ({ ctx, input }) => {
     // console.log(`got the reques -------------- ${JSON.stringify(input)}`);
     const packages = await ctx.prisma.promptPackage.findMany({
@@ -43,7 +54,8 @@ export const promptRouter = createTRPCRouter({
 
     console.log(`packages -------------- ${JSON.stringify(packages)}`);
 
-    return {packages: packages}
+    // return {packages: packages}
+    return packages
     
   }),
 

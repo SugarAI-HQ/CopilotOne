@@ -111,3 +111,17 @@ export const deletePackageSchema = z
     .strict();
 export type DeletePackageSchema = z.infer<typeof deletePackageSchema>;
   
+
+
+export const packageListSchema = z
+    .array(
+        z.object({
+            id: z.string(),
+            userId: z.string(),
+            name: z.string(),
+            description: z.string(),
+        }),
+    )
+
+export type PackageListSchema = z.infer<typeof packageListSchema>;
+

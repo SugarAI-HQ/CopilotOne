@@ -168,34 +168,11 @@ const YourApp = () => {
 };
 
 function Packages() {
-  const { data: sessionData } = useSession();
-  const [packages, setPackages] = useState([]);
-
-  // const packages = await api.prompt.getPackages.useQuery();
-  // const pkgs = packages.data?.packages || [];
-  // const pkgs: Array<any> = [{name: '123', description: 'wdaw dwa'}];
-
-  useEffect(() => {
-    // Assuming fetchPackages is an async function that returns a Promise
-    async function fetchPackages() {
-      try {
-        console.log("Fetching packages...");
-        const response = await api.prompt.getPackages.useQuery({userId: sessionData?.user?.id});
-        console.log(`data ${response}`);
-        const packages = response.data?.packages || [];
-        console.log('Packages:', packages);
-        setPackages(packages);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    fetchPackages();
-  }, []); // Emp
-  
+  // const { data: sessionData } = useSession();
+  const { data: packages } = api.prompt.getPackages.useQuery({});
   return(
     <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
-      {packages.length > 0 ? (
+      {packages && packages.length > 0 ? (
         packages.map((pkg, index) => (
           <Card key={index}>
             <CardHeader>{pkg.name}</CardHeader>
@@ -211,13 +188,7 @@ function Packages() {
         <Text>No cards created</Text>
       )}
     </SimpleGrid>
-
-
-
-
   )
-    
-  
 }
 
 export default Packages
