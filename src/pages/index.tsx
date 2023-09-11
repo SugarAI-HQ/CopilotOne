@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { api } from "~/utils/api";
-import { CreatePackageButton } from "./prompt";
+import { CreatePackageButton } from "./prompts";
 
 
 

@@ -49,8 +49,8 @@ const RESERVED_NAMES = [
 
 export const getPackagesSchema = z
     .object({
-        userId: z.string().uuid().optional(),
-    })
+        userId: z.string().optional(),
+    }).optional()
     // .strict()
 export type GetPackagesSchema = z.infer<typeof getPackagesSchema>;
 

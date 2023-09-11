@@ -38,12 +38,14 @@ import { api } from "~/utils/api";
 
 interface LinkItemProps {
   name: string
+  href: string
   icon: IconType
 }
 
 interface NavItemProps extends FlexProps {
   icon: IconType
   children: React.ReactNode
+  link: string
 }
 
 interface MobileProps extends FlexProps {
@@ -55,8 +57,9 @@ interface SidebarProps extends BoxProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome },
-  { name: 'Prompts', icon: FiPackage },
+  { name: 'Home', href: '/', icon: FiHome },
+  { name: 'Packages', href: '/prompts', icon: FiPackage },
+  { name: 'Temp', href: '/temp', icon: FiPackage },
 //   { name: 'Explore', icon: FiCompass },
 //   { name: 'Favourites', icon: FiStar },
 //   { name: 'Settings', icon: FiSettings },
@@ -75,12 +78,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          Sugarcane AI
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem key={link.name} icon={link.icon} link={link.href}>
           {link.name}
         </NavItem>
       ))}
@@ -88,11 +91,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   )
 }
 
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, link, children, ...rest }: NavItemProps) => {
   return (
     <Box
       as="a"
-      href="#"
+      href={link}
       style={{ textDecoration: 'none' }}
       _focus={{ boxShadow: 'none' }}>
       <Flex
@@ -155,7 +158,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         fontSize="2xl"
         fontFamily="monospace"
         fontWeight="bold">
-        Logo
+        Sugarcane AI
       </Text>
 
       <HStack spacing={{ base: '0', md: '6' }}>

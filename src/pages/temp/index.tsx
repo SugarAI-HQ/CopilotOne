@@ -1,22 +1,19 @@
 import { Avatar, Button, ButtonGroup, Card, CardBody, CardHeader, Flex, HStack, Heading, Text } from "@chakra-ui/react";
 import Head from "next/head";
-import RootLayout from "~/app/layout";
 
 export default function Home() {
     return (
-        <RootLayout>
-            <Flex w="100vw" h="100%" align="center" justify="center">
-                <Head>
-                    <title>Hello World!</title>
-                    <link rel="icon" href="/favicon.ico" />
-                </Head>
-                <main>
-                    <Flex w="100%" h="100vh" align="center">
-                        <ProfileCard />
-                    </Flex>
-                </main>
-            </Flex>
-        </RootLayout>
+        <Flex w="100vw" h="100%" align="center" justify="center">
+            <Head>
+                <title>Hello World!</title>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
+            <main>
+                <Flex w="100%" h="100vh" align="center">
+                    <ProfileCard />
+                </Flex>
+            </main>
+        </Flex>
     );
 }
 

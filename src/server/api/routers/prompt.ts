@@ -11,7 +11,7 @@ import { getPackagesSchema, createPackageSchema, deletePackageSchema} from "~/va
 
 export const promptRouter = createTRPCRouter({
 
-  getAll: publicProcedure
+  getPackages: publicProcedure
   .meta({
     openapi: {
       method: 'GET',
@@ -25,7 +25,8 @@ export const promptRouter = createTRPCRouter({
     z.object({
       packages: z.array(
         z.object({
-          id: z.string().uuid(),
+          id: z.string(),
+          // userId: z.string(),
           name: z.string(),
           description: z.string(),
         }),
@@ -40,7 +41,7 @@ export const promptRouter = createTRPCRouter({
       },
     });
 
-    // console.log(`packages -------------- ${JSON.stringify(packages)}`);
+    console.log(`packages -------------- ${JSON.stringify(packages)}`);
 
     return {packages: packages}
     
