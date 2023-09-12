@@ -47,15 +47,22 @@ const RESERVED_NAMES = [
     "bio",
 ];
 
-export const getPackagesSchema = z
+export const getPackagesInput = z
     .object({
         userId: z.string().optional(),
     }).optional()
     // .strict()
-export type GetPackagesSchema = z.infer<typeof getPackagesSchema>;
+export type GetPackagesInput = z.infer<typeof getPackagesInput>;
 
+export const getPackageInput = z
+    .object({
+        id: z.string()
+    })
+    .strict()
+    .required()
+export type GetPackageInput = z.infer<typeof getPackageInput>;
 
-export const createPackageSchema = z
+export const createPackageInput = z
     .object({
         name: z.string()
         .min(3, {
@@ -76,10 +83,10 @@ export const createPackageSchema = z
     .strict()
     .required();
 
-export type CreatePackageSchema = z.infer<typeof createPackageSchema>;
+export type CreatePackageInput = z.infer<typeof createPackageInput>;
 
 
-export const createTemplateSchema = z
+export const createTemplateInput = z
     .object({
         name: z.string()
         .min(3, {
@@ -100,28 +107,27 @@ export const createTemplateSchema = z
     .strict()
     .required();
 
-export type CreateTemplateSchema = z.infer<typeof createTemplateSchema>;
+export type CreateTemplateInput = z.infer<typeof createTemplateInput>;
 
 
 
-export const deletePackageSchema = z
+export const deletePackageInput = z
     .object({
         id: z.string(),
     })
     .strict();
-export type DeletePackageSchema = z.infer<typeof deletePackageSchema>;
+export type DeletePackageInput = z.infer<typeof deletePackageInput>;
   
 
+export const packageOutput = z
+    .object({
+        id: z.string(),
+        userId: z.string(),
+        name: z.string(),
+        description: z.string(),
+    })
+export type PackageOutput = z.infer<typeof packageOutput>;
 
-export const packageListSchema = z
-    .array(
-        z.object({
-            id: z.string(),
-            userId: z.string(),
-            name: z.string(),
-            description: z.string(),
-        }),
-    )
-
-export type PackageListSchema = z.infer<typeof packageListSchema>;
+export const packageListOutput = z.array(packageOutput)
+export type PackageListOutput = z.infer<typeof packageListOutput>;
 

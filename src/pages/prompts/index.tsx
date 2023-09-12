@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import Modal from "react-modal";
-import { Card, CardHeader, CardBody, CardBodyProps, CardFooter, Heading, SimpleGrid, Button, Text} from "@chakra-ui/react";
+import { Card, CardHeader, CardBody, CardBodyProps, CardFooter, Heading, SimpleGrid, Button, Text, Flex, Link} from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 
 function PromptVersion() {
   const [template, setText] = useState(""); // State to store the text entered in the text area
@@ -15,20 +16,6 @@ function PromptVersion() {
     setText(""); // Clear the text in the text area
   };
 
-  const getVariables = (template: string) => {
-    const configVariables = template.match(/\{(#.*?)\}/g);
-    const templateVariables = template.match(/\{(@.*?)\}/g);
-    const inputVariables = template.match(/\{(%.*?)\}/g);
-    const systemVariables = template.match(/\{($.*?)\}/g);
-
-    return {
-      configVariables,
-      templateVariables,
-      inputVariables,
-      systemVariables,
-    }
-
-  }
 
   const handleSubmitClick = () => {
     // Check if the text is not empty before submitting
@@ -174,21 +161,45 @@ function Packages() {
     <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>
       {packages && packages.length > 0 ? (
         packages.map((pkg, index) => (
-          <Card key={index}>
-            <CardHeader>{pkg.name}</CardHeader>
+          <Card 
+            key={index} 
+            w="auto"
+            display="flex"
+            direction="column"
+            align="center"
+            justify="center"
+            padding="2"
+          >
+            <CardHeader
+              display="flex"
+              flexDirection="column"
+              gap="2"
+              alignItems="center"
+            >{pkg.name}</CardHeader>
             <CardBody>
               <Text>{pkg.description}</Text>
             </CardBody>
             <CardFooter>
-              <Button colorScheme='blue'>View</Button>
+              {/* <Button colorScheme='blue'>View</Button> */}
+              <Link href={`/prompts/${pkg.id}`}>View</Link>
             </CardFooter>
           </Card>
         ))
       ) : (
-        <Text>No cards created</Text>
+        <Flex w="100vw" h="100%" align="center" justify="center">
+          <Text>No cards created</Text>
+        </Flex>
+          
       )}
     </SimpleGrid>
   )
 }
 
-export default Packages
+// export default Packages
+
+
+export default function PackageHome() {
+  return (
+    <Packages />
+  );
+}

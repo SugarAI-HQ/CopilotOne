@@ -6,7 +6,8 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { getPackagesSchema, createPackageSchema, deletePackageSchema, packageListSchema} from "~/validators/prompt";
+import { getPackagesInput, getPackageInput, createPackageInput, deletePackageInput, packageOutput, packageListOutput} from "~/validators/prompt_package";
+import { getTemplatesInput, getTemplateInput, createTemplateInput, deleteTemplateInput, TemplateOutput, TemplateListOutput} from "~/validators/prompt_template";
 
 
 export const promptRouter = createTRPCRouter({
@@ -20,59 +21,34 @@ export const promptRouter = createTRPCRouter({
       summary: 'Read all packages',
     },
   })
-  .input(getPackagesSchema)
-  // .output(
-  //     z.array(
-  //       z.object({
-  //         id: z.string(),
-  //         // userId: z.string(),
-  //         name: z.string(),
-  //         description: z.string(),
-  //       }),
-  //     )
-  // )
-  .output(packageListSchema)
-  // .output(
-  //   z.object({
-  //     packages: z.array(
-  //       z.object({
-  //         id: z.string(),
-  //         // userId: z.string(),
-  //         name: z.string(),
-  //         description: z.string(),
-  //       }),
-  //     ),
-  //   }),
-  // )
+  .input(getPackagesInput)
+  .output(packageListOutput)
   .query(async ({ ctx, input }) => {
-    // console.log(`got the reques -------------- ${JSON.stringify(input)}`);
     const packages = await ctx.prisma.promptPackage.findMany({
       where: {
         userId: ctx.session?.user.id,
       },
     });
-
-    console.log(`packages -------------- ${JSON.stringify(packages)}`);
-
-    // return {packages: packages}
+    // console.log(`packages -------------- ${JSON.stringify(packages)}`);
     return packages
-    
   }),
 
-  getById: publicProcedure
-  .input(z.object({ id: z.string() }))
-  .query(({ ctx, input }) => {
-    return ctx.prisma.promptPackage.findFirst({
+  getPackage: publicProcedure
+  .input(getPackageInput)
+  .output(packageOutput)
+  .query(async ({ ctx, input }) => {
+    const pkg = await ctx.prisma.promptPackage.findFirst({
       where: {
         userId: ctx.session?.user.id,
         id: input.id
       },
     });
-    
+    console.log(`package -------------- ${JSON.stringify(pkg)}`);
+    return pkg;
   }),
 
   createPackage: publicProcedure
-  .input(createPackageSchema)
+  .input(createPackageInput)
   .mutation(async ({ ctx, input }) => {
     
     const promptPackage = await ctx.prisma.promptPackage.create({
@@ -82,12 +58,26 @@ export const promptRouter = createTRPCRouter({
   }),
 
   createTemplate: publicProcedure
-  .input(createPackageSchema)
+  .input(createPackageInput)
   .mutation(async ({ ctx, input }) => {
     // const validatedInput = PromptPackageCreateInput.parse(input);
     const promptPackage = await ctx.prisma.promptPackage.create({data: input});
     return promptPackage;
   }),
+
+  getTemplates: publicProcedure
+    .input(getTemplatesInput)
+    .output(TemplateListOutput)
+    .query(async ({ ctx, input }) => {
+      const templates = await ctx.prisma.promptTemplate.findMany({
+        where: {
+          userId: ctx.session?.user.id,
+          promptPackageId: input.promptPackageId
+        },
+      });
+      console.log(`templates -------------- ${JSON.stringify(templates)}`);
+      return templates;
+    }),
 
   // getSecretMessage: protectedProcedure.query(() => {
   //   return "you can now see this secret message!";
