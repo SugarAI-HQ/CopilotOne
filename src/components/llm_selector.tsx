@@ -84,7 +84,6 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
                   <option value="gpt-4">gpt-4</option>
                   <option value="gpt-4-0613">gpt-4-0613</option>
                   <option value="gpt-4-0314">gpt-4-0314</option>
-                  <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                   {/* Add more options if needed */}
                 </Select>
                 <Text fontSize="sm">(This is a chat model and supports back and forth dialog.)</Text>

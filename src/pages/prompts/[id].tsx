@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 
 import { Textarea } from '@chakra-ui/react'
-import LLMSelector from "./llm_selector";
-import LLMConfig from "./llm_config";
+import LLMSelector from "~/components/llm_selector";
+import LLMConfig from "~/components/llm_config";
 
 
 export const getVariables = (template: string) => {
@@ -114,6 +114,7 @@ const PackageShow: NextPage = () => {
                         {templates && templates.length > 0 ? (
                             templates.map((template, index) => (
                                 <PromptVersion
+                                    key={index}
                                     color={color}
                                     template={template}
                                     version={index + 1}
@@ -145,7 +146,7 @@ function PromptVariables({ vars }) {
             <Text>Variables</Text>
             <Stack spacing={4}>
                 {vars && vars.length > 0 && vars.map((v, index) => (
-                    <InputGroup>
+                    <InputGroup key={index}>
                         <InputLeftAddon children={v.type} />
                         <Input type='string' placeholder={v.key} />
                     </InputGroup>
@@ -165,9 +166,38 @@ function PromptVersion({ template, version }) {
     let [model, setModel] = useState('gpt-3.5-turbo')
     let [llmConfig, setLLMConfig] = useState({})
 
+    const mutation = api.service.completion.useMutation()
+
     let handleInputChange = (e) => {
         let inputValue = e.target.value
         setTemplate(inputValue)
+    }
+
+    let handleRun = async (e) => {
+        let id = 'clmgjihd00000sg4y3tbe0l2h'
+        let promptTemplateId = 'clmf4eo990000sge67wokwsza'
+
+        const response = mutation.mutate({
+            promptPackageId: template.promptPackageId,
+            promptTemplateId: promptTemplateId,
+            id: id,
+
+            // {"key":"LLM_PROVIDER","type":"#"},{"key":"ROLE","type":"@"},{"key":"DESCRIPTION","type":"@"},{"key":"TASKS","type":"@"},
+            // {"key":"CHAT_HISTORY","type":"$"},{"key":"QUERY","type":"%"}]
+
+            data: {
+                '#BOT_NAME': 'Riya',
+                '#LLM_PROVIDER': 'Open AI',
+
+                '@ROLE': 'Insurance Agent',
+                '@DESCRIPTION': 'A smart assistant for Insurance Needs',
+                '@TASKS': ['buy motor insurance policy', 'answer relevant queries about insurance policies'],
+
+                '$CHAT_HISTORY': 'No recent chat',
+
+                '%QUERY': 'How are you doing?'
+            }
+        })
     }
 
     return (
@@ -182,7 +212,10 @@ function PromptVersion({ template, version }) {
                     resize='vertical'
                 />
                 <Box>
-                    <Button colorScheme='green'>Run</Button>
+                    <Button 
+                        colorScheme='green'
+                        onClick={handleRun}
+                    >Run</Button>
                     <LLMSelector
                         initialProvider={provider}
                         initialModel={model}

@@ -1,9 +1,5 @@
-import { describe } from "node:test";
-import { z } from "zod";
-
 import {
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 import { getPackagesInput, getPackageInput, createPackageInput, deletePackageInput, packageOutput, packageListOutput} from "~/validators/prompt_package";
@@ -52,7 +48,11 @@ export const promptRouter = createTRPCRouter({
   .mutation(async ({ ctx, input }) => {
     
     const promptPackage = await ctx.prisma.promptPackage.create({
-      data: input
+      data: {
+        name: input.name,
+        description: input.description,
+        userId: ctx.session?.user.id
+      }
     });
     return promptPackage;
   }),

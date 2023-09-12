@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import Modal from "react-modal";
 import { Card, CardHeader, CardBody, CardBodyProps, CardFooter, Heading, SimpleGrid, Button, Text, Flex, Link} from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import Head from "next/head";
+import { CreatePackage } from "~/components/create_package";
 
 function PromptVersion() {
   const [template, setText] = useState(""); // State to store the text entered in the text area
@@ -47,112 +46,6 @@ function PromptVersion() {
     </div>
   );
 }
-
-
-
-const CreatePackage = ({ isOpen, onClose, onSubmit }) => {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-
-  const handleSubmit = async () => {
-    // Validate that the name is not empty
-    if (name.trim() === "") {
-      alert("Name is required.");
-      return;
-    }
-
-    // Create a package object with the provided data
-    const packageData = {
-      name: name,
-      description: description,
-    };
-
-    // Call the onSubmit function with the package data
-    // onSubmit(packageData);
-    const pkg = await api.prompt.createPackage.useMutation(packageData)
-
-    // Clear the form fields
-    setName("");
-    setDescription("");
-  };
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onRequestClose={onClose}
-      contentLabel="Create Package Form"
-    >
-      <h2>Create Package</h2>
-      <form>
-        <div>
-          <label htmlFor="name">Name (Required):</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="description">Description (Optional):</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div>
-          <button type="button" onClick={handleSubmit}>
-            Create
-          </button>
-          <button type="button" onClick={onClose}>
-            Cancel
-          </button>
-        </div>
-      </form>
-    </Modal>
-  );
-};
-
-
-
-export const CreatePackageButton = ({ onPackageSubmit }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  return (
-    <div>
-      <button onClick={openModal}>Create Package</button>
-      <CreatePackage
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={onPackageSubmit}
-      />
-    </div>
-  );
-};
-
-
-const YourApp = () => {
-  const handlePackageSubmit = (packageData) => {
-    // Handle the submitted package data here
-    console.log("Submitted Package:", packageData);
-  };
-
-  return (
-    <div>
-      {/* Other content in your app */}
-      <CreatePackageButton onPackageSubmit={handlePackageSubmit} />
-    </div>
-  );
-};
 
 function Packages() {
   // const { data: sessionData } = useSession();
@@ -199,7 +92,13 @@ function Packages() {
 
 
 export default function PackageHome() {
+  const mutation = api.prompt.createPackage.useMutation()
   return (
-    <Packages />
+    <>
+      <CreatePackage
+        onSubmit={mutation.mutate}
+      ></CreatePackage>
+      <Packages />
+    </>
   );
 }

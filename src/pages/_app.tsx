@@ -6,11 +6,16 @@ import { api } from "~/utils/api";
 import { ChakraProvider } from '@chakra-ui/react'
 import { extendTheme } from '@chakra-ui/react'
 
+// 2. Add your color mode config
+const config = {
+  initialColorMode: "dark", // options are light or dark
+  useSystemColorMode: false, // options are true or false
+}
 
 const colors = {
   transparent: "transparent",
-  black: "#000",
-  white: "#fff",
+  // black: "#000",
+  // white: "#fff",
   gray: {
     50: "#f7fafc",
     // ...
@@ -23,6 +28,7 @@ const colors = {
   },
 }
 export const theme = extendTheme({ 
+  config,
   colors, 
   fonts: {
     body: "system-ui, sans-serif",
@@ -92,7 +98,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ChakraProvider >
+      <ChakraProvider theme={theme}>
         <RootLayout>
           <Component {...pageProps} />
         </RootLayout>

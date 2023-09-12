@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 import { api } from "~/utils/api";
-import { CreatePackageButton } from "./prompts";
+// import { CreatePackageButton } from "./prompts";
 
 
 
@@ -29,7 +29,7 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             
           <div>
-            <CreatePackageButton onPackageSubmit={handlePackageCreate} />
+            {/* <CreatePackageButton onPackageSubmit={handlePackageCreate} /> */}
           </div>
             <Link 
               href="/prompt"
