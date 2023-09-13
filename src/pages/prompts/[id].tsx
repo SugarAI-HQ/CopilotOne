@@ -1,18 +1,14 @@
-import React, { useState } from "react";
-import { Text, Flex, HStack, Grid, GridItem, Stack, InputLeftElement, InputGroup, Input, InputLeftAddon, Button, Box, Container, Heading, Select } from "@chakra-ui/react";
-import { NextPage } from "next";
+import React from "react";
+import { Typography, Grid, Box, Container } from "@mui/material";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import PromptVersion from "~/components/prompt_version";
+import PromptVariables from "~/components/prompt_variables";
 
-import { Textarea } from '@chakra-ui/react'
-import LLMSelector from "~/components/llm_selector";
-import LLMConfig from "~/components/llm_config";
-
-
-export const getVariables = (template: string) => {
-    console.debug(`template: ${JSON.stringify(template)}`)
+export const getVariables = (template) => {
+    console.debug(`template: ${JSON.stringify(template)}`);
     if (!template) {
-        return []
+        return [];
     }
     const allVariables = template.description.match(/\{([#$@%].*?)\}/g);
 
@@ -23,21 +19,18 @@ export const getVariables = (template: string) => {
     const flattenedVariables = allVariables.map((variable) => {
         const type = variable.charAt(1); // Get the type of variable (#, @, %, $).
         const key = variable.substring(2, variable.length - 1); // Get the variable name.
-        // const key = variable.substring(1, variable.length - 1)
 
         return {
             key,
             type,
         };
     });
-    // console.log(`variables: ${JSON.stringify(flattenedVariables)}`)
     return flattenedVariables;
 };
 
-
-export const getAllTemplateVariables = (templates: string[]) => {
+export const getAllTemplateVariables = (templates) => {
     if (!templates) {
-        return []
+        return [];
     }
 
     const allVariables = templates.flatMap((template) => getVariables(template));
@@ -46,11 +39,10 @@ export const getAllTemplateVariables = (templates: string[]) => {
     // const uniqueVariables = Array.from(new Set(allVariables));
     // const uniqueVariables = Array.from(new Set(allVariables.map(item => item.key)));
 
-
     return allVariables;
 };
 
-export function getUniqueJsonArray(jsonArray: object[], uniqueKey: string): object[] {
+export function getUniqueJsonArray(jsonArray, uniqueKey) {
     const uniqueSet = new Set();
     const uniqueArray = [];
 
@@ -65,171 +57,50 @@ export function getUniqueJsonArray(jsonArray: object[], uniqueKey: string): obje
     return uniqueArray;
 }
 
-
-
-
-const PackageShow: NextPage = () => {
-    // const { data: userData, refetch: refetchUser } = useRequiredUserData();    
+const PackageShow = () => {
     const router = useRouter();
     const packageId = router.query.id as string;
 
     console.log(`Package Id: ${packageId}`);
-    const { data: pkg } = api.prompt.getPackage.useQuery(
-        { id: packageId }
-    );
+    const { data: pkg } = api.prompt.getPackage.useQuery({ id: packageId });
 
-    const { data: templates } = api.prompt.getTemplates.useQuery(
-        { promptPackageId: packageId }
-    );
+    const { data: templates } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
 
-    const allVariables = getAllTemplateVariables(templates)
-    console.log(allVariables)
-    const variables = getUniqueJsonArray(allVariables, 'key')
-
-    const color = 'black'
-    const bgColor = 'black'
+    const allVariables = getAllTemplateVariables(templates);
+    console.log(allVariables);
+    const variables = getUniqueJsonArray(allVariables, "key");
 
     return (
-        <Box>
+        <Container>
             {pkg && (
-                <Heading as="h2" size="xl" mt={6} mb={2}>
+                <Typography variant="h2" component="h2" sx={{ mt: 6, mb: 2 }}>
                     {pkg.name}
-                </Heading>
+                </Typography>
             )}
-            <Grid
-                h='200px'
-                color={color}
-                templateRows='repeat(2, 1fr)'
-                templateColumns='repeat(5, 1fr)'
-                gap={4}
-            >
-                <GridItem rowSpan={'auto'} colSpan={1} bg={bgColor}>
-                    <PromptVariables
-                        vars={variables}
-                    />
-
-                </GridItem>
-                <GridItem rowSpan={'auto'} colSpan={4} bg={bgColor}>
-                    <HStack color='white'>
-                        {templates && templates.length > 0 ? (
-                            templates.map((template, index) => (
-                                <PromptVersion
-                                    key={index}
-                                    color={color}
-                                    template={template}
-                                    version={index + 1}
-                                >
-                                </PromptVersion>
-                            ))
-                        ) : (
-                            <Flex w="100vw" h="100%" align="center" justify="center">
-                                <Text>No templates created</Text>
-                            </Flex>
-                        )}
-                    </HStack>
-
-
-
-                </GridItem>
+            <Grid container spacing={4}>
+                <Grid item xs={12} sm={3}>
+                    <PromptVariables vars={variables} />
+                </Grid>
+                <Grid item xs={12} sm={9}>
+                    {templates && templates.length > 0 ? (
+                        templates.map((template, index) => (
+                            <PromptVersion key={index} template={template} version={template} />
+                        ))
+                    ) : (
+                        <Box
+                            width="100vw"
+                            height="100%"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                        >
+                            <Typography>No templates created</Typography>
+                        </Box>
+                    )}
+                </Grid>
             </Grid>
-
-        </Box>
+        </Container>
     );
 };
-
-function PromptVariables({ vars }) {
-    console.log(`variables : ${JSON.stringify(vars)}`)
-    let [variables, setVariables] = useState(vars)
-
-    return (
-        <>
-            <Text>Variables</Text>
-            <Stack spacing={4}>
-                {vars && vars.length > 0 && vars.map((v, index) => (
-                    <InputGroup key={index}>
-                        <InputLeftAddon children={v.type} />
-                        <Input type='string' placeholder={v.key} />
-                    </InputGroup>
-
-
-                ))}
-            </Stack>
-        </>
-    )
-}
-
-
-function PromptVersion({ template, version }) {
-    // console.log(template);
-    let [prompttemplate, setTemplate] = useState(template)
-    let [provider, setProvider] = useState('OpenAI')
-    let [model, setModel] = useState('gpt-3.5-turbo')
-    let [llmConfig, setLLMConfig] = useState({})
-
-    const mutation = api.service.completion.useMutation()
-
-    let handleInputChange = (e) => {
-        let inputValue = e.target.value
-        setTemplate(inputValue)
-    }
-
-    let handleRun = async (e) => {
-        // TODO: Get this data from UI
-        let id = 'clmgjihd00000sg4y3tbe0l2h'
-        let promptTemplateId = 'clmf4eo990000sge67wokwsza'
-
-        const response = mutation.mutate({
-            promptPackageId: template.promptPackageId,
-            promptTemplateId: promptTemplateId,
-            id: id,
-            // TODO: Get this data from the UI
-            data: {
-                '#BOT_NAME': 'Riya',
-                '#LLM_PROVIDER': 'Open AI',
-
-                '@ROLE': 'Insurance Agent',
-                '@DESCRIPTION': 'A smart assistant for Insurance Needs',
-                '@TASKS': ['buy motor insurance policy', 'answer relevant queries about insurance policies'],
-
-                '$CHAT_HISTORY': 'No recent chat',
-
-                '%QUERY': 'How are you doing?'
-            }
-        })
-    }
-
-    return (
-        <>
-            <Container direction='column' justifyContent="center">
-                <Text>{prompttemplate.name}</Text>
-                <Textarea
-                    value={prompttemplate.description}
-                    onChange={handleInputChange}
-                    placeholder='Enter your prompt template'
-                    size='sm'
-                    resize='vertical'
-                />
-                <Box>
-                    <Button 
-                        colorScheme='green'
-                        onClick={handleRun}
-                    >Run</Button>
-                    <LLMSelector
-                        initialProvider={provider}
-                        initialModel={model}
-                        onProviderChange={setProvider}
-                        onModelChange={setModel}
-                    ></LLMSelector>
-                    <LLMConfig
-                        config={llmConfig}
-                        setConfig={setLLMConfig}
-                    ></LLMConfig>
-                </Box>
-            </Container>
-
-        </>
-    )
-
-}
 
 export default PackageShow;

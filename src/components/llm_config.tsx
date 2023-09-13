@@ -1,107 +1,96 @@
 import React, { useState } from 'react';
 import {
-    Box,
-    Button,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Slider,
-    SliderTrack,
-    SliderFilledTrack,
-    SliderThumb,
-    Input,
-    Text,
-    Textarea,
-    Flex,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
-    NumberIncrementStepper,
-    NumberDecrementStepper,
-} from '@chakra-ui/react';
-// import { InfoIcon } from "@chakra-ui/icons";
-import { MdBuild, MdDisplaySettings } from 'react-icons/md';
-import { BiSolidCog } from 'react-icons/bi';
+  Button,
+  Modal,
+  Paper,
+  Typography,
+  Slider,
+  Input,
+  TextField,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+  Box,
+} from '@mui/material';
+import { MdBuild } from 'react-icons/md';
 import LLMParameter from './llm_parameter';
 
-
 const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
-    const [temperature, setTemperature] = useState(config.temperature);
-    const [maxLength, setMaxLength] = useState(config.maxLength);
-    const [stopSequences, setStopSequences] = useState(config.stopSequences);
-    const [topP, setTopP] = useState(config.topP);
-    const [freqPenalty, setFreqPenalty] = useState(config.freqPenalty);
-    const [presencePenalty, setPresencePenalty] = useState(config.presencePenalty);
-    const [logitBias, setLogitBias] = useState(config.logitBias);
+  const [temperature, setTemperature] = useState(config.temperature);
+  const [maxLength, setMaxLength] = useState(config.maxLength);
+  const [topP, setTopP] = useState(config.topP);
+  const [freqPenalty, setFreqPenalty] = useState(config.freqPenalty);
+  const [presencePenalty, setPresencePenalty] = useState(config.presencePenalty);
+  const [logitBias, setLogitBias] = useState(config.logitBias);
+  const [stopSequences, setStopSequences] = useState(config.stopSequences);
 
-    const handleTemperatureChange = (value) => {
-        setTemperature(value);
+  const handleTemperatureChange = (event, value) => {
+    setTemperature(value);
+  };
+
+  const handleMaxLengthChange = (event, value) => {
+    setMaxLength(value);
+  };
+
+  const handleTopPChange = (event, value) => {
+    setTopP(value);
+  };
+
+  const handleFreqPenaltyChange = (event, value) => {
+    setFreqPenalty(value);
+  };
+
+  const handlePresencePenaltyChange = (event, value) => {
+    setPresencePenalty(value);
+  };
+
+  const handleLogitBiasChange = (event, value) => {
+    setLogitBias(value);
+  };
+
+  const handleStopSequencesChange = (event) => {
+    setStopSequences(event.target.value);
+  };
+
+  const handleClose = () => {
+    const updatedConfig = {
+      temperature,
+      maxLength,
+      stopSequences,
+      topP,
+      freqPenalty,
+      presencePenalty,
+      logitBias,
     };
+    setConfig(updatedConfig);
+    onClose(updatedConfig);
+  };
 
-    const handleMaxLengthChange = (value) => {
-        setMaxLength(value);
-    };
-
-    const handleStopSequencesChange = (event) => {
-        setStopSequences(event.target.value);
-    };
-
-    const handleTopPChange = (value) => {
-        setTopP(value);
-    };
-
-    const handleFreqPenaltyChange = (value) => {
-        setFreqPenalty(value);
-    };
-
-    const handlePresencePenaltyChange = (value) => {
-        setPresencePenalty(value);
-    };
-
-    const handleLogitBiasChange = (event) => {
-        setLogitBias(event.target.value);
-    };
-
-    const handleClose = () => {
-        const updatedConfig = {
-            temperature,
-            maxLength,
-            stopSequences,
-            topP,
-            freqPenalty,
-            presencePenalty,
-            logitBias,
-        };
-        setConfig(updatedConfig);
-        onClose(updatedConfig);
-    };
-
-    return (
-        <Modal isOpen={isOpen} onClose={handleClose} size="4xl">
-            <ModalOverlay />
-            <ModalContent>
-                <ModalHeader>LLM Parameters</ModalHeader>
-                <ModalBody>
-                    <LLMParameter
-                        label='Temperature'
-                        parameter={temperature}
-                        handleParameterChange={setTemperature}
-                        min={0}
-                        max={2}
-                        step={0.01}
-                    ></LLMParameter>
-                    <LLMParameter
-                        label='Max Lenght'
-                        parameter={maxLength}
-                        handleParameterChange={setMaxLength}
-                        min={0}
-                        max={4096}
-                        step={1}
-                    ></LLMParameter>
-                    {/* <LLMParameter 
+  return (
+    <Modal open={isOpen} onClose={handleClose} maxWidth="md">
+      <Paper>
+        <Box p={2}>
+          <Typography variant="h6">LLM Parameters</Typography>
+        </Box>
+        <Box p={2}>
+          <LLMParameter
+            label="Temperature"
+            parameter={temperature}
+            handleParameterChange={handleTemperatureChange}
+            min={0}
+            max={2}
+            step={0.01}
+          />
+          <LLMParameter
+            label="Max Length"
+            parameter={maxLength}
+            handleParameterChange={handleMaxLengthChange}
+            min={0}
+            max={4096}
+            step={1}
+          />
+          {/* <LLMParameter 
                 label='Stop Sequences' 
                 parameter={stopSequences} 
                 handleParameterChange={setStopSequences}
@@ -109,31 +98,31 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
                 max={2}
                 step={0.02}
                 ></LLMParameter> */}
-                    <LLMParameter
-                        label='Top P'
-                        parameter={topP}
-                        handleParameterChange={setTopP}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                    ></LLMParameter>
-                    <LLMParameter
-                        label='Frequency Penalty'
-                        parameter={freqPenalty}
-                        handleParameterChange={setFreqPenalty}
-                        min={-2}
-                        max={2}
-                        step={0.01}
-                    ></LLMParameter>
-                    <LLMParameter
-                        label='Presence Penalty'
-                        parameter={presencePenalty}
-                        handleParameterChange={setPresencePenalty}
-                        min={-2}
-                        max={2}
-                        step={0.01}
-                    ></LLMParameter>
-                    {/* <LLMParameter 
+          <LLMParameter
+            label="Top P"
+            parameter={topP}
+            handleParameterChange={handleTopPChange}
+            min={0}
+            max={1}
+            step={0.01}
+          />
+          <LLMParameter
+            label="Frequency Penalty"
+            parameter={freqPenalty}
+            handleParameterChange={handleFreqPenaltyChange}
+            min={-2}
+            max={2}
+            step={0.01}
+          />
+          <LLMParameter
+            label="Presence Penalty"
+            parameter={presencePenalty}
+            handleParameterChange={handlePresencePenaltyChange}
+            min={-2}
+            max={2}
+            step={0.01}
+          />
+          {/* <LLMParameter 
                 label='Logit Bias' 
                 parameter={logitBias} 
                 handleParameterChange={setLogitBias}
@@ -141,48 +130,49 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
                 max={2}
                 step={0.02}
                 ></LLMParameter> */}
-                </ModalBody>
-                <ModalFooter>
-                    <Button colorScheme="blue" onClick={handleClose}>
-                        Close
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
-        </Modal>
-    );
+        </Box>
+        <Box p={2} display="flex" justifyContent="flex-end">
+          <Button variant="outlined" onClick={handleClose}>
+            Close
+          </Button>
+        </Box>
+      </Paper>
+    </Modal>
+  );
 };
 
 function LLMConfig({ config, setConfig }) {
-    const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-    const handleOpenModal = () => {
-        setIsOpen(true);
-    };
+  const handleOpenModal = () => {
+    setIsOpen(true);
+  };
 
-    const handleCloseModal = (updatedConfig) => {
-        setIsOpen(false);
-        setConfig(updatedConfig);
-    };
+  const handleCloseModal = (updatedConfig) => {
+    setIsOpen(false);
+    setConfig(updatedConfig);
+  };
 
-    return (
-        <span>
-            <Button
-                size='sm'
-                leftIcon={<BiSolidCog />}
-                onClick={handleOpenModal}
-                variant="solid"
-            >
-                Parameters
-            </Button>
-            <LLMConfigModal
-                isOpen={isOpen}
-                onClose={handleCloseModal}
-                config={config}
-                setConfig={setConfig}
-            />
-            {/* Display or use config values */}
-        </span>
-    );
+  return (
+    <>
+      <Button
+        size="small"
+        startIcon={<MdBuild />}
+        onClick={handleOpenModal}
+        variant="text"
+        color="primary"
+      >
+        Parameters
+      </Button>
+      <LLMConfigModal
+        isOpen={isOpen}
+        onClose={handleCloseModal}
+        config={config}
+        setConfig={setConfig}
+      />
+      {/* Display or use config values */}
+    </>
+  );
 }
 
 export default LLMConfig;

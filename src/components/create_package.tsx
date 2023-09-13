@@ -1,97 +1,92 @@
+import React, { useState } from "react";
 import {
-  Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   FormControl,
   FormLabel,
-  Heading,
+  Grid,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   Stack,
-  Text,
-} from "@chakra-ui/react";
-import React, { useState } from "react";
+  TextField,
+  Typography,
+} from "@mui/material";
 
 export function CreatePackage({ onSubmit }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  const onClose = () => setIsOpen(false);
-  const onOpen = () => setIsOpen(true);
+  const handleClose = () => {
+    setIsOpen(false);
+  };
 
   const handleSubmit = () => {
     onSubmit({
       name: name,
       description: description,
     });
-    onClose(); // Close the modal after submitting
+    handleClose(); // Close the modal after submitting
   };
 
   return (
     <>
-      <Box>
-        <Button 
-          ml="auto" 
-          size="sm" 
-          variant="outline" 
-          onClick={onOpen}
-        >
+      <Grid container justifyContent="flex-end">
+        <Button size="small" variant="outlined" onClick={() => setIsOpen(true)}>
           Create
         </Button>
-      </Box>
+      </Grid>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>
-            <Heading as="h2" size="md">
-              Model
-            </Heading>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>The LLM provider and model that'll be used to power this prompt.</Text>
+      <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>
+          <Typography variant="h6">Model</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            The LLM provider and model that'll be used to power this prompt.
+          </DialogContentText>
 
-            <Stack spacing={4} mt={4}>
-              <FormControl>
-                <FormLabel>Name</FormLabel>
-                <Input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </FormControl>
+          <Stack spacing={2} mt={2}>
+            <FormControl fullWidth>
+              <FormLabel>Name</FormLabel>
+              <TextField
+                variant="outlined"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </FormControl>
 
-              <FormControl>
-                <FormLabel>Description</FormLabel>
-                <Input
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </FormControl>
-            </Stack>
-          </ModalBody>
+            <FormControl fullWidth>
+              <FormLabel>Description</FormLabel>
+              <TextField
+                variant="outlined"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </FormControl>
+          </Stack>
+        </DialogContent>
 
-          <Divider />
+        <Divider />
 
-          <ModalFooter>
-            <Stack direction="row" spacing={4}>
-              <Button variant="outline" size="sm" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button variant="outline" colorScheme="blue" size="sm" onClick={handleSubmit}>
-                Confirm
-              </Button>
-            </Stack>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        <DialogActions>
+          <Button size="small" onClick={handleClose} variant="outlined">
+            Cancel
+          </Button>
+          <Button
+            size="small"
+            onClick={handleSubmit}
+            variant="outlined"
+            color="primary"
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
