@@ -174,6 +174,7 @@ function PromptVersion({ template, version }) {
     }
 
     let handleRun = async (e) => {
+        // TODO: Get this data from UI
         let id = 'clmgjihd00000sg4y3tbe0l2h'
         let promptTemplateId = 'clmf4eo990000sge67wokwsza'
 
@@ -181,10 +182,7 @@ function PromptVersion({ template, version }) {
             promptPackageId: template.promptPackageId,
             promptTemplateId: promptTemplateId,
             id: id,
-
-            // {"key":"LLM_PROVIDER","type":"#"},{"key":"ROLE","type":"@"},{"key":"DESCRIPTION","type":"@"},{"key":"TASKS","type":"@"},
-            // {"key":"CHAT_HISTORY","type":"$"},{"key":"QUERY","type":"%"}]
-
+            // TODO: Get this data from the UI
             data: {
                 '#BOT_NAME': 'Riya',
                 '#LLM_PROVIDER': 'Open AI',
