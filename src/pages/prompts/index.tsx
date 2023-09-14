@@ -4,11 +4,19 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import { Link as MUILink, Typography, Grid } from "@mui/material";
+import {
+  Link as MUILink,
+  Typography,
+  Grid,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
 import { api } from "~/utils/api";
-
-
+import { MutationObserverSuccessResult } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { PromptPackage } from "@prisma/client";
+import toast from 'react-hot-toast';
 
 function Packages() {
   const { data: packages } = api.prompt.getPackages.useQuery({});
@@ -38,7 +46,15 @@ function Packages() {
 }
 
 export default function PackageHome() {
-  const mutation = api.prompt.createPackage.useMutation();
+  const router = useRouter();
+  
+  function handlePackageCreationSuccess(createdPackage: PromptPackage) {
+    toast.success("Package Created Successfully");
+    router.push("/prompts/" + createdPackage.id);
+  }
+  const mutation = api.prompt.createPackage.useMutation({
+    onSuccess: handlePackageCreationSuccess,
+  });
   return (
     <>
       <CreatePackage onSubmit={mutation.mutate}></CreatePackage>

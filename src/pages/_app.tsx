@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
 import RootLayout from "~/app/layout";
+import { Toaster } from "react-hot-toast";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -14,6 +15,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
         <RootLayout>
           <Component {...pageProps} />
+          <Toaster position="top-right"/>
         </RootLayout>
     </SessionProvider>
     
