@@ -170,8 +170,8 @@ export function Dashboard({
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
+          <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
+            <Grid container spacing={1}>
               {children}
             </Grid>
             {/* <Copyright sx={{ pt: 4 }} /> */}

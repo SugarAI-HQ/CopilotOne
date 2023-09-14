@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { Typography, Stack, InputAdornment, Input } from "@mui/material";
+import { Typography, Stack, InputAdornment, Input, Box } from "@mui/material";
 
 function PromptVariables({ vars }) {
   console.log(`variables : ${JSON.stringify(vars)}`);
   let [variables, setVariables] = useState(vars);
 
   return (
-    <>
+    <Box>
       <Typography variant="h6">Variables</Typography>
       <Stack spacing={4}>
         {vars &&
@@ -22,7 +22,7 @@ function PromptVariables({ vars }) {
             </div>
           ))}
       </Stack>
-    </>
+    </Box>
   );
 }
 

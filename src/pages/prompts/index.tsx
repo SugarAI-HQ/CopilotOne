@@ -13,7 +13,7 @@ import { api } from "~/utils/api";
 function Packages() {
   const { data: packages } = api.prompt.getPackages.useQuery({});
   return (
-    <Grid container spacing={4}>
+    <Grid container spacing={1}>
       {packages && packages.length > 0 ? (
         packages.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={4} lg={3}>

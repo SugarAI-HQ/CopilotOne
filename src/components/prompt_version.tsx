@@ -12,6 +12,7 @@ import { api } from "~/utils/api";
 import StyledTextarea from "./text_area";
 
 function PromptVersion({ template, version }) {
+  console.log(`template >>>>>>>: ${JSON.stringify(template)}`);
   let [promptTemplate, setTemplate] = useState(template);
   let [provider, setProvider] = useState("OpenAI");
   let [model, setModel] = useState("gpt-3.5-turbo");
@@ -51,18 +52,21 @@ function PromptVersion({ template, version }) {
 
   return (
     <>
-      <Container sx={{ flexDirection: "column", justifyContent: "center" }}>
+      <Box>
         <TextField
             fullWidth
             value={promptTemplate.name}
             // onChange={handleInputChange}
           />
-        <StyledTextarea
-          minRows={3}
-          placeholder="Enter your prompt template"
+        <TextareaAutosize
+          minRows={5}
+          maxRows={10}
+          placeholder="Write your Smart Template"
           value={promptTemplate.description}
           onChange={handleInputChange}
-        />
+          style={{ width: '100%' }}
+        >
+        </TextareaAutosize>
         <Box>
           <Button 
             color="success" 
@@ -81,7 +85,7 @@ function PromptVersion({ template, version }) {
             setConfig={setLLMConfig}
           ></LLMConfig>
         </Box>
-      </Container>
+      </Box>
     </>
   );
 }

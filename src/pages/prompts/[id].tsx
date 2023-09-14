@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import PromptVersion from "~/components/prompt_version";
 import PromptVariables from "~/components/prompt_variables";
+import { NextPage } from "next";
 
 export const getVariables = (template) => {
     console.debug(`template: ${JSON.stringify(template)}`);
@@ -57,7 +58,7 @@ export function getUniqueJsonArray(jsonArray, uniqueKey) {
     return uniqueArray;
 }
 
-const PackageShow = () => {
+const PackageShow: NextPage = () => {
     const router = useRouter();
     const packageId = router.query.id as string;
 
@@ -71,22 +72,24 @@ const PackageShow = () => {
     const variables = getUniqueJsonArray(allVariables, "key");
 
     return (
-        <Container>
+        <Grid container spacing={1}>
             {pkg && (
-                <Typography variant="h2" component="h2" sx={{ mt: 6, mb: 2 }}>
+                <Typography variant="h4" component="h2" sx={{ mt: 1, mb: 2 }}>
                     {pkg.name}
                 </Typography>
             )}
-            <Grid container spacing={4}>
-                <Grid item xs={12} sm={3}>
+            <Grid container spacing={2} style={{ width: '100%' }}>
+                <Grid item >
                     <PromptVariables vars={variables} />
                 </Grid>
-                <Grid item xs={12} sm={9}>
-                    {templates && templates.length > 0 ? (
-                        templates.map((template, index) => (
-                            <PromptVersion key={index} template={template} version={template} />
-                        ))
-                    ) : (
+                {templates && templates.length > 0 ? (
+                    templates.map((template, index) => (
+                        <Grid item key={index}  sx={{ pl: '0px' }}>
+                            <PromptVersion template={template} version={template} />
+                        </Grid>
+                    ))
+                ) : (
+                    <Grid item>
                         <Box
                             width="100vw"
                             height="100%"
@@ -94,12 +97,12 @@ const PackageShow = () => {
                             alignItems="center"
                             justifyContent="center"
                         >
-                            <Typography>No templates created</Typography>
+                            <Typography variant="h2">No templates created</Typography>
                         </Box>
-                    )}
-                </Grid>
+                    </Grid>
+                )}
             </Grid>
-        </Container>
+        </Grid>
     );
 };
 
