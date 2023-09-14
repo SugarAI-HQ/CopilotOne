@@ -30,7 +30,7 @@ export default function Profile() {
       <Card className="mt-3" variant="outlined" sx={{ minWidth: 275 }}>
         <CardContent>
           <Typography variant="h5" component="div">
-            Profile
+            Account
           </Typography>
           <Divider className="my-4" />
            

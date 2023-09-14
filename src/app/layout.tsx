@@ -24,6 +24,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { mainListItems, secondaryListItems } from "./Dashboard/listItems";
 import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
+import SidebarProfile from "~/components/SidebarProfile";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -166,18 +167,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             <Divider sx={{ my: 1 }} />
             {/* {secondaryListItems} */}
           </List>
-          <div className="absolute bottom-2 w-full">
-            <List component="nav">
-              <Link href="/profile" className="no-underline text-white">
-                <ListItemButton>
-                  <ListItemIcon>
-                    <MdAccountCircle size={24} />
-                  </ListItemIcon>
-                  <ListItemText primary="Profile" />
-                </ListItemButton>
-              </Link>
-            </List>
-          </div>
+            <SidebarProfile/>
         </Drawer>
         <Box
           component="main"
