@@ -18,6 +18,7 @@ export default function Profile() {
     undefined, // no input
     { enabled: sessionData?.user !== undefined },
   );
+  
 
   return (
     <RouteGuard>
@@ -32,13 +33,14 @@ export default function Profile() {
             Profile
           </Typography>
           <Divider className="my-4" />
-          <Avatar className="h-16 w-16" alt="Profile Image" />
+           
+          <Avatar className="h-16 w-16" alt="Profile Image" src={sessionData && sessionData.user?.image} />
 
           <Typography sx={{ fontSize: 16 }} className="mt-4" gutterBottom>
-            Vipul Patil
+          {sessionData && sessionData.user?.name}
           </Typography>
           <Typography sx={{ fontSize: 14 }} gutterBottom>
-            vipulrpatil.8@gmail.com
+          {sessionData && sessionData.user?.email}
           </Typography>
         </CardContent>
       </Card>
