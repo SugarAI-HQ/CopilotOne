@@ -9,6 +9,7 @@ import Divider from "@mui/material/Divider";
 import Avatar from "@mui/material/Avatar";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
+import RouteGuard from "~/components/RouteGuard";
 
 export default function Profile() {
   const { data: sessionData } = useSession();
@@ -19,6 +20,7 @@ export default function Profile() {
   );
 
   return (
+    <RouteGuard>
     <div className="w-full">
       <Typography variant="h5" fontWeight={700}>
         Profile
@@ -49,5 +51,6 @@ export default function Profile() {
         Logout
       </Button>
     </div>
+    </RouteGuard>
   );
 }
