@@ -17,6 +17,7 @@ import { MutationObserverSuccessResult } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { PromptPackage } from "@prisma/client";
 import toast from 'react-hot-toast';
+import { getLayout } from "~/components/Layouts/DashboardLayout";
 
 function Packages() {
   const { data: packages } = api.prompt.getPackages.useQuery({});
@@ -31,7 +32,7 @@ function Packages() {
                 <Typography>{pkg.description}</Typography>
               </CardContent>
               <CardActions>
-                <MUILink href={`/prompts/${pkg.id}`}>View</MUILink>
+                <MUILink href={`/dashboard/prompts/${pkg.id}`}>View</MUILink>
               </CardActions>
             </Card>
           </Grid>
@@ -45,7 +46,7 @@ function Packages() {
   );
 }
 
-export default function PackageHome() {
+const PackageHome = ()=>  {
   const router = useRouter();
   
   function handlePackageCreationSuccess(createdPackage: PromptPackage) {
@@ -62,3 +63,5 @@ export default function PackageHome() {
     </>
   );
 }
+PackageHome.getLayout = getLayout
+export default PackageHome 

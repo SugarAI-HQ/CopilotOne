@@ -1,5 +1,6 @@
-import { Providers } from "./providers";
+// import { Providers } from "./providers";
 import * as React from "react";
+import type { ReactElement } from 'react'
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -21,13 +22,17 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./Dashboard/listItems";
+// import { mainListItems, secondaryListItems } from "./Dashboard/listItems";
 import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
+import { mainListItems, secondaryListItems } from "~/app/Dashboard/listItems";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
+
+
+
 
 function Copyright(props: any) {
   return (
@@ -194,7 +199,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const getLayout = page => <DashboardLayout>{page}</DashboardLayout>
+export const getLayout = (page:ReactElement) => <DashboardLayout>{page}</DashboardLayout>
 
 export default function DashboardLayout({
   children,

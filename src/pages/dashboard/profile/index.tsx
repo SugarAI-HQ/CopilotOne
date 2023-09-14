@@ -10,8 +10,9 @@ import Avatar from "@mui/material/Avatar";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import RouteGuard from "~/components/RouteGuard";
+import { getLayout } from "~/components/Layouts/DashboardLayout";
 
-export default function Profile() {
+const Profile = ()=> {
   const { data: sessionData } = useSession();
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
@@ -56,3 +57,6 @@ export default function Profile() {
     </RouteGuard>
   );
 }
+Profile.getLayout = getLayout
+
+export default Profile

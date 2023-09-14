@@ -23,7 +23,7 @@ export default function SidebarProfile() {
   );
 
     function handleProfileCardClick(){
-        router.push('/profile')
+        router.push('/dashboard/profile')
     }
 
   return (
