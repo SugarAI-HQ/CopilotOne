@@ -193,9 +193,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const getLayout = (page: React.ReactElement) => {
-  <DashboardLayout>{page}</DashboardLayout>
-}
+export const getLayout = page => <DashboardLayout>{page}</DashboardLayout>
 
 export default function DashboardLayout({
   children,
