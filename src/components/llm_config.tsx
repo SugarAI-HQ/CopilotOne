@@ -4,13 +4,6 @@ import {
   Modal,
   Paper,
   Typography,
-  Slider,
-  Input,
-  TextField,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  Checkbox,
   Box,
 } from '@mui/material';
 import { MdBuild } from 'react-icons/md';
@@ -68,9 +61,25 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
   };
 
   return (
-    <Modal open={isOpen} onClose={handleClose} maxWidth="md">
-      <Paper>
-        <Box p={2}>
+    <Modal 
+      open={isOpen} 
+      onClose={handleClose} 
+      maxWidth="md"
+    >
+      <Paper
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          // width: 400,
+          // bgcolor: 'background.paper',
+          border: '2px solid #000',
+          boxShadow: 24,
+          p: 1,
+        }}
+      >
+        <Box p={1}>
           <Typography variant="h6">LLM Parameters</Typography>
         </Box>
         <Box p={2}>

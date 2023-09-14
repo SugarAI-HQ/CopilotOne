@@ -12,7 +12,7 @@ import { api } from "~/utils/api";
 import StyledTextarea from "./text_area";
 
 function PromptVersion({ template, version }) {
-  console.log(`template >>>>>>>: ${JSON.stringify(template)}`);
+  // console.log(`template >>>>>>>: ${JSON.stringify(template)}`);
   let [promptTemplate, setTemplate] = useState(template);
   let [provider, setProvider] = useState("OpenAI");
   let [model, setModel] = useState("gpt-3.5-turbo");
@@ -56,6 +56,7 @@ function PromptVersion({ template, version }) {
         <TextField
             fullWidth
             value={promptTemplate.name}
+            variant="standard"
             // onChange={handleInputChange}
           />
         <TextareaAutosize

@@ -29,18 +29,19 @@ function LLMParameter({ label, parameter, handleParameterChange, min, max, step 
       <Box flex="1" ml="1rem">
         <Input
           value={parameter}
+          variant="standard"
           onChange={(e) => handleParameterChange(e.target.value)}
           inputProps={{
             min,
             max, 
             step,
           }}
-          sx={{
-            borderBottom: '1px solid gray',
-            borderRadius: 0, 
-            p: 0,
-            py: 1  
-          }}
+          // sx={{
+          //   borderBottom: '1px solid gray',
+          //   borderRadius: 0, 
+          //   p: 0,
+          //   py: 1  
+          // }}
         />
       </Box>
     </Box>
