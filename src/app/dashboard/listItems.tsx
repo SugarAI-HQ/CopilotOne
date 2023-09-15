@@ -11,7 +11,7 @@ import Link from 'next/link';
 
 export const mainListItems = (
   <React.Fragment>
-    <Link href="/">
+    <Link href="/dashboard">
       <ListItemButton >
         <ListItemIcon>
           <DashboardIcon />  
@@ -19,7 +19,7 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItemButton>
     </Link>
-    <Link href="/prompts">
+    <Link href="/dashboard/prompts">
       <ListItemButton >
         <ListItemIcon>
           <DocumentScanner />
@@ -27,7 +27,7 @@ export const mainListItems = (
         <ListItemText primary="Packages" />
       </ListItemButton>
     </Link>
-    <Link href="/dataset">
+    <Link href="/dashboard/dataset">
       <ListItemButton >
         <ListItemIcon>
           <Dataset />

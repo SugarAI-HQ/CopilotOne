@@ -44,7 +44,12 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: user.id,
       },
+      
     }),
+    redirect(url: string, baseUrl: string) {
+      console.log(url,baseUrl)
+      return '/dashboard'; 
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -62,6 +67,7 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  
 };
 
 /**
