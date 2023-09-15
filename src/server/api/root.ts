@@ -4,7 +4,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
 import { promptRouter } from "./routers/prompt";
 import { serviceRouter } from "./routers/service";
 
-export const runtime = 'edge';
+export const runtime = 'nodejs';
 
 /**
  * This is the primary router for your server.
