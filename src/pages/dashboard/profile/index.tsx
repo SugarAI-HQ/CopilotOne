@@ -14,13 +14,6 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 
 const Profile = ()=> {
   const { data: sessionData } = useSession();
-
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
-  
-
   return (
     <RouteGuard>
     <div className="w-full">
@@ -33,22 +26,24 @@ const Profile = ()=> {
           <Typography variant="h5" component="div">
             Account
           </Typography>
-          <Divider className="my-4" />
+          <Divider className="my-4" sx={{marginTop:'16px',marginBottom:'16px'}} />
            
-          <Avatar className="h-16 w-16" alt="Profile Image" src={sessionData && sessionData.user?.image || '/images/avatar.png'} />
+          <Avatar className="h-16 w-16" alt="Profile Image" src={sessionData?.user?.image || || '/images/avatar.png'} />
 
-          <Typography sx={{ fontSize: 16 }} className="mt-4" gutterBottom>
-          {sessionData && sessionData.user?.name}
+          <Typography sx={{ fontSize: 16,marginTop:'16px' }} gutterBottom>
+          {sessionData?.user?.name}
           </Typography>
           <Typography sx={{ fontSize: 14 }} gutterBottom>
-          {sessionData && sessionData.user?.email}
+          {sessionData?.user?.email}
           </Typography>
         </CardContent>
       </Card>
 
       <Button
         variant="outlined"
-        className="mt-4"
+        sx={{
+          marginTop:'16px'
+        }}
         onClick={() => void signOut()}
       >
         Logout

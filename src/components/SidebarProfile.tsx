@@ -14,44 +14,47 @@ import { MdLogout } from "react-icons/md";
 import { useRouter } from "next/router";
 
 export default function SidebarProfile() {
-    const router = useRouter()
+  const router = useRouter();
   const { data: sessionData } = useSession();
 
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
-
-    function handleProfileCardClick(){
-        router.push('/dashboard/profile')
-    }
+  async function handleProfileCardClick() {
+    await router.push("/dashboard/profile");
+  }
 
   return (
-   <> {sessionData && 
-      <div className="w-full p-3 absolute bottom-0">
-        <Card className="flex gap-2 px-2 py-3 cursor-pointer" onClick={handleProfileCardClick}>
-          <Avatar
-            className="h-8 w-8"
-            alt="Profile Image"
-            src={sessionData && sessionData.user?.image || '/images/avatar.png'}
+    <>
+      {" "}
+      {sessionData && (
+        <div className="absolute bottom-0 w-full p-3">
+          <Card
+            className="flex cursor-pointer gap-2 px-2 py-3"
+            onClick={()=> void handleProfileCardClick()}
+          >
+            <Avatar
+              className="h-8 w-8"
+              alt="Profile Image"
+              src={sessionData?.user?.image || '/images/avatar.png'}
+            />
+            <div>
+              <Typography sx={{ fontSize: 16 }}>
+                {sessionData?.user?.name}
+              </Typography>
+              <Typography sx={{ fontSize: 14 }}>
+                {sessionData?.user?.email}
+              </Typography>
+            </div>
+          </Card>
+          <Divider
+            sx={{
+              marginTop: "16px",
+              marginBottom: "4px",
+            }}
           />
-          <div>
-            <Typography sx={{ fontSize: 16 }}>
-              {sessionData && sessionData.user?.name}
-            </Typography>
-            <Typography sx={{ fontSize: 14 }}>
-              {sessionData && sessionData.user?.email}
-            </Typography>
-          </div>
-          
-        </Card>
-        <Divider className="mt-4 mb-1"/>
-        <Button className="w-full"
-          onClick={() => void signOut()}
-        >
-        Logout
-        </Button>
-      </div>}
-      </>
+          <Button className="w-full" onClick={() => void signOut()}>
+            Logout
+          </Button>
+        </div>
+      )}
+    </>
   );
 }
