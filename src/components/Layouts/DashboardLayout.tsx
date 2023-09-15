@@ -159,10 +159,11 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             sx={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
               px: [1],
             }}
-          >
+          > 
+            <Typography variant="h5" fontFamily={'fantasy'}>sugarFactory</Typography>
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>

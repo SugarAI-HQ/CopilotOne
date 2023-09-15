@@ -12,6 +12,6 @@ const Swagger: NextPageWithLayout = () => {
     return <SwaggerUI url="/api/openapi.json" />;
   };
   
-Swagger.getLayout = getLayout
+// Swagger.getLayout = getLayout
 
 export default Swagger;

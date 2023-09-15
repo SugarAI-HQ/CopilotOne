@@ -4,9 +4,6 @@ import Link from "next/link";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 
 import { api } from "~/utils/api";
-// import { CreatePackageButton } from "./prompts";
-
-
 
 const Index = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
@@ -16,7 +13,7 @@ const Index = () => {
   }
 
   return (
-    <>
+    <div className="w-full">
       <Head>
         <title>Sugar Factor</title>
         <meta name="description" content="Build your prompts" />
@@ -74,7 +71,7 @@ const Index = () => {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
