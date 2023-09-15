@@ -119,13 +119,15 @@ export const deletePackageInput = z
 export type DeletePackageInput = z.infer<typeof deletePackageInput>;
   
 
-export const packageOutput = z
-    .object({
-        id: z.string(),
-        userId: z.string(),
-        name: z.string(),
-        description: z.string(),
-    })
+export const packageSchema = z
+.object({
+    id: z.string(),
+    userId: z.string(),
+    name: z.string(),
+    description: z.string(),
+});
+
+export const packageOutput = packageSchema.or(z.null())
 export type PackageOutput = z.infer<typeof packageOutput>;
 
 export const packageListOutput = z.array(packageOutput)

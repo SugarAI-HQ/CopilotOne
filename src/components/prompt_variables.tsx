@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { Typography, Stack, InputAdornment, Input, Box } from "@mui/material";
 
-function PromptVariables({ vars }) {
+export interface PromptVariableProps {
+  key: string,
+  value: string,
+  type: string,
+  [key: string]: any;
+}
+
+function PromptVariables({ vars }: { vars: Array<PromptVariableProps> }) {
   console.log(`variables : ${JSON.stringify(vars)}`);
   let [variables, setVariables] = useState(vars);
 

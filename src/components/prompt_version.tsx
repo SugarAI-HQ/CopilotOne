@@ -9,35 +9,45 @@ import {
   Chip,
 } from "@mui/material";
 import LLMSelector from "./llm_selector";
-import LLMConfig from "./llm_config";
+import LLMConfig, { LLMConfigProps } from "./llm_config";
 import { api } from "~/utils/api";
 import EmptyTextarea from "./text_area";
 import PromptOutput from "./prompt_output";
 import PromptPerformance from "./prompt_performance";
 import PromptDeploy from "./prompt_deploy";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import {PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
 
 
-function PromptVersion({ template, version }) {
+function PromptVersion({ template }: {template: pt}) {
   // console.log(`template >>>>>>>: ${JSON.stringify(template)}`);
-  let [promptTemplate, setTemplate] = useState(template);
-  let [provider, setProvider] = useState("OpenAI");
-  let [model, setModel] = useState("gpt-3.5-turbo");
-  let [llmConfig, setLLMConfig] = useState({});
-  let [promptOutput, setPromptOutput] = useState('');
-  let [promptPerformance, setPromptPerformacne] = useState({});
+  const [promptTemplate, setTemplate] = useState(template);
+  const [provider, setProvider] = useState("OpenAI");
+  const [model, setModel] = useState("gpt-3.5-turbo");
+  const [llmConfig, setLLMConfig] = useState<LLMConfigProps>({
+    temperature: 0,
+    maxLength: 2000,
+    topP: 0,
+    freqPenalty: 0,
+    presencePenalty: 0,
+    logitBias: '',
+    stopSequences: '',
+  });
+
+  const [promptOutput, setPromptOutput] = useState('');
+  const [promptPerformance, setPromptPerformacne] = useState({});
 
   const mutation = api.service.completion.useMutation(); // Make sure to import 'api' and set up the service
 
-  let handleInputChange = (e) => {
-    let inputValue = e.target.value;
+  const handleInputChange = (e: any) => {
+    const inputValue = e.target.value;
     setTemplate(inputValue);
   };
 
-  let handleRun = async (e) => {
+  const handleRun = async (e: any) => {
     // TODO: Get this data from UI
-    let id = "clmgjihd00000sg4y3tbe0l2h";
-    let promptTemplateId = "clmf4eo990000sge67wokwsza";
+    const id = "clmgjihd00000sg4y3tbe0l2h";
+    const promptTemplateId = "clmf4eo990000sge67wokwsza";
 
     const response = await mutation.mutateAsync({
       promptPackageId: template.promptPackageId,
@@ -59,8 +69,10 @@ function PromptVersion({ template, version }) {
     });
 
     console.log(`response >>>>>>>: ${JSON.stringify(response)}`);
-    setPromptOutput(response.completion);
-    setPromptPerformacne(response.performance);
+    if(response ) {
+      setPromptOutput(response.completion);
+      setPromptPerformacne(response.performance);
+    }
   };
 
   return (
@@ -81,8 +93,7 @@ function PromptVersion({ template, version }) {
           value={promptTemplate.description}
           onChange={handleInputChange}
           style={{ width: '100%' }}
-        >
-        </EmptyTextarea>
+        />
         
         <Divider textAlign="right"></Divider>
           <Box>

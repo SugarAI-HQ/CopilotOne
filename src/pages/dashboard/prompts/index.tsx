@@ -27,12 +27,12 @@ function Packages() {
         packages.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
             <Card>
-              <CardHeader title={pkg.name} />
+              <CardHeader title={pkg?.name} />
               <CardContent>
-                <Typography>{pkg.description}</Typography>
+                <Typography>{pkg?.description}</Typography>
               </CardContent>
               <CardActions>
-                <MUILink href={`/dashboard/prompts/${pkg.id}`}>View</MUILink>
+                <MUILink href={`/dashboard/prompts/${pkg?.id}`}>View</MUILink>
               </CardActions>
             </Card>
           </Grid>
@@ -54,7 +54,17 @@ const PackageHome = ()=>  {
     router.push("/prompts/" + createdPackage.id);
   }
   const mutation = api.prompt.createPackage.useMutation({
-    onSuccess: handlePackageCreationSuccess,
+    onSuccess: (createdPackage) => {
+      if (createdPackage !== null) {
+        // Handle the success case with createdPackage
+        handlePackageCreationSuccess(createdPackage);
+      } else {
+        // Handle the case where createdPackage is null
+        // This can happen if the mutation result is null
+        // You might want to show an error message or handle it in another way
+      }
+    },
+    // onSuccess: handlePackageCreationSuccess,
   });
   return (
     <>

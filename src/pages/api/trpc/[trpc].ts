@@ -21,4 +21,4 @@ export default createNextApiHandler({
       : undefined,
 });
 
-export const api = createOpenApiNextHandler({ router: appRouter });
+// export const api = createOpenApiNextHandler({ router: appRouter });

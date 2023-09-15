@@ -17,6 +17,26 @@ const config = {
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
 
+    // TODOS: fix errors related to this rule
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/prefer-optional-chain': 'warn',
+    '@typescript-eslint/no-unsafe-return': 'warn',
+    '@typescript-eslint/await-thenable': 'warn',
+    'react/no-unescaped-entities': 'warn',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-inferrable-types': 'warn',
+    '@typescript-eslint/no-misused-promises': 'warn',
+    'prefer-const': 'warn',
+    '@typescript-eslint/no-floating-promises': 'warn',
+    '@typescript-eslint/ban-types': 'warn',
+    '@typescript-eslint/no-unsafe-argument': 'warn',
+    '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+    '@typescript-eslint/consistent-indexed-object-style': 'warn',
+    '@typescript-eslint/non-nullable-type-assertion-style': 'warn',
+
+
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {

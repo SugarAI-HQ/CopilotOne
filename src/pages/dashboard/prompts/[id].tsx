@@ -7,8 +7,10 @@ import PromptVersion from "~/components/prompt_version";
 import PromptVariables from "~/components/prompt_variables";
 import { NextPage } from "next";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
+import { PromptTemplate } from "@prisma/client";
+import {PromptVariableProps} from "~/components/prompt_variables";
 
-export const getVariables = (template) => {
+export const getVariables = (template: PromptTemplate) => {
     console.debug(`template: ${JSON.stringify(template)}`);
     if (!template) {
         return [];
@@ -20,13 +22,17 @@ export const getVariables = (template) => {
     }
 
     const flattenedVariables = allVariables.map((variable) => {
-        const type = variable.charAt(1); // Get the type of variable (#, @, %, $).
-        const key = variable.substring(2, variable.length - 1); // Get the variable name.
+        // const type = variable.charAt(1); // Get the type of variable (#, @, %, $).
+        // const key = variable.substring(2, variable.length - 1); // Get the variable name.
 
-        return {
-            key,
-            type,
+
+
+        const obj: PromptVariableProps = {
+            key: variable.substring(2, variable.length - 1), // Get the variable name.
+            type: variable.charAt(1), // Get the type of variable (#, @, %, $).
+            value: '',
         };
+        return obj
     });
     return flattenedVariables;
 };
@@ -39,7 +45,7 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export const getAllTemplateVariables = (templates) => {
+export const getAllTemplateVariables = (templates: PromptTemplate[]): Array<PromptVariableProps> => {
     if (!templates) {
         return [];
     }
@@ -53,7 +59,7 @@ export const getAllTemplateVariables = (templates) => {
     return allVariables;
 };
 
-export function getUniqueJsonArray(jsonArray, uniqueKey) {
+export function getUniqueJsonArray(jsonArray: PromptVariableProps[], uniqueKey: any) {
     const uniqueSet = new Set();
     const uniqueArray = [];
 
@@ -68,6 +74,11 @@ export function getUniqueJsonArray(jsonArray, uniqueKey) {
     return uniqueArray;
 }
 
+// interface PackageShowProps {
+//     // Define your component props here
+// }
+  
+
 const PackageShow: NextPage = () => {
     const router = useRouter();
     const packageId = router.query.id as string;
@@ -77,7 +88,7 @@ const PackageShow: NextPage = () => {
 
     const { data: templates } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
 
-    const allVariables = getAllTemplateVariables(templates);
+    const allVariables = getAllTemplateVariables(templates || []);
     console.log(allVariables);
     const variables = getUniqueJsonArray(allVariables, "key");
 
@@ -102,7 +113,7 @@ const PackageShow: NextPage = () => {
                                             id={"prompt-version-"+index}
                                             // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
                                         >
-                                            <PromptVersion template={template} version={template} />
+                                            <PromptVersion template={template} />
                                         </Box>
                                     </Item>
                                 </Grid>
@@ -130,6 +141,6 @@ const PackageShow: NextPage = () => {
     );
 };
 
-PackageShow.getLayout = getLayout
+// PackageShow.getLayout = getLayout
 
 export default PackageShow;

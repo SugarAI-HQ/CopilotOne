@@ -1,4 +1,3 @@
-import { Providers } from "./providers";
 import * as React from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -21,7 +20,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./Dashboard/listItems";
+import { mainListItems, secondaryListItems } from "~/app/dashboard/listItems";
 import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
@@ -194,7 +193,9 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const getLayout = page => <DashboardLayout>{page}</DashboardLayout>
+export const getLayout = (page: React.ReactElement) => {
+  <DashboardLayout>{page}</DashboardLayout>
+}
 
 export default function DashboardLayout({
   children,

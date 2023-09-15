@@ -4,7 +4,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Chip, Divider } from '@mui/material';
 
-const thresholds = {
+interface PromptPerformanceMetricThresholdProps {
+  green: number,
+  yellow: number,
+  red: number,
+}
+
+const thresholds: { [s: string]: PromptPerformanceMetricThresholdProps } = {
 
   latency: {
       green: 800,

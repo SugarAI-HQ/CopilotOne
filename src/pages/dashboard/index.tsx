@@ -4,16 +4,11 @@ import Link from "next/link";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 
 import { api } from "~/utils/api";
-// import { CreatePackageButton } from "./prompts";
 
 
 
 const Index = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
-  const handlePackageCreate = async () => {
-    console.log
-  }
 
   return (
     <>
@@ -30,7 +25,6 @@ const Index = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             
           <div>
-            {/* <CreatePackageButton onPackageSubmit={handlePackageCreate} /> */}
           </div>
             <Link 
               href="/prompt"

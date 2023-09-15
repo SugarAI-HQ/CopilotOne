@@ -7,6 +7,10 @@ const openai = new OpenAI({
     apiKey: env.OPENAI_API_KEY,
 });
 
+export interface LLMConfig {
+  max_tokens: number,
+  temperature: number,
+}
 
 //   // Example usage
 //   const template = `You a bot name {#BOT_NAME} trained by {#LLM_PROVIDER} ... Human: {%QUERY} {#BOT_NAME} AI response:`;
@@ -19,7 +23,7 @@ const openai = new OpenAI({
 //     'CHAT_HISTORY': 'No recent conversation',
 //   };
 
-export async function run(prompt:string, llm_model:string, llmConfig: object) {
+export async function run(prompt:string, llm_model:string, llmConfig: LLMConfig) {
     // Capture the start time
     const startTime = new Date();
 
@@ -41,23 +45,31 @@ export async function run(prompt:string, llm_model:string, llmConfig: object) {
       usage: { prompt_tokens: 127, completion_tokens: 7, total_tokens: 134 }
     }
     let response = fake_resonse
-    response = await memoizedCompletion(prompt, llm_model, llmConfig)
+    // response = await memoizedCompletion(prompt, llm_model, llmConfig)
+    response = await completion(prompt, llm_model, llmConfig)
     
     // Capture the end time
     const endTime = new Date();
+    const latency: number = Number(endTime) - Number(startTime);
 
-    return {
-        completion: response.choices[0].text,
-        performance: {
-          latency: endTime - startTime,
-          ...response.usage  
-        }
+    let res = null
+    
+    if (response?.choices?.length > 0) {
+      res = {
+          completion: response.choices[0]?.text || '',
+          performance: {
+            latency: latency,
+            ...response.usage  
+          }
+      }
     }
+
+    return res
 }
 
 const memoizedCompletion = memoize(completion, { async: true, maxAge: 10 * 60 * 1000 });
 
-async function completion(prompt:string, llm_model:string, llmConfig: object) {
+async function completion(prompt:string, llm_model:string, llmConfig: LLMConfig): Promise<any> {
   try {
     // Make a call to the OpenAI API
     const response = await openai.completions.create({
@@ -85,5 +97,6 @@ async function completion(prompt:string, llm_model:string, llmConfig: object) {
 
   } catch (error) {
     console.error('Error:', error);
+    return null
   }
 }

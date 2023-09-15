@@ -22,7 +22,6 @@ export const completionOutput = z
             completion_tokens: z.number(),
             total_tokens: z.number(),
         })
-    })
-    .strict()
+    }).or(z.null())
 export type CompletionOutput = z.infer<typeof completionOutput>;
 

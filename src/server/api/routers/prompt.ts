@@ -37,7 +37,7 @@ export const promptRouter = createTRPCRouter({
       where: {
         userId: ctx.session?.user.id,
         id: input.id
-      },
+      }
     });
     console.log(`package -------------- ${JSON.stringify(pkg)}`);
     return pkg;
@@ -46,24 +46,28 @@ export const promptRouter = createTRPCRouter({
   createPackage: publicProcedure
   .input(createPackageInput)
   .mutation(async ({ ctx, input }) => {
+    const userId = ctx.session?.user.id
+    let promptPackage = null
     
-    const promptPackage = await ctx.prisma.promptPackage.create({
-      data: {
-        name: input.name,
-        description: input.description,
-        userId: ctx.session?.user.id
-      }
-    });
+    if (userId) {
+      promptPackage = await ctx.prisma.promptPackage.create({
+        data: {
+          name: input.name,
+          description: input.description,
+          userId: userId
+        }
+      });
+    }
     return promptPackage;
   }),
 
-  createTemplate: publicProcedure
-  .input(createPackageInput)
-  .mutation(async ({ ctx, input }) => {
-    // const validatedInput = PromptPackageCreateInput.parse(input);
-    const promptPackage = await ctx.prisma.promptPackage.create({data: input});
-    return promptPackage;
-  }),
+  // createTemplate: publicProcedure
+  // .input(createPackageInput)
+  // .mutation(async ({ ctx, input }) => {
+  //   // const validatedInput = PromptPackageCreateInput.parse(input);
+  //   const promptPackage = await ctx.prisma.promptPackage.create({data: input});
+  //   return promptPackage;
+  // }),
 
   getTemplates: publicProcedure
     .input(getTemplatesInput)

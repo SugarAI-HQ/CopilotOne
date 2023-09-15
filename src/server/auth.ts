@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
       },
       
     }),
-    redirect(url: string, baseUrl: string) {
+    redirect: ({ url, baseUrl } : {url: string, baseUrl: string}) => {
       console.log(url,baseUrl)
       return '/dashboard'; 
     },

@@ -4,9 +4,11 @@ import {
   Typography,
   Slider,
   Input,
+  TextField,
 } from '@mui/material';
 
-function LLMParameter({ label, parameter, handleParameterChange, min, max, step }) {
+function LLMParameter({ label, parameter, handleParameterChange, min, max, step }: 
+  {label: string, parameter: number, handleParameterChange: any, min:number, max: number, step: number}) {
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -27,7 +29,7 @@ function LLMParameter({ label, parameter, handleParameterChange, min, max, step 
       </Box>
 
       <Box flex="1" ml="1rem">
-        <Input
+        <TextField
           value={parameter}
           variant="standard"
           onChange={(e) => handleParameterChange(e.target.value)}

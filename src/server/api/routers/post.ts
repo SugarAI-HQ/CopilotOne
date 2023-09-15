@@ -110,7 +110,7 @@ export const postsRouter = createTRPCRouter({
         const post: Post = {
           id: uuid(),
           content: input.content,
-          userId: ctx.user.id,
+          userId: ctx.session.user.id
         };
   
         database.posts.push(post);
@@ -151,7 +151,7 @@ export const postsRouter = createTRPCRouter({
             code: 'NOT_FOUND',
           });
         }
-        if (post.userId !== ctx.user.id) {
+        if (post.userId !== ctx.session.user.id) {
           throw new TRPCError({
             message: 'Cannot edit post owned by other user',
             code: 'FORBIDDEN',
@@ -187,7 +187,7 @@ export const postsRouter = createTRPCRouter({
             code: 'NOT_FOUND',
           });
         }
-        if (post.userId !== ctx.user.id) {
+        if (post.userId !== ctx.session.user.id) {
           throw new TRPCError({
             message: 'Cannot delete post owned by other user',
             code: 'FORBIDDEN',

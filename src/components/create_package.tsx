@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 
-export function CreatePackage({ onSubmit }) {
+export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");

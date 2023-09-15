@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEventHandler, useState } from 'react';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
 
@@ -9,6 +9,13 @@ export default function EmptyTextarea({
   value,
   onChange,
   style,
+}: {
+  minRows: number,
+  maxRows: number,
+  placeholder: string,
+  value: string,
+  onChange: ChangeEventHandler<HTMLTextAreaElement>,
+  style: any,
 }) {
   const blue = {
     100: '#DAECFF',
@@ -64,9 +71,9 @@ export default function EmptyTextarea({
   `,
   );
 
-  const handleTextareaChange = (event) => {
-    setTextareaValue(event.target.value);
-  };
+  // const handleTextareaChange = (event) => {
+  //   setTextareaValue(event.target.value);
+  // };
 
   return (
     <StyledTextarea

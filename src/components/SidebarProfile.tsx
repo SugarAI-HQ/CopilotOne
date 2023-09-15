@@ -33,7 +33,7 @@ export default function SidebarProfile() {
           <Avatar
             className="h-8 w-8"
             alt="Profile Image"
-            src={sessionData && sessionData.user?.image}
+            src={sessionData && sessionData.user?.image || '/images/avatar.png'}
           />
           <div>
             <Typography sx={{ fontSize: 16 }}>

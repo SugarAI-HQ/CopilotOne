@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Button,
-  Modal,
+  Dialog,
   Paper,
   Typography,
   Box,
@@ -9,7 +9,18 @@ import {
 import { MdBuild } from 'react-icons/md';
 import LLMParameter from './llm_parameter';
 
-const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
+export interface LLMConfigProps {
+  temperature: number,
+  maxLength: number,
+  topP: number,
+  freqPenalty: number,
+  presencePenalty: number,
+  logitBias: string,
+  stopSequences: string,
+
+}
+
+const LLMConfigModal = ({ isOpen, onClose, config, setConfig }: { isOpen: boolean, onClose: Function, config: any, setConfig: Function }) => {
   const [temperature, setTemperature] = useState(config.temperature);
   const [maxLength, setMaxLength] = useState(config.maxLength);
   const [topP, setTopP] = useState(config.topP);
@@ -18,31 +29,31 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
   const [logitBias, setLogitBias] = useState(config.logitBias);
   const [stopSequences, setStopSequences] = useState(config.stopSequences);
 
-  const handleTemperatureChange = (event, value) => {
+  const handleTemperatureChange = (event: any, value: any) => {
     setTemperature(value);
   };
 
-  const handleMaxLengthChange = (event, value) => {
+  const handleMaxLengthChange = (event: any, value: any) => {
     setMaxLength(value);
   };
 
-  const handleTopPChange = (event, value) => {
+  const handleTopPChange = (event: any, value: any) => {
     setTopP(value);
   };
 
-  const handleFreqPenaltyChange = (event, value) => {
+  const handleFreqPenaltyChange = (event: any, value: any) => {
     setFreqPenalty(value);
   };
 
-  const handlePresencePenaltyChange = (event, value) => {
+  const handlePresencePenaltyChange = (event: any, value: any) => {
     setPresencePenalty(value);
   };
 
-  const handleLogitBiasChange = (event, value) => {
+  const handleLogitBiasChange = (event: any, value: any) => {
     setLogitBias(value);
   };
 
-  const handleStopSequencesChange = (event) => {
+  const handleStopSequencesChange = (event: any) => {
     setStopSequences(event.target.value);
   };
 
@@ -61,7 +72,7 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
   };
 
   return (
-    <Modal 
+    <Dialog
       open={isOpen} 
       onClose={handleClose} 
       maxWidth="md"
@@ -146,18 +157,18 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }) => {
           </Button>
         </Box>
       </Paper>
-    </Modal>
+    </Dialog>
   );
 };
 
-function LLMConfig({ config, setConfig }) {
+function LLMConfig({ config, setConfig }: { config: LLMConfigProps, setConfig: (config: LLMConfigProps) => void }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenModal = () => {
     setIsOpen(true);
   };
 
-  const handleCloseModal = (updatedConfig) => {
+  const handleCloseModal = (updatedConfig: any) => {
     setIsOpen(false);
     setConfig(updatedConfig);
   };

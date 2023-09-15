@@ -14,7 +14,8 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import React, { useState } from "react";
 
-function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelChange }) {
+function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelChange }: 
+  { initialProvider: string, initialModel: string, onProviderChange: Function, onModelChange: Function}) {
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,13 +31,13 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
     // Handle form submission here
   };
 
-  const handleProviderChange = (event) => {
+  const handleProviderChange = (event: any) => {
     const selectedProvider = event.target.value;
     setProvider(selectedProvider);
     onProviderChange(selectedProvider);
   };
 
-  const handleModelChange = (event) => {
+  const handleModelChange = (event: any) => {
     const selectedModel = event.target.value;
     setModel(selectedModel);
     onModelChange(selectedModel);
