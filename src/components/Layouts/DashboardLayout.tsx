@@ -27,6 +27,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
 import { mainListItems, secondaryListItems } from "~/app/Dashboard/listItems";
+import RouteGuard from "../RouteGuard";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -206,5 +207,5 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <Dashboard>{children}</Dashboard>;
+  return <RouteGuard><Dashboard>{children}</Dashboard></RouteGuard>;
 }
