@@ -4,4 +4,4 @@ import { authOptions } from "~/server/auth";
 
 export default NextAuth(authOptions);
 
-export const runtime = 'nodejs';
+// export const runtime = 'edge';
