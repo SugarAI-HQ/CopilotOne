@@ -40,21 +40,18 @@ export async function run(prompt:string, llm_model:string, llmConfig: object) {
       ],
       usage: { prompt_tokens: 127, completion_tokens: 7, total_tokens: 134 }
     }
-    // const response = await completion(prompt, llm_model, llmConfig)
-    // const response = await memoizedCompletion(prompt, llm_model, llmConfig)
-    const response = fake_resonse
-
+    let response = fake_resonse
+    response = await memoizedCompletion(prompt, llm_model, llmConfig)
+    
     // Capture the end time
     const endTime = new Date();
 
-    // Calculate latency and time to first token
-    const latency = endTime - startTime;  
-    const usage = response.usage
-
     return {
         completion: response.choices[0].text,
-        latency: latency,
-        usage: usage
+        performance: {
+          latency: endTime - startTime,
+          ...response.usage  
+        }
     }
 }
 

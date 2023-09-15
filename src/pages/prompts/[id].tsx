@@ -1,5 +1,6 @@
 import React from "react";
-import { Typography, Grid, Box, Container } from "@mui/material";
+import { Typography, Box, Container, styled, Paper } from "@mui/material";
+import Grid from '@mui/material/Unstable_Grid2';
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import PromptVersion from "~/components/prompt_version";
@@ -28,6 +29,14 @@ export const getVariables = (template) => {
     });
     return flattenedVariables;
 };
+
+const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+}));
 
 export const getAllTemplateVariables = (templates) => {
     if (!templates) {
@@ -72,37 +81,51 @@ const PackageShow: NextPage = () => {
     const variables = getUniqueJsonArray(allVariables, "key");
 
     return (
-        <Grid container spacing={1}>
-            {pkg && (
-                <Typography variant="h4" component="h2" sx={{ mt: 1, mb: 2 }}>
-                    {pkg.name}
-                </Typography>
-            )}
-            <Grid container spacing={2} style={{ width: '100%' }}>
-                <Grid item >
-                    <PromptVariables vars={variables} />
-                </Grid>
-                {templates && templates.length > 0 ? (
-                    templates.map((template, index) => (
-                        <Grid item key={index}  sx={{ pl: '0px' }}>
-                            <PromptVersion template={template} version={template} />
-                        </Grid>
-                    ))
-                ) : (
-                    <Grid item>
-                        <Box
-                            width="100vw"
-                            height="100%"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                        >
-                            <Typography variant="h2">No templates created</Typography>
-                        </Box>
-                    </Grid>
+        <>
+            <Box sx={{ flexGrow: 1 }}>
+                {pkg && (
+                    <Typography variant="h4" component="h2" sx={{ mt: 1, mb: 2 }}>
+                        {pkg.name}
+                    </Typography>
                 )}
-            </Grid>
-        </Grid>
+                <Grid container spacing={2}>
+                    <Grid xs={12} md={2} lg={2}>
+                        <PromptVariables vars={variables} />
+                    </Grid>
+                    <Grid container xs={12} md={7} lg={8} spacing={1}>
+                        {templates && templates.length > 0 ? (
+                            templates.map((template, index) => (
+                                <Grid key={index} xs={6} lg={4}>
+                                    <Item>
+                                        <Box
+                                            id={"prompt-version-"+index}
+                                            // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
+                                        >
+                                            <PromptVersion template={template} version={template} />
+                                        </Box>
+                                    </Item>
+                                </Grid>
+                            ))
+                        ) : (
+                            <Grid xs={6} lg={3}>
+                                <Item>
+                                    <Box
+                                        sx={{ fontSize: '12px', textTransform: 'uppercase' }}
+                                        width="100vw"
+                                        height="100%"
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="center"
+                                    >
+                                        <Typography variant="h2">No templates created</Typography>
+                                    </Box>
+                                </Item>
+                            </Grid>
+                        )}
+                    </Grid>
+                </Grid>
+            </Box>
+        </>
     );
 };
 

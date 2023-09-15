@@ -16,8 +16,8 @@ export type CompletionInput = z.infer<typeof completionInput>;
 export const completionOutput = z
     .object({
         completion: z.string(),
-        latency: z.number(),
-        usage: z.object({
+        performance: z.object({
+            latency: z.number(),
             prompt_tokens: z.number(),
             completion_tokens: z.number(),
             total_tokens: z.number(),
