@@ -1,8 +1,15 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 import { styled } from '@mui/system';
 
-export default function EmptyTextarea() {
+export default function EmptyTextarea({
+  minRows,
+  maxRows,
+  placeholder,
+  value,
+  onChange,
+  style,
+}) {
   const blue = {
     100: '#DAECFF',
     200: '#b6daff',
@@ -24,6 +31,8 @@ export default function EmptyTextarea() {
     800: '#32383f',
     900: '#24292f',
   };
+
+  const [textareaValue, setTextareaValue] = useState('');
 
   const StyledTextarea = styled(TextareaAutosize)(
     ({ theme }) => `
@@ -55,5 +64,22 @@ export default function EmptyTextarea() {
   `,
   );
 
-  return <StyledTextarea aria-label="empty textarea" placeholder="Empty" />;
+  const handleTextareaChange = (event) => {
+    setTextareaValue(event.target.value);
+  };
+
+  return (
+    <StyledTextarea
+      // aria-label="empty textarea"
+      // placeholder="Empty"
+      // value={value}
+      // onChange={onChange}
+      minRows={minRows}
+      maxRows={maxRows}
+      placeholder={placeholder}
+      value={value}
+      onChange={onChange}
+      style={style}
+    />
+  );
 }

@@ -11,9 +11,10 @@ import {
 import LLMSelector from "./llm_selector";
 import LLMConfig from "./llm_config";
 import { api } from "~/utils/api";
-import StyledTextarea from "./text_area";
+import EmptyTextarea from "./text_area";
 import PromptOutput from "./prompt_output";
 import PromptPerformance from "./prompt_performance";
+import PromptDeploy from "./prompt_deploy";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 
@@ -66,20 +67,22 @@ function PromptVersion({ template, version }) {
     <>
       <Box id={"prompt-version-"+promptTemplate.id}>
         <TextField
-            fullWidth
-            value={promptTemplate.name}
-            variant="standard"
-            // onChange={handleInputChange}
-          />
-        <TextareaAutosize
-          minRows={8}
+          value={promptTemplate.name}
+          variant="standard"
+          // onChange={handleInputChange}
+        />
+        <PromptDeploy></PromptDeploy>
+      </Box>
+      <Box>
+        <EmptyTextarea
+          minRows={5}
           maxRows={10}
           placeholder="Write your Smart Template"
           value={promptTemplate.description}
           onChange={handleInputChange}
           style={{ width: '100%' }}
         >
-        </TextareaAutosize>
+        </EmptyTextarea>
         
         <Divider textAlign="right"></Divider>
           <Box>
@@ -99,12 +102,7 @@ function PromptVersion({ template, version }) {
               config={llmConfig}
               setConfig={setLLMConfig}
             ></LLMConfig>
-            <Button 
-              color="success" 
-              variant="outlined"
-              onClick={handleRun}>
-                <RocketLaunchIcon/>
-            </Button>
+            
           </Box>
       </Box>
 
