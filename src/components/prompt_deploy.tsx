@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@mui/material';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import {PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
+import CodeHighlight from './code_highlight';
 
-function PromptDeploy() {
+function PromptDeploy({ user, pgk, template, version }: { user: any, pgk: pp, template: pt, version: pv }) {
     const [open, setOpen] = useState(false);
     const [isDeploying, setIsDeploying] = useState(false);
     const [deploymentSuccess, setDeploymentSuccess] = useState(false);
@@ -13,6 +15,12 @@ function PromptDeploy() {
 
     const handleCloseModal = () => {
         setOpen(false);
+        setTimeout(() => {
+            // Stop deployment animation and show success
+            setIsDeploying(false)
+            setDeploymentSuccess(false)
+        }, 1000);
+        
     };
 
     const handleDeployCode = () => {
@@ -25,14 +33,21 @@ function PromptDeploy() {
             setIsDeploying(false);
             setDeploymentSuccess(true);
 
-            // Close the modal after a few seconds
-            setTimeout(() => {
-                setOpen(false);
-                // Reset success state for the next deployment
-                setDeploymentSuccess(false);
-            }, 3000); // Adjust the timeout duration as needed
         }, 2000); // Adjust the timeout duration to simulate deployment time
     };
+
+    const identifier = `${user.name}/${pgk.name}/${template.name}#${version.version}`
+
+    const codeExample = `
+import { SugarcaneAIClient } from "@sugarcane-ai/kitchen-js";
+
+const apiKey = 'your-api-key';
+const client = new SugarcaneAIClient(apiKey);
+
+const template = client.getTemplate("${identifier}");
+console.log(template);
+`;
+
 
     return (
         <span>
@@ -43,8 +58,8 @@ function PromptDeploy() {
             >
                 <RocketLaunchIcon></RocketLaunchIcon>
             </Button>
-                <Dialog open={open} onClose={handleCloseModal}>
-                    <DialogTitle>Deploy Prompt</DialogTitle>
+                <Dialog sx={{ m: 2, p: 5 }} open={open} onClose={handleCloseModal}>
+                    <DialogTitle>Deploy Prompt {identifier}</DialogTitle>
                     <DialogContent>
                         {isDeploying ? (
                             <div>
@@ -52,7 +67,14 @@ function PromptDeploy() {
                                 <p>Deploying prompt...</p>
                             </div>
                         ) : deploymentSuccess ? (
-                            <p>Deployment successful!</p>
+                            <div>
+                                <p>Deployment successful!</p>
+                                <p>You can access it over the API</p>
+                                <CodeHighlight code={codeExample} language="typescript" />
+                                <Button color="primary" autoFocus onClick={handleCloseModal}>
+                                    Close
+                                </Button>
+                            </div>
                         ) : (
                             <div>
                                 <p>Are you sure you want to deploy the code?</p>

@@ -16,10 +16,12 @@ import PromptOutput from "./prompt_output";
 import PromptPerformance from "./prompt_performance";
 import PromptDeploy from "./prompt_deploy";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import {PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
+import {PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
+import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 
 
-function PromptVersion({ template }: {template: pt}) {
+function PromptVersion({ user, pkg, template, variables, version }: {user: any,  pkg: pp, template: pt, version: pv, variables: PromptVariableProps[]}) {
+  // const version = '0.0.1'
   // console.log(`template >>>>>>>: ${JSON.stringify(template)}`);
   const [promptTemplate, setTemplate] = useState(template);
   const [provider, setProvider] = useState("OpenAI");
@@ -44,10 +46,22 @@ function PromptVersion({ template }: {template: pt}) {
     setTemplate(inputValue);
   };
 
+  const handleVariablesChange = (k:string,v:string) => {
+    const newVariables = variables.map((variable) => {
+      if (variable.key === k) {
+        variable.value = v;
+      }
+      return variable;
+    });
+    // setVariables(newVariables);
+  };
+
   const handleRun = async (e: any) => {
     // TODO: Get this data from UI
     const id = "clmgjihd00000sg4y3tbe0l2h";
     const promptTemplateId = "clmf4eo990000sge67wokwsza";
+
+    console.log(`promptVariables: ${JSON.stringify(variables)}`);
 
     const response = await mutation.mutateAsync({
       promptPackageId: template.promptPackageId,
@@ -83,10 +97,15 @@ function PromptVersion({ template }: {template: pt}) {
           variant="standard"
           // onChange={handleInputChange}
         />
-        <PromptDeploy></PromptDeploy>
+        <PromptDeploy
+          user={user}
+          pgk={pkg}
+          template={template}
+          version={version}
+        ></PromptDeploy>
       </Box>
       <Box>
-        <EmptyTextarea
+        <TextareaAutosize
           minRows={5}
           maxRows={10}
           placeholder="Write your Smart Template"
@@ -94,7 +113,6 @@ function PromptVersion({ template }: {template: pt}) {
           onChange={handleInputChange}
           style={{ width: '100%' }}
         />
-        
         <Divider textAlign="right"></Divider>
           <Box>
             <Button 
@@ -123,6 +141,12 @@ function PromptVersion({ template }: {template: pt}) {
         <PromptOutput
           output={promptOutput}
         ></PromptOutput>
+      </Box>
+      <Box>
+        <PromptVariables 
+          vars={variables} 
+          onChange={handleVariablesChange}
+        />
       </Box>
 
       
