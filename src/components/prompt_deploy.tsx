@@ -4,7 +4,7 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import {PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
 import CodeHighlight from './code_highlight';
 
-function PromptDeploy({ user, pgk, template, version }: { user: any, pgk: pp, template: pt, version: pv }) {
+function PromptDeploy({ user, pp, pt, pv }: { user: any, pp: pp, pt: pt, pv: pv }) {
     const [open, setOpen] = useState(false);
     const [isDeploying, setIsDeploying] = useState(false);
     const [deploymentSuccess, setDeploymentSuccess] = useState(false);
@@ -36,7 +36,7 @@ function PromptDeploy({ user, pgk, template, version }: { user: any, pgk: pp, te
         }, 2000); // Adjust the timeout duration to simulate deployment time
     };
 
-    const identifier = `${user.name}/${pgk.name}/${template.name}#${version.version}`
+    const identifier = `${user.name}/${pp.name}/${pt.name}#${pv.version}`;
 
     const codeExample = `
 import { SugarcaneAIClient } from "@sugarcane-ai/kitchen-js";
