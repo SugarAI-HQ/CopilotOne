@@ -14,36 +14,31 @@ import CodeHighlight from "~/components/code_highlight";
 import { getAllTemplateVariables, getUniqueJsonArray } from "~/utils/template";
 import { CreateTemplate } from "~/components/create_template";
 import toast from 'react-hot-toast';
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
+import PromptTemplate from "~/components/prompt_template";
+
 
 // interface PackageShowProps {
 //     // Define your component props here
 // }
 
-function createNewTemplate(pp: pp) {
-    const pt = {
-        promptPackageId: pp.id,
-        name: 'Untitled',
-        description: ''
-    } as pt
+// function createNewTemplate(pp: pp) {
+//     const pt = {
+//         promptPackageId: pp.id,
+//         name: 'Untitled',
+//         description: ''
+//     } as pt
 
-    return pt
-}
+//     return pt
+// }
 
-function createNewVersion(pp: pp, pt: pt) {
-    const pv = {
-        promptPackageId: pp.id,
-        template: '',
-        version: '0.0.1',
-    } as pv
-    return pv
-}
+// function createNewVersion(pp: pp, pt: pt) {
+//     const pv = {
+//         promptPackageId: pp.id,
+//         template: '',
+//         version: '0.0.1',
+//     } as pv
+//     return pv
+// }
 
 
 const PackageShow: NextPage = () => {
@@ -56,13 +51,16 @@ const PackageShow: NextPage = () => {
     // Load data 
     const { data: pp } = api.prompt.getPackage.useQuery({ id: packageId });
     console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
-    const [ptId, setPtId] = React.useState();
+    const [ptId, setPtId] = useState();
+    const [pt, setPt] = useState<pt>();
 
     const { data: pts } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
     console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
     const handleTemplateSelection = (e: any) => {
-        setPtId(e.target.value)
+        const id = e.target.value;
+        setPtId(id)
+        setPt(pts?.find((pt) => pt.id == id))
     }
 
     const ptCreateMutation = api.prompt.createTemplate.useMutation({
@@ -75,7 +73,7 @@ const PackageShow: NextPage = () => {
     })
 
 
-    let pv:pv;
+    // let pv:pv;
 
     // if (pts?.length == 0) {
     //     pt = createNewTemplate(pp as pp) as pt
@@ -124,48 +122,8 @@ const PackageShow: NextPage = () => {
                     </div>
                 )}
                 <Grid container spacing={2}>
-                    {/* <Grid xs={12} md={2} lg={2}>
-                        <PromptVariables
-                            vars={pvs}
-                            onChange={handleVariablesChange}
-                        />
-                    </Grid> */}
-
-                    
-                    
-
-                    <Grid container xs={12} md={7} lg={8} spacing={1}>
-                        {/* {false && pts && pts.length > 0 ? 
-                            (pts.map((pt, index) => (
-                                <Grid key={index} xs={6} lg={4}>
-                                    <Item>
-                                        <Box
-                                            id={"prompt-version-" + index}
-                                        // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
-                                        >
-                                            {pt && pv && (<PromptVersion
-                                                user={user}
-                                                pp={pp}
-                                                pt={pt}
-                                                pv={pv}
-                                            />)}
-                                        </Box>
-                                    </Item>
-                                </Grid>
-                            ))) :
-                            (<Grid xs={6} md={12} lg={3}>
-                                <Box
-                                    sx={{ fontSize: '12px', textTransform: 'uppercase' }}
-                                    width="100vw"
-                                    height="100%"
-                                    display="flex"
-                                    alignItems="center"
-                                    justifyContent="center"
-                                >
-                                    <Typography variant="h4">No templates</Typography>
-                                </Box>
-                            </Grid>
-                        )} */}
+                    <Grid container xs={12} md={12} lg={8} spacing={1}>
+                        <PromptTemplate pt={pt} pp={pp}></PromptTemplate>
                     </Grid>
                 </Grid>
             </Box>

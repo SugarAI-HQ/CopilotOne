@@ -77,7 +77,9 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
                 value={provider}
                 onChange={handleProviderChange}
               >
-                <option value="OpenAI">OpenAI</option>
+                <option value="openai">OpenAI</option>
+                
+                <option value="llama2">Llama2</option>
                 {/* Add more options */}
               </Select>
             </FormControl>

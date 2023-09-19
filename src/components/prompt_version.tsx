@@ -20,13 +20,16 @@ import toast from 'react-hot-toast';
 import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "@prisma/client";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getAllTemplateVariables, getUniqueJsonArray, getVariables } from "~/utils/template";
+import SaveIcon from '@mui/icons-material/Save';
 
 
-function PromptVersion({ user, pp, pt, pv }:
-  { user: any, pp: pp, pt: pt, pv: pv }) {  
-  const [template, setTemplate] = useState(pt?.description || '');
-  const [provider, setProvider] = useState("OpenAI");
-  const [model, setModel] = useState("gpt-3.5-turbo");
+
+function PromptVersion({ pp, pt, pv }:
+  { pp: pp, pt: pt, pv: pv }) {  
+  const [version, setVersion] = useState(pv?.version);
+  const [template, setTemplate] = useState(pv?.template || '');
+  const [provider, setProvider] = useState(pv?.llmProvider || '');
+  const [model, setModel] = useState(pv?.llmModel);
   const [llmConfig, setLLMConfig] = useState<LLMConfigProps>({
     temperature: 0,
     maxLength: 2000,
@@ -40,6 +43,16 @@ function PromptVersion({ user, pp, pt, pv }:
   const [promptOutput, setPromptOutput] = useState('');
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(getUniqueJsonArray(getVariables(pt?.description || ''), "key"));
+
+  const pvUpdateMutation = api.prompt.updateVersion.useMutation({
+    onSuccess: (v) => {
+      if (v !== null) {
+          toast.success("Saved");
+      } else {
+        toast.error("Failed to save");
+      }
+    }
+  });
 
   const mutation = api.service.completion.useMutation(); // Make sure to import 'api' and set up the service
 
@@ -66,9 +79,7 @@ function PromptVersion({ user, pp, pt, pv }:
         return pvr;
       });
     });
-
   };
-
 
   const handleRun = async (e: any) => {
     // TODO: Get this data from UI
@@ -103,28 +114,36 @@ function PromptVersion({ user, pp, pt, pv }:
     }
   };
 
-  const saveTemplate = () => {
-    ptCreateMutation.mutate(pt)
-  }
-  // const pvvvs = [{"key":"BOT_NAME","type":"#","value":""},{"key":"LLM_PROVIDER","type":"#","value":""},{"key":"ROLE","type":"@","value":""},{"key":"DESCRIPTION","type":"@","value":""},{"key":"TASKS","type":"@","value":""},{"key":"CHAT_HISTORY","type":"$","value":""},{"key":"QUERY","type":"%","value":""}]
-  // let [pvs, setVars] = useState(pvvvs);
+  const handleSave = () => {
+    pvUpdateMutation.mutate({
+      id: pv.id,
+      promptPackageId: pv.promptPackageId,
+      promptTemplateId: pv.promptTemplateId,
 
+      version: version,
+      template: template,
+      // input: pvrs,
+      llmProvider: provider,
+      llmModel: model,
+      llmConfig: llmConfig,
+    });
+  }
 
   return (
     <>
       <Box>
         <Box id={"prompt-version-" + pt.id}>
-          <TextField
-            value={pt.name}
-            variant="standard"
-          />
+          <TextField 
+            value={version}
+            onChange={(e) => setVersion(e.target.value)}
+          ></TextField>
           <Button
                 color="success"
                 variant="text"
-                onClick={saveTemplate}
+                onClick={handleSave}
             >
-                <RocketLaunchIcon></RocketLaunchIcon>
-            </Button>
+              <SaveIcon/>
+          </Button>
           {/* <PromptDeploy
             user={user}
             pp={pp}
@@ -133,6 +152,7 @@ function PromptVersion({ user, pp, pt, pv }:
           ></PromptDeploy> */}
         </Box>
         <Box>
+          
         <TextField
             label="Template"
             multiline
