@@ -16,16 +16,14 @@ import PromptOutput from "./prompt_output";
 import PromptPerformance from "./prompt_performance";
 import PromptDeploy from "./prompt_deploy";
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import toast from 'react-hot-toast';
 import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "@prisma/client";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getAllTemplateVariables, getUniqueJsonArray, getVariables } from "~/utils/template";
 
 
-function PromptVersion({ user, pp, pt, variables, pv }:
-  { user: any, pp: pp, pt: pt, pv: pv, variables: PromptVariableProps[] }) {
-
-  // console.log(`PromptVersion >>>> ${JSON.stringify(pt)}`);
-    
+function PromptVersion({ user, pp, pt, pv }:
+  { user: any, pp: pp, pt: pt, pv: pv }) {  
   const [template, setTemplate] = useState(pt?.description || '');
   const [provider, setProvider] = useState("OpenAI");
   const [model, setModel] = useState("gpt-3.5-turbo");
@@ -44,6 +42,7 @@ function PromptVersion({ user, pp, pt, variables, pv }:
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(getUniqueJsonArray(getVariables(pt?.description || ''), "key"));
 
   const mutation = api.service.completion.useMutation(); // Make sure to import 'api' and set up the service
+
 
   const handleTemplateChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const txt = e.target.value;
@@ -76,7 +75,7 @@ function PromptVersion({ user, pp, pt, variables, pv }:
     const id = "clmgjihd00000sg4y3tbe0l2h";
     const promptTemplateId = "clmf4eo990000sge67wokwsza";
 
-    console.log(`promptVariables: ${JSON.stringify(variables)}`);
+    // console.log(`promptVariables: ${JSON.stringify(variables)}`);
 
     const response = await mutation.mutateAsync({
       promptPackageId: pt.promptPackageId,
@@ -104,7 +103,9 @@ function PromptVersion({ user, pp, pt, variables, pv }:
     }
   };
 
-
+  const saveTemplate = () => {
+    ptCreateMutation.mutate(pt)
+  }
   // const pvvvs = [{"key":"BOT_NAME","type":"#","value":""},{"key":"LLM_PROVIDER","type":"#","value":""},{"key":"ROLE","type":"@","value":""},{"key":"DESCRIPTION","type":"@","value":""},{"key":"TASKS","type":"@","value":""},{"key":"CHAT_HISTORY","type":"$","value":""},{"key":"QUERY","type":"%","value":""}]
   // let [pvs, setVars] = useState(pvvvs);
 
@@ -117,19 +118,25 @@ function PromptVersion({ user, pp, pt, variables, pv }:
             value={pt.name}
             variant="standard"
           />
-          <PromptDeploy
+          <Button
+                color="success"
+                variant="text"
+                onClick={saveTemplate}
+            >
+                <RocketLaunchIcon></RocketLaunchIcon>
+            </Button>
+          {/* <PromptDeploy
             user={user}
             pp={pp}
             pt={pt}
             pv={pv}
-          ></PromptDeploy>
+          ></PromptDeploy> */}
         </Box>
         <Box>
         <TextField
             label="Template"
             multiline
             style={{ width: '100%' }}
-            rows={15}
             minRows={15}
             maxRows={20}
             defaultValue={template}
@@ -144,12 +151,15 @@ function PromptVersion({ user, pp, pt, variables, pv }:
             onChange={handleTemplateChange}
             style={{ width: '100%' }}
           /> */}
+          
           <Divider textAlign="right"></Divider>
           <Box>
             <Button
               color="success"
               variant="outlined"
-              onClick={handleRun}>
+              onClick={handleRun}
+              disabled={template.length <= 100}
+              >
               Run
             </Button>
             <LLMSelector

@@ -111,17 +111,19 @@ model PromptPackage {
 model PromptTemplate {
   id     String @id @default(cuid())
   userId String
+  promptPackageId String
 
   name        String
   description String
 
-  releaseVersion    String
-  preReleaseVersion String
+  previewVersion   PromptVersion? @relation("previewVersion")
+  previewVersionId String?         @unique
+  releaseVersion   PromptVersion? @relation("releaseVersion")
+  releaseVersionId String?        @unique
 
-  versions        PromptVersion[]
+  versions        PromptVersion[] @relation("template")
   dataset         PromptDataset[]
-  promptPackage   PromptPackage   @relation(fields: [promptPackageId], references: [id])
-  promptPackageId String
+  promptPackage   PromptPackage   @relation(fields: [promptPackageId], references: [id]) 
 }
 
 model PromptVersion {
@@ -154,9 +156,12 @@ model PromptVersion {
   // Managed States
   // state
 
-  user             User           @relation(fields: [userId], references: [id])
-  promptPackage    PromptPackage  @relation(fields: [promptPackageId], references: [id])
-  promptTemplate   PromptTemplate @relation(fields: [promptTemplateId], references: [id])
+  user           User           @relation(fields: [userId], references: [id])
+  previewVersion PromptTemplate @relation("previewVersion", map: "previewVersion", fields: [id], references: [previewVersionId])
+  releaseVersion PromptTemplate @relation("releaseVersion", map: "releaseVersion", fields: [id], references: [releaseVersionId])
+  promptPackage  PromptPackage  @relation(fields: [promptPackageId], references: [id])
+  promptTemplate PromptTemplate @relation("template", fields: [promptTemplateId], references: [id])
+
   promptPackageId  String
   promptTemplateId String
 }

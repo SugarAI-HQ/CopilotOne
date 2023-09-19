@@ -1,9 +1,11 @@
+import { PromptTemplate } from "@prisma/client";
+import { ppid } from "process";
 import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
 import { getPackagesInput, getPackageInput, createPackageInput, deletePackageInput, packageOutput, packageListOutput} from "~/validators/prompt_package";
-import { getTemplatesInput, getTemplateInput, createTemplateInput, deleteTemplateInput, TemplateOutput, TemplateListOutput} from "~/validators/prompt_template";
+import { getTemplatesInput, getTemplateInput, createTemplateInput, updateTemplateInput, deleteTemplateInput, templateOutput, templateListOutput} from "~/validators/prompt_template";
 
 
 export const promptRouter = createTRPCRouter({
@@ -61,18 +63,53 @@ export const promptRouter = createTRPCRouter({
     return promptPackage;
   }),
 
-  // createTemplate: publicProcedure
-  // .input(createPackageInput)
+  createTemplate: publicProcedure
+  .input(createTemplateInput)
+  .output(templateOutput)
+  .mutation(async ({ ctx, input }) => {
+    const userId = ctx.session?.user.id
+    let pt = null
+    
+    console.log(`create template -------------- ${JSON.stringify(input)}`);
+    
+    if (userId) {
+      pt = await ctx.prisma.promptTemplate.create({
+        data: {
+          userId: userId,
+          promptPackageId: input.promptPackageId,
+          name: input.name,
+          description: input.description,
+        }});
+    }
+    
+      return pt;
+  }),
+
+  // updateTemplate: publicProcedure
+  // .input(updateTemplateInput)
+  // .output(TemplateOutput)
   // .mutation(async ({ ctx, input }) => {
-  //   // const validatedInput = PromptPackageCreateInput.parse(input);
-  //   const promptPackage = await ctx.prisma.promptPackage.create({data: input});
-  //   return promptPackage;
+    
+  //   const userId = ctx.session?.user.id
+  //   console.log(`update template -------------- ${JSON.stringify(input)}`);
+    
+  //   if (userId) {
+  //     pt = await ctx.prisma.promptPackage.update({
+  //       data: {
+  //         promptPackageId: input.promptPackageId,
+  //         name: input.name,
+  //         description: input.description,
+  //       }});
+  //   }
+    
+  //     return pt;
   // }),
 
   getTemplates: publicProcedure
     .input(getTemplatesInput)
-    .output(TemplateListOutput)
+    .output(templateListOutput)
     .query(async ({ ctx, input }) => {
+      // console.log(`templates -------------- ${JSON.stringify(input)}`);
       const templates = await ctx.prisma.promptTemplate.findMany({
         where: {
           userId: ctx.session?.user.id,

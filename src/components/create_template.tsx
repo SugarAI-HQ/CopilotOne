@@ -10,13 +10,25 @@ import {
   FormControl,
   FormLabel,
   Grid,
+  IconButton,
   Input,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
+import { PromptPackage as pp, PromptTemplate as pt } from "@prisma/client";
+// import AddIcon from '@mui/icons-material/Add';
+// import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
+
+export function CreateTemplate({
+  pp,
+  onSubmit,
+}: {
+  pp: pp;
+  onSubmit: Function;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -25,8 +37,9 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
     setIsOpen(false);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: any) => {
     onSubmit({
+      promptPackageId: pp.id,
       name: name,
       description: description,
     });
@@ -35,19 +48,22 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
 
   return (
     <>
-      <Grid container justifyContent="flex-end">
-        <Button size="small" variant="outlined" onClick={() => setIsOpen(true)}>
-          Create
-        </Button>
+      <Grid component="span">
+        <IconButton
+          size="small"
+          aria-label="add template" 
+          onClick={() => setIsOpen(true)}
+          color="primary">
+            <AddCircleIcon />
+        </IconButton>
       </Grid>
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography variant="h6">New Prompt Package</Typography>
+          <Typography variant="h6">New Prompt Template</Typography>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-          </DialogContentText>
+          <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
             <FormControl fullWidth>

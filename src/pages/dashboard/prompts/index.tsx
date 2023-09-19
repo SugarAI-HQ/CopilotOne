@@ -51,7 +51,7 @@ const PackageHome = ()=>  {
   
   function handlePackageCreationSuccess(createdPackage: PromptPackage) {
     toast.success("Package Created Successfully");
-    router.push("/prompts/" + createdPackage.id);
+    router.push("/dashboard/prompts/" + createdPackage.id);
   }
   const mutation = api.prompt.createPackage.useMutation({
     onSuccess: (createdPackage) => {
