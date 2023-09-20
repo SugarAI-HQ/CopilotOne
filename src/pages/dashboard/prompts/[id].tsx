@@ -121,11 +121,7 @@ const PackageShow: NextPage = () => {
                     ></CreateTemplate>
                     </div>
                 )}
-                <Grid container spacing={2}>
-                    <Grid container xs={12} md={12} lg={8} spacing={1}>
-                        <PromptTemplate pt={pt} pp={pp}></PromptTemplate>
-                    </Grid>
-                </Grid>
+                <PromptTemplate pt={pt} pp={pp}></PromptTemplate>
             </Box>
         </>
     );

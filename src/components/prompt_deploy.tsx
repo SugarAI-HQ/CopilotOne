@@ -36,7 +36,7 @@ function PromptDeploy({ user, pp, pt, pv }: { user: any, pp: pp, pt: pt, pv: pv 
         }, 2000); // Adjust the timeout duration to simulate deployment time
     };
 
-    const identifier = `${user.name}/${pp.name}/${pt.name}#${pv.version}`;
+    const identifier = `ankur/${pp.name}/${pt.name}#${pv.version}`;
 
     const codeExample = `
 import { SugarcaneAIClient } from "@sugarcane-ai/kitchen-js";

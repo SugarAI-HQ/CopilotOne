@@ -61,28 +61,25 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
 
                 ></CreateVersion>)}
 
-                <Grid container spacing={2}>
-                    <Grid container xs={12} lg={8} spacing={1}>
-
-                        {pvs && pvs.length > 0 &&
-                            (pvs.map((pv, index) => (
-                                <Grid key={index} xs={12} lg={4}>
-                                    <Item>
-                                        <Box
-                                            id={"prompt-version-" + index}
-                                        // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
-                                        >
-                                            {pv && (<PromptVersion
-                                                pp={pp}
-                                                pt={pt}
-                                                pv={pv}
-                                            />)}
-                                        </Box>
-                                    </Item>
-                                </Grid>
-                            )))
-                        }
-                    </Grid>
+                <Grid id="pts-container"  container spacing={2}>
+                    {pvs && pvs.length > 0 &&
+                        (pvs.map((pv, index) => (
+                            <Grid id="pt-{index}" key={index} xs={12} md={6} lg={6}>
+                                <Item>
+                                    <Box
+                                        id={"prompt-version-" + index}
+                                    // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
+                                    >
+                                        {pv && (<PromptVersion
+                                            pp={pp}
+                                            pt={pt}
+                                            pv={pv}
+                                        />)}
+                                    </Box>
+                                </Item>
+                            </Grid>
+                        )))
+                    }
                 </Grid>
             </Box>
         </>

@@ -33,6 +33,7 @@ export function CreateVersion({
   const [version, setVersion] = useState("");
 
   const handleClose = () => {
+    setVersion("")
     setIsOpen(false);
   };
 

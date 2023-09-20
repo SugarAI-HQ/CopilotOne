@@ -22,6 +22,8 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
   const [description, setDescription] = useState("");
 
   const handleClose = () => {
+    setName("")
+    setDescription("")
     setIsOpen(false);
   };
 

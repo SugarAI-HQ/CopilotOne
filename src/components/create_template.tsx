@@ -34,6 +34,8 @@ export function CreateTemplate({
   const [description, setDescription] = useState("");
 
   const handleClose = () => {
+    setName("")
+    setDescription("")
     setIsOpen(false);
   };
 
@@ -60,7 +62,7 @@ export function CreateTemplate({
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography variant="h6">New Prompt Template</Typography>
+          <Typography>New Prompt Template</Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>

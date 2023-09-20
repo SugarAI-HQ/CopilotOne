@@ -144,12 +144,11 @@ function PromptVersion({ pp, pt, pv }:
             >
               <SaveIcon/>
           </Button>
-          {/* <PromptDeploy
-            user={user}
+          <PromptDeploy
             pp={pp}
             pt={pt}
             pv={pv}
-          ></PromptDeploy> */}
+          ></PromptDeploy>
         </Box>
         <Box>
           

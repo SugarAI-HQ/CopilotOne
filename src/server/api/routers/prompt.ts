@@ -219,6 +219,9 @@ You act as {@C_ROLE}, {@C_DESCRIPTION}
           promptPackageId: input.promptPackageId,
           promptTemplateId: input.promptTemplateId,
         },
+        orderBy: {
+          createdAt: 'desc'
+        }
       });
       console.log(`versions -------------- ${JSON.stringify(versions)}`);
       return versions;

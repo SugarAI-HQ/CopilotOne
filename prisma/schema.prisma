@@ -52,6 +52,9 @@ model Account {
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([provider, providerAccountId])
 }
 
@@ -61,6 +64,9 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PromptDataset {
@@ -106,6 +112,9 @@ model PromptPackage {
   datasets      PromptDataset[]
   User          User             @relation(fields: [userId], references: [id])
   PromptVersion PromptVersion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PromptTemplate {
@@ -124,6 +133,9 @@ model PromptTemplate {
   versions      PromptVersion[] @relation("template")
   dataset       PromptDataset[]
   promptPackage PromptPackage   @relation(fields: [promptPackageId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PromptVersion {
@@ -164,6 +176,10 @@ model PromptVersion {
 
   promptPackageId  String
   promptTemplateId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
 }
 
 model User {
@@ -176,6 +192,9 @@ model User {
   sessions       Session[]
   promptPackages PromptPackage[]
   PromptVersion  PromptVersion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -184,4 +203,7 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
