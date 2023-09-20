@@ -21,12 +21,14 @@ import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getAllTemplateVariables, getUniqueJsonArray, getVariables } from "~/utils/template";
 import SaveIcon from '@mui/icons-material/Save';
+import ForkRightIcon from '@mui/icons-material/ForkRight';
+import { CreateVersion } from "./create_version";
+import {inc} from 'semver'
 
 
-
-function PromptVersion({ pp, pt, pv }:
-  { pp: pp, pt: pt, pv: pv }) {  
-  const [version, setVersion] = useState(pv?.version);
+function PromptVersion({ pp, pt, pv, handleVersionCreate }:
+  { pp: pp, pt: pt, pv: pv, handleVersionCreate: Function }) {  
+  const [version, setVersion] = useState<string>(pv?.version);
   const [template, setTemplate] = useState(pv?.template || '');
   const [provider, setProvider] = useState(pv?.llmProvider || '');
   const [model, setModel] = useState(pv?.llmModel);
@@ -130,8 +132,10 @@ function PromptVersion({ pp, pt, pv }:
     <>
       <Box>
         <Box id={"prompt-version-" + pt.id}>
-          <TextField 
+          <TextField
+
             value={version}
+            disabled={true}
             onChange={(e) => setVersion(e.target.value)}
           ></TextField>
           <Button
@@ -141,6 +145,15 @@ function PromptVersion({ pp, pt, pv }:
             >
               <SaveIcon/>
           </Button>
+          
+          
+          <CreateVersion
+                    pp={pp as pp}
+                    pt={pt as pt}
+                    v={inc(version, 'patch') as string}
+                    onSubmit={handleVersionCreate}
+                    icon={<ForkRightIcon/>}
+          ></CreateVersion>
           <PromptDeploy
             pp={pp}
             pt={pt}

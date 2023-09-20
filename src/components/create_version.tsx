@@ -18,34 +18,54 @@ import {
 } from "@mui/material";
 import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "@prisma/client";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import {parse, valid} from "semver"
+import toast from "react-hot-toast";
+import { api } from "~/utils/api";
 
 
 export function CreateVersion({
   pp,
   pt,
   onSubmit,
+  v="0.0.1",
+  icon=<AddCircleIcon />
 }: {
   pp: pp;
   pt: pt;
+  v: string;
   onSubmit: Function;
+  icon: JSX.Element
 }) {
+  
   const [isOpen, setIsOpen] = useState(false);
-  const [version, setVersion] = useState("");
+  const [version, setVersion] = useState(v);
 
   const handleClose = () => {
-    setVersion("")
+    // setVersion("")
     setIsOpen(false);
   };
 
+  const pvCreateMutation = api.prompt.createVersion.useMutation({
+    onSuccess: (pv) => {
+        if (pv !== null) {
+            onSubmit(pv);
+            handleClose(); // Close the modal after submitting
+            // pvs?.push(pv)
+            toast.success("Version Created Successfully");
+        }
+    }
+  })
+
   const handleSubmit = (e: any) => {
-    onSubmit({
+
+    pvCreateMutation.mutate({
       promptPackageId: pp.id,
       promptTemplateId: pt.id,
       version: version,
     });
-    handleClose(); // Close the modal after submitting
   };
 
+  
   return (
     <>
       <Grid component="span">
@@ -54,7 +74,7 @@ export function CreateVersion({
           aria-label="add template" 
           onClick={() => setIsOpen(true)}
           color="primary">
-            <AddCircleIcon />
+            {icon}
         </IconButton>
       </Grid>
 
@@ -71,7 +91,9 @@ export function CreateVersion({
               <TextField
                 variant="outlined"
                 value={version}
+                error={!valid(version)}
                 onChange={(e) => setVersion(e.target.value)}
+                helperText={'Use semantic versioning (e.g. 1.0.1)'}
               />
             </FormControl>
 

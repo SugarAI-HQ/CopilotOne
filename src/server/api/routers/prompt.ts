@@ -155,7 +155,7 @@ export const promptRouter = createTRPCRouter({
 
       const template = `
 You a bot name {#BOT_NAME} trained by {#PROVIDER}
-You act as {@C_ROLE}, {@C_DESCRIPTION}
+You act as {@ROLE}, {@DESCRIPTION}
 `;
 
       if (userId) {

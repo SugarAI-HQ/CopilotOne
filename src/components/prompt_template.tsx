@@ -41,14 +41,9 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
     //     // setPt(pvs?.find(pt => pt.id === e.target.value))
     // }
 
-    const pvCreateMutation = api.prompt.createVersion.useMutation({
-        onSuccess: (pv) => {
-            if (pv !== null) {
-                pvs?.push(pv)
-                toast.success("Version Created Successfully");
-            }
-        }
-    })
+    const handleVersionCreate = (pv:any) => {
+        pvs?.push(pv)
+    }
 
     return (
         <>
@@ -57,7 +52,7 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
                 {pt && pt.id && (<CreateVersion
                     pp={pp as pp}
                     pt={pt as pt}
-                    onSubmit={pvCreateMutation.mutate}
+                    onSubmit={handleVersionCreate}
 
                 ></CreateVersion>)}
 
@@ -74,6 +69,7 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
                                             pp={pp}
                                             pt={pt}
                                             pv={pv}
+                                            handleVersionCreate={handleVersionCreate}
                                         />)}
                                     </Box>
                                 </Item>

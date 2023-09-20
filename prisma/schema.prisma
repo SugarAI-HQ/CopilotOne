@@ -115,6 +115,8 @@ model PromptPackage {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
 }
 
 model PromptTemplate {
@@ -136,6 +138,8 @@ model PromptTemplate {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([promptPackageId, name])
 }
 
 model PromptVersion {
@@ -179,6 +183,9 @@ model PromptVersion {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+
+  @@unique([promptPackageId, promptTemplateId, version])
   
 }
 
