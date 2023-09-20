@@ -6,7 +6,7 @@ export interface PromptVariableProps {
   key: string,
   value: string,
   type: string,
-  [key: string]: any;
+  [key: string]: string;
 }
 
 function PromptVariables({ vars, onChange }: { vars: Array<PromptVariableProps>, onChange: (key:string, value: string) => void }) {

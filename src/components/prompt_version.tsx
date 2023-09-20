@@ -66,7 +66,7 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
     const variables = getUniqueJsonArray(getVariables(txt), "key")
     console.log(`variables >>>> ${JSON.stringify(variables)}`);
     setVariables(variables);
-    console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
+    // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
     
   };
   const handleVariablesChange = (k: string, v: string) => {
@@ -81,29 +81,37 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
         return pvr;
       });
     });
+
+    // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
 
   const handleRun = async (e: any) => {
 
     console.log(`running template version ${version}`);
 
+    let data = {};
+    for (const item of pvrs) {
+      data[`${item.type}${item.key}`] = item.value;
+    }
+
     const response = await runMutation.mutateAsync({
       promptPackageId: pv.promptPackageId,
       promptTemplateId: pv.promptTemplateId,
       id: pv.id,
       // TODO: Get this data from the UI
-      data: {
-        "#BOT_NAME": "Riya",
-        "#PROVIDER": "Open AI",
-        "@ROLE": "Insurance Agent",
-        "@DESCRIPTION": "A smart assistant for Insurance Needs",
-        "@TASKS": [
-          "buy motor insurance policy",
-          "answer relevant queries about insurance policies",
-        ],
-        "$CHAT_HISTORY": "No recent chat",
-        "%QUERY": "How are you doing?",
-      },
+      data: data
+      // data: {
+      //   "#BOT_NAME": "Riya",
+      //   "#PROVIDER": "Open AI",
+      //   "@ROLE": "Insurance Agent",
+      //   "@DESCRIPTION": "A smart assistant for Insurance Needs",
+      //   "@TASKS": [
+      //     "buy motor insurance policy",
+      //     "answer relevant queries about insurance policies",
+      //   ],
+      //   "$CHAT_HISTORY": "No recent chat",
+      //   "%QUERY": "How are you doing?",
+      // },
     });
 
     console.log(`response >>>>>>>: ${JSON.stringify(response)}`);
@@ -131,34 +139,37 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
   return (
     <>
       <Box>
-        <Box id={"prompt-version-" + pt.id}>
+        <Box display='inline' id={"prompt-version-" + pt.id}>
           <TextField
-
+            variant="outlined"
+            label="Version"
             value={version}
             disabled={true}
             onChange={(e) => setVersion(e.target.value)}
           ></TextField>
-          <Button
-                color="success"
-                variant="text"
-                onClick={handleSave}
-            >
-              <SaveIcon/>
-          </Button>
-          
-          
-          <CreateVersion
-                    pp={pp as pp}
-                    pt={pt as pt}
-                    v={inc(version, 'patch') as string}
-                    onSubmit={handleVersionCreate}
-                    icon={<ForkRightIcon/>}
-          ></CreateVersion>
-          <PromptDeploy
-            pp={pp}
-            pt={pt}
-            pv={pv}
-          ></PromptDeploy>
+          <Box display='inline' id={"prompt-version-actions" + pt.id}>
+            <Button
+                  color="success"
+                  variant="text"
+                  onClick={handleSave}
+              >
+                <SaveIcon/>
+            </Button>
+            
+            
+            <CreateVersion
+                      pp={pp as pp}
+                      pt={pt as pt}
+                      v={inc(version, 'patch') as string}
+                      onSubmit={handleVersionCreate}
+                      icon={<ForkRightIcon/>}
+            ></CreateVersion>
+            <PromptDeploy
+              pp={pp}
+              pt={pt}
+              pv={pv}
+            ></PromptDeploy>
+          </Box>
         </Box>
         <Box>
           
