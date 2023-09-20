@@ -54,7 +54,7 @@ function PromptVersion({ pp, pt, pv }:
     }
   });
 
-  const mutation = api.service.completion.useMutation(); // Make sure to import 'api' and set up the service
+  const runMutation = api.service.completion.useMutation(); // Make sure to import 'api' and set up the service
 
 
   const handleTemplateChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -82,20 +82,17 @@ function PromptVersion({ pp, pt, pv }:
   };
 
   const handleRun = async (e: any) => {
-    // TODO: Get this data from UI
-    const id = "clmgjihd00000sg4y3tbe0l2h";
-    const promptTemplateId = "clmf4eo990000sge67wokwsza";
 
-    // console.log(`promptVariables: ${JSON.stringify(variables)}`);
+    console.log(`running template version ${version}`);
 
-    const response = await mutation.mutateAsync({
-      promptPackageId: pt.promptPackageId,
-      promptTemplateId: promptTemplateId,
-      id: id,
+    const response = await runMutation.mutateAsync({
+      promptPackageId: pv.promptPackageId,
+      promptTemplateId: pv.promptTemplateId,
+      id: pv.id,
       // TODO: Get this data from the UI
       data: {
         "#BOT_NAME": "Riya",
-        "#LLM_PROVIDER": "Open AI",
+        "#PROVIDER": "Open AI",
         "@ROLE": "Insurance Agent",
         "@DESCRIPTION": "A smart assistant for Insurance Needs",
         "@TASKS": [

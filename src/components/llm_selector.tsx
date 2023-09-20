@@ -90,6 +90,7 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
                 value={model} 
                 onChange={handleModelChange}
               >
+                <option value="davinci">davinci</option>
                 <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                 <option value="gpt-4">gpt-4</option>
                 <option value="gpt-4-0613">gpt-4-0613</option>

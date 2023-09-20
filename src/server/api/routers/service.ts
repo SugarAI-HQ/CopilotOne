@@ -33,15 +33,21 @@ export const serviceRouter = createTRPCRouter({
     });
     
     console.log(`promptVersion >>>> ${JSON.stringify(pv)}`)
-    console.log(`data >>>> ${JSON.stringify(input)}`)
     if (pv) {
+      console.log(`data >>>> ${JSON.stringify(input)}`)
       const prompt = generatePrompt(pv.template, input.data);
       console.log(`prompt >>>> ${prompt}`)
       // Todo: Load a provider on the fly
-      const output = await run(prompt, pv.llmModel, generateLLmConfig(pv.llmConfig as JsonObject));
+      const output = await run(
+        prompt,
+        pv.llmModel, 
+        generateLLmConfig(pv.llmConfig as JsonObject)
+      );
 
       console.log(`output -------------- ${JSON.stringify(output)}`);    
       return output
+    } else {
+      console.error(`promptVersion not found >>>> ${JSON.stringify(input)}`)
     }
 
     return null;
@@ -53,7 +59,7 @@ export const serviceRouter = createTRPCRouter({
 
 function generateLLmConfig(c: JsonObject): LLMConfig {
   const config = {
-    max_tokens: c?.max_tokens || 2000,
+    max_tokens: c?.max_tokens || 100,
     temperature: c?.temperature || 0,
   } as LLMConfig
   return config
