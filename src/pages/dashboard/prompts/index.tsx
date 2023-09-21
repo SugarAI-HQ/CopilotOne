@@ -33,6 +33,7 @@ function Packages() {
               </CardContent>
               <CardActions>
                 <MUILink href={`/dashboard/prompts/${pkg.id}`}>View</MUILink>
+                <MUILink href={`/dashboard/prompts/${pkg.id}/logs`}>Logs</MUILink>
               </CardActions>
             </Card>
           </Grid>

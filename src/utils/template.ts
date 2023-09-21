@@ -1,5 +1,7 @@
 import {PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
 import { PromptVariableProps } from "~/components/prompt_variables";
+import {LLMConfig} from "~/services/openai";
+import { JsonObject } from '@prisma/client/runtime/library';
 
 export const getVariables = (template: string) => {
     console.log(`template >>>: ${JSON.stringify(template)}`);
@@ -54,3 +56,37 @@ export function getUniqueJsonArray(jsonArray: PromptVariableProps[], uniqueKey: 
     }
     return uniqueArray;
 }
+
+export function generateLLmConfig(c: JsonObject): LLMConfig {
+    const config = {
+      max_tokens: c?.max_tokens || 100,
+      temperature: c?.temperature || 0,
+    } as LLMConfig
+    return config
+  }
+  
+  
+  export function generatePrompt(template: string, data: Record<string, string>): string {
+      let result = template;
+    
+      // Iterate through each replacement key and value
+      for (const key of Object.keys(data)) {
+        let placeholder = `{${key}}`;
+        
+        // TODO: $CHAT_HISTORY is not getting replaced
+        if (placeholder.startsWith("$")) {
+          // Add an escape character at the beginning of the string
+          placeholder = "\\" + placeholder;
+        }
+        console.log(`key ${placeholder}`)
+        const value = data[key] as string;
+  
+        // Replace all occurrences of the placeholder with the value
+        result = result.replace(new RegExp(placeholder, 'g'), value);
+      }
+    
+      return result;
+  }
+  
+  
+  

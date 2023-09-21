@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Box, Container, styled, Paper, Select, MenuItem, FormControl, InputLabel, IconButton } from "@mui/material";
+import { Typography, Box, Container, styled, Paper, Select, MenuItem, FormControl, InputLabel, IconButton, Link } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
@@ -15,6 +15,8 @@ import { getAllTemplateVariables, getUniqueJsonArray } from "~/utils/template";
 import { CreateTemplate } from "~/components/create_template";
 import toast from 'react-hot-toast';
 import PromptTemplate from "~/components/prompt_template";
+import DatasetIcon from '@mui/icons-material/Dataset';
+
 
 
 // interface PackageShowProps {
@@ -87,38 +89,44 @@ const PackageShow: NextPage = () => {
             <Box sx={{ flexGrow: 1 }}>
                 {pp && (
                     <div>
-                    <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
-                        {pp.name} /
-                    </Typography>
-                    {pts && pts?.length > 0 ?
-                        (
-                        <FormControl variant="standard" sx={{ m: 1, minWidth: 250 }} size="small">
-                            {/* <InputLabel id="pt-selector">Select Template</InputLabel> */}
-                            <Select
-                                labelId="pt-selector"
-                                label="Select Template"
-                                id="pt-selector"
-                                value={ptId}
-                                onChange={handleTemplateSelection}
-                            >   
-                                {pts.map((t, index) =>(
-                                    <MenuItem 
-                                        key={"pt-"+index}
-                                        value={t.id}
-                                    >
-                                        {t?.name}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        ) : (
-                        <span>
-                        </span>
-                    )}
-                    <CreateTemplate
-                        pp={pp as pp}
-                        onSubmit={ptCreateMutation.mutate}
-                    ></CreateTemplate>
+                        <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
+                            {pp.name} /
+                        </Typography>
+                        {pts && pts?.length > 0 ?
+                            (
+                            <FormControl variant="standard" sx={{ m: 1, minWidth: 250 }} size="small">
+                                {/* <InputLabel id="pt-selector">Select Template</InputLabel> */}
+                                <Select
+                                    labelId="pt-selector"
+                                    label="Select Template"
+                                    id="pt-selector"
+                                    value={ptId}
+                                    onChange={handleTemplateSelection}
+                                >   
+                                    {pts.map((t, index) =>(
+                                        <MenuItem 
+                                            key={"pt-"+index}
+                                            value={t.id}
+                                        >
+                                            {t?.name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                            ) : (
+                            <span>
+                            </span>
+                        )}
+                        <CreateTemplate
+                            pp={pp as pp}
+                            onSubmit={ptCreateMutation.mutate}
+                        ></CreateTemplate>
+                        
+                        
+                        <Link href={`/dashboard/prompts/${pp.id}/logs`}>
+                            <DatasetIcon/>
+                        </Link>
+                        
                     </div>
                 )}
                 <PromptTemplate pt={pt} pp={pp}></PromptTemplate>

@@ -15,13 +15,15 @@ export type CompletionInput = z.infer<typeof completionInput>;
 
 export const completionOutput = z
     .object({
+        id: z.string(),
+        prompt: z.string(),
         completion: z.string(),
-        performance: z.object({
-            latency: z.number(),
-            prompt_tokens: z.number(),
-            completion_tokens: z.number(),
-            total_tokens: z.number(),
-        })
+
+        latency: z.number(),
+        prompt_tokens: z.number(),
+        completion_tokens: z.number(),
+        total_tokens: z.number(),
+
     }).or(z.null())
 export type CompletionOutput = z.infer<typeof completionOutput>;
 

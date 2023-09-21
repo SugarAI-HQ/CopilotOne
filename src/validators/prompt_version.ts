@@ -2,16 +2,6 @@
 import { z } from "zod";
 
 const versionNameInput = z.string()
-    .min(3, {
-        message: "Name must be at least 3 characters long.",
-    })
-    .max(30, {
-        message: "Name must be at most 30 characters long.",
-    })
-    .regex(/^[a-z0-9-]+$/, {
-        message: "Name must only contain lowercase letters, numbers, and dashes.",
-    })
-    .transform((value) => value.toLowerCase())
 
 export const getVersionsInput = z
     .object({

@@ -94,7 +94,7 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
       data[`${item.type}${item.key}`] = item.value;
     }
 
-    const response = await runMutation.mutateAsync({
+    const pl = await runMutation.mutateAsync({
       promptPackageId: pv.promptPackageId,
       promptTemplateId: pv.promptTemplateId,
       id: pv.id,
@@ -114,10 +114,15 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
       // },
     });
 
-    console.log(`response >>>>>>>: ${JSON.stringify(response)}`);
-    if (response) {
-      setPromptOutput(response.completion);
-      setPromptPerformacne(response.performance);
+    console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
+    if (pl) {
+      setPromptOutput(pl.completion);
+      setPromptPerformacne({
+        latency: pl.latency,
+        prompt_tokens: pl.prompt_tokens,
+        completion_tokens: pl.completion_tokens,
+        total_tokens: pl.total_tokens
+      });
     }
   };
 

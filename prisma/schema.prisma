@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 // console.log(`database url ${env("DATABASE_URL")}`);
@@ -14,6 +15,9 @@ datasource db {
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("DATABASE_URL")
+
+  // extensions = [uuidOssp(map: "uuid-ossp"), timescaleDb(map: "timescaledb")]
+  extensions = [uuidOssp(map: "uuid-ossp"), pgVector(map: "vector"), timescaleDb(map: "timescaledb")]
 }
 
 // LabelledState enum-like values
@@ -33,7 +37,7 @@ enum FinetunedState {
 model Example {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 // Necessary for Next auth
@@ -53,7 +57,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   @@unique([provider, providerAccountId])
 }
@@ -66,39 +70,31 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
-model PromptDataset {
-  id Int @id @default(autoincrement())
-
-  projectId  String
-  workflowId String
-  traceId    String
-
-  chatId String
-
-  //   Prompt
-  promptPackage  PromptPackage  @relation(fields: [promptPackageId], references: [id])
-  promptTemplate PromptTemplate @relation(fields: [promptTemplateId], references: [id])
-  promptVersion  PromptVersion  @relation(fields: [promptVersionId], references: [id])
+model PromptVariables {
+  id     String @id @default(cuid())
+  userId String
 
   promptPackageId  String
   promptTemplateId String
   promptVersionId  String
 
-  prompt     String
-  completion String
+  promptPackage  PromptPackage  @relation(fields: [promptPackageId], references: [id])
+  promptTemplate PromptTemplate @relation(fields: [promptTemplateId], references: [id])
+  // promptVersion  PromptVersion?  @relation(fields: [promptVersionId], references: [id])
 
-  duration       Decimal        @map("duration") // Numeric(precision=10, scale=5)
-  llmProvider    String
-  llmPodel       String
-  cmetadata      Json           @db.JsonB
-  labelledState  LabelledState  @map("labelled_state")
-  finetunedState FinetunedState @map("finetuned_state")
+  name         String
+  majorVersion String
+  minorVersion String
+  variables    Json   @db.JsonB
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  PromptVersion PromptVersion @relation(fields: [promptVersionId], references: [id])
+
+  @@unique([promptTemplateId, majorVersion, minorVersion, variables])
 }
 
 model PromptPackage {
@@ -109,12 +105,13 @@ model PromptPackage {
   description String
 
   templates     PromptTemplate[]
-  datasets      PromptDataset[]
   User          User             @relation(fields: [userId], references: [id])
   PromptVersion PromptVersion[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  PromptVariables PromptVariables[]
+  // logs            PromptLog[]
 
   @@unique([userId, name])
 }
@@ -133,11 +130,12 @@ model PromptTemplate {
   releaseVersionId String?        @unique
 
   versions      PromptVersion[] @relation("template")
-  dataset       PromptDataset[]
   promptPackage PromptPackage   @relation(fields: [promptPackageId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  PromptVariables PromptVariables[]
+  // logs            PromptLog[]
 
   @@unique([promptPackageId, name])
 }
@@ -162,7 +160,6 @@ model PromptVersion {
   lang String[]
 
   // Dataset
-  dataset PromptDataset[]
 
   // Evaluated
   outAccuracy Float?
@@ -182,11 +179,12 @@ model PromptVersion {
   promptTemplateId String
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 
+  PromptVariables PromptVariables[]
+  // logs            PromptLog[]
 
   @@unique([promptPackageId, promptTemplateId, version])
-  
 }
 
 model User {
@@ -201,7 +199,7 @@ model User {
   PromptVersion  PromptVersion[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 }
 
 model VerificationToken {
@@ -209,8 +207,43 @@ model VerificationToken {
   token      String   @unique
   expires    DateTime
 
-  @@unique([identifier, token])
-
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([identifier, token])
+}
+
+model PromptLog {
+  // id Int @id @default(autoincrement())
+  id String @id @default(cuid())
+
+  inputId    String?
+  prompt     String
+  completion String
+
+  llmProvider String
+  llmModel    String
+  llmConfig   Json   @db.JsonB
+
+  latency           Int
+  prompt_tokens     Int
+  completion_tokens Int
+  total_tokens      Int
+
+  extras Json @db.JsonB
+
+  labelledState  LabelledState  @default(UNLABELLED)
+  finetunedState FinetunedState @default(UNPROCESSED)
+
+  //   Prompt
+  // promptPackage  PromptPackage  @relation(fields: [promptPackageId], references: [id])
+  // promptTemplate PromptTemplate @relation(fields: [promptTemplateId], references: [id])
+  // promptVersion  PromptVersion  @relation(fields: [promptVersionId], references: [id])
+
+  promptPackageId  String
+  promptTemplateId String
+  promptVersionId  String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }

@@ -27,6 +27,11 @@ import {
   versionOutput,
   versionListOutput,
 } from "~/validators/prompt_version";
+import {
+  getLogsInput,
+  logListOutput,
+} from "~/validators/prompt_log";
+
 
 export const promptRouter = createTRPCRouter({
   getPackages: publicProcedure
@@ -168,7 +173,7 @@ You act as {@ROLE}, {@DESCRIPTION}
             template: template,
             changelog: "TTD",
             llmProvider: "openai",
-            llmModel: "gpt-3.5-turbo",
+            llmModel: "davinci",
             llmConfig: {},
           },
         });
@@ -226,4 +231,25 @@ You act as {@ROLE}, {@DESCRIPTION}
       console.log(`versions -------------- ${JSON.stringify(versions)}`);
       return versions;
     }),
+
+
+    getLogs: publicProcedure
+    .input(getLogsInput)
+    .output(logListOutput)
+    .query(async ({ ctx, input }) => {
+      // console.log(`versions -------------- ${JSON.stringify(input)}`);
+      const versions = await ctx.prisma.promptLog.findMany({
+        where: {
+          // userId: ctx.session?.user.id,
+          promptPackageId: input.promptPackageId,
+          // promptTemplateId: input.promptTemplateId,
+          // promptVersion: input.promptVersionId,
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+      console.log(`pls -------------- ${JSON.stringify(versions)}`);
+      return versions;
+    })
 });

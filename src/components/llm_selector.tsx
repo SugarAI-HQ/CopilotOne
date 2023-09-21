@@ -7,7 +7,8 @@ import {
   Modal,
   Stack,
   Select,
-  Typography 
+  Typography, 
+  MenuItem
 } from "@mui/material";
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -27,13 +28,30 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
 
   const handleOpen = () => setIsOpen(true);
 
-  const handleSubmit = () => {
-    // Handle form submission here
-  };
+  const providers = [
+    ['openai', 'OpenAI'],
+    ['llama2', 'Llama2'],
+  ]
+
+  const models = {
+    'openai': [
+      ['davinci', 'Davinci'],
+      ['gpt-3.5-turbo', 'Gpt 3.5 Turbo'],
+      ['gpt-4', 'Gpt 4']
+    ],
+    'llama2': [
+      ['7b', '7B'],
+      ['13b', '13B'],
+      ['70b', '70B'],
+    ]
+
+  }
+
 
   const handleProviderChange = (event: any) => {
     const selectedProvider = event.target.value;
     setProvider(selectedProvider);
+
     onProviderChange(selectedProvider);
   };
 
@@ -42,6 +60,8 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
     setModel(selectedModel);
     onModelChange(selectedModel);
   };
+
+
 
   return (
     <>
@@ -77,10 +97,14 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
                 value={provider}
                 onChange={handleProviderChange}
               >
-                <option value="openai">OpenAI</option>
-                
-                <option value="llama2">Llama2</option>
-                {/* Add more options */}
+                {providers.map((p, index) =>(
+                  <MenuItem
+                      key={"pt-"+index}
+                      value={p[0]}
+                  >
+                    {p[1]}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
@@ -90,11 +114,20 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
                 value={model} 
                 onChange={handleModelChange}
               >
-                <option value="davinci">davinci</option>
+
+                {models[provider].map((mo, index) =>(
+                <MenuItem 
+                    key={"pt-"+index}
+                    value={mo[0]}
+                >
+                  {mo[1]}
+                </MenuItem>))}
+
+                {/* <option value="davinci">davinci</option>
                 <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
                 <option value="gpt-4">gpt-4</option>
                 <option value="gpt-4-0613">gpt-4-0613</option>
-                <option value="gpt-4-0314">gpt-4-0314</option>
+                <option value="gpt-4-0314">gpt-4-0314</option> */}
                 {/* Add more options */}
               </Select>
             </FormControl>
@@ -104,8 +137,8 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
 
           <Stack direction="row" spacing={2} mt={2}>
             <Button onClick={handleClose}>Cancel</Button>
-            <Button variant="contained" onClick={handleSubmit}>
-              Confirm
+            <Button variant="outlined" onClick={handleClose}>
+              Close
             </Button>
           </Stack>
         </Box>
