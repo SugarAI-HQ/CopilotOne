@@ -32,8 +32,8 @@ const logSchema = z.object({
     labelledState: z.string(),
     finetunedState: z.string(),
 
-    // createdAt: z.string(),
-    // updatedAt: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
 })
 
 export const logOutput = logSchema.or(z.null())

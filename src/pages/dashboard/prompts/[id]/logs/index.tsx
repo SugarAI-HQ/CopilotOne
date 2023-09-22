@@ -62,7 +62,7 @@ const PromptLogTable: NextPage = () => {
     // Example: axios.get('/api/prompt-logs').then((response) => setPromptLogs(response.data));
   }, []);
 
-  const handleSearch = () => {
+const handleSearch = () => {
     // Implement the search logic here.
     // Filter the promptLogs array based on the searchText.
   };
@@ -120,8 +120,8 @@ const PromptLogTable: NextPage = () => {
                 <TableCell>{log.labelledState}</TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
 
-                <TableCell>{log.createdAt}</TableCell>
-                <TableCell>{log.updatedAt}</TableCell>
+                <TableCell>{log.createdAt.toTimeString()}</TableCell>
+                <TableCell>{log.updatedAt.toTimeString()}</TableCell>
                 
               </TableRow>
             ))}

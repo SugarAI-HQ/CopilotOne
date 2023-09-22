@@ -31,7 +31,6 @@ export const createVersionInput = z
 
 export type CreateVersionInput = z.infer<typeof createVersionInput>;
 
-
 export const updateVersionInput = z
     .object({
         id: z.string(),
@@ -66,10 +65,15 @@ const versionSchema = z.object({
     promptTemplateId: z.string(),
     version: z.string(),
     template: z.string(),
-    changelog: z.string(),
+    
     llmProvider: z.string(),
     llmModel: z.string(),
-    llmConfig: z.record(z.any())
+    llmConfig: z.record(z.any()),
+
+    publishedAt: z.null().or(z.coerce.date()),
+    changelog: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
 })
 
 export const versionOutput = versionSchema.or(z.null())

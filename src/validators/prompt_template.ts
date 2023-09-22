@@ -51,6 +51,22 @@ export const updateTemplateInput = z
 
 export type UpdateTemplateInput = z.infer<typeof updateTemplateInput>;
 
+export const deployTemplateInput = z
+    .object({
+        
+        // userId: z.string().optional(),
+        promptTemplateId: z.string(),
+        promptPackageId: z.string(),
+        promptVersionId: z.string(),
+        environment: z.string(),
+        changelog: z.string()
+    })
+    .strict()
+    .required();
+
+export type DeployTemplateInput = z.infer<typeof deployTemplateInput>;
+
+
 
 export const deleteTemplateInput = z
     .object({
@@ -70,6 +86,12 @@ const templateSchema = z.object({
 
     releaseVersionId: z.string().or(z.null()),
     previewVersionId: z.string().or(z.null()),
+    
+    releaseVersion: z.record(z.any()).or(z.null()),
+    previewVersion: z.record(z.any()).or(z.null()),
+
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
 })
 
 export const templateOutput = templateSchema.or(z.null())

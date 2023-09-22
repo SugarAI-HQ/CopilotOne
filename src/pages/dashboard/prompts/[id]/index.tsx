@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Box, Container, styled, Paper, Select, MenuItem, FormControl, InputLabel, IconButton, Link } from "@mui/material";
+import { Typography, Box, Container, styled, Paper, Select, MenuItem, FormControl, InputLabel, IconButton, Link, Button, Toolbar } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
@@ -16,32 +16,6 @@ import { CreateTemplate } from "~/components/create_template";
 import toast from 'react-hot-toast';
 import PromptTemplate from "~/components/prompt_template";
 import DatasetIcon from '@mui/icons-material/Dataset';
-
-
-
-// interface PackageShowProps {
-//     // Define your component props here
-// }
-
-// function createNewTemplate(pp: pp) {
-//     const pt = {
-//         promptPackageId: pp.id,
-//         name: 'Untitled',
-//         description: ''
-//     } as pt
-
-//     return pt
-// }
-
-// function createNewVersion(pp: pp, pt: pt) {
-//     const pv = {
-//         promptPackageId: pp.id,
-//         template: '',
-//         version: '0.0.1',
-//     } as pv
-//     return pv
-// }
-
 
 const PackageShow: NextPage = () => {
     const router = useRouter();
@@ -66,29 +40,20 @@ const PackageShow: NextPage = () => {
     }
 
     const ptCreateMutation = api.prompt.createTemplate.useMutation({
-        onSuccess: (pt) => {
-            if (pt !== null) {
-                pts?.push(pt)
+        onSuccess: (uPt) => {
+            if (uPt !== null) {
+                pts?.push(uPt)
+                setPt(uPt)
                 toast.success("Template Created Successfully");
             }
         }
     })
 
-
-    // let pv:pv;
-
-    // if (pts?.length == 0) {
-    //     pt = createNewTemplate(pp as pp) as pt
-    //     pts.push(pt)
-
-    //     pv = createNewVersion(pp as pp, pt)
-    // }
-
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
                 {pp && (
-                    <div>
+                    <Toolbar>
                         <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
                             {pp.name} /
                         </Typography>
@@ -121,13 +86,25 @@ const PackageShow: NextPage = () => {
                             pp={pp as pp}
                             onSubmit={ptCreateMutation.mutate}
                         ></CreateTemplate>
+                        {pt && (<Box sx={{ flexGrow: 1 }}>
+                            <Link href={`/dashboard/prompts/${pp.id}/logs`}>
+                                <DatasetIcon/>
+                            </Link>
+                        </Box>)}
+
+                        {pt && (<Box sx={{ flexGrow: 1 }}>
+                            <Typography component="span" sx={{ m: 1}}>
+                                Preview : {pt?.previewVersion?.version}
+                            </Typography>
+                            <Typography component="span" sx={{ m: 1 }}>
+                                Release : {pt?.releaseVersion?.version || "N/A"}
+                            </Typography>
+                            
+                        </Box>)}
                         
+
                         
-                        <Link href={`/dashboard/prompts/${pp.id}/logs`}>
-                            <DatasetIcon/>
-                        </Link>
-                        
-                    </div>
+                    </Toolbar>
                 )}
                 <PromptTemplate pt={pt} pp={pp}></PromptTemplate>
             </Box>

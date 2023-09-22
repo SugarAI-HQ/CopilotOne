@@ -56,7 +56,7 @@ export type GetPackagesInput = z.infer<typeof getPackagesInput>;
 
 export const getPackageInput = z
     .object({
-        id: z.string()
+        id: z.string().uuid()
     })
     .strict()
     .required()
@@ -125,6 +125,8 @@ export const packageSchema = z
     userId: z.string(),
     name: z.string(),
     description: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
 });
 
 export const packageOutput = packageSchema.or(z.null())

@@ -48,7 +48,8 @@ export const serviceRouter = createTRPCRouter({
             promptPackageId: pv.promptPackageId,
             promptTemplateId: pv.promptTemplateId,
             promptVersionId: pv.id,
-      
+            
+            version: pv.version,
             prompt: prompt,
             completion: output?.completion as string,
       
@@ -58,7 +59,7 @@ export const serviceRouter = createTRPCRouter({
             
             latency: output?.performance?.latency as number,
             prompt_tokens: output?.performance?.prompt_tokens as number,
-            completion_tokens: output?.performance?.completion_tokens as number,
+            completion_tokens: output?.performance?.completion_tokens as number || 0,
             total_tokens: output?.performance?.total_tokens as number,
             extras: {},
             // promptPackage: {
@@ -90,18 +91,3 @@ export const serviceRouter = createTRPCRouter({
       return null;
     }),
 });
-
-// async function createPromptLog(ctx, pv:pv, prompt:string, completion:string) {
-
-  
-//   //   return {
-//   //   id: "",
-//   //   promptPackageId: "",
-//   //   promptTemplateId: "",
-//   //   prompt: "",
-//   //   data: "",
-//   //   userId: "",
-//   //   createdAt: "",
-//   //   updatedAt: "",
-//   // };
-// }

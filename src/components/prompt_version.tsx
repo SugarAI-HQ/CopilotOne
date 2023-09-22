@@ -1,29 +1,26 @@
 import React, { useState } from "react";
 import {
-  Container,
   TextField,
-  TextareaAutosize,
   Box,
   Button,
   Divider,
-  Chip,
 } from "@mui/material";
 import LLMSelector from "./llm_selector";
 import LLMConfig, { LLMConfigProps } from "./llm_config";
 import { api } from "~/utils/api";
-import EmptyTextarea from "./text_area";
 import PromptOutput from "./prompt_output";
 import PromptPerformance from "./prompt_performance";
 import PromptDeploy from "./prompt_deploy";
-import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import toast from 'react-hot-toast';
 import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "@prisma/client";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
-import { getAllTemplateVariables, getUniqueJsonArray, getVariables } from "~/utils/template";
+import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import SaveIcon from '@mui/icons-material/Save';
 import ForkRightIcon from '@mui/icons-material/ForkRight';
 import { CreateVersion } from "./create_version";
 import {inc} from 'semver'
+import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+
 
 
 function PromptVersion({ pp, pt, pv, handleVersionCreate }:
@@ -161,19 +158,25 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
                 <SaveIcon/>
             </Button>
             
-            
             <CreateVersion
-                      pp={pp as pp}
-                      pt={pt as pt}
-                      v={inc(version, 'patch') as string}
-                      onSubmit={handleVersionCreate}
-                      icon={<ForkRightIcon/>}
+              pp={pp as pp}
+              pt={pt as pt}
+              v={inc(version, 'patch') as string}
+              onSubmit={handleVersionCreate}
+              icon={<ForkRightIcon/>}
             ></CreateVersion>
-            <PromptDeploy
-              pp={pp}
-              pt={pt}
-              pv={pv}
-            ></PromptDeploy>
+
+
+            {pv.publishedAt ? (
+              <PublishedWithChangesIcon/>
+             ) : (
+              <PromptDeploy
+                pp={pp}
+                pt={pt}
+                pv={pv}
+              ></PromptDeploy>
+            )}
+            
           </Box>
         </Box>
         <Box>
@@ -203,7 +206,7 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
               color="success"
               variant="outlined"
               onClick={handleRun}
-              disabled={template.length <= 100}
+              disabled={template.length <= 50}
               >
               Run
             </Button>

@@ -17,6 +17,7 @@ import {
   deleteTemplateInput,
   templateOutput,
   templateListOutput,
+  deployTemplateInput,
 } from "~/validators/prompt_template";
 import {
   getVersionsInput,
@@ -140,6 +141,10 @@ export const promptRouter = createTRPCRouter({
           userId: ctx.session?.user.id,
           promptPackageId: input.promptPackageId,
         },
+        include: {
+          previewVersion: true,
+          releaseVersion: true,
+        },
       });
       console.log(`templates -------------- ${JSON.stringify(templates)}`);
       return templates;
@@ -171,7 +176,7 @@ You act as {@ROLE}, {@DESCRIPTION}
             promptTemplateId: input.promptTemplateId,
             version: input.version,
             template: template,
-            changelog: "TTD",
+            changelog: "",
             llmProvider: "openai",
             llmModel: "davinci",
             llmConfig: {},
@@ -210,6 +215,60 @@ You act as {@ROLE}, {@DESCRIPTION}
       }
       console.log(`updated version -------------- ${JSON.stringify(pv)}`);
 
+      return pv;
+    }),
+
+  deployTemplate: publicProcedure
+    .input(deployTemplateInput)
+    // .output(versionOutput)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session?.user.id;
+      let pv = null;
+      let pt = null;
+      console.log(`deploy template -------------- ${JSON.stringify(input)}`);
+
+      let data = {
+        changelog: input.changelog,
+        publishedAt: new Date(),
+      }
+
+      let templateData = {}
+      templateData[`${input.environment}VersionId`] = input.promptVersionId
+      
+      // data[`${input.environment}Version`] = {
+      //   connect: {
+      //     id: input.promptVersionId
+      //   }
+      // }
+
+      if (userId) {
+
+        const transaction = await ctx.prisma.$transaction(async (prisma) => {
+          pv = await prisma.promptVersion.update({
+            where: {
+              id: input.promptVersionId,
+              // promptTemplateId: input.promptTemplateId,
+              // userId: userId,
+              // promptPackageId: input.promptPackageId,
+            },
+            data: data,
+          });
+
+          pt = await prisma.promptTemplate.update({
+            where: {
+              id: input.promptTemplateId,
+              promptPackageId: input.promptPackageId,
+              userId: userId,
+            },
+            data: templateData,
+          });
+
+          return { pv, pt };
+        })
+
+
+      }
+      console.log(`deployed version -------------- ${JSON.stringify(pv)} ${JSON.stringify(pt)}`);
       return pv;
     }),
 
