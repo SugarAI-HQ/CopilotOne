@@ -26,10 +26,7 @@ export default function SidebarProfile() {
       {" "}
       {sessionData && (
         <div className="absolute bottom-0 w-full p-3">
-          <Card
-            className="flex cursor-pointer gap-2 px-2 py-3"
-            onClick={()=> void handleProfileCardClick()}
-          >
+         <Card className="flex gap-2 px-2 py-3 cursor-pointer items-center" onClick={handleProfileCardClick}>
             <Avatar
               className="h-8 w-8"
               alt="Profile Image"

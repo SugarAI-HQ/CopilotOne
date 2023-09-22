@@ -23,6 +23,7 @@
     "@trpc/react-query": "^10.34.0",
     "@trpc/server": "^10.34.0",
     "memoizee": "^0.4.15",
+    "nanoid": "^5.0.1",
     "next": "^13.4.13",
     "next-auth": "^4.22.4",
     "openai": "^4.6.0",

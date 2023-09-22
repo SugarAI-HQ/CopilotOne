@@ -9,6 +9,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
@@ -28,6 +29,16 @@ import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
 import { mainListItems, secondaryListItems } from "~/app/Dashboard/listItems";
 import RouteGuard from "../RouteGuard";
+import { useRouter } from "next/router";
+import {
+  MdFavorite,
+  MdForkLeft,
+  MdForkRight,
+  MdReply,
+  MdSettings,
+  MdShare,
+} from "react-icons/md";
+import PreferencesModal from "../PreferencesDialog";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -115,6 +126,20 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const [preferencesOpen, setPreferencesOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setPreferencesOpen(true);
+  };
+
+  const handleClose = () => {
+    setPreferencesOpen(false);
+  };
+  const router = useRouter();
+
+  // Check if the current route matches the pattern '/dashboard/prompts/[id]'
+  const isPromptsRoute = router.pathname.startsWith('/dashboard/prompts/');
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -147,6 +172,52 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             >
               Dashboard
             </Typography>
+            {isPromptsRoute && (
+              <div className="flex items-center gap-3">
+              <IconButton onClick={handleOpen} color="primary">
+                <MdSettings />
+              </IconButton>
+              <div className="flex items-center gap-1">
+                <MdFavorite />
+                <span>23</span>
+              </div>
+
+              <Button
+                startIcon={<MdReply />}
+                variant="outlined"
+                sx={{ borderRadiuss: "40px" }}
+                size="small"
+              >
+                Embed
+              </Button>
+              <Button
+                startIcon={<MdForkRight />}
+                variant="outlined"
+                sx={{ borderRadiuss: "40px" }}
+                size="small"
+              >
+                Fork
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{ borderRadiuss: "40px" }}
+                size="small"
+              >
+                Create
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  borderRadiuss: "40px",
+                  backgroundColor: '#fff',
+                }}
+                className="!bg-white"
+                color="secondary"
+                size="small">
+                Sign In
+              </Button>
+            </div>
+            )}
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
@@ -195,6 +266,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             </Grid>
             {/* <Copyright sx={{ pt: 4 }} /> */}
           </Container>
+          <PreferencesModal open={preferencesOpen} onClose={handleClose}/>
         </Box>
       </Box>
     </ThemeProvider>
