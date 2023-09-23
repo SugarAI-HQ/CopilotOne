@@ -16,7 +16,6 @@ import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import SaveIcon from '@mui/icons-material/Save';
-import ForkRightIcon from '@mui/icons-material/ForkRight';
 import { CreateVersion } from "./create_version";
 import {inc} from 'semver'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
@@ -142,13 +141,13 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
     <>
       <Box>
         <Box display='inline' id={"prompt-version-" + pt.id}>
-          <TextField
+          {/* <TextField
             variant="outlined"
             label="Version"
             value={version}
             disabled={true}
             onChange={(e) => setVersion(e.target.value)}
-          ></TextField>
+          ></TextField> */}
           <Box display='inline' id={"prompt-version-actions" + pt.id}>
             
             {!pv.publishedAt && (<Button
@@ -165,7 +164,6 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
               forkedFromId={pv.id}
               v={inc(version, 'patch') as string}
               onCreate={handleVersionCreate}
-              icon={<ForkRightIcon/>}
             ></CreateVersion>
 
 
@@ -187,6 +185,7 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
         <TextField
             label="Template"
             multiline
+            fullWidth
             style={{ width: '100%' }}
             minRows={15}
             maxRows={20}

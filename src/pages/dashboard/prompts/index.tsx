@@ -20,7 +20,7 @@ import toast from 'react-hot-toast';
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 
 function Packages() {
-  const { data: packages } = api.prompt.getPackages.useQuery({});
+  const { data: packages, refetch: refectchPackages } = api.prompt.getPackages.useQuery({});
   return (
     <Grid container spacing={1}>
       {packages && packages.length > 0 ? (

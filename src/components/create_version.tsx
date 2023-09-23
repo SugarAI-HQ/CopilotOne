@@ -21,8 +21,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {parse, valid} from "semver"
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
-import { UUID } from "crypto";
-
+import ForkRightIcon from '@mui/icons-material/ForkRight';
 
 export function CreateVersion({
   pp,
@@ -37,7 +36,6 @@ export function CreateVersion({
   v: string;
   onCreate: Function;
   forkedFromId: string | null;
-  icon: JSX.Element
 }) {
   
   const [isOpen, setIsOpen] = useState(false);
@@ -83,17 +81,18 @@ export function CreateVersion({
           New Version
         </Button> */}
         <IconButton
+          
           size="small"
           aria-label="add template" 
           onClick={() => setIsOpen(true)}
           color="primary">
-            {icon}
+          {(forkedFromId ? <ForkRightIcon/> : <AddCircleIcon/>)}
         </IconButton>
       </Grid>
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography variant="h6">New Prompt Version</Typography>
+          New Prompt Version
         </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>

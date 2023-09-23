@@ -25,11 +25,11 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export function CreateTemplate({
   pp,
-  onSubmit,
+  onCreate,
   sx,
 }: {
   pp: pp;
-  onSubmit: Function;
+  onCreate: Function;
   sx: any
 }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +43,7 @@ export function CreateTemplate({
   };
 
   const handleSubmit = (e: any) => {
-    onSubmit({
+    onCreate && onCreate({
       promptPackageId: pp.id,
       name: name,
       description: description,

@@ -1,105 +1,112 @@
-import React from "react";
-import { Box, styled, Paper } from "@mui/material";
-import Grid from '@mui/material/Unstable_Grid2';
+import React, { useState } from "react";
+import { Box, styled, Paper, Tabs, Tab, Typography, Chip } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 import { api } from "~/utils/api";
 import PromptVersion from "~/components/prompt_version";
-import {PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
+import {
+  PromptPackage as pp,
+  PromptTemplate as pt,
+  PromptVersion as pv,
+} from "@prisma/client";
 import { CreateVersion } from "./create_version";
 import PromptVersionEditor from "./prompt_editor";
 const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+  width: "100%",
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
 }));
 
-const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
+const PromptTemplate = ({ pp, pt }: { pp: pp; pt: pt }) => {
+  const { data: pvs, refetch: refectVersions } = api.prompt.getVersions.useQuery({
+    promptPackageId: pt?.promptPackageId,
+    promptTemplateId: pt?.id,
+  });
+  // const { pvs, versionQuery} = api.prompt.getVersions.useSuspenseQuery({
+  //   promptPackageId: pt?.promptPackageId,
+  //   promptTemplateId: pt?.id,
+  // });
 
-    const { data: pvs } = api.prompt.getVersions.useQuery({ 
-        promptPackageId: pt?.promptPackageId, 
-        promptTemplateId: pt?.id 
-    });
+  console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
-    console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
+  const [activeTab, setActiveTab] = useState(0);
+  // const [pvs, setPvs] = useState<pv[]>(pvs || [])
 
-    // const handleTemplateSelection = (e: any) => {
-    //     setPtId(e.target.value)
-    //     // setPt(pvs?.find(pt => pt.id === e.target.value))
-    // }
+  const handleChangeTab = (event, newValue) => {
+    setActiveTab(newValue);
+  };
 
-    const handleVersionCreate = (pv:any) => {
-        pvs?.push(pv)
-    }
+  const handleVersionCreate = (pv: any) => {
+    // pvs?.push(pv);
+    refectVersions();
+    // setPvs([pv, ...pvs]);
+    // setActiveTab(0);
+  };
 
-    const handleTemplateUpdate = (pv:any) => {
-        pvs?.push(pv)
-    }
+  const handleTemplateUpdate = (pv: any) => {
+    // pvs?.push(pv);
+  };
 
-    return (
-        <>
-            <Box sx={{ flexGrow: 1 }}>
-
-                {pt && pt.id && (<CreateVersion
+  return (
+    <>
+      <Box sx={{ flexGrow: 1 }}>
+        {/* <Chip label={pvs?.length || 'NA'} color={'primary'} variant="outlined" />  */}
+        {pt && (
+          <Grid id="pts-container" container spacing={2}>
+            <Tabs
+              value={activeTab}
+              onChange={handleChangeTab}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="Code Editor Tabs"
+            >
+              {pvs &&
+                pvs.length > 0 &&
+                pvs.map((pv, index) => (
+                  <Tab
+                    key={index}
+                    label={pv.version}
+                    // onDelete={() => removeFile(index)}
+                    aria-label={`Version ${pv.version}`}
+                  />
+                ))}
+              <Tab
+                iconPosition="start"
+                key={-1}
+                icon={
+                  <CreateVersion
                     pp={pp as pp}
                     pt={pt as pt}
                     onCreate={handleVersionCreate}
-
-                ></CreateVersion>)}
-
-                <Grid id="pts-container"  container spacing={2}>
-                    {pvs && pvs.length > 0 &&
-                        (pvs.map((pv, index) => (
-                            <Grid id="pt-{index}" key={index} xs={12} md={6} lg={6}>
-                                <Item>
-                                    <Box
-                                        id={"prompt-version-" + index}
-                                    // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
-                                    >
-                                        {pv && (<PromptVersion
-                                            pp={pp}
-                                            pt={pt}
-                                            pv={pv}
-                                            handleVersionCreate={handleVersionCreate}
-                                            onTemplateUpdate={handleTemplateUpdate}
-                                        />)}
-                                    </Box>
-                                </Item>
-                            </Grid>
-                        )))
-                    }
-                </Grid>
-
-                {/* <Grid id="pts-container"  container spacing={2}>
-                    {pvs && pvs.length > 0 &&
-                        (pvs.map((pv, index) => (
-                            <Grid id="pt-{index}" key={index} xs={12} md={6} lg={6}>
-                                <Item>
-                                    <Box
-                                        id={"prompt-version-" + index}
-                                    // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
-                                    >
-                                        {pv && (<PromptVersionEditor
-                                            // pp={pp}
-                                            // pt={pt}
-                                            // pv={pv}
-                                            // handleVersionCreate={handleVersionCreate}
-                                            // onTemplateUpdate={handleTemplateUpdate}
-                                        />)}
-                                    </Box>
-                                </Item>
-                            </Grid>
-                        )))
-                    }
-                </Grid> */}
-
-
-                
-
-
-            </Box>
-        </>
-    );
+                  ></CreateVersion>
+                }
+              />
+            </Tabs>
+            {pvs &&
+              pvs.length > 0 &&
+              pvs.map((pv, index) => (
+                // <div key={index} hidden={index !== activeTab}>
+                <Item key={index} p={2} hidden={index !== activeTab}>
+                  {pv && (
+                    <PromptVersion
+                      pp={pp}
+                      pt={pt}
+                      pv={pv}
+                      handleVersionCreate={handleVersionCreate}
+                      onTemplateUpdate={handleTemplateUpdate}
+                    />
+                  )}
+                </Item>
+                // </div>
+              ))}
+            <Box p={2}></Box>
+          </Grid>
+        )}
+      </Box>
+    </>
+  );
 };
 
 export default PromptTemplate;

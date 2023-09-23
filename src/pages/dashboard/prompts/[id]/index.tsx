@@ -27,12 +27,12 @@ const PackageShow: NextPage = () => {
     const user = sessionData?.user
 
     // Load data 
-    const { data: pp } = api.prompt.getPackage.useQuery({ id: packageId });
+    const { data: pp, refetch: rpp } = api.prompt.getPackage.useQuery({ id: packageId });
     console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
     const [ptId, setPtId] = useState();
     const [pt, setPt] = useState<pt>();
 
-    const { data: pts } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
+    const { data: pts, refetch: rpt } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
     console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
     const handleTemplateSelection = (e: any) => {
@@ -43,6 +43,7 @@ const PackageShow: NextPage = () => {
 
     const ptCreateMutation = api.prompt.createTemplate.useMutation({
         onSuccess: (uPt) => {
+            rpt();
             if (uPt !== null) {
                 pts?.push(uPt)
                 setPt(uPt)
@@ -98,7 +99,7 @@ const PackageShow: NextPage = () => {
                         )}
                         <CreateTemplate
                             pp={pp as pp}
-                            onSubmit={ptCreateMutation.mutate}
+                            onCreate={ptCreateMutation.mutate}
                         ></CreateTemplate>
                         {pt && (<Box sx={{ flexGrow: 1 }}>
                             
@@ -117,14 +118,14 @@ const PackageShow: NextPage = () => {
                                 component="span"
                             >
                                 <Box sx={{ flexGrow: 1}}>
-                                    <Tabs onChange={handleTabChange}>
+                                    {/* <Tabs value={-1} onChange={handleTabChange}>
                                         <Tab label="Logs" icon={<DatasetIcon/>} iconPosition="start"  component={Link} href={`/dashboard/prompts/${pp.id}/logs`} />
                                         <Tab label="Insights" icon={<AnalyticsIcon/>} iconPosition="start" component={Link} href={`/dashboard/prompts/${pp.id}/analytics`} />
-                                    </Tabs>
+                                    </Tabs> */}
                                     
                                 </Box>
 
-                                <Box sx={{mt: 2}}>
+                                <Box sx={{mt: 2, mb: 2}}>
                                     <Typography component="span" sx={{ mr: 1}}>
                                         Preview : <Chip label={pt?.previewVersion?.version || 'NA'} color={getColor(pt?.previewVersion?.version)} variant="outlined" /> 
                                     </Typography>

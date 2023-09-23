@@ -301,7 +301,7 @@ You act as {@ROLE}, {@DESCRIPTION}
     .input(getVersionsInput)
     .output(versionListOutput)
     .query(async ({ ctx, input }) => {
-      // console.log(`versions -------------- ${JSON.stringify(input)}`);
+      console.log(`versions input -------------- ${JSON.stringify(input)}`);
       const versions = await ctx.prisma.promptVersion.findMany({
         where: {
           userId: ctx.session?.user.id,
@@ -312,7 +312,7 @@ You act as {@ROLE}, {@DESCRIPTION}
           createdAt: 'desc'
         }
       });
-      console.log(`versions -------------- ${JSON.stringify(versions)}`);
+      console.log(`versions output -------------- ${JSON.stringify(versions)}`);
       return versions;
     }),
 
