@@ -69,6 +69,16 @@ export function CreateVersion({
   return (
     <>
       <Grid component="span">
+        {/* <Button 
+          variant="outlined" 
+          startIcon={<AddCircleIcon />}
+          size="small"
+          aria-label="add version" 
+          onClick={() => setIsOpen(true)}
+          color="primary"
+        >
+          New Version
+        </Button> */}
         <IconButton
           size="small"
           aria-label="add template" 

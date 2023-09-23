@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Typography, Box, Container, styled, Paper, Select, MenuItem, FormControl, InputLabel, IconButton, Link, Button, Toolbar } from "@mui/material";
+import { Typography, Box, Container, styled, Paper, Select, MenuItem, FormControl, InputLabel, IconButton, Link, Button, Toolbar, Chip, Tabs, Tab } from "@mui/material";
 import Grid from '@mui/material/Unstable_Grid2';
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
@@ -16,6 +16,8 @@ import { CreateTemplate } from "~/components/create_template";
 import toast from 'react-hot-toast';
 import PromptTemplate from "~/components/prompt_template";
 import DatasetIcon from '@mui/icons-material/Dataset';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import { CreateVersion } from "~/components/create_version";
 
 const PackageShow: NextPage = () => {
     const router = useRouter();
@@ -48,6 +50,18 @@ const PackageShow: NextPage = () => {
             }
         }
     })
+
+    const getColor = (version:string | null | undefined): string =>  {
+        let color:string = 'error';
+        if (version) {
+            color = 'success'
+        }
+
+        return color;
+    }
+
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    };
 
     return (
         <>
@@ -87,18 +101,40 @@ const PackageShow: NextPage = () => {
                             onSubmit={ptCreateMutation.mutate}
                         ></CreateTemplate>
                         {pt && (<Box sx={{ flexGrow: 1 }}>
-                            <Link href={`/dashboard/prompts/${pp.id}/logs`}>
-                                <DatasetIcon/>
-                            </Link>
+                            
                         </Box>)}
+                        {pt && (<Box sx={{ display: 'inline', flexGrow: 1 }}>
 
-                        {pt && (<Box sx={{ flexGrow: 1 }}>
-                            <Typography component="span" sx={{ m: 1}}>
-                                Preview : {pt?.previewVersion?.version}
-                            </Typography>
-                            <Typography component="span" sx={{ m: 1 }}>
-                                Release : {pt?.releaseVersion?.version || "N/A"}
-                            </Typography>
+                            <Paper
+                                elevation={3}
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'right',
+                                    flexWrap: 'wrap',
+                                    listStyle: 'none',
+                                    p: 0.5,
+                                }}
+                                component="span"
+                            >
+                                <Box sx={{ flexGrow: 1}}>
+                                    <Tabs onChange={handleTabChange}>
+                                        <Tab label="Logs" icon={<DatasetIcon/>} iconPosition="start"  component={Link} href={`/dashboard/prompts/${pp.id}/logs`} />
+                                        <Tab label="Insights" icon={<AnalyticsIcon/>} iconPosition="start" component={Link} href={`/dashboard/prompts/${pp.id}/analytics`} />
+                                    </Tabs>
+                                    
+                                </Box>
+
+                                <Box sx={{mt: 2}}>
+                                    <Typography component="span" sx={{ mr: 1}}>
+                                        Preview : <Chip label={pt?.previewVersion?.version || 'NA'} color={getColor(pt?.previewVersion?.version)} variant="outlined" /> 
+                                    </Typography>
+                                    <Typography component="span" sx={{ ml: 1 }}>
+                                        Release : <Chip label={pt?.releaseVersion?.version || 'NA'} color={getColor(pt?.releaseVersion?.version)} variant="outlined" /> 
+                                    </Typography>
+                                </Box>
+                                
+                                
+                            </Paper>
                             
                         </Box>)}
                         

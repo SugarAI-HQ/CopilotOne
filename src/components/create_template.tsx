@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -25,9 +26,11 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 export function CreateTemplate({
   pp,
   onSubmit,
+  sx,
 }: {
   pp: pp;
   onSubmit: Function;
+  sx: any
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
@@ -49,9 +52,10 @@ export function CreateTemplate({
   };
 
   return (
-    <>
+    <Box component="span" sx={{}}>
       <Grid component="span">
         <IconButton
+          
           size="small"
           aria-label="add template" 
           onClick={() => setIsOpen(true)}
@@ -104,6 +108,6 @@ export function CreateTemplate({
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Box>
   );
 }
