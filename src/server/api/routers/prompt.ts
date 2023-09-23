@@ -32,6 +32,7 @@ import {
   getLogsInput,
   logListOutput,
 } from "~/validators/prompt_log";
+import { JsonObject } from "@prisma/client/runtime/library";
 
 
 export const promptRouter = createTRPCRouter({
@@ -163,23 +164,47 @@ export const promptRouter = createTRPCRouter({
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
 
-      const template = `
+      let template = `
 You a bot name {#BOT_NAME} trained by {#PROVIDER}
 You act as {@ROLE}, {@DESCRIPTION}
-`;
+`;    
+
+      let defaultTemplate = {
+        template: template,
+        llmProvider: "openai",
+        llmModel: "davinci",
+        llmConfig: {},
+        // forkedFromId: null
+      }
+      
+
+      if(input.forkedFromId) {
+        const forkedFrom = await ctx.prisma.promptVersion.findUnique({
+          where: {
+            id: input.forkedFromId,
+          },
+        });
+
+        defaultTemplate.template = forkedFrom.template;
+        defaultTemplate.llmProvider = forkedFrom.llmProvider;
+        defaultTemplate.llmModel = forkedFrom.llmModel;
+        defaultTemplate.llmConfig = forkedFrom.llmConfig as JsonObject;
+        // defaultTemplate.forkedFromId = input.forkedFromId
+      }
 
       if (userId) {
         pv = await ctx.prisma.promptVersion.create({
           data: {
             userId: userId,
+            forkedFromId: input.forkedFromId,
+
             promptPackageId: input.promptPackageId,
             promptTemplateId: input.promptTemplateId,
             version: input.version,
-            template: template,
+            
+            ...defaultTemplate,
+            
             changelog: "",
-            llmProvider: "openai",
-            llmModel: "davinci",
-            llmConfig: {},
           },
         });
       }
@@ -269,7 +294,7 @@ You act as {@ROLE}, {@DESCRIPTION}
 
       }
       console.log(`deployed version -------------- ${JSON.stringify(pv)} ${JSON.stringify(pt)}`);
-      return pv;
+      return {pv, pt};
     }),
 
   getVersions: publicProcedure

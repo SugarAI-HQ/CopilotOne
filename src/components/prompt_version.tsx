@@ -23,8 +23,8 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 
 
 
-function PromptVersion({ pp, pt, pv, handleVersionCreate }:
-  { pp: pp, pt: pt, pv: pv, handleVersionCreate: Function }) {  
+function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
+  { pp: pp, pt: pt, pv: pv, handleVersionCreate: Function, onTemplateUpdate: Function }) {  
   const [version, setVersion] = useState<string>(pv?.version);
   const [template, setTemplate] = useState(pv?.template || '');
   const [provider, setProvider] = useState(pv?.llmProvider || '');
@@ -150,19 +150,21 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
             onChange={(e) => setVersion(e.target.value)}
           ></TextField>
           <Box display='inline' id={"prompt-version-actions" + pt.id}>
-            <Button
+            
+            {!pv.publishedAt && (<Button
                   color="success"
                   variant="text"
                   onClick={handleSave}
               >
                 <SaveIcon/>
-            </Button>
+            </Button>)}
             
             <CreateVersion
               pp={pp as pp}
               pt={pt as pt}
+              forkedFromId={pv.id}
               v={inc(version, 'patch') as string}
-              onSubmit={handleVersionCreate}
+              onCreate={handleVersionCreate}
               icon={<ForkRightIcon/>}
             ></CreateVersion>
 
@@ -174,6 +176,7 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate }:
                 pp={pp}
                 pt={pt}
                 pv={pv}
+                onTemplateUpdate={onTemplateUpdate}
               ></PromptDeploy>
             )}
             

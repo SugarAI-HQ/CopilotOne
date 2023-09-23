@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import PromptVersion from "~/components/prompt_version";
 import {PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
 import { CreateVersion } from "./create_version";
+import PromptVersionEditor from "./prompt_editor";
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -31,6 +32,10 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
         pvs?.push(pv)
     }
 
+    const handleTemplateUpdate = (pv:any) => {
+        pvs?.push(pv)
+    }
+
     return (
         <>
             <Box sx={{ flexGrow: 1 }}>
@@ -38,7 +43,7 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
                 {pt && pt.id && (<CreateVersion
                     pp={pp as pp}
                     pt={pt as pt}
-                    onSubmit={handleVersionCreate}
+                    onCreate={handleVersionCreate}
 
                 ></CreateVersion>)}
 
@@ -56,6 +61,7 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
                                             pt={pt}
                                             pv={pv}
                                             handleVersionCreate={handleVersionCreate}
+                                            onTemplateUpdate={handleTemplateUpdate}
                                         />)}
                                     </Box>
                                 </Item>
@@ -63,6 +69,34 @@ const PromptTemplate = ({pp, pt}:{pp: pp, pt: pt}) => {
                         )))
                     }
                 </Grid>
+
+                {/* <Grid id="pts-container"  container spacing={2}>
+                    {pvs && pvs.length > 0 &&
+                        (pvs.map((pv, index) => (
+                            <Grid id="pt-{index}" key={index} xs={12} md={6} lg={6}>
+                                <Item>
+                                    <Box
+                                        id={"prompt-version-" + index}
+                                    // sx={{ fontSize: '12px', textTransform: 'uppercase' }}
+                                    >
+                                        {pv && (<PromptVersionEditor
+                                            // pp={pp}
+                                            // pt={pt}
+                                            // pv={pv}
+                                            // handleVersionCreate={handleVersionCreate}
+                                            // onTemplateUpdate={handleTemplateUpdate}
+                                        />)}
+                                    </Box>
+                                </Item>
+                            </Grid>
+                        )))
+                    }
+                </Grid> */}
+
+
+                
+
+
             </Box>
         </>
     );

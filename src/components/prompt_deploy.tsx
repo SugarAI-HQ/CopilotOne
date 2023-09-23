@@ -6,7 +6,7 @@ import CodeHighlight from './code_highlight';
 import { api } from '~/utils/api';
 import toast from 'react-hot-toast';
 
-function PromptDeploy({ user, pp, pt, pv }: { user: any, pp: pp, pt: pt, pv: pv }) {
+function PromptDeploy({ user, pp, pt, pv, onTemplateUpdate}: { user: any, pp: pp, pt: pt, pv: pv, onTemplateUpdate: Function }) {
     const [open, setOpen] = useState(false);
     const [isDeploying, setIsDeploying] = useState(false);
     const [deploymentSuccess, setDeploymentSuccess] = useState(false);
@@ -23,9 +23,14 @@ function PromptDeploy({ user, pp, pt, pv }: { user: any, pp: pp, pt: pt, pv: pv 
     };
 
     const deployMutation = api.prompt.deployTemplate.useMutation({
-        onSuccess: (uPv) => {
-            if (uPv !== null) {
-                pv = uPv;
+        onSuccess: (data: any) => {
+            console.log('>>>>>>>>>>> Deployed')
+            console.log(data.pt)
+            console.log(data.pv)
+            console.log('<<<<<<<< Deployed')
+            if (data.pv !== null) {
+                pv = data.pv;
+                onTemplateUpdate(data.pt);
                 setIsDeploying(false);
                 setDeploymentSuccess(true);
                 toast.success("Deployed Successfully");

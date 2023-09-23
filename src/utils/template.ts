@@ -4,7 +4,6 @@ import {LLMConfig} from "~/services/openai";
 import { JsonObject } from '@prisma/client/runtime/library';
 
 export const getVariables = (template: string) => {
-    console.log(`template >>>: ${JSON.stringify(template)}`);
     if (!template) {
         return [];
     }

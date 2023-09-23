@@ -39,7 +39,7 @@ model Example {
 
 // Necessary for Next auth
 model Account {
-  id                String  @id @default(uuid())
+  id                String   @id @default(uuid())
   userId            String
   type              String
   provider          String
@@ -123,6 +123,7 @@ model PromptTemplate {
 
 model PromptVersion {
   id               String            @id @default(uuid())
+  forkedFromId     String?
   userId           String
   version          String
   template         String

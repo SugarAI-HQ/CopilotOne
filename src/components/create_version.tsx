@@ -21,19 +21,22 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {parse, valid} from "semver"
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
+import { UUID } from "crypto";
 
 
 export function CreateVersion({
   pp,
   pt,
-  onSubmit,
+  onCreate,
   v="0.0.1",
-  icon=<AddCircleIcon />
+  icon=<AddCircleIcon />,
+  forkedFromId=null
 }: {
   pp: pp;
   pt: pt;
   v: string;
-  onSubmit: Function;
+  onCreate: Function;
+  forkedFromId: string | null;
   icon: JSX.Element
 }) {
   
@@ -48,21 +51,21 @@ export function CreateVersion({
   const pvCreateMutation = api.prompt.createVersion.useMutation({
     onSuccess: (pv) => {
         if (pv !== null) {
-            onSubmit(pv);
-            handleClose(); // Close the modal after submitting
-            // pvs?.push(pv)
-            toast.success("Version Created Successfully");
+            onCreate(pv);
+            handleClose();
+            toast.success(`Version ${pv.version} Created Successfully`);
         }
     }
   })
 
   const handleSubmit = (e: any) => {
-
-    pvCreateMutation.mutate({
+    const data = {
       promptPackageId: pp.id,
       promptTemplateId: pt.id,
       version: version,
-    });
+      forkedFromId: forkedFromId
+    }
+    pvCreateMutation.mutate(data);
   };
 
   
