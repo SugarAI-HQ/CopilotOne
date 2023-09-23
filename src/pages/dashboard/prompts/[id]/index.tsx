@@ -1,23 +1,14 @@
 import React, { useState } from "react";
 import { Typography, Box, Container, styled, Paper, Select, MenuItem, FormControl, InputLabel, IconButton, Link, Button, Toolbar, Chip, Tabs, Tab } from "@mui/material";
-import Grid from '@mui/material/Unstable_Grid2';
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import PromptVersion from "~/components/prompt_version";
-import PromptVariables from "~/components/prompt_variables";
 import { NextPage } from "next";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import {PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv} from "@prisma/client";
-import { PromptVariableProps } from "~/components/prompt_variables";
 import { useSession } from "next-auth/react";
-import CodeHighlight from "~/components/code_highlight";
-import { getAllTemplateVariables, getUniqueJsonArray } from "~/utils/template";
 import { CreateTemplate } from "~/components/create_template";
 import toast from 'react-hot-toast';
 import PromptTemplate from "~/components/prompt_template";
-import DatasetIcon from '@mui/icons-material/Dataset';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import { CreateVersion } from "~/components/create_version";
 
 const PackageShow: NextPage = () => {
     const router = useRouter();
@@ -29,10 +20,10 @@ const PackageShow: NextPage = () => {
     // Load data 
     const { data: pp, refetch: rpp } = api.prompt.getPackage.useQuery({ id: packageId });
     console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
-    const [ptId, setPtId] = useState();
+    const [ptId, setPtId] = useState<string>();
     const [pt, setPt] = useState<pt>();
 
-    const { data: pts, refetch: rpt } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
+    const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
     console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
     const handleTemplateSelection = (e: any) => {
@@ -43,10 +34,11 @@ const PackageShow: NextPage = () => {
 
     const ptCreateMutation = api.prompt.createTemplate.useMutation({
         onSuccess: (uPt) => {
-            rpt();
             if (uPt !== null) {
                 pts?.push(uPt)
+                rpts();
                 setPt(uPt)
+                setPtId(uPt?.id)
                 toast.success("Template Created Successfully");
             }
         }
@@ -59,6 +51,12 @@ const PackageShow: NextPage = () => {
         }
 
         return color;
+    }
+
+    const handleTemplateUpdate = (uPt: pt) => {
+        console.log(`handleTemplateUpdate <<<<>>>> ${JSON.stringify(uPt)}`);
+        // setPt(uPt)
+        rpts()
     }
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -143,7 +141,7 @@ const PackageShow: NextPage = () => {
                         
                     </Toolbar>
                 )}
-                <PromptTemplate pt={pt} pp={pp}></PromptTemplate>
+                <PromptTemplate pt={pt} pp={pp} onTemplateUpdate={handleTemplateUpdate}></PromptTemplate>
             </Box>
         </>
     );

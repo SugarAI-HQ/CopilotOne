@@ -96,7 +96,7 @@ export const promptRouter = createTRPCRouter({
       const userId = ctx.session?.user.id;
       let pt = null;
 
-      console.log(`create template -------------- ${JSON.stringify(input)}`);
+      console.log(`template input -------------- ${JSON.stringify(input)}`);
 
       if (userId) {
         pt = await ctx.prisma.promptTemplate.create({
@@ -106,8 +106,14 @@ export const promptRouter = createTRPCRouter({
             name: input.name,
             description: input.description,
           },
+          include: {
+            previewVersion: true,
+            releaseVersion: true,
+          },
         });
       }
+      
+      console.log(`template output -------------- ${JSON.stringify(pt)}`);
 
       return pt;
     }),

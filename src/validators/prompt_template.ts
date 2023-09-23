@@ -78,6 +78,7 @@ export type DeleteTemplateInput = z.infer<typeof deleteTemplateInput>;
 
 const templateSchema = z.object({
     id: z.string(),
+    
     userId: z.string(),
     promptPackageId: z.string(),
     

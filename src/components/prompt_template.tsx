@@ -19,34 +19,23 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const PromptTemplate = ({ pp, pt }: { pp: pp; pt: pt }) => {
+const PromptTemplate = ({ pp, pt, onTemplateUpdate}: { pp: pp; pt: pt, onTemplateUpdate: Function }) => {
   const { data: pvs, refetch: refectVersions } = api.prompt.getVersions.useQuery({
     promptPackageId: pt?.promptPackageId,
     promptTemplateId: pt?.id,
   });
-  // const { pvs, versionQuery} = api.prompt.getVersions.useSuspenseQuery({
-  //   promptPackageId: pt?.promptPackageId,
-  //   promptTemplateId: pt?.id,
-  // });
 
   console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
   const [activeTab, setActiveTab] = useState(0);
-  // const [pvs, setPvs] = useState<pv[]>(pvs || [])
 
   const handleChangeTab = (event, newValue) => {
     setActiveTab(newValue);
   };
 
   const handleVersionCreate = (pv: any) => {
-    // pvs?.push(pv);
     refectVersions();
-    // setPvs([pv, ...pvs]);
-    // setActiveTab(0);
-  };
-
-  const handleTemplateUpdate = (pv: any) => {
-    // pvs?.push(pv);
+    setActiveTab(0);
   };
 
   return (
@@ -95,7 +84,7 @@ const PromptTemplate = ({ pp, pt }: { pp: pp; pt: pt }) => {
                       pt={pt}
                       pv={pv}
                       handleVersionCreate={handleVersionCreate}
-                      onTemplateUpdate={handleTemplateUpdate}
+                      onTemplateUpdate={onTemplateUpdate}
                     />
                   )}
                 </Item>
