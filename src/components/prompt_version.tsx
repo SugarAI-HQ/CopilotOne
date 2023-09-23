@@ -203,7 +203,7 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
           /> */}
           
           <Divider textAlign="right"></Divider>
-          <Box>
+          <Box sx={{m: 1}}>
             <Button
               color="success"
               variant="outlined"
@@ -226,14 +226,14 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
           </Box>
         </Box>
 
-        <Box>
-          <Divider textAlign="center"></Divider>
+        <Box sx={{m: 1}}>
+          {/* <Divider textAlign="center"></Divider> */}
           <PromptPerformance data={promptPerformance}></PromptPerformance>
           <PromptOutput
             output={promptOutput}
           ></PromptOutput>
         </Box>
-        <Box>
+        <Box sx={{m: 1}}>
           <PromptVariables
             vars={pvrs}
             onChange={handleVariablesChange}

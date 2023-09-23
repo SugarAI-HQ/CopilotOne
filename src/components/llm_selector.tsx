@@ -8,7 +8,8 @@ import {
   Stack,
   Select,
   Typography, 
-  MenuItem
+  MenuItem,
+  Dialog
 } from "@mui/material";
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -69,22 +70,14 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
         {model}
       </Button>
 
-      <Modal open={isOpen} onClose={handleClose}>
+      <Dialog open={isOpen} onClose={handleClose}>
         <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
-          p: 4,
+          p: 2,
         }}>
           <Typography variant="h6" component="h2">
             Model
           </Typography>
-          <CloseIcon sx={{ cursor: 'pointer' }} onClick={handleClose}/>
+          {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
           
           <Typography mt={2}>
             The LLM provider and model that'll be used to power this prompt.
@@ -142,7 +135,7 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
             </Button>
           </Stack>
         </Box>
-      </Modal>
+      </Dialog>
     </>
   );
 }

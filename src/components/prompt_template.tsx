@@ -76,7 +76,6 @@ const PromptTemplate = ({ pp, pt, onTemplateUpdate}: { pp: pp; pt: pt, onTemplat
             {pvs &&
               pvs.length > 0 &&
               pvs.map((pv, index) => (
-                // <div key={index} hidden={index !== activeTab}>
                 <Item key={index} p={2} hidden={index !== activeTab}>
                   {pv && (
                     <PromptVersion
@@ -88,7 +87,6 @@ const PromptTemplate = ({ pp, pt, onTemplateUpdate}: { pp: pp; pt: pt, onTemplat
                     />
                   )}
                 </Item>
-                // </div>
               ))}
             <Box p={2}></Box>
           </Grid>

@@ -136,14 +136,14 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
             aria-label="Vertical tabs example"
             sx={{ borderRight: 1, borderColor: "divider" }}
           >
-            <Tab className="items-start" label="Environmental Variables" />
+            <Tab className="items-start" label="Global Variables" />
             <Tab className="items-start" label="API Key Settings" />
-            <Tab className="items-start" label="Experiments" />
+            {/* <Tab className="items-start" label="Experiments" /> */}
           </Tabs>
           <div className="w-full">
             <TabPanel value={value} index={0}>
               <Typography fontWeight={"700"}>
-                Environmental Variables
+                Global Variables
               </Typography>
               <Box mt={2}>
               

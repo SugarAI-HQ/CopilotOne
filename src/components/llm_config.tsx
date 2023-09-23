@@ -70,23 +70,26 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }: { isOpen: boolea
     setConfig(updatedConfig);
     onClose(updatedConfig);
   };
+  // alert(`temperature: ${temperature}`);
 
   return (
+    <>
+    <Typography>hola</Typography>
     <Dialog
       open={isOpen} 
+      fullWidth
       onClose={handleClose} 
       maxWidth="md"
     >
-      <Paper
+      <Box
         sx={{
-          position: 'absolute',
           top: '50%',
           left: '50%',
-          transform: 'translate(-50%, -50%)',
+          // transform: 'translate(-50%, -50%)',
           // width: 400,
           // bgcolor: 'background.paper',
-          border: '2px solid #000',
-          boxShadow: 24,
+          // border: '2px solid #000',
+          // boxShadow: 24,
           p: 1,
         }}
       >
@@ -156,8 +159,9 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }: { isOpen: boolea
             Close
           </Button>
         </Box>
-      </Paper>
+      </Box>
     </Dialog>
+    </>
   );
 };
 
@@ -190,7 +194,6 @@ function LLMConfig({ config, setConfig }: { config: LLMConfigProps, setConfig: (
         config={config}
         setConfig={setConfig}
       />
-      {/* Display or use config values */}
     </>
   );
 }
