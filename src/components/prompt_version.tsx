@@ -187,8 +187,8 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
             multiline
             fullWidth
             style={{ width: '100%' }}
-            minRows={15}
-            maxRows={20}
+            minRows={5}
+            maxRows={10}
             defaultValue={template}
             onChange={handleTemplateChange}
             variant="outlined"

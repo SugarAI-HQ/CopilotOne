@@ -61,7 +61,14 @@ const PromptTemplate = ({ pp, pt, onTemplateUpdate}: { pp: pp; pt: pt, onTemplat
                     aria-label={`Version ${pv.version}`}
                   />
                 ))}
-              <Tab
+              <Box sx={{ flexGrow: 1, p:2 }} >
+                <CreateVersion
+                  pp={pp as pp}
+                  pt={pt as pt}
+                  onCreate={handleVersionCreate}
+                ></CreateVersion>
+              </Box>
+              {/* <Tab
                 iconPosition="start"
                 key={-1}
                 icon={
@@ -71,7 +78,7 @@ const PromptTemplate = ({ pp, pt, onTemplateUpdate}: { pp: pp; pt: pt, onTemplat
                     onCreate={handleVersionCreate}
                   ></CreateVersion>
                 }
-              />
+              /> */}
             </Tabs>
             {pvs &&
               pvs.length > 0 &&

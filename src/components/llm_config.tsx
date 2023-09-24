@@ -74,7 +74,6 @@ const LLMConfigModal = ({ isOpen, onClose, config, setConfig }: { isOpen: boolea
 
   return (
     <>
-    <Typography>hola</Typography>
     <Dialog
       open={isOpen} 
       fullWidth

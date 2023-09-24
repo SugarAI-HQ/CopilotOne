@@ -9,6 +9,9 @@ import { useSession } from "next-auth/react";
 import { CreateTemplate } from "~/components/create_template";
 import toast from 'react-hot-toast';
 import PromptTemplate from "~/components/prompt_template";
+import DatasetIcon from '@mui/icons-material/Dataset';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+
 
 const PackageShow: NextPage = () => {
     const router = useRouter();
@@ -116,10 +119,10 @@ const PackageShow: NextPage = () => {
                                 component="span"
                             >
                                 <Box sx={{ flexGrow: 1}}>
-                                    {/* <Tabs value={-1} onChange={handleTabChange}>
+                                    <Tabs value={-1} onChange={handleTabChange}>
                                         <Tab label="Logs" icon={<DatasetIcon/>} iconPosition="start"  component={Link} href={`/dashboard/prompts/${pp.id}/logs`} />
                                         <Tab label="Insights" icon={<AnalyticsIcon/>} iconPosition="start" component={Link} href={`/dashboard/prompts/${pp.id}/analytics`} />
-                                    </Tabs> */}
+                                    </Tabs>
                                     
                                 </Box>
 
