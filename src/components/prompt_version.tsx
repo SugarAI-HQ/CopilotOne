@@ -22,8 +22,8 @@ import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 
 
 
-function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
-  { pp: pp, pt: pt, pv: pv, handleVersionCreate: Function, onTemplateUpdate: Function }) {  
+function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
+  { ns:any, pp: pp, pt: pt, pv: pv, handleVersionCreate: Function, onTemplateUpdate: Function }) {  
   const [version, setVersion] = useState<string>(pv?.version);
   const [template, setTemplate] = useState(pv?.template || '');
   const [provider, setProvider] = useState(pv?.llmProvider || '');
@@ -171,6 +171,7 @@ function PromptVersion({ pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
               <PublishedWithChangesIcon/>
              ) : (
               <PromptDeploy
+                ns={ns}
                 pp={pp}
                 pt={pt}
                 pv={pv}

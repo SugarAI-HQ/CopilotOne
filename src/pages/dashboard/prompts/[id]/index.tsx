@@ -18,7 +18,9 @@ const PackageShow: NextPage = () => {
     const packageId = router.query.id as string;
 
     const { data: sessionData } = useSession();
-    const user = sessionData?.user
+    
+    // TODO: Fix this NS based on the route rather than current user
+    const ns = sessionData?.user
 
     // Load data 
     const { data: pp, refetch: rpp } = api.prompt.getPackage.useQuery({ id: packageId });
@@ -71,7 +73,7 @@ const PackageShow: NextPage = () => {
                 {pp && (
                     <Toolbar>
                         <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
-                            {pp.name} /
+                            {ns.name} / {pp.name} /
                         </Typography>
                         {pts && pts?.length > 0 ?
                             (
@@ -144,7 +146,7 @@ const PackageShow: NextPage = () => {
                         
                     </Toolbar>
                 )}
-                <PromptTemplate pt={pt} pp={pp} onTemplateUpdate={handleTemplateUpdate}></PromptTemplate>
+                <PromptTemplate ns={ns} pt={pt} pp={pp} onTemplateUpdate={handleTemplateUpdate}></PromptTemplate>
             </Box>
         </>
     );

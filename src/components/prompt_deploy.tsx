@@ -26,13 +26,13 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 
 function PromptDeploy({
-  user,
+  ns,
   pp,
   pt,
   pv,
   onTemplateUpdate,
 }: {
-  user: any;
+  ns: any;
   pp: pp;
   pt: pt;
   pv: pv;
@@ -108,7 +108,7 @@ function PromptDeploy({
     }, 1000);
   };
 
-  const identifier = `ankur/${pp.name}/${pt.name}#${pv.version}`;
+  const identifier = `${ns.name}/${pp.name}/${pt.name}#${pv.version}`;
 
   const codeExample = `
 import { SugarcaneAIClient } from "@sugarcane-ai/kitchen-js";

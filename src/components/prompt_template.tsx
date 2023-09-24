@@ -9,7 +9,6 @@ import {
   PromptVersion as pv,
 } from "@prisma/client";
 import { CreateVersion } from "./create_version";
-import PromptVersionEditor from "./prompt_editor";
 const Item = styled(Paper)(({ theme }) => ({
   width: "100%",
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -19,7 +18,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const PromptTemplate = ({ pp, pt, onTemplateUpdate}: { pp: pp; pt: pt, onTemplateUpdate: Function }) => {
+const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: pt, onTemplateUpdate: Function }) => {
   const { data: pvs, refetch: refectVersions } = api.prompt.getVersions.useQuery({
     promptPackageId: pt?.promptPackageId,
     promptTemplateId: pt?.id,
@@ -86,6 +85,7 @@ const PromptTemplate = ({ pp, pt, onTemplateUpdate}: { pp: pp; pt: pt, onTemplat
                 <Item key={index} p={2} hidden={index !== activeTab}>
                   {pv && (
                     <PromptVersion
+                      ns={ns}
                       pp={pp}
                       pt={pt}
                       pv={pv}
