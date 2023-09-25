@@ -1,5 +1,6 @@
 
 import { z } from "zod";
+import { promptEnvironment } from "./base";
 
 export const getLogsInput = z
     .object({
@@ -22,6 +23,8 @@ const logSchema = z.object({
     llmProvider: z.string(),
     llmModel: z.string(),
     llmConfig: z.record(z.any()),
+
+    environment: promptEnvironment,
 
     latency: z.number(),
     prompt_tokens: z.number(),

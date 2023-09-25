@@ -31,6 +31,12 @@ enum FinetunedState {
   PROCESSED
 }
 
+enum PromptEnvironment {
+  DEV
+  PREVIEW
+  RELEASE
+}
+
 model Example {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -177,8 +183,10 @@ model VerificationToken {
 }
 
 model PromptLog {
-  id                String         @id @default(uuid())
+  id                String            @id @default(uuid())
+  userId            String
   inputId           String?
+  environment       PromptEnvironment @default(DEV)
   version           String
   prompt            String
   completion        String
@@ -190,11 +198,11 @@ model PromptLog {
   completion_tokens Int
   total_tokens      Int
   extras            Json
-  labelledState     LabelledState  @default(UNLABELLED)
-  finetunedState    FinetunedState @default(UNPROCESSED)
+  labelledState     LabelledState     @default(UNLABELLED)
+  finetunedState    FinetunedState    @default(UNPROCESSED)
   promptPackageId   String
   promptTemplateId  String
   promptVersionId   String
-  createdAt         DateTime       @default(now()) @map("created_at")
-  updatedAt         DateTime       @updatedAt @map("updated_at")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
 }

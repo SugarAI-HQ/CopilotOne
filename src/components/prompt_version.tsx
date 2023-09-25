@@ -19,6 +19,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { CreateVersion } from "./create_version";
 import {inc} from 'semver'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
+import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 
 
 
@@ -52,7 +53,7 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
     }
   });
 
-  const runMutation = api.service.completion.useMutation(); // Make sure to import 'api' and set up the service
+  const runMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
 
 
   const handleTemplateChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -91,9 +92,12 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
     }
 
     const pl = await runMutation.mutateAsync({
-      promptPackageId: pv.promptPackageId,
-      promptTemplateId: pv.promptTemplateId,
-      id: pv.id,
+      username: ns.name,
+      package: pp.name,
+      template: pt.name,
+      version: pv.version,
+
+      environment: promptEnvironment.Enum.DEV,
       // TODO: Get this data from the UI
       data: data
       // data: {
@@ -124,9 +128,10 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
 
   const handleSave = () => {
     pvUpdateMutation.mutate({
-      id: pv.id,
       promptPackageId: pv.promptPackageId,
       promptTemplateId: pv.promptTemplateId,
+
+      version: pv.version,
 
       version: version,
       template: template,

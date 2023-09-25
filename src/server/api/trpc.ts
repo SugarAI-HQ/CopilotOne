@@ -7,15 +7,16 @@
  * need to use are documented accordingly near the end.
  */
 
-import { initTRPC, TRPCError } from "@trpc/server";
+import { initTRPC, TRPCError, experimental_standaloneMiddleware } from "@trpc/server";
 import { OpenApiMeta } from 'trpc-openapi';
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
+import { v4 as uuid } from 'uuid';
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
+import { PrismaClient } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -54,6 +55,9 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
+  
+  const requestId = uuid();
+  res.setHeader('x-request-id', requestId);
 
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
@@ -62,6 +66,31 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     session,
   });
 };
+
+// // eslint-disable-next-line @typescript-eslint/require-await
+// export const createAPIContext = async ({ req, res }: CreateNextContextOptions) => {
+//   const requestId = uuid();
+//   res.setHeader('x-request-id', requestId);
+
+//   let user: User | null = null;
+
+//   try {
+//     if (req.headers.authorization) {
+//       const token = req.headers.authorization.split(' ')[1];
+//       const userId = jwt.verify(token, jwtSecret) as string;
+//       if (userId) {
+//         // user = database.users.find((_user) => _user.id === userId) ?? null;
+//       }
+//     }
+//   } catch (cause) {
+//     console.error(cause);
+//   }
+
+//   return { user, requestId };
+// };
+
+
+
 
 /**
  * 2. INITIALIZATION
@@ -139,6 +168,52 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
       session: { ...ctx.session, user: ctx.session.user },
     },
   });
+});
+
+export const promptMiddleware = experimental_standaloneMiddleware<{
+  ctx: { session: Session, prisma: PrismaClient }; // defaults to 'object' if not defined
+  input: { 
+    username: string,
+    package: string,
+    template: string,
+    userId: string,
+    promptPackageId: string,
+    promptTemplateId: string,
+    // version: string
+  }; // defaults to 'unknown' if not defined
+  // 'meta', not defined here, defaults to 'object | undefined'
+}>().create(async (opts) => {
+  
+  // if (!opts.ctx.session.includes(opts.input.projectId)) {
+  //   throw new TRPCError({
+  //     code: 'FORBIDDEN',
+  //     message: 'Not allowed',
+  //   });
+  // }
+
+  const {id: userId} = await opts.ctx.prisma.user.findFirst({
+    where: {
+      name: opts.input.username
+    },
+    select: {id: true}
+  })
+  opts.input.userId = userId;
+  const {id: promptPackageId} = await opts.ctx.prisma.promptPackage.findFirst({
+    where: {
+      name: opts.input.package
+    },
+    select: {id: true}
+  })
+  opts.input.promptPackageId = promptPackageId;
+  const {id: promptTemplateId} = await opts.ctx.prisma.promptTemplate.findFirst({
+    where: {
+      name: opts.input.template
+    },
+    select: {id: true}
+  })
+  opts.input.promptTemplateId = promptTemplateId;
+ 
+  return opts.next();
 });
 
 /**
