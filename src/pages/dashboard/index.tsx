@@ -6,10 +6,9 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { api } from "~/utils/api";
 
 const Index = () => {
-
   const handlePackageCreate = async () => {
-    console.log
-  }
+    console.log;
+  };
 
   return (
     <div className="w-full">
@@ -18,49 +17,55 @@ const Index = () => {
         <meta name="description" content="Build your prompts" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+      <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#040306] to-[#494952]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Sugar <span className="text-[hsl(280,100%,70%)]">Factory</span>
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             
-          <div>
-            {/* <CreatePackageButton onPackageSubmit={handlePackageCreate} /> */}
-          </div>
-            <Link 
-              href="/prompt"
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20" 
+            <Link
+              href="/dashboard/prompt"
+              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
             >
               <h3 className="text-2xl font-bold">First Step →</h3>
               <div className="text-lg">
-                Create Prompt
+                Create Prompt Packages - Build, version and ship your prompts
+                over APIs.
               </div>
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
+              href="/marketplace"
               target="_blank"
             >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
+              <h3 className="text-2xl font-bold">Second Step →</h3>
               <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
+                Share your prompt packages with dev community.
               </div>
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
+              href="https://sugarcaneai.dev/docs"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Documentation →</h3>
               <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
+                Learn more about Sugarcane AI, architecture, problem it solves, and how
                 to deploy it.
               </div>
             </Link>
+            <Link
+              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+              href="https://github.com/sugarcane-ai"
+              target="_blank"
+            >
+              <h3 className="text-2xl font-bold">Contribute →</h3>
+              <div className="text-lg">
+                Checkout the code and make your first contribution.
+              </div>
+            </Link>
           </div>
-          
 
           <div className="flex flex-col items-center gap-2">
             <AuthShowcase />
@@ -69,9 +74,9 @@ const Index = () => {
       </main>
     </div>
   );
-}
+};
 
-Index.getLayout = getLayout
+Index.getLayout = getLayout;
 
 function AuthShowcase() {
   const { data: sessionData } = useSession();
@@ -91,4 +96,4 @@ function AuthShowcase() {
   );
 }
 
-export default Index
+export default Index;

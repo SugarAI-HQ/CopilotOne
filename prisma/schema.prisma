@@ -37,12 +37,6 @@ enum PromptEnvironment {
   RELEASE
 }
 
-model Example {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @map("updated_at")
-}
-
 // Necessary for Next auth
 model Account {
   id                String   @id @default(uuid())
