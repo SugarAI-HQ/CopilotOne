@@ -1,5 +1,6 @@
 
 import { z } from "zod";
+import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
 
 const versionNameInput = z.string()
 
@@ -61,6 +62,7 @@ export type DeleteVersionInput = z.infer<typeof deleteVersionInput>;
 
 const versionSchema = z.object({
     id: z.string(),
+    forkedFromId: z.string().nullable(),
     userId: z.string(),
     promptPackageId: z.string(),
     promptTemplateId: z.string(),
@@ -69,10 +71,10 @@ const versionSchema = z.object({
     
     llmProvider: z.string(),
     llmModel: z.string(),
-    llmConfig: z.record(z.any()),
+    llmConfig: InputJsonValue.nullable(),
 
-    publishedAt: z.null().or(z.coerce.date()),
-    changelog: z.string(),
+    publishedAt: z.coerce.date().nullable(),
+    changelog: z.string().nullable(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })

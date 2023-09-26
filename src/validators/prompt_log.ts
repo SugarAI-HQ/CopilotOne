@@ -1,6 +1,7 @@
 
 import { z } from "zod";
 import { promptEnvironment } from "./base";
+import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
 
 export const getLogsInput = z
     .object({
@@ -22,7 +23,7 @@ const logSchema = z.object({
     completion: z.string(),
     llmProvider: z.string(),
     llmModel: z.string(),
-    llmConfig: z.record(z.any()),
+    llmConfig: InputJsonValue.nullable(),
 
     environment: promptEnvironment,
 

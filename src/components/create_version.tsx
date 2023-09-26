@@ -90,7 +90,7 @@ export function CreateVersion({
         </IconButton>
       </Grid>
 
-      <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog open={isOpen} onClose={handleClose} maxWidth="sm">
         <DialogTitle>
           New Prompt Version
         </DialogTitle>
@@ -98,7 +98,7 @@ export function CreateVersion({
           <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
-            <FormControl fullWidth>
+            <FormControl>
               <FormLabel>Version</FormLabel>
               <TextField
                 variant="outlined"

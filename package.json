@@ -42,7 +42,8 @@
     "swagger-ui-react": "^5.6.2",
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.0",
-    "zod": "^3.21.4"
+    "zod": "^3.21.4",
+    "zod-prisma-types": "^2.7.9"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.6.1",

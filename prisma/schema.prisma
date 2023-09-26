@@ -3,6 +3,11 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
+generator zod {
+  provider = "zod-prisma-types"
+  output = "../src/generated/prisma-client-zod.ts"
+}
+
 // console.log(`database url ${env("DATABASE_URL")}`);
 datasource db {
   // provider = "sqlite"

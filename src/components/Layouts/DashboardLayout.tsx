@@ -170,7 +170,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboard
+              
             </Typography>
             {isPromptsRoute && (
               <div className="flex items-center gap-3">

@@ -180,7 +180,7 @@ export const promptRouter = createTRPCRouter({
     .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.user.id;
-      let pv = null;
+      // let pv = null;
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
 
@@ -212,22 +212,24 @@ You act as {@ROLE}, {@DESCRIPTION}
         // defaultTemplate.forkedFromId = input.forkedFromId
       }
 
-      if (userId) {
-        pv = await ctx.prisma.promptVersion.create({
-          data: {
-            userId: userId,
-            forkedFromId: input.forkedFromId,
-
-            promptPackageId: input.promptPackageId,
-            promptTemplateId: input.promptTemplateId,
-            version: input.version,
-            
-            ...defaultTemplate,
-            
-            changelog: "",
-          },
-        });
+      if (!userId) {
+        return null
       }
+
+      const pv = await ctx.prisma.promptVersion.create({
+        data: {
+          userId: userId,
+          forkedFromId: input.forkedFromId,
+
+          promptPackageId: input.promptPackageId,
+          promptTemplateId: input.promptTemplateId,
+          version: input.version,
+          
+          ...defaultTemplate,
+          
+          changelog: "",
+        },
+      });
 
       return pv;
     }),

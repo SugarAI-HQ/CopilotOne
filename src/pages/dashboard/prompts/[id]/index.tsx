@@ -27,7 +27,7 @@ const PackageShow: NextPage = () => {
         id: packageId
     });
     console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
-    const [ptId, setPtId] = useState<string>();
+    const [ptId, setPtId] = useState<string>('');
     const [pt, setPt] = useState<pt>();
 
     const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
@@ -148,7 +148,7 @@ const PackageShow: NextPage = () => {
                         
                     </Toolbar>
                 )}
-                <PromptTemplate ns={ns} pt={pt} pp={pp} onTemplateUpdate={handleTemplateUpdate}></PromptTemplate>
+                {pt && <PromptTemplate ns={ns} pt={pt} pp={pp} onTemplateUpdate={handleTemplateUpdate}></PromptTemplate>}
             </Box>
         </>
     );
