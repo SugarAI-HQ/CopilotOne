@@ -21,9 +21,9 @@ import {
   PromptTemplate as pt,
   PromptVersion as pv,
 } from "@prisma/client";
-import CodeHighlight from "./code_highlight";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
+import { PromptIntegration } from "./integration/prompt_integration";
 
 function PromptDeploy({
   ns,
@@ -108,18 +108,6 @@ function PromptDeploy({
     }, 1000);
   };
 
-  const identifier = `${ns.name}/${pp.name}/${pt.name}#${pv.version}`;
-
-  const codeExample = `
-import { SugarcaneAIClient } from "@sugarcane-ai/kitchen-js";
-
-const apiKey = 'your-api-key';
-const client = new SugarcaneAIClient(apiKey);
-
-const template = client.getTemplate("${identifier}");
-console.log(template);
-`;
-
   return (
     <span>
       <Button color="success" variant="text" onClick={handleOpenModal}>
@@ -130,7 +118,6 @@ console.log(template);
         <DialogContent>
           <Typography></Typography>
           <Typography gutterBottom variant="h5" component="div">
-            {identifier}
           </Typography>
           <Typography variant="body2" color="text.secondary"></Typography>
           {isDeploying ? (
@@ -142,7 +129,7 @@ console.log(template);
             <div>
               <p>Deployment successful!</p>
               <p>You can access it over the API</p>
-              <CodeHighlight code={codeExample} language="typescript" />
+              <PromptIntegration ns={ns} pp={pp} pt={pt} pv={pv}></PromptIntegration>
               <Button color="primary" autoFocus onClick={handleCloseModal}>
                 Close
               </Button>

@@ -76,7 +76,7 @@ export const deleteTemplateInput = z
 export type DeleteTemplateInput = z.infer<typeof deleteTemplateInput>;
   
 
-const templateSchema = z.object({
+export const templateSchema = z.object({
     id: z.string(),
     
     userId: z.string(),
@@ -88,8 +88,8 @@ const templateSchema = z.object({
     releaseVersionId: z.string().or(z.null()),
     previewVersionId: z.string().or(z.null()),
     
-    releaseVersion: z.record(z.any()).or(z.null()),
-    previewVersion: z.record(z.any()).or(z.null()),
+    releaseVersion: z.null().optional().or(z.record(z.any())),
+    previewVersion: z.null().optional().or(z.record(z.any())),
 
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

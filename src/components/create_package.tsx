@@ -8,9 +8,12 @@ import {
   DialogTitle,
   Divider,
   FormControl,
+  FormControlLabel,
   FormLabel,
   Grid,
   Input,
+  Radio,
+  RadioGroup,
   Stack,
   TextField,
   Typography,
@@ -20,6 +23,7 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [visibility, setVisibility] = React.useState('public');
 
   const handleClose = () => {
     setName("")
@@ -31,8 +35,13 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
     onSubmit({
       name: name,
       description: description,
+      visibility: visibility,
     });
     handleClose(); // Close the modal after submitting
+  };
+
+  const handleVisibilityChange = (event) => {
+    setVisibility(event.target.value);
   };
 
   return (
@@ -69,6 +78,43 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </FormControl>
+
+
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Visibility</FormLabel>
+              <RadioGroup
+                aria-label="visibility"
+                name="visibilityGroup"
+                value={visibility}
+                onChange={handleVisibilityChange}
+              >
+                <FormControlLabel
+                  value="PUBLIC"
+                  control={<Radio />}
+                  label="Public"
+                  id="public-radio"
+                />
+                <FormControlLabel
+                  value="PRIVATE"
+                  control={<Radio />}
+                  label="Private"
+                  id="private-radio"
+                />
+              </RadioGroup>
+              <div>
+                {visibility === 'PUBLIC' ? (
+                  <span>
+                    Anyone on the internet can use this package. You choose who can edit.
+                  </span>
+                ) : (
+                  <span>
+                    You choose who can see and commit to this package.
+                  </span>
+                )}
+              </div>
+            </FormControl>
+
+
           </Stack>
         </DialogContent>
 

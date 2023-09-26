@@ -33,6 +33,7 @@ import {
   logListOutput,
 } from "~/validators/prompt_log";
 import { JsonObject } from "@prisma/client/runtime/library";
+import { Visibility } from "@mui/icons-material";
 
 
 export const promptRouter = createTRPCRouter({
@@ -48,12 +49,19 @@ export const promptRouter = createTRPCRouter({
     .input(getPackagesInput)
     .output(packageListOutput)
     .query(async ({ ctx, input }) => {
+      
+      let query = {
+        userId: ctx.session?.user.id,
+      }
+      
+      if(input.visibility) {
+        query.visibility = input.visibility
+      }
+      
       const packages = await ctx.prisma.promptPackage.findMany({
-        where: {
-          userId: ctx.session?.user.id,
-        },
+        where: query,
       });
-      // console.log(`packages -------------- ${JSON.stringify(packages)}`);
+      console.log(`packages out -------------- ${JSON.stringify(packages)}`);
       return packages;
     }),
 
@@ -61,11 +69,16 @@ export const promptRouter = createTRPCRouter({
     .input(getPackageInput)
     .output(packageOutput)
     .query(async ({ ctx, input }) => {
+      let query = {
+        userId: ctx.session?.user.id,
+        id: input.id,
+      }
+      if (input.visibility) {
+        query.visibility = input.visibility;
+      }
+
       const pkg = await ctx.prisma.promptPackage.findFirst({
-        where: {
-          userId: ctx.session?.user.id,
-          id: input.id,
-        },
+        where: query
       });
       console.log(`package -------------- ${JSON.stringify(pkg)}`);
       return pkg;
@@ -82,6 +95,7 @@ export const promptRouter = createTRPCRouter({
           data: {
             name: input.name,
             description: input.description,
+
             userId: userId,
           },
         });

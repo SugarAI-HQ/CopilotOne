@@ -10,6 +10,7 @@ import {
   Grid,
   Snackbar,
   Alert,
+  Chip,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
 import { api } from "~/utils/api";
@@ -34,6 +35,7 @@ function Packages() {
               <CardActions>
                 <MUILink href={`/dashboard/prompts/${pkg.id}`}>View</MUILink>
                 <MUILink href={`/dashboard/prompts/${pkg.id}/logs`}>Logs</MUILink>
+                <Chip sx={{ml: 10}} label={pkg?.visibility} variant="outlined" />
               </CardActions>
             </Card>
           </Grid>

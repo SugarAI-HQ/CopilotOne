@@ -25,6 +25,11 @@ enum LabelledState {
   NOTSURE
 }
 
+enum PackageVisibility {
+  PUBLIC
+  PRIVATE
+}
+
 // FinetunedState enum-like values
 enum FinetunedState {
   UNPROCESSED
@@ -92,6 +97,7 @@ model PromptPackage {
   userId          String
   name            String
   description     String
+  visibility      PackageVisibility @default(PUBLIC)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt @map("updated_at")
   User            User              @relation(fields: [userId], references: [id])

@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { promptRouter } from "./routers/prompt";
+import { marketplaceRouter } from "./routers/marketplace";
 import { serviceRouter } from "./routers/service";
 
 // export const runtime = 'nodejs';
@@ -11,7 +12,8 @@ import { serviceRouter } from "./routers/service";
  */
 export const appRouter = createTRPCRouter({
   prompt: promptRouter,
-  service: serviceRouter
+  service: serviceRouter,
+  marketplace: marketplaceRouter
 });
 
 // export type definition of API

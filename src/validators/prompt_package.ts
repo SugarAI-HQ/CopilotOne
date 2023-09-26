@@ -1,5 +1,7 @@
 
 import { z } from "zod";
+import { packageVisibility, publicUserSchem } from "./base";
+import { templateSchema } from "./prompt_template";
 
 const RESERVED_NAMES = [
     "sign-up",
@@ -50,13 +52,15 @@ const RESERVED_NAMES = [
 export const getPackagesInput = z
     .object({
         userId: z.string().optional(),
+        visibility: packageVisibility.optional(),
     }).optional()
     // .strict()
 export type GetPackagesInput = z.infer<typeof getPackagesInput>;
 
 export const getPackageInput = z
     .object({
-        id: z.string().uuid()
+        id: z.string().uuid(),
+        visibility: z.null().optional().or(packageVisibility),
     })
     .strict()
     .required()
@@ -78,7 +82,8 @@ export const createPackageInput = z
         .refine((value) => !RESERVED_NAMES.includes(value), {
             message: "This name is reserved.",
         }),
-        description: z.string() 
+        description: z.string(),
+        visibility: packageVisibility
     })
     .strict()
     .required();
@@ -124,9 +129,12 @@ export const packageSchema = z
     id: z.string(),
     userId: z.string(),
     name: z.string(),
+    visibility: packageVisibility,
     description: z.string(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
+    User: publicUserSchem.optional(),
+    templates: z.array(templateSchema).optional(),
 });
 
 export const packageOutput = packageSchema.or(z.null())
