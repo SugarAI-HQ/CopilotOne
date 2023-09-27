@@ -184,10 +184,7 @@ export const promptRouter = createTRPCRouter({
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
 
-      let template = `
-You a bot name {#BOT_NAME} trained by {#PROVIDER}
-You act as {@ROLE}, {@DESCRIPTION}
-`;    
+      let template = `I am looking at the {@OBJECT}`;    
 
       let defaultTemplate = {
         template: template,
@@ -251,7 +248,7 @@ You act as {@ROLE}, {@DESCRIPTION}
             promptTemplateId: input.promptTemplateId,
           },
           data: {
-            version: input.version,
+            // version: input.version,
             template: input.template,
             // changelog: input.changelog,
             llmProvider: input.llmProvider,

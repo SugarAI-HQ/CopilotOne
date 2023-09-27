@@ -26,12 +26,12 @@ const PackageShow: NextPage = () => {
     const { data: pp, refetch: rpp } = api.prompt.getPackage.useQuery({ 
         id: packageId
     });
-    console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
+    // console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
     const [ptId, setPtId] = useState<string>('');
     const [pt, setPt] = useState<pt>();
 
     const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery({ promptPackageId: packageId });
-    console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
+    // console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
     const handleTemplateSelection = (e: any) => {
         const id = e.target.value;

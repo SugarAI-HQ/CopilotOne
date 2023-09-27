@@ -24,7 +24,7 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
     promptTemplateId: pt?.id,
   });
 
-  console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
+  // console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
   const [activeTab, setActiveTab] = useState(0);
 

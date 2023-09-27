@@ -39,12 +39,12 @@ export const updateVersionInput = z
         promptPackageId: z.string(),
         promptTemplateId: z.string(),
 
-        version: z.string(),
+        // version: z.string(),
         template: z.string(),
         // changelog: z.string().optional(),
         llmProvider: z.string(),
         llmModel: z.string(),
-        llmConfig: z.record(z.any())
+        llmConfig: InputJsonValue.nullable(),
     })
     .strict()
     .required();

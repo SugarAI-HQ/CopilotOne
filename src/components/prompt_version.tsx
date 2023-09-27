@@ -4,6 +4,8 @@ import {
   Box,
   Button,
   Divider,
+  Grid,
+  Stack,
 } from "@mui/material";
 import LLMSelector from "./llm_selector";
 import LLMConfig, { LLMConfigProps } from "./llm_config";
@@ -20,7 +22,7 @@ import { CreateVersion } from "./create_version";
 import {inc} from 'semver'
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
-
+import LogLabel from "./dataset/log_label";
 
 
 function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }:
@@ -41,7 +43,7 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
 
   const [promptOutput, setPromptOutput] = useState('');
   const [promptPerformance, setPromptPerformacne] = useState({});
-  const [pvrs, setVariables] = useState<PromptVariableProps[]>(getUniqueJsonArray(getVariables(pt?.description || ''), "key"));
+  const [pvrs, setVariables] = useState<PromptVariableProps[]>(getUniqueJsonArray(getVariables(pv?.template || ''), "key"));
 
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
@@ -61,7 +63,7 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
     setTemplate(txt);
 
     const variables = getUniqueJsonArray(getVariables(txt), "key")
-    console.log(`variables >>>> ${JSON.stringify(variables)}`);
+    // console.log(`variables >>>> ${JSON.stringify(variables)}`);
     setVariables(variables);
     // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
     
@@ -72,7 +74,7 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
       return pvrs.map((pvr) => {
         if (pvr.key === k) {
           // pvr.value = v;
-          console.log(`value of ${pvr.key}: ${pvr.value} => ${v}`);
+          console.log(`gPv  ${pvr.key}: ${pvr.value} => ${v}`);
           return { ...pvr, ...{ value: v } };
         }
         return pvr;
@@ -98,20 +100,7 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
       version: pv.version,
 
       environment: promptEnvironment.Enum.DEV,
-      // TODO: Get this data from the UI
       data: data
-      // data: {
-      //   "#BOT_NAME": "Riya",
-      //   "#PROVIDER": "Open AI",
-      //   "@ROLE": "Insurance Agent",
-      //   "@DESCRIPTION": "A smart assistant for Insurance Needs",
-      //   "@TASKS": [
-      //     "buy motor insurance policy",
-      //     "answer relevant queries about insurance policies",
-      //   ],
-      //   "$CHAT_HISTORY": "No recent chat",
-      //   "%QUERY": "How are you doing?",
-      // },
     });
 
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
@@ -130,17 +119,19 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
     pvUpdateMutation.mutate({
       promptPackageId: pv.promptPackageId,
       promptTemplateId: pv.promptTemplateId,
+      id: pv.id,
 
-      version: pv.version,
-
-      version: version,
       template: template,
-      // input: pvrs,
       llmProvider: provider,
       llmModel: model,
       llmConfig: llmConfig,
     });
   }
+
+  const handleTest = () => {
+  }
+
+  
 
   return (
     <>
@@ -190,6 +181,7 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
           
         <TextField
             label="Template"
+            disabled={!!pv.publishedAt}
             multiline
             fullWidth
             style={{ width: '100%' }}
@@ -209,35 +201,61 @@ function PromptVersion({ ns, pp, pt, pv, handleVersionCreate, onTemplateUpdate }
           /> */}
           
           <Divider textAlign="right"></Divider>
-          <Box sx={{m: 1}}>
+          <Stack direction="row" spacing={1} sx={{p:1}}>
             <Button
               color="success"
               variant="outlined"
               onClick={handleRun}
-              disabled={template.length <= 50}
+              disabled={template.length <= 10}
               >
               Run
             </Button>
-            <LLMSelector
-              initialProvider={provider}
-              initialModel={model}
-              onProviderChange={setProvider}
-              onModelChange={setModel}
-            ></LLMSelector>
-            <LLMConfig
-              config={llmConfig}
-              setConfig={setLLMConfig}
-            ></LLMConfig>
+            <Button
+              color="success"
+              variant="outlined"
+              onClick={handleTest}
+              disabled={template.length <= 10}
+              >
+              Test
+            </Button>
 
-          </Box>
+            <Button
+              color="success"
+              variant="outlined"
+              onClick={handleTest}
+              disabled={true}
+              >
+              Finetune
+            </Button>
+
+            <Grid container justifyContent={"flex-end"}>
+              <LLMSelector
+                initialProvider={provider}
+                initialModel={model}
+                onProviderChange={setProvider}
+                onModelChange={setModel}
+              ></LLMSelector>
+              <LLMConfig
+                config={llmConfig}
+                setConfig={setLLMConfig}
+              ></LLMConfig>
+            </Grid>
+          </Stack>
         </Box>
 
         <Box sx={{m: 1}}>
-          {/* <Divider textAlign="center"></Divider> */}
-          <PromptPerformance data={promptPerformance}></PromptPerformance>
-          <PromptOutput
-            output={promptOutput}
-          ></PromptOutput>
+          {promptOutput && <Stack direction="row" spacing={2} sx={{p:1}}>
+            <Grid container justifyContent={"flex-start"}>
+              <PromptOutput
+                output={promptOutput}
+              ></PromptOutput>
+              <LogLabel></LogLabel>
+            </Grid>
+            <Grid container alignItems="center" alignContent={'center'}>
+              <PromptPerformance data={promptPerformance}></PromptPerformance>
+            </Grid>
+          </Stack>}
+          
         </Box>
         <Box sx={{m: 1}}>
           <PromptVariables

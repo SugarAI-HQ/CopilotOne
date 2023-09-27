@@ -17,7 +17,6 @@ export interface LLMConfigProps {
   presencePenalty: number,
   logitBias: string,
   stopSequences: string,
-
 }
 
 const LLMConfigModal = ({ isOpen, onClose, config, setConfig }: { isOpen: boolean, onClose: Function, config: any, setConfig: Function }) => {
