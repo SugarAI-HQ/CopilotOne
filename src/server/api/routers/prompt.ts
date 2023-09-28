@@ -28,10 +28,6 @@ import {
   versionOutput,
   versionListOutput,
 } from "~/validators/prompt_version";
-import {
-  getLogsInput,
-  logListOutput,
-} from "~/validators/prompt_log";
 import { JsonObject } from "@prisma/client/runtime/library";
 import { Visibility } from "@mui/icons-material";
 
@@ -49,15 +45,15 @@ export const promptRouter = createTRPCRouter({
     .input(getPackagesInput)
     .output(packageListOutput)
     .query(async ({ ctx, input }) => {
-      
+
       let query = {
         userId: ctx.session?.user.id,
       }
-      
+
       if(input.visibility) {
         query.visibility = input.visibility
       }
-      
+
       const packages = await ctx.prisma.promptPackage.findMany({
         where: query,
       });
@@ -126,7 +122,7 @@ export const promptRouter = createTRPCRouter({
           },
         });
       }
-      
+
       console.log(`template output -------------- ${JSON.stringify(pt)}`);
 
       return pt;
@@ -184,7 +180,7 @@ export const promptRouter = createTRPCRouter({
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
 
-      let template = `I am looking at the {@OBJECT}`;    
+      let template = `I am looking at the {@OBJECT}`;
 
       let defaultTemplate = {
         template: template,
@@ -193,7 +189,7 @@ export const promptRouter = createTRPCRouter({
         llmConfig: {},
         // forkedFromId: null
       }
-      
+
 
       if(input.forkedFromId) {
         const forkedFrom = await ctx.prisma.promptVersion.findUnique({
@@ -221,9 +217,9 @@ export const promptRouter = createTRPCRouter({
           promptPackageId: input.promptPackageId,
           promptTemplateId: input.promptTemplateId,
           version: input.version,
-          
+
           ...defaultTemplate,
-          
+
           changelog: "",
         },
       });
@@ -278,7 +274,7 @@ export const promptRouter = createTRPCRouter({
 
       let templateData = {}
       templateData[`${input.environment}VersionId`] = input.promptVersionId
-      
+
       // data[`${input.environment}Version`] = {
       //   connect: {
       //     id: input.promptVersionId
@@ -333,26 +329,7 @@ export const promptRouter = createTRPCRouter({
       });
       console.log(`versions output -------------- ${JSON.stringify(versions)}`);
       return versions;
-    }),
-
-
-    getLogs: publicProcedure
-    .input(getLogsInput)
-    .output(logListOutput)
-    .query(async ({ ctx, input }) => {
-      // console.log(`versions -------------- ${JSON.stringify(input)}`);
-      const versions = await ctx.prisma.promptLog.findMany({
-        where: {
-          // userId: ctx.session?.user.id,
-          promptPackageId: input.promptPackageId,
-          // promptTemplateId: input.promptTemplateId,
-          // promptVersion: input.promptVersionId,
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
-      });
-      console.log(`pls -------------- ${JSON.stringify(versions)}`);
-      return versions;
     })
 });
+
+

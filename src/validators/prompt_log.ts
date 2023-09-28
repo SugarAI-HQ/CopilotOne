@@ -40,6 +40,11 @@ const logSchema = z.object({
     updatedAt: z.coerce.date(),
 })
 
+export const updateLabel = z.object({
+    id: z.string(),
+    labelledState: z.string()
+});
+
 export const logOutput = logSchema.or(z.null())
 export type LogOutput = z.infer<typeof logOutput>;
 
@@ -49,21 +54,21 @@ export type LogListOutput = z.infer<typeof logListOutput>;
 
 // const dd = {
 //     "id": "clmq7ranr0001sgpp3l6qou92",
-//     "userId": "clmpdlyre0000sgj58t3yilf8", 
-//     "log": "0.0.1", 
-//     "template": "\nYou a bot name {#BOT_NAME} trained by {#PROVIDER}\nYou act as {@C_ROLE}, {@C_DESCRIPTION}\n", 
-    
-//     "inputFields": [], 
-//     "templateFields": [], 
-//     "changelog": "TTD", 
-//     "llmProvider": "openai", 
-//     "llmModel": "gpt-3.5-turbo", 
-//     "llmConfig": {}, 
-//     "lang": [], 
-//     "outAccuracy": null, 
-//     "outLatency": null, 
-//     "outCost": null, 
-//     "promptPackageId": 
-//     "clmpdm6jm0006sgj59s49k8nv", 
+//     "userId": "clmpdlyre0000sgj58t3yilf8",
+//     "log": "0.0.1",
+//     "template": "\nYou a bot name {#BOT_NAME} trained by {#PROVIDER}\nYou act as {@C_ROLE}, {@C_DESCRIPTION}\n",
+
+//     "inputFields": [],
+//     "templateFields": [],
+//     "changelog": "TTD",
+//     "llmProvider": "openai",
+//     "llmModel": "gpt-3.5-turbo",
+//     "llmConfig": {},
+//     "lang": [],
+//     "outAccuracy": null,
+//     "outLatency": null,
+//     "outCost": null,
+//     "promptPackageId":
+//     "clmpdm6jm0006sgj59s49k8nv",
 //     "promptTemplateId": "clmpzzla20003sg6fku7k5qtv"
 // }
