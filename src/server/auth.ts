@@ -7,6 +7,7 @@ import {
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
@@ -45,11 +46,10 @@ export const authOptions: NextAuthOptions = {
         ...session.user,
         id: user.id,
       },
-      
     }),
-    redirect: ({ url, baseUrl } : {url: string, baseUrl: string}) => {
-      console.log(url,baseUrl)
-      return '/dashboard'; 
+    redirect: ({ url, baseUrl }: { url: string; baseUrl: string }) => {
+      console.log(url, baseUrl);
+      return "/dashboard";
     },
   },
   adapter: PrismaAdapter(prisma),
@@ -58,11 +58,15 @@ export const authOptions: NextAuthOptions = {
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
     }),
-    
+
     GithubProvider({
       clientId: env.GITHUB_CLIENT_ID,
       clientSecret: env.GITHUB_SECRET,
-    })
+    }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
 
     /**
      * ...add more providers here.
@@ -74,7 +78,6 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
-  
 };
 
 /**
