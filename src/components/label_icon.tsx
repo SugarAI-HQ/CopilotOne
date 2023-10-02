@@ -4,6 +4,7 @@ import Tooltip from "@mui/material/Tooltip";
 import * as Icons from "@mui/icons-material";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
+import { LabelledState } from "~/validators/prompt_log";
 
 interface LabelStateIconsProps {
   logId: string;
@@ -28,14 +29,14 @@ const LabelIcons: React.FC<LabelStateIconsProps> = ({
 
   const mutation = api.log.updateLogLabel.useMutation();
 
-  const handleLabelChange = (logId: string, newLabelState: string) => {
+  const handleLabelChange = (logId: string, newLabelState: LabelledState) => {
     mutation.mutate({ id: logId, labelledState: newLabelState });
     toast.success(
       `The label state has been successfully changed to "${newLabelState}".`,
     );
   };
 
-  const handleIconClick = (state: string) => {
+  const handleIconClick = (state: LabelledState) => {
     setSelectedLabel(state);
     handleLabelChange(logId, state);
   };
@@ -51,7 +52,7 @@ const LabelIcons: React.FC<LabelStateIconsProps> = ({
             <span>
               <IconButton
                 size="small"
-                onClick={() => handleIconClick(state)}
+                onClick={() => handleIconClick(state as LabelledState)}
                 disabled={isSelected}
               >
                 <IconComponent />

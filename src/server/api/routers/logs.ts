@@ -12,20 +12,48 @@ export const logRouter = createTRPCRouter({
     .input(getLogsInput)
     .output(logListOutput)
     .query(async ({ ctx, input }) => {
-    // console.log(`versions -------------- ${JSON.stringify(input)}`);
-    const versions = await ctx.prisma.promptLog.findMany({
+
+    const { promptPackageId, cursor, perPage } = input;
+
+    const totalRecords = await ctx.prisma.promptLog.count({
       where: {
-        // userId: ctx.session?.user.id,
         promptPackageId: input.promptPackageId,
-        // promptTemplateId: input.promptTemplateId,
-        // promptVersion: input.promptVersionId,
+      },
+    });
+    const totalPages = Math.ceil(totalRecords / perPage);
+
+    const logs = await ctx.prisma.promptLog.findMany({
+      cursor: cursor ? { id: cursor } : undefined,
+      where: {
+        promptPackageId,
+        id: {},
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
+      take: perPage + 1,
     });
-    console.log(`pls -------------- ${JSON.stringify(versions)}`);
-    return versions;
+
+    const hasMore = logs.length >= perPage;
+    const slicedLogs = hasMore ? logs.slice(0, perPage) : logs;
+    let nextPageCursor: typeof cursor | undefined = undefined;
+
+    if (logs.length > perPage) {
+      const nextItem = logs.pop();
+      nextPageCursor = nextItem!.id;
+    }
+
+    const response = {
+      data: slicedLogs,
+      totalPages: totalPages,
+      hasNextPage: hasMore,
+      nextCursor: nextPageCursor,
+    };
+
+    console.log(`updated label -------------- ${JSON.stringify(response)}`);
+
+    return response
+
   }),
 
   updateLogLabel: publicProcedure

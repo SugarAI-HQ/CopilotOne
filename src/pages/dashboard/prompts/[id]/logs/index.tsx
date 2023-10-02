@@ -7,7 +7,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  Button
 } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -15,13 +16,14 @@ import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
 import LabelIcons from "~/components/label_icon";
-
 import { NextPageWithLayout } from "~/pages/_app";
+import { LabelledState } from "~/validators/prompt_log";
 
 interface PromptLog {
   id: string;
   inputId?: string;
   prompt: string;
+  version: string;
   completion: string;
   llmProvider: string;
   llmModel: string;
@@ -31,10 +33,10 @@ interface PromptLog {
   };
   latency: number;
   prompt_tokens: number;
+  environment: string;
   completion_tokens: number;
   total_tokens: number;
   extras: Record<string, any>;
-
   labelledState: LabelledState;
   finetunedState: FinetunedState;
   promptPackageId: string;
@@ -44,8 +46,10 @@ interface PromptLog {
   updatedAt: string;
 }
 
-type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
+// type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
+
+const itemsPerPage = 10;
 
 const PromptLogTable: NextPageWithLayout = () => {
   // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([])
@@ -53,23 +57,38 @@ const PromptLogTable: NextPageWithLayout = () => {
   const packageId = router.query.id as string;
 
 
-  const { data: pls } = api.log.getLogs.useQuery({
-    promptPackageId: packageId
-  });
 
-  const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
+  // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
+  const { data, hasNextPage, fetchNextPage, refetch } = api.log.getLogs.useInfiniteQuery(
+    {
+      promptPackageId: packageId,
+      perPage: itemsPerPage,
+    },
+    {
+      getNextPageParam: (lastPage) => {
+        return lastPage.hasNextPage ? lastPage.nextCursor : undefined;
+      },
+
+    }
+  );
+
+  const promptLogs = data ? data.pages.flatMap((page) => page.data) : [];
+
   useEffect(() => {
-    // Fetch data from your backend API using Axios or any other library.
-    // Replace 'YOUR_API_ENDPOINT' with the actual API endpoint.
-    // Example: axios.get('/api/prompt-logs').then((response) => setPromptLogs(response.data));
+    // Fetch initial page of data
+    refetch();
   }, []);
 
 
   const handleSearch = () => {
     // Implement the search logic here.
     // Filter the promptLogs array based on the searchText.
+  };
+
+  const loadMore = () => {
+    fetchNextPage();
   };
 
   return (
@@ -89,23 +108,20 @@ const PromptLogTable: NextPageWithLayout = () => {
               <TableCell>ID</TableCell>
               <TableCell>Prompt</TableCell>
               <TableCell>Completion</TableCell>
+              <TableCell>Version</TableCell>
               <TableCell>LLM Provider</TableCell>
               <TableCell>LLM Model</TableCell>
-
               <TableCell>Total Tokens</TableCell>
               <TableCell>Environment</TableCell>
               <TableCell>Latency(in ms)</TableCell>
-
               <TableCell>Labelled State</TableCell>
               <TableCell>Finetuned State</TableCell>
-
               <TableCell>Created At</TableCell>
               <TableCell>Updated At</TableCell>
-
             </TableRow>
           </TableHead>
           <TableBody>
-            {pls?.map((log) => (
+            {promptLogs.map((log) => (
               <TableRow key={log.id}>
                 <TableCell>{log.id}</TableCell>
                 <TableCell>
@@ -116,10 +132,9 @@ const PromptLogTable: NextPageWithLayout = () => {
                   {log.completion}
                   <p>tokens: {log.completion_tokens}</p>
                 </TableCell>
-
+                <TableCell>{log.version}</TableCell>
                 <TableCell>{log.llmProvider}</TableCell>
                 <TableCell>{log.llmModel}</TableCell>
-
                 <TableCell>{log.total_tokens}</TableCell>
                 <TableCell>{log.environment}</TableCell>
                 <TableCell>{log.latency}</TableCell>
@@ -130,15 +145,25 @@ const PromptLogTable: NextPageWithLayout = () => {
                   />
                 </TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
-
                 <TableCell><TimeAgo date={log.createdAt}/></TableCell>
                 <TableCell><TimeAgo date={log.updatedAt}/></TableCell>
-
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="pt-5 flex justify-center items-center">
+        {hasNextPage && (
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={loadMore}
+            className="ml-2"
+          >
+            Load More
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
