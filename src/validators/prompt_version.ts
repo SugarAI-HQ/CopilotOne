@@ -11,6 +11,7 @@ export const llmConfigSchema = z.object({
   presencePenalty: z.number().optional(),
   logitBias: z.string().optional(),
   stopSequences: z.string().optional(),
+  maxTokens: z.number().optional(),
 });
 export type LlmConfigSchema = z.infer<typeof llmConfigSchema>;
 
@@ -54,7 +55,7 @@ export const updateVersionInput = z
     // changelog: z.string().optional(),
     llmProvider: z.string(),
     llmModel: z.string(),
-    llmConfig: llmConfigSchema.nullable(),
+    llmConfig: llmConfigSchema,
   })
   .strict()
   .required();

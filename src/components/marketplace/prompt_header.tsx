@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import LikeButton from "./like_button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { PackageOutput as pp } from "~/validators/prompt_package";
+import { PackagePublicOutput as pp } from "~/validators/marketplace";
 
 const PromptHeader = ({ pp }: { pp: pp }) => {
   const likes = 1008;
@@ -29,7 +29,7 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
           <Grid container alignItems="center" spacing={2}>
             <Grid item>
               <Avatar
-                src={pp?.User?.image}
+                src={pp?.User?.image || "/default-avatar.png"}
                 alt=""
                 sx={{ width: 42, height: 42, borderRadius: "50%" }}
               />

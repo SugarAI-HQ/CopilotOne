@@ -7,17 +7,21 @@
  * need to use are documented accordingly near the end.
  */
 
-import { initTRPC, TRPCError, experimental_standaloneMiddleware } from "@trpc/server";
-import { OpenApiMeta } from 'trpc-openapi';
+import {
+  initTRPC,
+  TRPCError,
+  experimental_standaloneMiddleware,
+} from "@trpc/server";
+import { OpenApiMeta } from "trpc-openapi";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from "uuid";
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { PrismaClient } from "@prisma/client";
-import { GenerateInput} from "~/validators/service";
+import { GenerateInput } from "~/validators/service";
 
 /**
  * 1. CONTEXT
@@ -27,8 +31,9 @@ import { GenerateInput} from "~/validators/service";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
+type NullableSession = Session | null;
 interface CreateContextOptions {
-  session: Session | null;
+  session: NullableSession;
 }
 
 /**
@@ -56,9 +61,9 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
-  
+
   const requestId = uuid();
-  res.setHeader('x-request-id', requestId);
+  res.setHeader("x-request-id", requestId);
 
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
@@ -90,9 +95,6 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 //   return { user, requestId };
 // };
 
-
-
-
 /**
  * 2. INITIALIZATION
  *
@@ -104,21 +106,21 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 // const t = initTRPC.meta<OpenApiMeta>().create({
 
 const t = initTRPC
-.context<typeof createTRPCContext>()
-.meta<OpenApiMeta>()
-.create({
-  transformer: superjson,
-  errorFormatter({ shape, error }) {
-    return {
-      ...shape,
-      data: {
-        ...shape.data,
-        zodError:
-          error.cause instanceof ZodError ? error.cause.flatten() : null,
-      },
-    };
-  },
-});
+  .context<typeof createTRPCContext>()
+  .meta<OpenApiMeta>()
+  .create({
+    transformer: superjson,
+    errorFormatter({ shape, error }) {
+      return {
+        ...shape,
+        data: {
+          ...shape.data,
+          zodError:
+            error.cause instanceof ZodError ? error.cause.flatten() : null,
+        },
+      };
+    },
+  });
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -136,16 +138,16 @@ export const createTRPCRouter = t.router;
 
 const loggerMiddleware = t.middleware(async (opts) => {
   const start = Date.now();
- 
+
   const result = await opts.next();
- 
+
   const durationMs = Date.now() - start;
   const meta = { path: opts.path, type: opts.type, durationMs };
- 
+
   result.ok
-    ? console.log('OK request timing:', meta)
-    : console.error('Non-OK request timing', meta);
- 
+    ? console.log("OK request timing:", meta)
+    : console.error("Non-OK request timing", meta);
+
   return result;
 });
 
@@ -172,25 +174,11 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 });
 
 export const promptMiddleware = experimental_standaloneMiddleware<{
-  ctx: { session: Session, prisma: PrismaClient }; // defaults to 'object' if not defined
-  input: GenerateInput,
-  // input: { 
-  //   username: string,
-  //   package: string,
-  //   template: string,
-    
-  //   environment: string,
-  //   version: string,
-    
-  //   userId: string,
-  //   promptPackageId: string,
-  //   promptTemplateId: string,
-  //   data: object
-  // }; // defaults to 'unknown' if not defined
-
+  ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
+  input: GenerateInput;
+  meta: any;
   // 'meta', not defined here, defaults to 'object | undefined'
 }>().create(async (opts) => {
-  
   // if (!opts.ctx.session.includes(opts.input.projectId)) {
   //   throw new TRPCError({
   //     code: 'FORBIDDEN',
@@ -198,28 +186,32 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  const {id: userId} = await opts.ctx.prisma.user.findFirst({
+  const { id: userId } = (await opts.ctx.prisma.user.findFirst({
     where: {
-      name: opts.input.username
+      name: opts.input.username,
     },
-    select: {id: true}
-  })
+    select: { id: true },
+  })) as { id: string | null };
+
   opts.input.userId = userId;
-  const {id: promptPackageId} = await opts.ctx.prisma.promptPackage.findFirst({
-    where: {
-      name: opts.input.package
-    },
-    select: {id: true}
-  })
+
+  const { id: promptPackageId } =
+    (await opts.ctx.prisma.promptPackage.findFirst({
+      where: {
+        name: opts.input.package,
+      },
+      select: { id: true },
+    })) as { id: string | null };
   opts.input.promptPackageId = promptPackageId;
-  const {id: promptTemplateId} = await opts.ctx.prisma.promptTemplate.findFirst({
-    where: {
-      name: opts.input.template
-    },
-    select: {id: true}
-  })
+  const { id: promptTemplateId } =
+    (await opts.ctx.prisma.promptTemplate.findFirst({
+      where: {
+        name: opts.input.template,
+      },
+      select: { id: true },
+    })) as { id: string | null };
   opts.input.promptTemplateId = promptTemplateId;
- 
+
   return opts.next();
 });
 

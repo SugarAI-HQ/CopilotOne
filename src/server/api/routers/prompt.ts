@@ -30,7 +30,6 @@ import {
 import { JsonObject } from "@prisma/client/runtime/library";
 import { Visibility } from "@mui/icons-material";
 
-
 export const promptRouter = createTRPCRouter({
   getPackages: publicProcedure
     .meta({
@@ -44,14 +43,9 @@ export const promptRouter = createTRPCRouter({
     .input(getPackagesInput)
     .output(packageListOutput)
     .query(async ({ ctx, input }) => {
-
       let query = {
         userId: ctx.session?.user.id,
-      }
-
-      if(input?.visibility) {
-        query.visibility = input.visibility
-      }
+      };
 
       const packages = await ctx.prisma.promptPackage.findMany({
         where: query,
@@ -67,13 +61,10 @@ export const promptRouter = createTRPCRouter({
       let query = {
         userId: ctx.session?.user.id,
         id: input.id,
-      }
-      if (input.visibility) {
-        query.visibility = input.visibility;
-      }
+      };
 
       const pkg = await ctx.prisma.promptPackage.findFirst({
-        where: query
+        where: query,
       });
       console.log(`package -------------- ${JSON.stringify(pkg)}`);
       return pkg;
@@ -187,25 +178,26 @@ export const promptRouter = createTRPCRouter({
         llmModel: "davinci",
         llmConfig: {},
         // forkedFromId: null
-      }
+      };
 
-
-      if(input.forkedFromId) {
+      if (input.forkedFromId) {
         const forkedFrom = await ctx.prisma.promptVersion.findUnique({
           where: {
             id: input.forkedFromId,
           },
         });
+        if (forkedFrom) {
+          defaultTemplate.template = forkedFrom.template;
+          defaultTemplate.llmProvider = forkedFrom.llmProvider;
+          defaultTemplate.llmModel = forkedFrom.llmModel;
+          defaultTemplate.llmConfig = forkedFrom.llmConfig as JsonObject;
+        }
 
-        defaultTemplate.template = forkedFrom.template;
-        defaultTemplate.llmProvider = forkedFrom.llmProvider;
-        defaultTemplate.llmModel = forkedFrom.llmModel;
-        defaultTemplate.llmConfig = forkedFrom.llmConfig as JsonObject;
         // defaultTemplate.forkedFromId = input.forkedFromId
       }
 
       if (!userId) {
-        return null
+        return null;
       }
 
       const pv = await ctx.prisma.promptVersion.create({
@@ -269,10 +261,10 @@ export const promptRouter = createTRPCRouter({
       let data = {
         changelog: input.changelog,
         publishedAt: new Date(),
-      }
+      };
 
-      let templateData :{[key:string]:any} = {}
-      templateData[`${input.environment}VersionId`] = input.promptVersionId
+      let templateData: { [key: string]: any } = {};
+      templateData[`${input.environment}VersionId`] = input.promptVersionId;
 
       // data[`${input.environment}Version`] = {
       //   connect: {
@@ -281,7 +273,6 @@ export const promptRouter = createTRPCRouter({
       // }
 
       if (userId) {
-
         const transaction = await ctx.prisma.$transaction(async (prisma) => {
           pv = await prisma.promptVersion.update({
             where: {
@@ -303,12 +294,14 @@ export const promptRouter = createTRPCRouter({
           });
 
           return { pv, pt };
-        })
-
-
+        });
       }
-      console.log(`deployed version -------------- ${JSON.stringify(pv)} ${JSON.stringify(pt)}`);
-      return {pv, pt};
+      console.log(
+        `deployed version -------------- ${JSON.stringify(pv)} ${JSON.stringify(
+          pt,
+        )}`,
+      );
+      return { pv, pt };
     }),
 
   getVersions: publicProcedure
@@ -323,12 +316,10 @@ export const promptRouter = createTRPCRouter({
           promptTemplateId: input.promptTemplateId,
         },
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: "desc",
+        },
       });
       console.log(`versions output -------------- ${JSON.stringify(versions)}`);
       return versions;
-    })
+    }),
 });
-
-

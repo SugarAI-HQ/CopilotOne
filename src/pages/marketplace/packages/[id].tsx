@@ -33,7 +33,7 @@ import React from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-import { PackageOutput as ppt } from "~/validators/prompt_package";
+import { PackagePublicOutput as ppt } from "~/validators/marketplace";
 import { TemplateOutput as ptt } from "~/validators/prompt_template";
 // import { CreateVersionInput, VersionOutput as pv } from "~/validators/prompt_version";
 import { getRandomValue } from "~/utils/math";

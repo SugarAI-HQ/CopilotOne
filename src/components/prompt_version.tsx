@@ -22,6 +22,7 @@ import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
+import { GenerateInput } from "~/validators/service";
 
 function PromptVersion({
   ns,
@@ -111,7 +112,7 @@ function PromptVersion({
 
       environment: promptEnvironment.Enum.DEV,
       data: data,
-    });
+    } as GenerateInput);
 
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {

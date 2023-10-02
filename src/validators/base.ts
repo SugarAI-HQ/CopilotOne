@@ -8,11 +8,11 @@ export type PromptEnvironment = z.infer<typeof promptEnvironment>;
 export const packageVisibility = z.enum(["PUBLIC", "PRIVATE"]);
 export type PackageVisibility = z.infer<typeof packageVisibility>;
 
-export const publicUserSchem = z.object({
-  name: z.string(),
-  image: z.string().optional(),
+export const publicUserSchema = z.object({
+  name: z.string().nullable(),
+  image: z.string().nullable(),
 });
-export type PublicUserSchem = z.infer<typeof publicUserSchem>;
+export type PublicUserSchem = z.infer<typeof publicUserSchema>;
 
 export type colorType = OverridableStringUnion<
   | "default"
