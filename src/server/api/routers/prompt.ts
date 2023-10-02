@@ -1,4 +1,3 @@
-import { PromptTemplate } from "@prisma/client";
 import { ppid } from "process";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
@@ -50,7 +49,7 @@ export const promptRouter = createTRPCRouter({
         userId: ctx.session?.user.id,
       }
 
-      if(input.visibility) {
+      if(input?.visibility) {
         query.visibility = input.visibility
       }
 
@@ -272,7 +271,7 @@ export const promptRouter = createTRPCRouter({
         publishedAt: new Date(),
       }
 
-      let templateData = {}
+      let templateData :{[key:string]:any} = {}
       templateData[`${input.environment}VersionId`] = input.promptVersionId
 
       // data[`${input.environment}Version`] = {

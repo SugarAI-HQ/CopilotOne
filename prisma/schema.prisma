@@ -4,8 +4,10 @@ generator client {
 }
 
 generator zod {
-  provider = "zod-prisma-types"
-  output = "../src/generated/prisma-client-zod.ts"
+  provider               = "zod-prisma-types"
+  output                 = "../src/generated/prisma-client-zod.ts"
+  createInputTypes       = false
+  addInputTypeValidation = false
 }
 
 // console.log(`database url ${env("DATABASE_URL")}`);

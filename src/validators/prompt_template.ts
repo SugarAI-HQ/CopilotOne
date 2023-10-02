@@ -59,7 +59,7 @@ export const deployTemplateInput = z
         promptPackageId: z.string(),
         promptVersionId: z.string(),
         environment: z.string(),
-        changelog: z.string()
+        changelog: z.string().nullable()
     })
     .strict()
     .required();

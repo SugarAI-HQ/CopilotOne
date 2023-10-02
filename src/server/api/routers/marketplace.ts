@@ -16,7 +16,7 @@ export const marketplaceRouter = createTRPCRouter({
       const packages = await ctx.prisma.promptPackage.findMany({
         where: {
           userId: ctx.session?.user.id,
-          visibility: input.visibility,
+          visibility: input?.visibility,
         },
       });
       console.log(`packages out -------------- ${JSON.stringify(packages)}`);

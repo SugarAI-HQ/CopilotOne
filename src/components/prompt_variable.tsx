@@ -27,9 +27,7 @@ export function PromptVariable({
 
   useEffect(() => {
     console.log("Rechecking", pv.key);
-    const environmentalVariables = JSON.parse(
-      localStorage.getItem("userEnvironmentalVariables"),
-    );
+    const environmentalVariables = JSON.parse(localStorage.getItem("userEnvironmentalVariables") || 'null');
     if (environmentalVariables) {
       const gPv = getValueByKey(
         environmentalVariables,
@@ -48,7 +46,7 @@ export function PromptVariable({
 function evaluateValue(k: string, v: string): string {
     
     const environmentalVariables = JSON.parse(
-      localStorage.getItem("userEnvironmentalVariables"),
+      localStorage.getItem("userEnvironmentalVariables") || 'null'
     );
 
     if (environmentalVariables) {
@@ -60,7 +58,7 @@ function evaluateValue(k: string, v: string): string {
       console.log(`gPv: ${pv.key} global: ${gPv} current: ${v}`);
       
       if (!v || v == "" || v == "null" && gPv) {
-        return gPv;
+        return gPv?gPv:'';
       }
     }
 
@@ -75,35 +73,36 @@ function evaluateValue(k: string, v: string): string {
     onChange(pv.key, v);
   };
 
-  function getValueByKey(obj, keyToFind) {
-    // Check if the object is not null or undefined and is an object
-    if (!obj) return "";
-    console.log(obj);
-    for (const [key, value] of Object.entries(obj)) {
-      if (
-        typeof value === "object" &&
-        value.hasOwnProperty("key") &&
-        value.key === keyToFind
-      ) {
-        return value.value;
+    function getValueByKey(environmentVariablesArray: Array<{ [key: string]: string }>, keyToFind:string) {
+        // Check if the object is not null or undefined and is an object
+        let environmentVariable = environmentVariablesArray.find((variable)=>variable.key===keyToFind)
+        if(environmentVariable){
+            return environmentVariable.value;
+        }else{
+            return ""
+        }
+        // if(!obj) return "";
+        // console.log(obj)
+        // for (const [key, value] of Object.entries(obj)) {
+        //     if (typeof value === "object" && value.hasOwnProperty("key") && value.key === keyToFind) {
+        //       return value.value;
+        //     } 
+        //   }
+        //   return "";
       }
-    }
-    return "";
-  }
-
-  return (
-    <TextField
-      id={"prompt-variable-input" + pv.key}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">{pv.type}</InputAdornment>
-        ),
-      }}
-      label={TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " + pv.key}
-      variant="outlined"
-      value={val}
-      // defaultValue={pv.value}
-      onChange={handleValueChange}
-    />
-  );
+    return (
+          
+        <TextField
+            id={'prompt-variable-input' + pv.key}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">{pv.type}</InputAdornment>
+            }}
+            label={TV_VALUES[TV_KEYS.indexOf(pv.type)] + ' :   ' + pv.key}
+            variant="outlined"
+            value={val}
+            // defaultValue={pv.value}
+            onChange={handleValueChange}
+        />
+    )
+                
 }

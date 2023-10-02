@@ -108,7 +108,7 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
                 onChange={handleModelChange}
               >
 
-                {models[provider].map((mo, index) =>(
+                {models[provider as keyof typeof models].map((mo, index) =>(
                 <MenuItem 
                     key={"pt-"+index}
                     value={mo[0]}

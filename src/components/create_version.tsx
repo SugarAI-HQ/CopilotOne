@@ -16,23 +16,31 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { PromptPackage as pp, PromptTemplate as pt, PromptVersion as pv } from "@prisma/client";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import { TemplateOutput as pt } from "~/validators/prompt_template";
+import { CreateVersionInput, VersionOutput as pv } from "~/validators/prompt_version";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {parse, valid} from "semver"
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import ForkRightIcon from '@mui/icons-material/ForkRight';
 
+CreateVersion.defaultProps = {
+  icon: <AddCircleIcon />,
+  forkedFromId: null,
+  v: "0.0.1",
+}
 export function CreateVersion({
   pp,
   pt,
   onCreate,
-  v="0.0.1",
-  icon=<AddCircleIcon />,
-  forkedFromId=null
+  icon,
+  forkedFromId,
+  v,
 }: {
   pp: pp;
   pt: pt;
+  icon?: React.JSX.Element;
   v: string;
   onCreate: Function;
   forkedFromId: string | null;
@@ -58,12 +66,12 @@ export function CreateVersion({
 
   const handleSubmit = (e: any) => {
     const data = {
-      promptPackageId: pp.id,
-      promptTemplateId: pt.id,
+      promptPackageId: pp?.id,
+      promptTemplateId: pt?.id,
       version: version,
       forkedFromId: forkedFromId
     }
-    pvCreateMutation.mutate(data);
+    pvCreateMutation.mutate(data as CreateVersionInput);
   };
 
   

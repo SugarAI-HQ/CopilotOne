@@ -32,21 +32,19 @@ import { ExpandMore } from "@mui/icons-material";
 import React from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import {
-  PromptPackage as pp,
-  PromptTemplate as pt,
-  PromptVersion as pv,
-} from "@prisma/client";
+
+import { PackageOutput as ppt } from "~/validators/prompt_package";
+import { TemplateOutput as ptt } from "~/validators/prompt_template";
+// import { CreateVersionInput, VersionOutput as pv } from "~/validators/prompt_version";
 import { getRandomValue } from "~/utils/math";
 import { PromptIntegration } from "~/components/integration/prompt_integration";
 import PromptHeader from "~/components/marketplace/prompt_header";
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 const MarketplacePage: NextPage = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = router.query as { id: string };
 
   const { data: pp, refetch: rpp } = api.marketplace.getPackage.useQuery({
     id: id,
@@ -68,15 +66,15 @@ const MarketplacePage: NextPage = () => {
   return (
     <Container>
       <Header></Header>
-      <PromptHeader ns={pp?.User} pp={pp}></PromptHeader>
-      <MyTabs pp={pp}></MyTabs>
+      <PromptHeader pp={pp as ppt}></PromptHeader>
+      <MyTabs pp={pp as ppt}></MyTabs>
     </Container>
   );
 };
 
 export default MarketplacePage;
 
-function Row({ pt }: { pt: pt }) {
+function Row({ pt }: { pt: ptt }) {
   // const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -103,9 +101,9 @@ function Row({ pt }: { pt: pt }) {
         </TableCell>
         <TableCell align="right">{pt?.releaseVersion?.llmProvider}</TableCell>
         <TableCell align="right">{pt?.releaseVersion?.llmModel}</TableCell>
-        <TableCell align="right">{getRandomValue(1000,5000)}</TableCell>
-        <TableCell align="right">{getRandomValue(2000,4000)}</TableCell>
-        <TableCell align="right">{getRandomValue(70,98)}</TableCell>
+        <TableCell align="right">{getRandomValue(1000, 5000)}</TableCell>
+        <TableCell align="right">{getRandomValue(2000, 4000)}</TableCell>
+        <TableCell align="right">{getRandomValue(70, 98)}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -115,17 +113,17 @@ function Row({ pt }: { pt: pt }) {
                 Templates
               </Typography>
 
-              {pt.releaseVersion && (
-                <Typography variant="p" gutterBottom component="div">
-                  Release ({pt.releaseVersion?.version}):{" "}
-                  {pt.releaseVersion?.template}
+              {pt?.releaseVersion && (
+                <Typography component="p" gutterBottom>
+                  Release ({pt?.releaseVersion?.version}):{" "}
+                  {pt?.releaseVersion?.template}
                 </Typography>
               )}
 
-              {pt.previewVersion && (
-                <Typography variant="p" gutterBottom component="div">
-                  Preview ({pt.previewVersion?.version}):{" "}
-                  {pt.previewVersion?.template}
+              {pt?.previewVersion && (
+                <Typography component="p" gutterBottom>
+                  Preview ({pt?.previewVersion?.version}):{" "}
+                  {pt?.previewVersion?.template}
                 </Typography>
               )}
             </Box>
@@ -136,7 +134,7 @@ function Row({ pt }: { pt: pt }) {
   );
 }
 
-export function CollapsibleTable({ pp }: { pp: pp }) {
+export function CollapsibleTable({ pp }: { pp: ppt }) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -168,10 +166,7 @@ export function CollapsibleTable({ pp }: { pp: pp }) {
   );
 }
 
-
-
-
-function TabPanel(props) {
+function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
 
   return (
@@ -182,19 +177,15 @@ function TabPanel(props) {
       aria-labelledby={`tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <div>
-          {children}
-        </div>
-      )}
+      {value === index && <div>{children}</div>}
     </div>
   );
 }
 
-function MyTabs({pp}: {pp: pp}) {
+function MyTabs({ pp }: { pp: ppt }) {
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
   };
 
@@ -229,15 +220,13 @@ function MyTabs({pp}: {pp: pp}) {
             </CardContent>
           </Card>
         </Paper>
-        
       </TabPanel>
-      
+
       <TabPanel value={value} index={1}>
         <Paper>
-          <PromptIntegration ns={pp?.User} pp={pp} pt={pt} pv={pt?.releaseVersion}  ></PromptIntegration>
+          <PromptIntegration ns={pp?.User} pp={pp}></PromptIntegration>
         </Paper>
       </TabPanel>
-      
     </div>
   );
 }

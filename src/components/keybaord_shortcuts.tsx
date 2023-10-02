@@ -1,16 +1,21 @@
-import React from 'react';
-import { GlobalHotKeys } from 'react-hotkeys';
+import React, { ReactNode, KeyboardEvent } from 'react';
+import { GlobalHotKeys, KeyMap } from 'react-hotkeys';
 
-const KeyboardShortcuts = ({ children, onSave }) => {
+interface KeyboardShortcutsProps {
+  children: ReactNode;
+  onSave: () => void;
+}
+
+const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({ children, onSave }) => {
   // Define the keymap for the save shortcut
-  const keyMap = {
+  const keyMap: KeyMap = {
     SAVE: ['ctrl+s', 'command+s'], // Define the key combinations (Ctrl+S or Command+S)
   };
 
   // Define the handlers for the key combinations
-  const handlers = {
-    SAVE: (event) => {
-      event.preventDefault();
+  const handlers: { [key: string]: (keyEvent?: globalThis.KeyboardEvent | undefined) => void;} | undefined = {
+    SAVE: (keyEvent?: globalThis.KeyboardEvent | undefined) => {
+      keyEvent?.preventDefault();
       onSave(); // Call the onSave function when the shortcut is triggered
     },
   };

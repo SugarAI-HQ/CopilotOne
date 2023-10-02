@@ -17,6 +17,7 @@ import { v4 as uuid } from 'uuid';
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { PrismaClient } from "@prisma/client";
+import { GenerateInput} from "~/validators/service";
 
 /**
  * 1. CONTEXT
@@ -172,15 +173,21 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 
 export const promptMiddleware = experimental_standaloneMiddleware<{
   ctx: { session: Session, prisma: PrismaClient }; // defaults to 'object' if not defined
-  input: { 
-    username: string,
-    package: string,
-    template: string,
-    userId: string,
-    promptPackageId: string,
-    promptTemplateId: string,
-    // version: string
-  }; // defaults to 'unknown' if not defined
+  input: GenerateInput,
+  // input: { 
+  //   username: string,
+  //   package: string,
+  //   template: string,
+    
+  //   environment: string,
+  //   version: string,
+    
+  //   userId: string,
+  //   promptPackageId: string,
+  //   promptTemplateId: string,
+  //   data: object
+  // }; // defaults to 'unknown' if not defined
+
   // 'meta', not defined here, defaults to 'object | undefined'
 }>().create(async (opts) => {
   

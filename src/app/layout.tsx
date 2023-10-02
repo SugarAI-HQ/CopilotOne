@@ -24,6 +24,7 @@ import { mainListItems, secondaryListItems } from "~/app/dashboard/listItems";
 import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
+import type { ReactElement, ReactNode } from 'react'
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -193,7 +194,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const getLayout = page => <DashboardLayout>{page}</DashboardLayout>
+export const getLayout = (page:ReactElement) => <DashboardLayout>{page}</DashboardLayout>
 
 export default function DashboardLayout({
   children,

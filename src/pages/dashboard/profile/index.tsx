@@ -28,7 +28,7 @@ const Profile = ()=> {
           </Typography>
           <Divider className="my-4" sx={{marginTop:'16px',marginBottom:'16px'}} />
            
-          <Avatar className="h-16 w-16" alt="Profile Image" src={sessionData?.user?.image || || '/images/avatar.png'} />
+          <Avatar className="h-16 w-16" alt="Profile Image" src={sessionData?.user?.image || '/images/avatar.png'} />
 
           <Typography sx={{ fontSize: 16,marginTop:'16px' }} gutterBottom>
           {sessionData?.user?.name}

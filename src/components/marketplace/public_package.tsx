@@ -24,7 +24,7 @@ function PublicPackages() {
                 <Typography>{pkg?.description}</Typography>
               </CardContent>
               <CardActions>
-                <MUILink href={`/marketplace/packages/${pkg.id}`}>View</MUILink>
+                <MUILink href={`/marketplace/packages/${pkg?.id}`}>View</MUILink>
               </CardActions>
             </Card>
           </Grid>

@@ -24,6 +24,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { MdDelete } from "react-icons/md";
+import toast from "react-hot-toast";
+import IconButton from "@mui/material/IconButton";
 
 interface PreferencesModalProps {
   open: boolean;
@@ -35,6 +37,10 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
+
+type EnvironmentalVariable = {
+  [key: string]: string;
+};
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -63,63 +69,80 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
   const [value, setValue] = React.useState(0);
   const [openAIKey, setOpenAIKey] = React.useState("");
   const [userEnvironmentalVariables, setUserEnvironmentalVariables] =
-    React.useState({});
+    React.useState<(EnvironmentalVariable | undefined)[]>([]);
 
-  React.useEffect(()=>{
-    let localOpenAIKey = localStorage.getItem('openAIKey')
-    let localUserEnvironmentalVariables = localStorage.getItem('userEnvironmentalVariables')
-    console.log('dd',localOpenAIKey,localUserEnvironmentalVariables)
-    if(localOpenAIKey) {
-      setOpenAIKey(localOpenAIKey)
+  React.useEffect(() => {
+    let localOpenAIKey = localStorage.getItem("openAIKey");
+    let localUserEnvironmentalVariables = localStorage.getItem(
+      "userEnvironmentalVariables",
+    );
+    console.log("dd", localOpenAIKey, localUserEnvironmentalVariables);
+    if (localOpenAIKey) {
+      setOpenAIKey(localOpenAIKey);
     }
-    if(localUserEnvironmentalVariables){
-      setUserEnvironmentalVariables(JSON.parse(localUserEnvironmentalVariables))
+    if (localUserEnvironmentalVariables) {
+      setUserEnvironmentalVariables(
+        JSON.parse(localUserEnvironmentalVariables),
+      );
     }
-  },[])
+  }, [open]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   function addUserEnvironmentalVariables() {
-    let variableId = nanoid(4);
-    setUserEnvironmentalVariables({
+    setUserEnvironmentalVariables([
       ...userEnvironmentalVariables,
-      [variableId]: { key: "", value: "" },
-    });
+      { key: "", value: "" },
+    ]);
   }
 
-  function updateObjectProperty(object:object, id:string, type:string, newValue:string) {
-    // Make sure the type is either 'key' or 'value'
-    if (type !== 'key' && type !== 'value') {
-      throw new Error('Invalid type. Type must be either "key" or "value".');
+  function updateEnvironmentalVariableAtIndex(
+    object: EnvironmentalVariable | undefined,
+    key: string,
+    newValue: string,
+  ) {
+    if (object !== undefined && key === "key") {
+      object.key = newValue;
     }
-  
-    // Check if the object has the specified id
-    if (object.hasOwnProperty(id)) {
-      // Update the property based on the type
-      if (type === 'key') {
-        object[id].key = newValue;
-      } else if (type === 'value') {
-        object[id].value = newValue;
-      }
-    } else {
-      // Handle the case where the id doesn't exist in the object
-      throw new Error(`Object with id "${id}" not found.`);
+    if (object !== undefined && key === "value") {
+      object.value = newValue;
     }
-  
     return object;
   }
 
-  function updateUserEnvironmentalVariables(id,type,newValue){
-    let updatedUserEnvironmentalVariable = updateObjectProperty(userEnvironmentalVariables,id,type,newValue);
-    setUserEnvironmentalVariables({...updatedUserEnvironmentalVariable})
+  function updateUserEnvironmentalVariables(
+    index: number,
+    type: string,
+    newValue: string,
+  ) {
+    const updatedData = userEnvironmentalVariables;
+    if (updatedData[index] !== undefined) {
+      updatedData[index] = updateEnvironmentalVariableAtIndex(
+        updatedData[index],
+        type,
+        newValue,
+      );
+      setUserEnvironmentalVariables([...updatedData]);
+    }
+  }
+
+  function deleteUserEnvironmentalVariable(index: number) {
+    let updatedData = userEnvironmentalVariables; // Create a copy of the array
+    updatedData.splice(index, 1); // Remove the element at the specified index
+    console.log(updatedData);
+    setUserEnvironmentalVariables([...updatedData]);
   }
 
   function handleOnSaveClick() {
     localStorage.setItem("openAIKey", openAIKey);
-    localStorage.setItem("userEnvironmentalVariables",JSON.stringify(userEnvironmentalVariables))
-    console.log("saving");
+    localStorage.setItem(
+      "userEnvironmentalVariables",
+      JSON.stringify(userEnvironmentalVariables),
+    );
+    toast.success("Preferences Updated");
+    onClose();
   }
 
   return (
@@ -142,11 +165,8 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
           </Tabs>
           <div className="w-full">
             <TabPanel value={value} index={0}>
-              <Typography fontWeight={"700"}>
-                Global Variables
-              </Typography>
+              <Typography fontWeight={"700"}>Global Variables</Typography>
               <Box mt={2}>
-              
                 <TableContainer component={Paper}>
                   <Table>
                     {/* <TableHead>
@@ -156,40 +176,73 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
                       </TableRow>
                     </TableHead> */}
                     <TableBody>
-                      {Object.entries(userEnvironmentalVariables).map(
-                        ([id, subObject]) => (
-                          <TableRow
-                            key={id}
-                            
-                          >
-                            <TableCell sx={{padding:0}}>
-                              <TextField value={subObject.key} onChange={(e)=>{updateUserEnvironmentalVariables(id,'key',e.target.value)}} size="small" placeholder="Key" sx={{border:'none',outline:'none'}}/>
-                              
+                      {userEnvironmentalVariables &&
+                        userEnvironmentalVariables?.map((variable, index) => (
+                          <TableRow key={index}>
+                            <TableCell sx={{ padding: 0 }}>
+                              <TextField
+                                value={variable?.key}
+                                onChange={(e) => {
+                                  updateUserEnvironmentalVariables(
+                                    index,
+                                    "key",
+                                    e.target.value,
+                                  );
+                                }}
+                                size="small"
+                                placeholder="Key"
+                                sx={{ border: "none", outline: "none" }}
+                              />
                             </TableCell>
-                            <TableCell sx={{padding:0}}>
-                            <TextField value={subObject.value} onChange={(e)=>{updateUserEnvironmentalVariables(id,'value',e.target.value)}} size="small" placeholder="Value"/>
-                      
+                            <TableCell sx={{ padding: 0 }}>
+                              <TextField
+                                value={variable?.value}
+                                onChange={(e) => {
+                                  updateUserEnvironmentalVariables(
+                                    index,
+                                    "value",
+                                    e.target.value,
+                                  );
+                                }}
+                                size="small"
+                                placeholder="Value"
+                              />
                             </TableCell>
-                            <TableCell sx={{paddingLeft:1.5,paddingRight:1.5,paddingTop:0, paddingBottom:0}}><MdDelete/></TableCell>
+                            <TableCell
+                              sx={{
+                                paddingLeft: 1.5,
+                                paddingRight: 1.5,
+                                paddingTop: 0,
+                                paddingBottom: 0,
+                              }}
+                            >
+                              {" "}
+                              <IconButton aria-label="delete">
+                                <MdDelete
+                                  onClick={() =>
+                                    deleteUserEnvironmentalVariable(index)
+                                  }
+                                  size={16}
+                                />
+                              </IconButton>
+                            </TableCell>
                           </TableRow>
-                        ),
-                      )}
+                        ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <div className="flex justify-end">
-              <Button
-                onClick={addUserEnvironmentalVariables}
-               
-                className="!mt-1"
-                startIcon={<AddCircle/>} size="small"
-              >
-                Add New Variable
-              </Button>
-              </div>
+                  <Button
+                    onClick={addUserEnvironmentalVariables}
+                    className="!mt-1"
+                    startIcon={<AddCircle />}
+                    size="small"
+                  >
+                    Add New Variable
+                  </Button>
+                </div>
               </Box>
-              
-              
+
               <Button
                 onClick={handleOnSaveClick}
                 variant="contained"

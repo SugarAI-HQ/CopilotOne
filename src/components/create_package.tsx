@@ -40,7 +40,7 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
     handleClose(); // Close the modal after submitting
   };
 
-  const handleVisibilityChange = (event) => {
+  const handleVisibilityChange = (event: any) => {
     setVisibility(event.target.value);
   };
 

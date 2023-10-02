@@ -16,6 +16,7 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
 import LabelIcons from "~/components/label_icon";
 
+import { NextPageWithLayout } from "~/pages/_app";
 
 interface PromptLog {
   id: string;
@@ -46,7 +47,7 @@ interface PromptLog {
 type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
-const PromptLogTable: NextPage = () => {
+const PromptLogTable: NextPageWithLayout = () => {
   // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([])
   const router = useRouter();
   const packageId = router.query.id as string;

@@ -27,7 +27,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
-import { mainListItems, secondaryListItems } from "~/app/Dashboard/listItems";
+import { mainListItems, secondaryListItems } from "~/app/dashboard/listItems";
 import RouteGuard from "../RouteGuard";
 import { useRouter } from "next/router";
 import {
@@ -39,6 +39,7 @@ import {
   MdShare,
 } from "react-icons/md";
 import PreferencesModal from "../PreferencesDialog";
+import SharePackageDialog from "../SharePackageDialog";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -127,6 +128,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
     setOpen(!open);
   };
   const [preferencesOpen, setPreferencesOpen] = React.useState(false);
+  const [sharePackageOpen, setSharePackageOpen] = React.useState(false);
 
   const handleOpen = () => {
     setPreferencesOpen(true);
@@ -134,6 +136,14 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
 
   const handleClose = () => {
     setPreferencesOpen(false);
+  };
+
+  const handleSharePackageOpen = () => {
+    setSharePackageOpen(true);
+  };
+
+  const handleSharePackageClose = () => {
+    setSharePackageOpen(false);
   };
   const router = useRouter();
 
@@ -181,7 +191,14 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
                 <MdFavorite />
                 <span>23</span>
               </div>
-
+              <Button onClick={handleSharePackageOpen}
+                startIcon={<MdShare />}
+                variant="outlined"
+                sx={{ borderRadiuss: "40px" }}
+                size="small"
+              >
+                Share
+              </Button>
               <Button
                 startIcon={<MdReply />}
                 variant="outlined"
@@ -266,6 +283,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             </Grid>
             {/* <Copyright sx={{ pt: 4 }} /> */}
           </Container>
+          <SharePackageDialog open={sharePackageOpen} onClose={handleSharePackageClose}/>
           <PreferencesModal open={preferencesOpen} onClose={handleClose}/>
         </Box>
       </Box>

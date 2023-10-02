@@ -3,11 +3,9 @@ import { Box, styled, Paper, Tabs, Tab, Typography, Chip } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { api } from "~/utils/api";
 import PromptVersion from "~/components/prompt_version";
-import {
-  PromptPackage as pp,
-  PromptTemplate as pt,
-  PromptVersion as pv,
-} from "@prisma/client";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import { TemplateOutput as pt } from "~/validators/prompt_template";
+import { GetVersionInput, GetVersionsInput, VersionOutput as pv } from "~/validators/prompt_version";
 import { CreateVersion } from "./create_version";
 const Item = styled(Paper)(({ theme }) => ({
   width: "100%",
@@ -22,13 +20,13 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
   const { data: pvs, refetch: refectVersions } = api.prompt.getVersions.useQuery({
     promptPackageId: pt?.promptPackageId,
     promptTemplateId: pt?.id,
-  });
+  } as GetVersionsInput);
 
   // console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const handleChangeTab = (event, newValue) => {
+  const handleChangeTab = (event:any, newValue:number) => {
     setActiveTab(newValue);
   };
 
@@ -62,8 +60,8 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
                 ))}
               <Box sx={{ flexGrow: 1, p:2 }} >
                 <CreateVersion
-                  pp={pp as pp}
-                  pt={pt as pt}
+                  pp={pp}
+                  pt={pt}
                   onCreate={handleVersionCreate}
                 ></CreateVersion>
               </Box>
@@ -72,8 +70,8 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
                 key={-1}
                 icon={
                   <CreateVersion
-                    pp={pp as pp}
-                    pt={pt as pt}
+                    pp={pp}
+                    pt={pt}
                     onCreate={handleVersionCreate}
                   ></CreateVersion>
                 }
@@ -82,7 +80,7 @@ const PromptTemplate = ({ ns, pp, pt, onTemplateUpdate}: { ns: any, pp: pp; pt: 
             {pvs &&
               pvs.length > 0 &&
               pvs.map((pv, index) => (
-                <Item key={index} p={2} hidden={index !== activeTab}>
+                <Item key={index} hidden={index !== activeTab}>
                   {pv && (
                     <PromptVersion
                       ns={ns}

@@ -9,9 +9,11 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true); // Add a loading state
-
+  const isPromptPackageRoute = router.pathname.startsWith('/dashboard/prompts/');
   useEffect(() => {
- 
+    if(isPromptPackageRoute){
+      return
+    }
     if (session === null) {
       router.push('/auth/login');
     }
@@ -20,6 +22,10 @@ export default function RouteGuard({ children }: { children: React.ReactNode }) 
     }
   }, [session, router]);
 
+  if(isPromptPackageRoute){
+    return <>{children}</>
+  }
+  console.log()
   if(loading){
     return <PageLoader/>
   }

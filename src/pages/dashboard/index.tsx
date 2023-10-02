@@ -6,9 +6,11 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { api } from "~/utils/api";
 
 const Index = () => {
-  const handlePackageCreate = async () => {
-    console.log;
-  };
+  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
+
+  const handlePackageCreate = () => {
+    console.log
+  }
 
   return (
     <div className="w-full">

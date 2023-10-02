@@ -16,32 +16,19 @@ import {
   Radio,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
-import {
-  PromptPackage as pp,
-  PromptTemplate as pt,
-  PromptVersion as pv,
-} from "@prisma/client";
+import { PackageOutput as pp } from "~/validators/prompt_package";
+import { DeployTemplateInput, TemplateOutput as pt } from "~/validators/prompt_template";
+import { VersionOutput as pv } from "~/validators/prompt_version";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { PromptIntegration } from "./integration/prompt_integration";
+import { VersionSchema } from '~/validators/prompt_version';
 
-function PromptDeploy({
-  ns,
-  pp,
-  pt,
-  pv,
-  onTemplateUpdate,
-}: {
-  ns: any;
-  pp: pp;
-  pt: pt;
-  pv: pv;
-  onTemplateUpdate: Function;
-}) {
-  const [open, setOpen] = useState(false);
-  const [isDeploying, setIsDeploying] = useState(false);
-  const [deploymentSuccess, setDeploymentSuccess] = useState(false);
-  const [changelog, setChangelog] = useState(pv.changelog);
+function PromptDeploy({ ns,user, pp, pt, pv,onTemplateUpdate }: { ns:any,user?: any, pp: pp, pt: pt, pv: VersionSchema ,onTemplateUpdate: Function;}) {
+    const [open, setOpen] = useState(false);
+    const [isDeploying, setIsDeploying] = useState(false);
+    const [deploymentSuccess, setDeploymentSuccess] = useState(false);
+    const [changelog, setChangelog] = useState(pv.changelog);
 
   const [environmentType, setEnvironmentType] = React.useState("preview");
   const [error, setError] = React.useState(false);
@@ -75,12 +62,12 @@ function PromptDeploy({
 
     deployMutation.mutate({
       promptTemplateId: pv.promptTemplateId,
-      promptPackageId: pt.promptPackageId,
+      promptPackageId: pt?.promptPackageId,
       promptVersionId: pv.id,
 
       environment: environmentType,
       changelog: changelog,
-    });
+    } as DeployTemplateInput);
 
     // Simulate deployment delay with a timeout (you can replace this with your actual deployment logic)
     // setTimeout(() => {
@@ -129,7 +116,7 @@ function PromptDeploy({
             <div>
               <p>Deployment successful!</p>
               <p>You can access it over the API</p>
-              <PromptIntegration ns={ns} pp={pp} pt={pt} pv={pv}></PromptIntegration>
+              <PromptIntegration ns={ns} pp={pp} pt={pt} pv={pv as pv}></PromptIntegration>
               <Button color="primary" autoFocus onClick={handleCloseModal}>
                 Close
               </Button>
