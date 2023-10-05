@@ -10,10 +10,8 @@ import {
   getPromptOutput,
 } from "~/validators/service";
 import { run } from "~/services/openai";
-import { JsonObject } from "@prisma/client/runtime/library";
 import { generateLLmConfig, generatePrompt } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
-import { LlmConfigSchema } from "~/validators/prompt_version";
 
 export const serviceRouter = createTRPCRouter({
   getPrompt: publicProcedure

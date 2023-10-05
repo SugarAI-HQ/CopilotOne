@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { promptEnvironment } from "./base";
+import { promptEnvironment, stringOpt } from "./base";
 
 export const getPromptInput = z.object({
   environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
@@ -10,10 +10,10 @@ export const getPromptInput = z.object({
   template: z.string(),
   version: z.string().default("latest"),
 
-  userId: z.string().nullable(),
-  promptPackageId: z.string().nullable(),
-  promptTemplateId: z.string().nullable(),
-  promptVersionId: z.string().nullable(),
+  userId: stringOpt,
+  promptPackageId: stringOpt,
+  promptTemplateId: stringOpt,
+  promptVersionId: stringOpt,
 });
 // .strict()
 export type GetPromptInput = z.infer<typeof getPromptInput>;

@@ -186,31 +186,40 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  const { id: userId } = (await opts.ctx.prisma.user.findFirst({
-    where: {
-      name: opts.input.username,
-    },
-    select: { id: true },
-  })) as { id: string | null };
+  console.log(`promptMiddleware ------------ ${JSON.stringify(opts.input)}`);
 
-  opts.input.userId = userId;
-
-  const { id: promptPackageId } =
-    (await opts.ctx.prisma.promptPackage.findFirst({
+  if (opts.input?.username) {
+    const { id: userId } = (await opts.ctx.prisma.user.findFirst({
       where: {
-        name: opts.input.package,
+        name: opts.input.username,
       },
       select: { id: true },
     })) as { id: string | null };
-  opts.input.promptPackageId = promptPackageId;
-  const { id: promptTemplateId } =
-    (await opts.ctx.prisma.promptTemplate.findFirst({
-      where: {
-        name: opts.input.template,
-      },
-      select: { id: true },
-    })) as { id: string | null };
-  opts.input.promptTemplateId = promptTemplateId;
+    opts.input.userId = userId;
+  }
+
+  if (opts.input?.package) {
+    const { id: promptPackageId } =
+      (await opts.ctx.prisma.promptPackage.findFirst({
+        where: {
+          name: opts.input.package,
+        },
+        select: { id: true },
+      })) as { id: string | null };
+
+    opts.input.promptPackageId = promptPackageId;
+  }
+
+  if (opts.input?.template) {
+    const { id: promptTemplateId } =
+      (await opts.ctx.prisma.promptTemplate.findFirst({
+        where: {
+          name: opts.input.template,
+        },
+        select: { id: true },
+      })) as { id: string | null };
+    opts.input.promptTemplateId = promptTemplateId;
+  }
 
   return opts.next();
 });
