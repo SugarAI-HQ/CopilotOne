@@ -32,26 +32,26 @@ export async function run(
   // Capture the start time
   const startTime = new Date();
 
-  const fake_resonse = {
-    warning:
-      "This model version is deprecated. Migrate before January 4, 2024 to avoid disruption of service. Learn more https://platform.openai.com/docs/deprecations",
-    id: "cmpl-7y3qfAWwoy9nQ1JgTrxlC6reNDv8P",
-    object: "text_completion",
-    created: 1694548829,
-    model: "text-davinci-003",
-    choices: [
-      {
-        text: " {@RESPONSE}",
-        index: 0,
-        logprobs: null,
-        finish_reason: "stop",
-      },
-    ],
-    usage: { prompt_tokens: 127, completion_tokens: 7, total_tokens: 134 },
-  };
-  let response = fake_resonse;
+  // const fake_resonse = {
+  //   warning:
+  //     "This model version is deprecated. Migrate before January 4, 2024 to avoid disruption of service. Learn more https://platform.openai.com/docs/deprecations",
+  //   id: "cmpl-7y3qfAWwoy9nQ1JgTrxlC6reNDv8P",
+  //   object: "text_completion",
+  //   created: 1694548829,
+  //   model: "text-davinci-003",
+  //   choices: [
+  //     {
+  //       text: " {@RESPONSE}",
+  //       index: 0,
+  //       logprobs: null,
+  //       finish_reason: "stop",
+  //     },
+  //   ],
+  //   usage: { prompt_tokens: 127, completion_tokens: 7, total_tokens: 134 },
+  // };
+  // let response = fake_resonse;
   // response = await memoizedCompletion(prompt, llm_model, llmConfig)
-  response = await completion(prompt, llm_model, llmConfig);
+  let response = await completion(prompt, llm_model, llmConfig);
 
   // Capture the end time
   const endTime = new Date();
