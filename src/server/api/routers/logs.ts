@@ -13,21 +13,28 @@ export const logRouter = createTRPCRouter({
     .output(logListOutput)
     .query(async ({ ctx, input }) => {
 
-    const { promptPackageId, cursor, perPage } = input;
+    const { promptPackageId, cursor, perPage, version, environment, llmModel, llmProvider } = input;
+
+    const baseWhere = {
+      promptPackageId,
+      version,
+      environment,
+      llmModel,
+      llmProvider,
+    };
+
+    const filteredWhere = Object.fromEntries(
+      Object.entries(baseWhere).filter(([_, value]) => value !== undefined)
+    );
 
     const totalRecords = await ctx.prisma.promptLog.count({
-      where: {
-        promptPackageId: input.promptPackageId,
-      },
+      where: filteredWhere,
     });
     const totalPages = Math.ceil(totalRecords / perPage);
 
     const logs = await ctx.prisma.promptLog.findMany({
       cursor: cursor ? { id: cursor } : undefined,
-      where: {
-        promptPackageId,
-        id: {},
-      },
+      where: filteredWhere,
       orderBy: {
         createdAt: 'desc',
       },

@@ -9,11 +9,15 @@ export type LabelledState = typeof allowedLabelledStates[number];
 export const getLogsInput = z
   .object({
     userId: z.string().optional(),
-    promptPackageId: z.string(),
+    promptPackageId: z.string().optional(),
     promptTemplateId: z.string().optional(),
     promptVersionId: z.string().optional(),
     cursor: z.string().optional(),
     perPage: z.number().default(10), // Add a perPage field for pagination
+    version: z.string().optional(),
+    environment: z.string().optional(),
+    llmModel: z.string().optional(),
+    llmProvider: z.string().optional(),
   })
   .strict()
 

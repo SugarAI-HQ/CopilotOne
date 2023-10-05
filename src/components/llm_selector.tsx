@@ -1,13 +1,13 @@
-import { 
+import {
   Box,
   Button,
   Divider,
   FormControl,
-  FormLabel,  
+  FormLabel,
   Modal,
   Stack,
   Select,
-  Typography, 
+  Typography,
   MenuItem,
   Dialog
 } from "@mui/material";
@@ -15,8 +15,9 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 
 import React, { useState } from "react";
+import { providers, models} from "~/validators/base";
 
-function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelChange }: 
+function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelChange }:
   { initialProvider: string, initialModel: string, onProviderChange: Function, onModelChange: Function}) {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -28,26 +29,6 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
   const handleClose = () => setIsOpen(false);
 
   const handleOpen = () => setIsOpen(true);
-
-  const providers = [
-    ['openai', 'OpenAI'],
-    ['llama2', 'Llama2'],
-  ]
-
-  const models = {
-    'openai': [
-      ['davinci', 'Davinci'],
-      ['gpt-3.5-turbo', 'Gpt 3.5 Turbo'],
-      ['gpt-4', 'Gpt 4']
-    ],
-    'llama2': [
-      ['7b', '7B'],
-      ['13b', '13B'],
-      ['70b', '70B'],
-    ]
-
-  }
-
 
   const handleProviderChange = (event: any) => {
     const selectedProvider = event.target.value;
@@ -78,7 +59,7 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
             Model
           </Typography>
           {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
-          
+
           <Typography mt={2}>
             The LLM provider and model that'll be used to power this prompt.
           </Typography>
@@ -104,12 +85,12 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
             <FormControl fullWidth>
               <FormLabel>Model</FormLabel>
               <Select
-                value={model} 
+                value={model}
                 onChange={handleModelChange}
               >
 
                 {models[provider as keyof typeof models].map((mo, index) =>(
-                <MenuItem 
+                <MenuItem
                     key={"pt-"+index}
                     value={mo[0]}
                 >

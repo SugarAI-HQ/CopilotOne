@@ -17,7 +17,8 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 import TimeAgo from 'react-timeago';
 import LabelIcons from "~/components/label_icon";
 import { NextPageWithLayout } from "~/pages/_app";
-import { LabelledState } from "~/validators/prompt_log";
+import type { LabelledState } from "~/validators/prompt_log";
+import LogSearchFiltering from "./log_search_filtering";
 
 interface PromptLog {
   id: string;
@@ -46,25 +47,40 @@ interface PromptLog {
   updatedAt: string;
 }
 
+export interface FilterOptions {
+  environment?: string | undefined;
+  llmModel?: string | undefined;
+  llmProvider?: string | undefined;
+  version?: string | undefined;
+}
+
+
 // type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
 const itemsPerPage = 10;
 
 const PromptLogTable: NextPageWithLayout = () => {
-  // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([])
+
   const router = useRouter();
   const packageId = router.query.id as string;
 
-
-
-  // const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
+  const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
   const [searchText, setSearchText] = useState<string>("");
+
+
+  const [filterOptions, setFilterOptions] = useState<FilterOptions>({
+    environment: undefined,
+    llmModel: undefined,
+    llmProvider: undefined,
+    version: undefined,
+  });
 
   const { data, hasNextPage, fetchNextPage, refetch } = api.log.getLogs.useInfiniteQuery(
     {
       promptPackageId: packageId,
       perPage: itemsPerPage,
+      ...filterOptions
     },
     {
       getNextPageParam: (lastPage) => {
@@ -74,33 +90,47 @@ const PromptLogTable: NextPageWithLayout = () => {
     }
   );
 
-  const promptLogs = data ? data.pages.flatMap((page) => page.data) : [];
+
+  useEffect(() => {
+    if (data) {
+      const allLogs:any = data.pages.flatMap((page) => page.data);
+      setPromptLogs(allLogs);
+    }
+  }, [data]);
 
   useEffect(() => {
     // Fetch initial page of data
     refetch();
-  }, []);
+  }, [searchText, filterOptions]);
 
 
   const handleSearch = () => {
-    // Implement the search logic here.
-    // Filter the promptLogs array based on the searchText.
+    const filteredLogs = promptLogs.filter((log) =>
+      log.prompt.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setPromptLogs(filteredLogs);
   };
 
-  const loadMore = () => {
-    fetchNextPage();
+
+  const loadMore = async () => {
+    await fetchNextPage();
   };
 
   return (
     <div>
-      <TextField
+       {/* <TextField
         label="Search"
         variant="outlined"
         fullWidth
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+      /> */}
+      <LogSearchFiltering
+        filterOptions={filterOptions}
+        onFilterChange={(newFilterOptions) => setFilterOptions(newFilterOptions)}
       />
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
