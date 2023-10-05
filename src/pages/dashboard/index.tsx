@@ -16,8 +16,11 @@ const Index = () => {
     <div className="w-full">
       <Head>
         <title>Sugar Factor</title>
-        <meta name="description" content="Build your prompts" />
-        <link rel="icon" href="/favicon.png" />
+        <meta
+          name="description"
+          content="Supercharge your cross LLM App development by decoupling your prompts from the Application Layer"
+        />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#040306] to-[#494952]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
