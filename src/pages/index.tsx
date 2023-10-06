@@ -31,7 +31,6 @@ function Index() {
     <div>
       <Head>
         <title>Sugarcane AI</title>
-        {/* Add meta tags and other head elements as needed */}
       </Head>
       <AppBar position="static">
         <Toolbar>

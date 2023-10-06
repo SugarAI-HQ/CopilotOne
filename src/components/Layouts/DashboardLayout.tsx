@@ -1,6 +1,5 @@
-// import { Providers } from "./providers";
 import * as React from "react";
-import type { ReactElement } from 'react'
+import type { ReactElement } from "react";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -15,37 +14,22 @@ import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import Link from "@mui/material/Link";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-// import { mainListItems, secondaryListItems } from "./Dashboard/listItems";
-import { MdAccountCircle } from "react-icons/md";
-import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
 import { mainListItems, secondaryListItems } from "~/app/dashboard/listItems";
 import RouteGuard from "../RouteGuard";
 import { useRouter } from "next/router";
-import {
-  MdFavorite,
-  MdForkLeft,
-  MdForkRight,
-  MdReply,
-  MdSettings,
-  MdShare,
-} from "react-icons/md";
+import { MdSettings, MdShare } from "react-icons/md";
 import PreferencesModal from "../PreferencesDialog";
 import SharePackageDialog from "../SharePackageDialog";
+import BugReport from "~/components/Layouts/bug_report";
+import LikeButton from "~/components/marketplace/like_button";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
-
-
-
 
 function Copyright(props: any) {
   return (
@@ -118,7 +102,7 @@ const Drawer = styled(MuiDrawer, {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
   },
 });
 
@@ -148,8 +132,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   // Check if the current route matches the pattern '/dashboard/prompts/[id]'
-  const isPromptsRoute = router.pathname.startsWith('/dashboard/prompts/');
-
+  const isPromptsRoute = router.pathname.startsWith("/dashboard/prompts/");
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -179,67 +162,30 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
               color="inherit"
               noWrap
               sx={{ flexGrow: 1 }}
-            >
-              
-            </Typography>
+            ></Typography>
             {isPromptsRoute && (
               <div className="flex items-center gap-3">
-              <IconButton onClick={handleOpen} color="primary">
-                <MdSettings />
-              </IconButton>
-              <div className="flex items-center gap-1">
-                <MdFavorite />
-                <span>23</span>
+                <IconButton onClick={handleOpen} color="primary">
+                  <MdSettings />
+                </IconButton>
+                <LikeButton count={1008}></LikeButton>
+                <Button
+                  onClick={handleSharePackageOpen}
+                  startIcon={<MdShare />}
+                  variant="outlined"
+                  // sx={{ borderRadiuss: "40px" }}
+                  size="small"
+                >
+                  Share
+                </Button>
+                <BugReport></BugReport>
               </div>
-              <Button onClick={handleSharePackageOpen}
-                startIcon={<MdShare />}
-                variant="outlined"
-                sx={{ borderRadiuss: "40px" }}
-                size="small"
-              >
-                Share
-              </Button>
-              <Button
-                startIcon={<MdReply />}
-                variant="outlined"
-                sx={{ borderRadiuss: "40px" }}
-                size="small"
-              >
-                Embed
-              </Button>
-              <Button
-                startIcon={<MdForkRight />}
-                variant="outlined"
-                sx={{ borderRadiuss: "40px" }}
-                size="small"
-              >
-                Fork
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{ borderRadiuss: "40px" }}
-                size="small"
-              >
-                Create
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  borderRadiuss: "40px",
-                  backgroundColor: '#fff',
-                }}
-                className="!bg-white"
-                color="secondary"
-                size="small">
-                Sign In
-              </Button>
-            </div>
             )}
-            <IconButton color="inherit">
+            {/* <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -250,8 +196,10 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
               justifyContent: "space-between",
               px: [1],
             }}
-          > 
-            <Typography variant="h5" fontFamily={'fantasy'}>sugarFactory</Typography>
+          >
+            <Typography variant="h5" fontFamily={"fantasy"}>
+              sugarFactory
+            </Typography>
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>
@@ -262,7 +210,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             <Divider sx={{ my: 1 }} />
             {/* {secondaryListItems} */}
           </List>
-            <SidebarProfile/>
+          <SidebarProfile />
         </Drawer>
         <Box
           component="main"
@@ -283,20 +231,29 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             </Grid>
             {/* <Copyright sx={{ pt: 4 }} /> */}
           </Container>
-          <SharePackageDialog open={sharePackageOpen} onClose={handleSharePackageClose}/>
-          <PreferencesModal open={preferencesOpen} onClose={handleClose}/>
+          <SharePackageDialog
+            open={sharePackageOpen}
+            onClose={handleSharePackageClose}
+          />
+          <PreferencesModal open={preferencesOpen} onClose={handleClose} />
         </Box>
       </Box>
     </ThemeProvider>
   );
 }
 
-export const getLayout = (page:ReactElement) => <DashboardLayout>{page}</DashboardLayout>
+export const getLayout = (page: ReactElement) => (
+  <DashboardLayout>{page}</DashboardLayout>
+);
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <RouteGuard><Dashboard>{children}</Dashboard></RouteGuard>;
+  return (
+    <RouteGuard>
+      <Dashboard>{children}</Dashboard>
+    </RouteGuard>
+  );
 }

@@ -12,46 +12,53 @@ import { api } from "~/utils/api";
 import RouteGuard from "~/components/RouteGuard";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 
-const Profile = ()=> {
+const Profile = () => {
   const { data: sessionData } = useSession();
   return (
     <RouteGuard>
-    <div className="w-full">
-      <Typography variant="h5" fontWeight={700}>
-        Profile
-      </Typography>
+      <div className="w-full">
+        <Typography variant="h5" fontWeight={700}>
+          Profile
+        </Typography>
 
-      <Card className="mt-3" variant="outlined" sx={{ minWidth: 275 }}>
-        <CardContent>
-          <Typography variant="h5" component="div">
-            Account
-          </Typography>
-          <Divider className="my-4" sx={{marginTop:'16px',marginBottom:'16px'}} />
-           
-          <Avatar className="h-16 w-16" alt="Profile Image" src={sessionData?.user?.image || '/images/avatar.png'} />
+        <Card className="mt-3" variant="outlined" sx={{ minWidth: 275 }}>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              Account
+            </Typography>
+            <Divider
+              className="my-4"
+              sx={{ marginTop: "16px", marginBottom: "16px" }}
+            />
 
-          <Typography sx={{ fontSize: 16,marginTop:'16px' }} gutterBottom>
-          {sessionData?.user?.name}
-          </Typography>
-          <Typography sx={{ fontSize: 14 }} gutterBottom>
-          {sessionData?.user?.email}
-          </Typography>
-        </CardContent>
-      </Card>
+            <Avatar
+              className="h-16 w-16"
+              alt="Profile Image"
+              src={sessionData?.user?.image || "/images/avatar.png"}
+            />
 
-      <Button
-        variant="outlined"
-        sx={{
-          marginTop:'16px'
-        }}
-        onClick={() => void signOut()}
-      >
-        Logout
-      </Button>
-    </div>
+            <Typography sx={{ fontSize: 16, marginTop: "16px" }} gutterBottom>
+              {sessionData?.user?.name}
+            </Typography>
+            <Typography sx={{ fontSize: 14 }} gutterBottom>
+              {sessionData?.user?.email}
+            </Typography>
+          </CardContent>
+        </Card>
+
+        <Button
+          variant="outlined"
+          sx={{
+            marginTop: "16px",
+          }}
+          onClick={() => void signOut()}
+        >
+          Logout
+        </Button>
+      </div>
     </RouteGuard>
   );
-}
-Profile.getLayout = getLayout
+};
+Profile.getLayout = getLayout;
 
-export default Profile
+export default Profile;
