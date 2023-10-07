@@ -36,15 +36,16 @@ function Packages() {
                 <Typography>{pkg?.description}</Typography>
               </CardContent>
               <CardActions>
+                <Chip
+                  sx={{ mr: 2 }}
+                  size="small"
+                  label={pkg?.visibility}
+                  // variant="conti"
+                />
                 <MUILink href={`/dashboard/prompts/${pkg?.id}`}>View</MUILink>
                 <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>
                   Logs
                 </MUILink>
-                <Chip
-                  sx={{ ml: 10 }}
-                  label={pkg?.visibility}
-                  variant="outlined"
-                />
               </CardActions>
             </Card>
           </Grid>
