@@ -195,7 +195,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
       },
       select: { id: true },
     })) as { id: string | null };
-    opts.input.userId = userId;
+    opts.input.userId = userId as string;
   }
 
   if (opts.input?.package) {
@@ -207,7 +207,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
         select: { id: true },
       })) as { id: string | null };
 
-    opts.input.promptPackageId = promptPackageId;
+    opts.input.promptPackageId = promptPackageId as string;
   }
 
   if (opts.input?.template) {
@@ -218,7 +218,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
         },
         select: { id: true },
       })) as { id: string | null };
-    opts.input.promptTemplateId = promptTemplateId;
+    opts.input.promptTemplateId = promptTemplateId as string;
   }
 
   return opts.next();

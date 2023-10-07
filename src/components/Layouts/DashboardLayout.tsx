@@ -28,7 +28,6 @@ import SharePackageDialog from "../SharePackageDialog";
 import BugReport from "~/components/Layouts/bug_report";
 import LikeButton from "~/components/marketplace/like_button";
 import { Chip, Icon } from "@mui/material";
-import Logo from "./logo";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
