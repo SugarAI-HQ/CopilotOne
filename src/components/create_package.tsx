@@ -18,16 +18,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { packageVisibility } from "~/validators/base";
 
-export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
+export function CreatePackage({ onSubmit }: { onSubmit: Function }) {
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = React.useState('public');
+  const [visibility, setVisibility] = React.useState(
+    packageVisibility.Enum.PUBLIC,
+  );
 
   const handleClose = () => {
-    setName("")
-    setDescription("")
+    setName("");
+    setDescription("");
     setIsOpen(false);
   };
 
@@ -57,8 +60,7 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
           <Typography variant="h6">New Prompt Package</Typography>
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-          </DialogContentText>
+          <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
             <FormControl fullWidth>
@@ -79,7 +81,6 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
               />
             </FormControl>
 
-
             <FormControl component="fieldset">
               <FormLabel component="legend">Visibility</FormLabel>
               <RadioGroup
@@ -89,22 +90,23 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
                 onChange={handleVisibilityChange}
               >
                 <FormControlLabel
-                  value="PUBLIC"
+                  value={packageVisibility.Enum.PUBLIC}
                   control={<Radio />}
                   label="Public"
                   id="public-radio"
                 />
                 <FormControlLabel
-                  value="PRIVATE"
+                  value={packageVisibility.Enum.PRIVATE}
                   control={<Radio />}
                   label="Private"
                   id="private-radio"
                 />
               </RadioGroup>
               <div>
-                {visibility === 'PUBLIC' ? (
+                {visibility === packageVisibility.Enum.PUBLIC ? (
                   <span>
-                    Anyone on the internet can use this package. You choose who can edit.
+                    Anyone on the internet can use this package. You choose who
+                    can edit.
                   </span>
                 ) : (
                   <span>
@@ -113,8 +115,6 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function}) {
                 )}
               </div>
             </FormControl>
-
-
           </Stack>
         </DialogContent>
 

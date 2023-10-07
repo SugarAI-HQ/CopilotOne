@@ -45,15 +45,51 @@ function getAuthOptions(): NextAuthOptions {
         ...session,
         user: {
           ...session.user,
-          id: user.id,
+          // id: user.id,
         },
       }),
       redirect: ({ url, baseUrl }: { url: string; baseUrl: string }) => {
         console.log(url, baseUrl);
         return "/dashboard";
       },
+
+      async jwt({ token, user, account, profile, session }) {
+        let newToken = token;
+        // Persist the OAuth access_token and or the user id to the token right after signin
+
+        // console.log(`---------- auth callback: jwt------`);
+        // console.log(token, account, profile);
+        // console.log(`---------- auth callback------`);
+        if (account) {
+          console.log(`---------- jwt callback:------`);
+          console.log(token);
+          console.log(account, user);
+
+          // token.accessToken = account.access_token;
+          token.id = user.id;
+          const newToken = {
+            v: 1,
+            sub: token.sub,
+            id: user.id,
+          };
+          console.log(newToken);
+          console.log(`---------- jwt callback------`);
+        }
+        return newToken;
+      },
+      // async session({ session, token, user }) {
+      //   // Send properties to the client, like an access_token and user id from a provider.
+      //   console.log(`---------- auth callback: session------`);
+      //   console.log(session, token, user);
+      //   console.log(`---------- auth callback------`);
+
+      //   return session;
+      // },
     },
     adapter: PrismaAdapter(prisma),
+    session: {
+      strategy: "jwt",
+    },
     providers: [
       GithubProvider({
         clientId: env.GITHUB_CLIENT_ID,

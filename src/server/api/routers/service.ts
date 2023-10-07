@@ -1,7 +1,7 @@
 import {
   createTRPCRouter,
   promptMiddleware,
-  publicProcedure,
+  protectedProcedure,
 } from "~/server/api/trpc";
 import {
   generateInput,
@@ -14,7 +14,7 @@ import { promptEnvironment } from "~/validators/base";
 import { LlmProvider } from "~/services/llm_providers";
 
 export const serviceRouter = createTRPCRouter({
-  getPrompt: publicProcedure
+  getPrompt: protectedProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -44,7 +44,7 @@ export const serviceRouter = createTRPCRouter({
       return null;
     }),
 
-  generate: publicProcedure
+  generate: protectedProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -109,7 +109,7 @@ export const serviceRouter = createTRPCRouter({
 });
 
 async function getPv(ctx: any, input: any) {
-  const userId = input.userId || ctx.session?.user.id;
+  const userId = input.userId || ctx.jwt?.id;
   let pt = null;
   let pv = null;
 

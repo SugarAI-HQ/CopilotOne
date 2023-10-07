@@ -22,6 +22,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { PrismaClient } from "@prisma/client";
 import { GenerateInput } from "~/validators/service";
+import { JWT, getToken } from "next-auth/jwt";
 
 /**
  * 1. CONTEXT
@@ -32,8 +33,10 @@ import { GenerateInput } from "~/validators/service";
  */
 
 type NullableSession = Session | null;
+type NullableJwt = JWT | null;
 interface CreateContextOptions {
   session: NullableSession;
+  jwt: NullableJwt;
 }
 
 /**
@@ -49,6 +52,7 @@ interface CreateContextOptions {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
+    jwt: opts.jwt,
     prisma,
   };
 };
@@ -65,11 +69,20 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const requestId = uuid();
   res.setHeader("x-request-id", requestId);
 
+  // console.log(`token ------------`);
+  const token = await getToken({ req });
+  // console.log("JSON Web Token", token);
+  // console.log(`token ------------`);
+
   // Get the session from the server using the getServerSession wrapper function
+  // console.log(`session ------------`);
   const session = await getServerAuthSession({ req, res });
+  console.log(session);
+  // console.log(`session ------------`);
 
   return createInnerTRPCContext({
     session,
+    jwt: token,
   });
 };
 
@@ -162,13 +175,18 @@ export const publicProcedure = t.procedure.use(loggerMiddleware);
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (!ctx.jwt?.id) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
   if (!ctx.session?.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session, user: ctx.session.user, jwt: ctx.jwt },
     },
   });
 });

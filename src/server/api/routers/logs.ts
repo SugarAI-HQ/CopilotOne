@@ -1,72 +1,76 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   getLogsInput,
   logListOutput,
-  updateLabel
+  updateLabel,
 } from "~/validators/prompt_log";
 
-
 export const logRouter = createTRPCRouter({
-
-  getLogs: publicProcedure
+  getLogs: protectedProcedure
     .input(getLogsInput)
     .output(logListOutput)
     .query(async ({ ctx, input }) => {
+      const {
+        promptPackageId,
+        cursor,
+        perPage,
+        version,
+        environment,
+        llmModel,
+        llmProvider,
+      } = input;
 
-    const { promptPackageId, cursor, perPage, version, environment, llmModel, llmProvider } = input;
+      const baseWhere = {
+        promptPackageId,
+        version,
+        environment,
+        llmModel,
+        llmProvider,
+      };
 
-    const baseWhere = {
-      promptPackageId,
-      version,
-      environment,
-      llmModel,
-      llmProvider,
-    };
+      const filteredWhere = Object.fromEntries(
+        Object.entries(baseWhere).filter(([_, value]) => value !== undefined),
+      );
 
-    const filteredWhere = Object.fromEntries(
-      Object.entries(baseWhere).filter(([_, value]) => value !== undefined)
-    );
+      const totalRecords = await ctx.prisma.promptLog.count({
+        where: filteredWhere,
+      });
+      const totalPages = Math.ceil(totalRecords / perPage);
 
-    const totalRecords = await ctx.prisma.promptLog.count({
-      where: filteredWhere,
-    });
-    const totalPages = Math.ceil(totalRecords / perPage);
+      const logs = await ctx.prisma.promptLog.findMany({
+        cursor: cursor ? { id: cursor } : undefined,
+        where: filteredWhere,
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: perPage + 1,
+      });
 
-    const logs = await ctx.prisma.promptLog.findMany({
-      cursor: cursor ? { id: cursor } : undefined,
-      where: filteredWhere,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: perPage + 1,
-    });
+      const hasMore = logs.length >= perPage;
+      const slicedLogs = hasMore ? logs.slice(0, perPage) : logs;
+      let nextPageCursor: typeof cursor | undefined = undefined;
 
-    const hasMore = logs.length >= perPage;
-    const slicedLogs = hasMore ? logs.slice(0, perPage) : logs;
-    let nextPageCursor: typeof cursor | undefined = undefined;
+      if (logs.length > perPage) {
+        const nextItem = logs.pop();
+        nextPageCursor = nextItem!.id;
+      }
 
-    if (logs.length > perPage) {
-      const nextItem = logs.pop();
-      nextPageCursor = nextItem!.id;
-    }
+      const response = {
+        data: slicedLogs,
+        totalPages: totalPages,
+        hasNextPage: hasMore,
+        nextCursor: nextPageCursor,
+      };
 
-    const response = {
-      data: slicedLogs,
-      totalPages: totalPages,
-      hasNextPage: hasMore,
-      nextCursor: nextPageCursor,
-    };
+      console.log(`updated label -------------- ${JSON.stringify(response)}`);
 
-    console.log(`updated label -------------- ${JSON.stringify(response)}`);
+      return response;
+    }),
 
-    return response
-
-  }),
-
-  updateLogLabel: publicProcedure
+  updateLogLabel: protectedProcedure
     .input(updateLabel)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.session?.user.id;
+      const userId = ctx.jwt?.id;
       let pL = null;
       console.log(`update label -------------- ${JSON.stringify(input)}`);
 
@@ -84,6 +88,5 @@ export const logRouter = createTRPCRouter({
       console.log(`updated label -------------- ${JSON.stringify(pL)}`);
 
       return pL;
-    })
-
-})
+    }),
+});

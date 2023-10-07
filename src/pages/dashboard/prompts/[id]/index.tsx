@@ -29,6 +29,7 @@ import { CreateTemplate } from "~/components/create_template";
 import toast from "react-hot-toast";
 import PromptTemplate from "~/components/prompt_template";
 import DatasetIcon from "@mui/icons-material/Dataset";
+import HomeIcon from "@mui/icons-material/Home";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { NextPageWithLayout } from "~/pages/_app";
 import { colorType } from "~/validators/base";
@@ -142,11 +143,20 @@ const PackageShow: NextPageWithLayout = () => {
                   component="span"
                 >
                   <Box sx={{ flexGrow: 1 }}>
-                    <Tabs value={-1} onChange={handleTabChange}>
+                    <Tabs value={1} onChange={handleTabChange}>
+                      <Tab
+                        label="Home"
+                        icon={<HomeIcon />}
+                        iconPosition="start"
+                        component={Link}
+                        value={1}
+                        href={`/dashboard/prompts/${pp.id}/logs`}
+                      />
                       <Tab
                         label="Logs"
                         icon={<DatasetIcon />}
                         iconPosition="start"
+                        value={2}
                         component={Link}
                         href={`/dashboard/prompts/${pp.id}/logs`}
                       />
