@@ -27,6 +27,8 @@ import PreferencesModal from "../PreferencesDialog";
 import SharePackageDialog from "../SharePackageDialog";
 import BugReport from "~/components/Layouts/bug_report";
 import LikeButton from "~/components/marketplace/like_button";
+import { Chip, Icon } from "@mui/material";
+import Logo from "./logo";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -194,11 +196,12 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              px: [1],
+              px: [2],
             }}
           >
-            <Typography variant="h5" fontFamily={"fantasy"}>
-              sugarFactory
+            <Typography variant="h5">
+              Sugar Factory
+              <Chip sx={{ m: 1 }} size="small" label="β"></Chip>
             </Typography>
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
