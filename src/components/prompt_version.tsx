@@ -252,7 +252,7 @@ function PromptVersion({
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
               <Grid container justifyContent={"flex-start"}>
                 <PromptOutput output={promptOutput}></PromptOutput>
-                <LogLabel></LogLabel>
+                {/* <LogLabel></LogLabel> */}
               </Grid>
               <Grid container alignItems="center" alignContent={"center"}>
                 <PromptPerformance data={promptPerformance}></PromptPerformance>

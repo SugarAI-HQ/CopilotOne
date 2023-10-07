@@ -150,13 +150,13 @@ const PackageShow: NextPageWithLayout = () => {
                         component={Link}
                         href={`/dashboard/prompts/${pp.id}/logs`}
                       />
-                      <Tab
+                      {/* <Tab
                         label="Insights"
                         icon={<AnalyticsIcon />}
                         iconPosition="start"
                         component={Link}
                         href={`/dashboard/prompts/${pp.id}/analytics`}
-                      />
+                      /> */}
                     </Tabs>
                   </Box>
 
