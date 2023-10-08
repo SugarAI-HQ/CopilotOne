@@ -9,9 +9,9 @@ import {
   getPromptInput,
   getPromptOutput,
 } from "~/validators/service";
-import { run } from "~/services/openai";
 import { generateLLmConfig, generatePrompt } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
+import { LlmProvider } from "~/services/llm_providers";
 
 export const serviceRouter = createTRPCRouter({
   getPrompt: publicProcedure
@@ -59,7 +59,6 @@ export const serviceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
-
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
       if (pv) {
         console.log(`data >>>> ${JSON.stringify(input)}`);
@@ -67,38 +66,42 @@ export const serviceRouter = createTRPCRouter({
         console.log(`prompt >>>> ${prompt}`);
         // Todo: Load a provider on the fly
         const llmConfig = generateLLmConfig(pv.llmConfig);
-        const output = await run(prompt, pv.llmModel, llmConfig);
+        const output = await LlmProvider(prompt, pv.llmModel, pv.llmProvider, llmConfig, input.isDevelopment);
 
         console.log(`output -------------- ${JSON.stringify(output)}`);
         // const pl = await createPromptLog(ctx, pv, prompt, output);
+        if (output?.completion){
+          const pl = await ctx.prisma.promptLog.create({
+            data: {
+              userId: input.userId as string,
+              promptPackageId: pv.promptPackageId,
+              promptTemplateId: pv.promptTemplateId,
+              promptVersionId: pv.id,
 
-        const pl = await ctx.prisma.promptLog.create({
-          data: {
-            userId: input.userId as string,
-            promptPackageId: pv.promptPackageId,
-            promptTemplateId: pv.promptTemplateId,
-            promptVersionId: pv.id,
+              environment: input.environment,
 
-            environment: input.environment,
+              version: pv.version,
+              prompt: prompt,
+              completion: output?.completion as string,
 
-            version: pv.version,
-            prompt: prompt,
-            completion: output?.completion as string,
+              llmProvider: pv.llmProvider,
+              llmModel: pv.llmModel,
+              llmConfig: llmConfig,
 
-            llmProvider: pv.llmProvider,
-            llmModel: pv.llmModel,
-            llmConfig: llmConfig,
+              latency: output?.performance?.latency as number,
+              prompt_tokens: output?.performance?.prompt_tokens as number,
+              completion_tokens:
+                (output?.performance?.completion_tokens as number) || 0,
+              total_tokens: output?.performance?.total_tokens as number,
+              extras: {},
+            },
+          });
 
-            latency: output?.performance?.latency as number,
-            prompt_tokens: output?.performance?.prompt_tokens as number,
-            completion_tokens:
-              (output?.performance?.completion_tokens as number) || 0,
-            total_tokens: output?.performance?.total_tokens as number,
-            extras: {},
-          },
-        });
 
-        return pl;
+          return pl;
+        } else {
+          console.log('Error: output.completion is missing');
+        }
       }
 
       return null;

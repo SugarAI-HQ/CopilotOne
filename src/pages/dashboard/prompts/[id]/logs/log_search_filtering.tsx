@@ -36,14 +36,29 @@ const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({ filterOptions =
     ...providers.map(([value, label]) => ({ value, label })),
   ];
 
-  const { data: versionList } = api.logVersion.getVersions.useQuery({
+  const { data: versionList } = api.version.getLogVersions.useQuery({
     promptPackageId: packageId,
   });
 
   const versionOptions = [
     { value: '', label: 'All Version' },
     ...(versionList
-      ? versionList.map(({ version }) => ({ value: version, label: version }))
+      ? versionList
+          .sort((a, b) => {
+            const versionA = (a?.version || '0').split('.').map(Number);
+            const versionB = (b?.version || '0').split('.').map(Number);
+
+            if (versionA && versionB) {
+              for (let i = 0; i < Math.min(versionA.length, versionB.length); i++) {
+                if (versionA[i] !== versionB[i]) {
+                  return (versionA[i] ?? 0) - (versionB[i] ?? 0);
+                }
+              }
+            }
+
+            return (versionA?.length ?? 0) - (versionB?.length ?? 0);
+          })
+          .map(({ version }) => ({ value: version, label: version }))
       : [])
   ];
 

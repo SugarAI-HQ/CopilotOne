@@ -17,7 +17,7 @@ export const appRouter = createTRPCRouter({
   service: serviceRouter,
   marketplace: marketplaceRouter,
   log: logRouter,
-  logVersion: versionRouter
+  version: versionRouter
 });
 
 // export type definition of API

@@ -13,12 +13,17 @@ import {
 } from "@mui/material";
 
 import CloseIcon from '@mui/icons-material/Close';
+import {
+  LlmConfigSchema,
 
+} from "~/validators/prompt_version";
 import React, { useState } from "react";
 import { providers, models} from "~/validators/base";
+import { api } from "~/utils/api";
+import { VersionSchema } from "~/validators/prompt_version";
 
-function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelChange }:
-  { initialProvider: string, initialModel: string, onProviderChange: Function, onModelChange: Function}) {
+function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelChange, pv }:
+  { initialProvider: string, initialModel: string, onProviderChange: Function, onModelChange: Function, pv: VersionSchema}) {
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,20 +35,35 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
 
   const handleOpen = () => setIsOpen(true);
 
-  const handleProviderChange = (event: any) => {
-    const selectedProvider = event.target.value;
-    setProvider(selectedProvider);
+  const mutation = api.prompt.updateVersion.useMutation();
 
+  const handleProviderChange = (event: any) => {
+    const selectedProvider:string = event.target.value;
+    setProvider(selectedProvider);
     onProviderChange(selectedProvider);
+    console.log(selectedProvider)
+    updateLLM(selectedProvider, model);
   };
 
   const handleModelChange = (event: any) => {
-    const selectedModel = event.target.value;
+    const selectedModel:string = event.target.value;
     setModel(selectedModel);
     onModelChange(selectedModel);
+    updateLLM(provider, selectedModel);
   };
 
 
+  const updateLLM = (llmProvider: string, llmModel: string) => {
+    mutation.mutate({
+      id: pv.id,
+      promptPackageId: pv.promptPackageId,
+      promptTemplateId: pv.promptTemplateId,
+      template: pv.template,
+      llmConfig: pv.llmConfig as LlmConfigSchema,
+      llmProvider,
+      llmModel,
+    });
+  };
 
   return (
     <>
@@ -75,6 +95,8 @@ function LLMSelector({ initialProvider, initialModel, onProviderChange, onModelC
                   <MenuItem
                       key={"pt-"+index}
                       value={p[0]}
+                      disabled={index > 1}
+
                   >
                     {p[1]}
                   </MenuItem>

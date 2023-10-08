@@ -9,6 +9,8 @@ export type PromptEnvironment = z.infer<typeof promptEnvironment>;
 export const providers = [
   ['openai', 'OpenAI'],
   ['llama2', 'Llama2'],
+  ['falcon', 'Falcon'],
+  ['mpt', 'MPT'],
 ]
 
 export const models = {
@@ -21,6 +23,15 @@ export const models = {
     ['7b', '7B'],
     ['13b', '13B'],
     ['70b', '70B'],
+  ],
+  'falcon': [
+    ['7b', '7B'],
+    ['40b', '40B'],
+    ['180b', '180B'],
+  ],
+  'mpt': [
+    ['7b', '7B'],
+    ['30b', '30B'],
   ]
 
 }

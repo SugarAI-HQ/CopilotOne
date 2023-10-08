@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { TextField, Box, Button, Divider, Grid, Stack } from "@mui/material";
+import { TextField, Box, Button, Divider, Grid, Stack, Checkbox } from "@mui/material";
+import FormControlLabel from '@mui/material/FormControlLabel';
 import LLMSelector from "./llm_selector";
 import LLMConfig from "./llm_config";
 import { api } from "~/utils/api";
@@ -23,6 +24,8 @@ import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
 import { GenerateInput } from "~/validators/service";
+
+const isDev = process.env.NODE_ENV === 'development';
 
 function PromptVersion({
   ns,
@@ -52,7 +55,7 @@ function PromptVersion({
     logitBias: "",
     stopSequences: "",
   });
-
+  const [checked, setChecked] = useState(isDev);
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(
@@ -96,6 +99,10 @@ function PromptVersion({
     // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
 
+  const handleChange = () => {
+    setChecked((prevChecked) => !prevChecked);
+  };
+
   const handleRun = async (e: any) => {
     console.log(`running template version ${version}`);
 
@@ -109,7 +116,7 @@ function PromptVersion({
       package: pp?.name || "",
       template: pt?.name || "",
       version: pv.version || "",
-
+      isDevelopment: checked,
       environment: promptEnvironment.Enum.DEV,
       data: data,
     } as GenerateInput);
@@ -142,6 +149,8 @@ function PromptVersion({
   const handleTest = () => {
     console.log("TTD");
   };
+
+
 
   return (
     <>
@@ -206,6 +215,19 @@ function PromptVersion({
 
           <Divider textAlign="right"></Divider>
           <Stack direction="row" spacing={1} sx={{ p: 1 }}>
+            {isDev &&
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checked}
+                    onChange={handleChange}
+                    color="primary" // Change the color to your preference
+                  />
+                }
+                label="Run with Fake Data"
+              />
+            }
+
             <Button
               color="success"
               variant="outlined"
@@ -238,6 +260,7 @@ function PromptVersion({
                 initialModel={model}
                 onProviderChange={setProvider}
                 onModelChange={setModel}
+                pv={pv}
               ></LLMSelector>
               <LLMConfig
                 config={llmConfig}

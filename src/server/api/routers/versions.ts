@@ -3,7 +3,7 @@ import { getVersionInput, logVersionOutput } from "~/validators/log_version";
 
 export const versionRouter = createTRPCRouter({
 
-  getVersions: publicProcedure
+  getLogVersions: publicProcedure
     .input(getVersionInput)
     .output(logVersionOutput)
     .query(async ({ ctx, input }) => {
