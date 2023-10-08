@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { promptEnvironment, stringOpt } from "./base";
+import { LabelledStateSchema } from "~/generated/prisma-client-zod.ts";
 
 export const getPromptInput = z.object({
   environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
@@ -65,6 +66,8 @@ export const generateOutput = z
     prompt_tokens: z.number(),
     completion_tokens: z.number(),
     total_tokens: z.number(),
+
+    labelledState: LabelledStateSchema,
 
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

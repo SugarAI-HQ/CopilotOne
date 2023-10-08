@@ -4,7 +4,11 @@ import Tooltip from "@mui/material/Tooltip";
 import * as Icons from "@mui/icons-material";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
-import { LabelledState } from "~/validators/prompt_log";
+// import { LabelledState } from "~/validators/prompt_log";
+import {
+  LabelledStateSchema,
+  LabelledStateType,
+} from "~/generated/prisma-client-zod.ts";
 
 interface LabelStateIconsProps {
   logId: string;
@@ -12,10 +16,10 @@ interface LabelStateIconsProps {
 }
 
 const labelStateIcons: { [key: string]: any } = {
-  UNLABELLED: Icons.ThumbUp,
-  SELECTED: Icons.CheckCircle,
-  REJECTED: Icons.Cancel,
-  NOTSURE: Icons.Help,
+  // UNLABELLED: [Icons.Unarchive, "default"],
+  SELECTED: [Icons.ThumbUpOffAlt, "success"],
+  REJECTED: [Icons.ThumbDownOffAlt, "error"],
+  NOTSURE: [Icons.Help, "warn"],
 };
 
 const LabelIcons: React.FC<LabelStateIconsProps> = ({
@@ -29,14 +33,17 @@ const LabelIcons: React.FC<LabelStateIconsProps> = ({
 
   const mutation = api.log.updateLogLabel.useMutation();
 
-  const handleLabelChange = (logId: string, newLabelState: LabelledState) => {
+  const handleLabelChange = (
+    logId: string,
+    newLabelState: LabelledStateType,
+  ) => {
     mutation.mutate({ id: logId, labelledState: newLabelState });
     toast.success(
       `The label state has been successfully changed to "${newLabelState}".`,
     );
   };
 
-  const handleIconClick = (state: LabelledState) => {
+  const handleIconClick = (state: LabelledStateType) => {
     setSelectedLabel(state);
     handleLabelChange(logId, state);
   };
@@ -44,16 +51,19 @@ const LabelIcons: React.FC<LabelStateIconsProps> = ({
   return (
     <div className="flex space-x-2">
       {labelStates.map((state) => {
-        const IconComponent = labelStateIcons[state];
+        const color = labelStateIcons[state][1];
+        const IconComponent = labelStateIcons[state][0];
         const isSelected = selectedLabel === state;
 
         return (
           <Tooltip key={state} title={state} arrow>
             <span>
               <IconButton
-                size="small"
-                onClick={() => handleIconClick(state as LabelledState)}
-                disabled={isSelected}
+                color={isSelected ? color : "default"}
+                onClick={() => handleIconClick(state as LabelledStateType)}
+                // disabled={isSelected}
+                disableFocusRipple={isSelected}
+                // size={isSelected ? "large" : "small"}
               >
                 <IconComponent />
               </IconButton>

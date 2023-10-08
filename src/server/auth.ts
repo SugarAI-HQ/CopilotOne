@@ -53,7 +53,7 @@ function getAuthOptions(): NextAuthOptions {
         return "/dashboard";
       },
 
-      async jwt({ token, user, account, profile, session }) {
+      jwt({ token, user, account, profile, session }) {
         let newToken = token;
         // Persist the OAuth access_token and or the user id to the token right after signin
 

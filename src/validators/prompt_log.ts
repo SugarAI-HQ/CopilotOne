@@ -1,10 +1,10 @@
-
 import { z } from "zod";
 import { promptEnvironment } from "./base";
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
+import { LabelledStateSchema } from "~/generated/prisma-client-zod.ts";
 
-const allowedLabelledStates = ["UNLABELLED", "SELECTED", "REJECTED", "NOTSURE"] as const;
-export type LabelledState = typeof allowedLabelledStates[number];
+// const allowedLabelledStates = ["UNLABELLED", "SELECTED", "REJECTED", "NOTSURE"] as const;
+// export type LabelledState = typeof LabelledStateSchema;
 
 export const getLogsInput = z
   .object({
@@ -19,7 +19,7 @@ export const getLogsInput = z
     llmModel: z.string().optional(),
     llmProvider: z.string().optional(),
   })
-  .strict()
+  .strict();
 
 export type GetLogsInput = z.infer<typeof getLogsInput>;
 
@@ -49,14 +49,14 @@ const logSchema = z.object({
 
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
 export const updateLabel = z.object({
   id: z.string(),
-  labelledState: z.enum(allowedLabelledStates),
+  labelledState: LabelledStateSchema,
 });
 
-export const logOutput = logSchema.or(z.null())
+export const logOutput = logSchema.or(z.null());
 export type LogOutput = z.infer<typeof logOutput>;
 
 // export const logListOutput = z.object({data: z.array(logSchema), totalPages: z.number()})
@@ -67,7 +67,6 @@ export const logListOutput = z.object({
   nextCursor: z.string().optional(),
 });
 export type LogListOutput = z.infer<typeof logListOutput>;
-
 
 // const dd = {
 //     "id": "clmq7ranr0001sgpp3l6qou92",

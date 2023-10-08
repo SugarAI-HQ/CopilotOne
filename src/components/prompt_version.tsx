@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { TextField, Box, Button, Divider, Grid, Stack, Checkbox } from "@mui/material";
-import FormControlLabel from '@mui/material/FormControlLabel';
+import {
+  TextField,
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Stack,
+  Checkbox,
+} from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import LLMSelector from "./llm_selector";
 import LLMConfig from "./llm_config";
 import { api } from "~/utils/api";
@@ -23,9 +31,11 @@ import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
-import { GenerateInput } from "~/validators/service";
+import { GenerateInput, GenerateOutput } from "~/validators/service";
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
+import LabelIcons from "./label_icon";
+import { LogOutput } from "~/validators/prompt_log";
 
 function PromptVersion({
   ns,
@@ -56,6 +66,7 @@ function PromptVersion({
     stopSequences: "",
   });
   const [checked, setChecked] = useState(isDev);
+  const [pl, setPl] = useState<GenerateOutput>(null);
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(
@@ -123,6 +134,7 @@ function PromptVersion({
 
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
+      setPl(pl);
       setPromptOutput(pl.completion);
       setPromptPerformacne({
         latency: pl.latency,
@@ -149,8 +161,6 @@ function PromptVersion({
   const handleTest = () => {
     console.log("TTD");
   };
-
-
 
   return (
     <>
@@ -215,7 +225,7 @@ function PromptVersion({
 
           <Divider textAlign="right"></Divider>
           <Stack direction="row" spacing={1} sx={{ p: 1 }}>
-            {isDev &&
+            {isDev && (
               <FormControlLabel
                 control={
                   <Checkbox
@@ -226,7 +236,7 @@ function PromptVersion({
                 }
                 label="Run with Fake Data"
               />
-            }
+            )}
 
             <Button
               color="success"
@@ -275,7 +285,14 @@ function PromptVersion({
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
               <Grid container justifyContent={"flex-start"}>
                 <PromptOutput output={promptOutput}></PromptOutput>
-                {/* <LogLabel></LogLabel> */}
+                {pl && (
+                  <Box sx={{ ml: 5 }}>
+                    <LabelIcons
+                      logId={pl?.id}
+                      labelledState={pl?.labelledState}
+                    />
+                  </Box>
+                )}
               </Grid>
               <Grid container alignItems="center" alignContent={"center"}>
                 <PromptPerformance data={promptPerformance}></PromptPerformance>

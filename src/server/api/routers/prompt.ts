@@ -44,7 +44,7 @@ export const promptRouter = createTRPCRouter({
     .output(packageListOutput)
     .query(async ({ ctx, input }) => {
       let query = {
-        userId: ctx.jwt?.id,
+        userId: ctx.jwt?.id as string,
       };
       console.log(`packages input -------------- ${JSON.stringify(query)}`);
 
@@ -60,7 +60,7 @@ export const promptRouter = createTRPCRouter({
     .output(packageOutput)
     .query(async ({ ctx, input }) => {
       let query = {
-        userId: ctx.jwt?.id,
+        userId: ctx.jwt?.id as string,
         id: input.id,
       };
 
@@ -74,7 +74,7 @@ export const promptRouter = createTRPCRouter({
   createPackage: protectedProcedure
     .input(createPackageInput)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.jwt?.id;
+      const userId = ctx.jwt?.id as string;
       let promptPackage = null;
 
       if (userId) {
@@ -94,7 +94,7 @@ export const promptRouter = createTRPCRouter({
     .input(createTemplateInput)
     .output(templateOutput)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.jwt?.id;
+      const userId = ctx.jwt?.id as string;
       let pt = null;
 
       console.log(`template input -------------- ${JSON.stringify(input)}`);
@@ -146,7 +146,7 @@ export const promptRouter = createTRPCRouter({
       // console.log(`templates -------------- ${JSON.stringify(input)}`);
       const templates = await ctx.prisma.promptTemplate.findMany({
         where: {
-          userId: ctx.jwt?.id,
+          userId: ctx.jwt?.id as string,
           promptPackageId: input.promptPackageId,
         },
         include: {
@@ -166,7 +166,7 @@ export const promptRouter = createTRPCRouter({
     .input(createVersionInput)
     .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.jwt?.id;
+      const userId = ctx.jwt?.id as string;
       // let pv = null;
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
@@ -223,7 +223,7 @@ export const promptRouter = createTRPCRouter({
     .input(updateVersionInput)
     .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.jwt?.id;
+      const userId = ctx.jwt?.id as string;
       let pv = null;
       console.log(`update version -------------- ${JSON.stringify(input)}`);
 
@@ -254,7 +254,7 @@ export const promptRouter = createTRPCRouter({
     .input(deployTemplateInput)
     // .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.jwt?.id;
+      const userId = ctx.jwt?.id as string;
       let pv = null;
       let pt = null;
       console.log(`deploy template -------------- ${JSON.stringify(input)}`);
@@ -312,7 +312,7 @@ export const promptRouter = createTRPCRouter({
       console.log(`versions input -------------- ${JSON.stringify(input)}`);
       const versions = await ctx.prisma.promptVersion.findMany({
         where: {
-          userId: ctx.jwt?.id,
+          userId: ctx.jwt?.id as string,
           promptPackageId: input.promptPackageId,
           promptTemplateId: input.promptTemplateId,
         },

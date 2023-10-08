@@ -8,17 +8,18 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button
+  Button,
 } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
-import TimeAgo from 'react-timeago';
+import TimeAgo from "react-timeago";
 import LabelIcons from "~/components/label_icon";
 import { NextPageWithLayout } from "~/pages/_app";
-import type { LabelledState } from "~/validators/prompt_log";
+
 import LogSearchFiltering from "./log_search_filtering";
+import { LabelledStateType } from "~/generated/prisma-client-zod.ts";
 
 interface PromptLog {
   id: string;
@@ -38,7 +39,7 @@ interface PromptLog {
   completion_tokens: number;
   total_tokens: number;
   extras: Record<string, any>;
-  labelledState: LabelledState;
+  labelledState: LabelledStateType;
   finetunedState: FinetunedState;
   promptPackageId: string;
   promptTemplateId: string;
@@ -54,20 +55,17 @@ export interface FilterOptions {
   version?: string | undefined;
 }
 
-
 // type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
 const itemsPerPage = 10;
 
 const PromptLogTable: NextPageWithLayout = () => {
-
   const router = useRouter();
   const packageId = router.query.id as string;
 
   const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-
 
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     environment: undefined,
@@ -76,24 +74,23 @@ const PromptLogTable: NextPageWithLayout = () => {
     version: undefined,
   });
 
-  const { data, hasNextPage, fetchNextPage, refetch } = api.log.getLogs.useInfiniteQuery(
-    {
-      promptPackageId: packageId,
-      perPage: itemsPerPage,
-      ...filterOptions
-    },
-    {
-      getNextPageParam: (lastPage) => {
-        return lastPage.hasNextPage ? lastPage.nextCursor : undefined;
+  const { data, hasNextPage, fetchNextPage, refetch } =
+    api.log.getLogs.useInfiniteQuery(
+      {
+        promptPackageId: packageId,
+        perPage: itemsPerPage,
+        ...filterOptions,
       },
-
-    }
-  );
-
+      {
+        getNextPageParam: (lastPage) => {
+          return lastPage.hasNextPage ? lastPage.nextCursor : undefined;
+        },
+      },
+    );
 
   useEffect(() => {
     if (data) {
-      const allLogs:any = data.pages.flatMap((page) => page.data);
+      const allLogs: any = data.pages.flatMap((page) => page.data);
       setPromptLogs(allLogs);
     }
   }, [data]);
@@ -103,14 +100,12 @@ const PromptLogTable: NextPageWithLayout = () => {
     refetch();
   }, [searchText, filterOptions]);
 
-
   const handleSearch = () => {
     const filteredLogs = promptLogs.filter((log) =>
-      log.prompt.toLowerCase().includes(searchText.toLowerCase())
+      log.prompt.toLowerCase().includes(searchText.toLowerCase()),
     );
     setPromptLogs(filteredLogs);
   };
-
 
   const loadMore = async () => {
     await fetchNextPage();
@@ -118,7 +113,7 @@ const PromptLogTable: NextPageWithLayout = () => {
 
   return (
     <div>
-       {/* <TextField
+      {/* <TextField
         label="Search"
         variant="outlined"
         fullWidth
@@ -128,7 +123,9 @@ const PromptLogTable: NextPageWithLayout = () => {
       /> */}
       <LogSearchFiltering
         filterOptions={filterOptions}
-        onFilterChange={(newFilterOptions) => setFilterOptions(newFilterOptions)}
+        onFilterChange={(newFilterOptions) =>
+          setFilterOptions(newFilterOptions)
+        }
       />
 
       <TableContainer component={Paper}>
@@ -175,14 +172,18 @@ const PromptLogTable: NextPageWithLayout = () => {
                   />
                 </TableCell>
                 <TableCell>{log.finetunedState}</TableCell>
-                <TableCell><TimeAgo date={log.createdAt}/></TableCell>
-                <TableCell><TimeAgo date={log.updatedAt}/></TableCell>
+                <TableCell>
+                  <TimeAgo date={log.createdAt} />
+                </TableCell>
+                <TableCell>
+                  <TimeAgo date={log.updatedAt} />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <div className="pt-5 flex justify-center items-center">
+      <div className="flex items-center justify-center pt-5">
         {hasNextPage && (
           <Button
             variant="outlined"
@@ -198,7 +199,6 @@ const PromptLogTable: NextPageWithLayout = () => {
   );
 };
 
-
-PromptLogTable.getLayout = getLayout
+PromptLogTable.getLayout = getLayout;
 
 export default PromptLogTable;
