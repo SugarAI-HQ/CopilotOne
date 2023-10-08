@@ -47,8 +47,9 @@ export const generateInput = z
   .object({
     // Template Data
     data: z.record(z.any()),
+    isDevelopment: z.boolean(),
   })
-  .merge(getPromptInput).merge(z.object({isDevelopment: z.boolean()}))
+  .merge(getPromptInput)
   .strict();
 export type GenerateInput = z.infer<typeof generateInput>;
 

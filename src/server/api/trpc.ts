@@ -37,6 +37,7 @@ type NullableJwt = JWT | null;
 interface CreateContextOptions {
   session: NullableSession;
   jwt: NullableJwt;
+  prisma: PrismaClient;
 }
 
 /**
@@ -69,19 +70,24 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const requestId = uuid();
   res.setHeader("x-request-id", requestId);
 
-  // console.log(`token ------------`);
+  // console.log(`headers ------------`);
+  // console.log(req.headers);
+  // console.log(`headers ------------`);
+
   const token = await getToken({ req });
+  // console.log(`token ------------`);
   // console.log("JSON Web Token", token);
   // console.log(`token ------------`);
 
   // Get the session from the server using the getServerSession wrapper function
-  // console.log(`session ------------`);
   const session = await getServerAuthSession({ req, res });
-  console.log(session);
-  // console.log(`session ------------`);
+  console.log(`session ------------`);
+  // console.log(session);
+  console.log(`session ------------`);
 
   return createInnerTRPCContext({
     session,
+    prisma,
     jwt: token,
   });
 };
@@ -179,21 +185,26 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  if (!ctx.session?.user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
+  // if (!ctx.session?.user) {
+  //   throw new TRPCError({ code: "UNAUTHORIZED" });
+  // }
 
   return next({
     ctx: {
+      jwt: ctx.jwt as JWT | null,
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user, jwt: ctx.jwt },
+      // session: {
+      //   // ...ctx.session,
+      //   // user: ctx.session?.user,
+      // },
     },
   });
 });
 
 export const promptMiddleware = experimental_standaloneMiddleware<{
-  ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
-  input: GenerateInput;
+  // ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
+  ctx: CreateContextOptions;
+  input: Partial<GenerateInput>;
   meta: any;
   // 'meta', not defined here, defaults to 'object | undefined'
 }>().create(async (opts) => {

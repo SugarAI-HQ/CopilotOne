@@ -36,7 +36,8 @@ export const models = {
 export const packageVisibility = z.enum(["PUBLIC", "PRIVATE"]);
 export type PackageVisibility = z.infer<typeof packageVisibility>;
 
-export const stringOpt = z.union([z.string(), z.undefined()]);
+// export const stringOpt = z.union([z.string(), z.undefined()]);
+export const stringOpt = z.string().optional();
 export type StringOpt = z.infer<typeof stringOpt>;
 
 export const publicUserSchema = z.object({

@@ -1,9 +1,8 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { getVersionInput, logVersionOutput } from "~/validators/log_version";
 
 export const versionRouter = createTRPCRouter({
-
-  getLogVersions: publicProcedure
+  getLogVersions: protectedProcedure
     .input(getVersionInput)
     .output(logVersionOutput)
     .query(async ({ ctx, input }) => {
@@ -11,18 +10,18 @@ export const versionRouter = createTRPCRouter({
 
       const versionList = await ctx.prisma.promptVersion.findMany({
         where: {
-          promptPackageId: promptPackageId
+          userId: ctx.jwt?.id as string,
+          promptPackageId: promptPackageId,
         },
         select: {
           version: true,
         },
-        distinct: ['version'],
+        distinct: ["version"],
         orderBy: {
-          version: 'asc',
+          version: "asc",
         },
       });
 
       return versionList;
-    })
-
+    }),
 });

@@ -1,4 +1,3 @@
-
 export const fakeResponse = {
   warning:
     "This model version is deprecated. Migrate before January 4, 2024 to avoid disruption of service. Learn more https://platform.openai.com/docs/deprecations",
@@ -8,7 +7,7 @@ export const fakeResponse = {
   model: "text-davinci-003",
   choices: [
     {
-      text: " {@RESPONSE}",
+      text: "This is fake respoonse generated for testing purposes",
       index: 0,
       logprobs: null,
       finish_reason: "stop",
