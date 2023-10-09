@@ -29,7 +29,7 @@ export async function run(
   prompt: string,
   llm_model: string,
   llmConfig: LlmConfigSchema,
-  isDevelopment: boolean = false
+  isDevelopment: boolean = false,
 ) {
   // Capture the start time
   const startTime = new Date();
@@ -37,7 +37,7 @@ export async function run(
   // response = await memoizedCompletion(prompt, llm_model, llmConfig)
   let response;
   if (isDevelopment) {
-    response = fakeResponse
+    response = fakeResponse.openAIFakeResponse;
   } else {
     response = await completion(prompt, llm_model, llmConfig);
   }
@@ -46,10 +46,8 @@ export async function run(
   const endTime = new Date();
   const latency: number = Number(endTime) - Number(startTime);
 
-  return generateOutput(response)
-
+  return generateOutput(response);
 }
-
 
 const memoizedCompletion = memoize(completion, {
   async: true,

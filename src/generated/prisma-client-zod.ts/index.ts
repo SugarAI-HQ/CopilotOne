@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { Prisma } from "@prisma/client";
+import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -8,17 +8,11 @@ import { Prisma } from "@prisma/client";
 // JSON
 //------------------------------------------------------
 
-export type NullableJsonInput =
-  | Prisma.JsonValue
-  | null
-  | "JsonNull"
-  | "DbNull"
-  | Prisma.NullTypes.DbNull
-  | Prisma.NullTypes.JsonNull;
+export type NullableJsonInput = Prisma.JsonValue | null | 'JsonNull' | 'DbNull' | Prisma.NullTypes.DbNull | Prisma.NullTypes.JsonNull;
 
 export const transformJsonNull = (v?: NullableJsonInput) => {
-  if (!v || v === "DbNull") return Prisma.DbNull;
-  if (v === "JsonNull") return Prisma.JsonNull;
+  if (!v || v === 'DbNull') return Prisma.DbNull;
+  if (v === 'JsonNull') return Prisma.JsonNull;
   return v;
 };
 
@@ -33,7 +27,7 @@ export const JsonValue: z.ZodType<Prisma.JsonValue> = z.union([
 export type JsonValueType = z.infer<typeof JsonValue>;
 
 export const NullableJsonValue = z
-  .union([JsonValue, z.literal("DbNull"), z.literal("JsonNull")])
+  .union([JsonValue, z.literal('DbNull'), z.literal('JsonNull')])
   .nullable()
   .transform((v) => transformJsonNull(v));
 
@@ -49,183 +43,56 @@ export const InputJsonValue: z.ZodType<Prisma.InputJsonValue> = z.union([
 
 export type InputJsonValueType = z.infer<typeof InputJsonValue>;
 
+
 /////////////////////////////////////////
 // ENUMS
 /////////////////////////////////////////
 
-export const TransactionIsolationLevelSchema = z.enum([
-  "ReadUncommitted",
-  "ReadCommitted",
-  "RepeatableRead",
-  "Serializable",
-]);
+export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
 
-export const AccountScalarFieldEnumSchema = z.enum([
-  "id",
-  "userId",
-  "type",
-  "provider",
-  "providerAccountId",
-  "refresh_token",
-  "access_token",
-  "expires_at",
-  "token_type",
-  "scope",
-  "id_token",
-  "session_state",
-  "createdAt",
-  "updatedAt",
-]);
+export const AccountScalarFieldEnumSchema = z.enum(['id','userId','type','provider','providerAccountId','refresh_token','access_token','expires_at','token_type','scope','id_token','session_state','createdAt','updatedAt']);
 
-export const SessionScalarFieldEnumSchema = z.enum([
-  "id",
-  "sessionToken",
-  "userId",
-  "expires",
-  "createdAt",
-  "updatedAt",
-]);
+export const SessionScalarFieldEnumSchema = z.enum(['id','sessionToken','userId','expires','createdAt','updatedAt']);
 
-export const PromptVariablesScalarFieldEnumSchema = z.enum([
-  "id",
-  "userId",
-  "promptPackageId",
-  "promptTemplateId",
-  "promptVersionId",
-  "name",
-  "majorVersion",
-  "minorVersion",
-  "variables",
-  "createdAt",
-  "updatedAt",
-]);
+export const PromptVariablesScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','promptTemplateId','promptVersionId','name','majorVersion','minorVersion','variables','createdAt','updatedAt']);
 
-export const PromptPackageScalarFieldEnumSchema = z.enum([
-  "id",
-  "userId",
-  "name",
-  "description",
-  "visibility",
-  "createdAt",
-  "updatedAt",
-]);
+export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt']);
 
-export const PromptTemplateScalarFieldEnumSchema = z.enum([
-  "id",
-  "userId",
-  "promptPackageId",
-  "name",
-  "description",
-  "previewVersionId",
-  "releaseVersionId",
-  "createdAt",
-  "updatedAt",
-]);
+export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt']);
 
-export const PromptVersionScalarFieldEnumSchema = z.enum([
-  "id",
-  "forkedFromId",
-  "userId",
-  "version",
-  "template",
-  "inputFields",
-  "templateFields",
-  "llmProvider",
-  "llmModel",
-  "llmConfig",
-  "lang",
-  "changelog",
-  "publishedAt",
-  "outAccuracy",
-  "outLatency",
-  "outCost",
-  "promptPackageId",
-  "promptTemplateId",
-  "createdAt",
-  "updatedAt",
-]);
+export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','inputFields','templateFields','llmProvider','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
 
-export const UserScalarFieldEnumSchema = z.enum([
-  "id",
-  "name",
-  "email",
-  "emailVerified",
-  "image",
-  "createdAt",
-  "updatedAt",
-]);
+export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','image','createdAt','updatedAt']);
 
-export const VerificationTokenScalarFieldEnumSchema = z.enum([
-  "identifier",
-  "token",
-  "expires",
-  "createdAt",
-  "updatedAt",
-]);
+export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires','createdAt','updatedAt']);
 
-export const PromptLogScalarFieldEnumSchema = z.enum([
-  "id",
-  "userId",
-  "inputId",
-  "environment",
-  "version",
-  "prompt",
-  "completion",
-  "llmProvider",
-  "llmModel",
-  "llmConfig",
-  "latency",
-  "prompt_tokens",
-  "completion_tokens",
-  "total_tokens",
-  "extras",
-  "labelledState",
-  "finetunedState",
-  "promptPackageId",
-  "promptTemplateId",
-  "promptVersionId",
-  "createdAt",
-  "updatedAt",
-]);
+export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
 
-export const SortOrderSchema = z.enum(["asc", "desc"]);
+export const SortOrderSchema = z.enum(['asc','desc']);
 
-export const JsonNullValueInputSchema = z.enum(["JsonNull"]);
+export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
 
-export const QueryModeSchema = z.enum(["default", "insensitive"]);
+export const QueryModeSchema = z.enum(['default','insensitive']);
 
-export const NullsOrderSchema = z.enum(["first", "last"]);
+export const NullsOrderSchema = z.enum(['first','last']);
 
-export const JsonNullValueFilterSchema = z.enum([
-  "DbNull",
-  "JsonNull",
-  "AnyNull",
-]);
+export const JsonNullValueFilterSchema = z.enum(['DbNull','JsonNull','AnyNull',]);
 
-export const LabelledStateSchema = z.enum([
-  "UNLABELLED",
-  "SELECTED",
-  "REJECTED",
-  "NOTSURE",
-]);
+export const LabelledStateSchema = z.enum(['UNLABELLED','SELECTED','REJECTED','NOTSURE']);
 
-export type LabelledStateType = `${z.infer<typeof LabelledStateSchema>}`;
+export type LabelledStateType = `${z.infer<typeof LabelledStateSchema>}`
 
-export const PackageVisibilitySchema = z.enum(["PUBLIC", "PRIVATE"]);
+export const PackageVisibilitySchema = z.enum(['PUBLIC','PRIVATE']);
 
-export type PackageVisibilityType = `${z.infer<
-  typeof PackageVisibilitySchema
->}`;
+export type PackageVisibilityType = `${z.infer<typeof PackageVisibilitySchema>}`
 
-export const FinetunedStateSchema = z.enum(["UNPROCESSED", "PROCESSED"]);
+export const FinetunedStateSchema = z.enum(['UNPROCESSED','PROCESSED']);
 
-export type FinetunedStateType = `${z.infer<typeof FinetunedStateSchema>}`;
+export type FinetunedStateType = `${z.infer<typeof FinetunedStateSchema>}`
 
-export const PromptEnvironmentSchema = z.enum(["DEV", "PREVIEW", "RELEASE"]);
+export const PromptEnvironmentSchema = z.enum(['DEV','PREVIEW','RELEASE']);
 
-export type PromptEnvironmentType = `${z.infer<
-  typeof PromptEnvironmentSchema
->}`;
+export type PromptEnvironmentType = `${z.infer<typeof PromptEnvironmentSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -250,9 +117,9 @@ export const AccountSchema = z.object({
   session_state: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type Account = z.infer<typeof AccountSchema>;
+export type Account = z.infer<typeof AccountSchema>
 
 /////////////////////////////////////////
 // SESSION SCHEMA
@@ -265,9 +132,9 @@ export const SessionSchema = z.object({
   expires: z.coerce.date(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type Session = z.infer<typeof SessionSchema>;
+export type Session = z.infer<typeof SessionSchema>
 
 /////////////////////////////////////////
 // PROMPT VARIABLES SCHEMA
@@ -285,9 +152,9 @@ export const PromptVariablesSchema = z.object({
   variables: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type PromptVariables = z.infer<typeof PromptVariablesSchema>;
+export type PromptVariables = z.infer<typeof PromptVariablesSchema>
 
 /////////////////////////////////////////
 // PROMPT PACKAGE SCHEMA
@@ -301,9 +168,9 @@ export const PromptPackageSchema = z.object({
   description: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type PromptPackage = z.infer<typeof PromptPackageSchema>;
+export type PromptPackage = z.infer<typeof PromptPackageSchema>
 
 /////////////////////////////////////////
 // PROMPT TEMPLATE SCHEMA
@@ -319,9 +186,9 @@ export const PromptTemplateSchema = z.object({
   releaseVersionId: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type PromptTemplate = z.infer<typeof PromptTemplateSchema>;
+export type PromptTemplate = z.infer<typeof PromptTemplateSchema>
 
 /////////////////////////////////////////
 // PROMPT VERSION SCHEMA
@@ -348,9 +215,9 @@ export const PromptVersionSchema = z.object({
   promptTemplateId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type PromptVersion = z.infer<typeof PromptVersionSchema>;
+export type PromptVersion = z.infer<typeof PromptVersionSchema>
 
 /////////////////////////////////////////
 // USER SCHEMA
@@ -364,9 +231,9 @@ export const UserSchema = z.object({
   image: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type User = z.infer<typeof UserSchema>;
+export type User = z.infer<typeof UserSchema>
 
 /////////////////////////////////////////
 // VERIFICATION TOKEN SCHEMA
@@ -378,9 +245,9 @@ export const VerificationTokenSchema = z.object({
   expires: z.coerce.date(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type VerificationToken = z.infer<typeof VerificationTokenSchema>;
+export type VerificationToken = z.infer<typeof VerificationTokenSchema>
 
 /////////////////////////////////////////
 // PROMPT LOG SCHEMA
@@ -409,6 +276,6 @@ export const PromptLogSchema = z.object({
   promptVersionId: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-});
+})
 
-export type PromptLog = z.infer<typeof PromptLogSchema>;
+export type PromptLog = z.infer<typeof PromptLogSchema>
