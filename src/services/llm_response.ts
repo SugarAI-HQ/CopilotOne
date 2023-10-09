@@ -36,12 +36,12 @@ export const fakeResponse = {
   },
 };
 
-export function generateOutput(response: any) {
+export function generateOutput(response: any, latency: number) {
   if (response?.choices?.length > 0) {
     return {
       completion: response.choices[0]?.text || "",
       performance: {
-        latency: response.performance?.latency || 0,
+        latency: latency || 0,
         ...response.usage,
       },
     };
@@ -49,7 +49,7 @@ export function generateOutput(response: any) {
     return {
       completion: response.results[0].generated_text || "",
       performance: {
-        latency: response.performance?.latency || 0,
+        latency: latency || 0,
         total_tokens: response.num_input_tokens + response.num_tokens,
         prompt_tokens: response.num_input_tokens,
         completion_tokens: response.num_tokens,

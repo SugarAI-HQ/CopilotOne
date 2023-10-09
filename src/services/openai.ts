@@ -46,7 +46,7 @@ export async function run(
   const endTime = new Date();
   const latency: number = Number(endTime) - Number(startTime);
 
-  return generateOutput(response);
+  return generateOutput(response, latency);
 }
 
 const memoizedCompletion = memoize(completion, {

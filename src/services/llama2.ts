@@ -35,7 +35,7 @@ async function fetchWithRetry(
 
 export async function run(
   prompt: string,
-  llm_model: string,
+  llmModel: string,
   llmConfig: LlmConfigSchema,
   isDevelopment: boolean = false,
 ) {
@@ -47,8 +47,7 @@ export async function run(
   if (isDevelopment) {
     response = fakeResponse.llama2FakeResponse;
   } else {
-    const apiUrl =
-      "https://api.deepinfra.com/v1/inference/meta-llama/Llama-2-7b-chat-hf";
+    const apiUrl = `https://api.deepinfra.com/v1/inference/meta-llama/Llama-2-${llmModel}-chat-hf`;
     const requestOptions: RequestInit = {
       method: "POST",
       headers: {
@@ -71,5 +70,5 @@ export async function run(
   const endTime = new Date();
   const latency: number = Number(endTime) - Number(startTime);
 
-  return generateOutput(response);
+  return generateOutput(response, latency);
 }

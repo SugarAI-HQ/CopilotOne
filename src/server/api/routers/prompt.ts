@@ -175,8 +175,8 @@ export const promptRouter = createTRPCRouter({
 
       let defaultTemplate = {
         template: template,
-        llmProvider: "openai",
-        llmModel: "davinci",
+        llmProvider: "llama2",
+        llmModel: "7b",
         llmConfig: {},
         // forkedFromId: null
       };
