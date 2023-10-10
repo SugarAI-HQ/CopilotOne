@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Box,
@@ -36,6 +36,7 @@ import { GenerateInput, GenerateOutput } from "~/validators/service";
 const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
 import { LogOutput } from "~/validators/prompt_log";
+import _debounce from "lodash/debounce";
 
 function PromptVersion({
   ns,
@@ -72,6 +73,7 @@ function PromptVersion({
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(
     getUniqueJsonArray(getVariables(pv?.template || ""), "key"),
   );
+  const [isDirty, setIsDirty] = useState(false);
 
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
@@ -87,13 +89,17 @@ function PromptVersion({
 
   const handleTemplateChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const txt = e.target.value;
-    setTemplate(txt);
-
-    const variables = getUniqueJsonArray(getVariables(txt), "key");
-    // console.log(`variables >>>> ${JSON.stringify(variables)}`);
-    setVariables(variables);
+    debouncedHandleTemplateChange(txt);
     // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
+
+  const debouncedHandleTemplateChange = _debounce((txt: string) => {
+    setTemplate(txt);
+    setIsDirty(true);
+    const variables = getUniqueJsonArray(getVariables(txt), "key");
+    setVariables(variables);
+  }, 500);
+
   const handleVariablesChange = (k: string, v: string) => {
     setVariables((pvrs) => {
       // Step 2: Update the state
@@ -145,6 +151,18 @@ function PromptVersion({
     }
   };
 
+  useEffect(() => {
+    let saveTimer: NodeJS.Timeout;
+    if (!pv.publishedAt && isDirty) {
+      saveTimer = setTimeout(() => {
+        handleSave();
+      }, 1000);
+    }
+    return () => {
+      clearTimeout(saveTimer);
+    };
+  }, [template, isDirty]);
+
   const handleSave = () => {
     pvUpdateMutation.mutate({
       promptPackageId: pv.promptPackageId,
@@ -156,6 +174,7 @@ function PromptVersion({
       llmModel: model,
       llmConfig: llmConfig,
     });
+    setIsDirty(false);
   };
 
   const handleTest = () => {
@@ -275,6 +294,7 @@ function PromptVersion({
               <LLMConfig
                 config={llmConfig}
                 setConfig={setLLMConfig}
+                pv={pv}
               ></LLMConfig>
             </Grid>
           </Stack>

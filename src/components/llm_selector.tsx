@@ -73,7 +73,7 @@ function LLMSelector({
 
   return (
     <>
-      <Button variant="text" onClick={handleOpen}>
+      <Button variant="text" onClick={handleOpen} disabled={!!pv.publishedAt}>
         {provider} - {model}
       </Button>
 

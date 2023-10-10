@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Dialog, Paper, Typography, Box } from "@mui/material";
 import { MdBuild } from "react-icons/md";
 import LLMParameter from "./llm_parameter";
-import { LlmConfigSchema } from "~/validators/prompt_version";
+import { LlmConfigSchema, VersionSchema } from "~/validators/prompt_version";
 
 // export interface LLMConfigProps {
 //   temperature: number,
@@ -113,9 +113,9 @@ const LLMConfigModal = ({
               max={4096}
               step={1}
             />
-            {/* <LLMParameter 
-                label='Stop Sequences' 
-                parameter={stopSequences} 
+            {/* <LLMParameter
+                label='Stop Sequences'
+                parameter={stopSequences}
                 handleParameterChange={setStopSequences}
                 min={0}
                 max={2}
@@ -145,9 +145,9 @@ const LLMConfigModal = ({
               max={2}
               step={0.01}
             />
-            {/* <LLMParameter 
-                label='Logit Bias' 
-                parameter={logitBias} 
+            {/* <LLMParameter
+                label='Logit Bias'
+                parameter={logitBias}
                 handleParameterChange={setLogitBias}
                 min={0}
                 max={2}
@@ -168,9 +168,11 @@ const LLMConfigModal = ({
 function LLMConfig({
   config,
   setConfig,
+  pv,
 }: {
   config: LlmConfigSchema;
   setConfig: (config: LlmConfigSchema) => void;
+  pv: VersionSchema;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -191,6 +193,7 @@ function LLMConfig({
         onClick={handleOpenModal}
         variant="text"
         color="primary"
+        disabled={!!pv.publishedAt}
       >
         Parameters
       </Button>
