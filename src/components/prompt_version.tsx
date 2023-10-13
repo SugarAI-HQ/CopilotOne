@@ -253,7 +253,7 @@ function PromptVersion({
                     color="primary" // Change the color to your preference
                   />
                 }
-                label="Run with Fake Data"
+                label="Dummy"
               />
             )}
 

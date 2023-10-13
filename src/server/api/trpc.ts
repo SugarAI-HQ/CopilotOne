@@ -23,6 +23,7 @@ import { prisma } from "~/server/db";
 import { PrismaClient } from "@prisma/client";
 import { GenerateInput } from "~/validators/service";
 import { JWT, getToken } from "next-auth/jwt";
+import { env } from "~/env.mjs";
 
 /**
  * 1. CONTEXT
@@ -82,7 +83,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
   console.log(`session ------------`);
-  // console.log(session);
+  console.log(session);
   console.log(`session ------------`);
 
   return createInnerTRPCContext({
@@ -218,13 +219,17 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   console.log(`promptMiddleware ------------ ${JSON.stringify(opts.input)}`);
 
   if (opts.input?.username) {
-    const { id: userId } = (await opts.ctx.prisma.user.findFirst({
-      where: {
-        name: opts.input.username,
-      },
-      select: { id: true },
-    })) as { id: string | null };
-    opts.input.userId = userId as string;
+    if (opts.input?.username.toLowerCase() === "demo") {
+      opts.input.userId = env.DEMO_USER_ID;
+    } else {
+      const { id: userId } = (await opts.ctx.prisma.user.findFirst({
+        where: {
+          name: opts.input.username,
+        },
+        select: { id: true },
+      })) as { id: string | null };
+      opts.input.userId = userId as string;
+    }
   }
 
   if (opts.input?.package) {

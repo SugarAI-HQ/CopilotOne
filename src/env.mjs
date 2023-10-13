@@ -31,6 +31,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
 
     OPENAI_API_KEY: z.string().optional(),
+
+    DEMO_USER_ID: z.string().optional(),
   },
 
   /**
@@ -64,6 +66,8 @@ export const env = createEnv({
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 
     NEXT_PUBLIC_API_ENDPOINT: process.env.NEXT_PUBLIC_API_ENDPOINT,
+
+    DEMO_USER_ID: process.env.DEMO_USER_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

@@ -57,6 +57,10 @@ export const serviceRouter = createTRPCRouter({
     .use(promptMiddleware)
     .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
+      console.log("---------userId ---");
+      console.log(ctx.jwt);
+      console.log("---------userId ---");
+
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
@@ -79,7 +83,7 @@ export const serviceRouter = createTRPCRouter({
         if (output?.completion) {
           const pl = await ctx.prisma.promptLog.create({
             data: {
-              userId: input.userId as string,
+              userId: ctx.jwt?.id as string,
               promptPackageId: pv.promptPackageId,
               promptTemplateId: pv.promptTemplateId,
               promptVersionId: pv.id,
@@ -114,9 +118,13 @@ export const serviceRouter = createTRPCRouter({
 });
 
 async function getPv(ctx: any, input: any) {
-  const userId = input.userId || ctx.jwt?.id;
+  const userId = ctx.jwt?.id;
   let pt = null;
   let pv = null;
+
+  console.log("---------userId ---");
+  console.log(userId);
+  console.log("---------userId ---");
 
   if (input.version && input.version !== "latest") {
     console.info(`loading version ${input.version} for ${input.environment}`);
