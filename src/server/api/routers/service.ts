@@ -57,10 +57,6 @@ export const serviceRouter = createTRPCRouter({
     .use(promptMiddleware)
     .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
-      console.log("---------userId ---");
-      console.log(ctx.jwt);
-      console.log("---------userId ---");
-
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
@@ -121,10 +117,6 @@ async function getPv(ctx: any, input: any) {
   const userId = ctx.jwt?.id;
   let pt = null;
   let pv = null;
-
-  console.log("---------userId ---");
-  console.log(userId);
-  console.log("---------userId ---");
 
   if (input.version && input.version !== "latest") {
     console.info(`loading version ${input.version} for ${input.environment}`);

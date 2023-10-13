@@ -124,9 +124,6 @@ function getAuthOptions(): NextAuthOptions {
             name: "Demo",
             email: "demo@demo.com",
           };
-          console.log("------ user -------");
-          console.log(user);
-          console.log("------ user -------");
 
           if (
             user &&
