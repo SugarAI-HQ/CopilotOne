@@ -1,12 +1,13 @@
 import { LlmConfigSchema } from "~/validators/prompt_version";
-import { fakeResponse, generateOutput } from "./llm_response";
+import { generateOutput } from "../llm_response/response";
+import { fakeResponse } from "../llm_response/fake_response";
 
 export interface LLMConfig {
   max_tokens: number;
   temperature: number;
 }
 
-async function fetchWithRetry(
+export async function fetchWithRetry(
   url: string,
   options: RequestInit,
   maxRetries: number,
@@ -37,6 +38,7 @@ export async function run(
   prompt: string,
   llmModel: string,
   llmConfig: LlmConfigSchema,
+  llmModelType: string,
   isDevelopment: boolean = false,
 ) {
   const maxRetries = 3;
@@ -70,5 +72,5 @@ export async function run(
   const endTime = new Date();
   const latency: number = Number(endTime) - Number(startTime);
 
-  return generateOutput(response, latency);
+  return generateOutput(response, llmModelType, latency);
 }

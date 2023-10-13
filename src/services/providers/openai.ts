@@ -2,7 +2,8 @@ import OpenAI from "openai";
 import { env } from "~/env.mjs";
 import memoize from "memoizee";
 import { LlmConfigSchema } from "~/validators/prompt_version";
-import { fakeResponse, generateOutput } from "./llm_response";
+import { generateOutput } from "../llm_response/response";
+import { fakeResponse } from "../llm_response/fake_response";
 
 // Initialize OpenAI API client
 const openai = new OpenAI({
@@ -29,6 +30,7 @@ export async function run(
   prompt: string,
   llm_model: string,
   llmConfig: LlmConfigSchema,
+  llmModelType: string,
   isDevelopment: boolean = false,
 ) {
   // Capture the start time
@@ -46,7 +48,7 @@ export async function run(
   const endTime = new Date();
   const latency: number = Number(endTime) - Number(startTime);
 
-  return generateOutput(response, latency);
+  return generateOutput(response, llmModelType, latency);
 }
 
 const memoizedCompletion = memoize(completion, {

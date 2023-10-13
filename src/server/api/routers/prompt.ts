@@ -28,6 +28,7 @@ import {
   versionListOutput,
 } from "~/validators/prompt_version";
 import { JsonObject } from "@prisma/client/runtime/library";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { Visibility } from "@mui/icons-material";
 
 export const promptRouter = createTRPCRouter({
@@ -106,6 +107,7 @@ export const promptRouter = createTRPCRouter({
             promptPackageId: input.promptPackageId,
             name: input.name,
             description: input.description,
+            modelType: input.modelType,
           },
           include: {
             previewVersion: true,
@@ -171,12 +173,17 @@ export const promptRouter = createTRPCRouter({
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
 
-      let template = `I am looking at the {@OBJECT}`;
+      let modelType = input.moduleType === ModelTypeSchema.Enum.TEXT2TEXT;
+
+      let template = modelType
+        ? `I am looking at the {@OBJECT}`
+        : `A photo of an astronaut riding a horse on {@OBJECT}`;
 
       let defaultTemplate = {
         template: template,
-        llmProvider: "llama2",
-        llmModel: "7b",
+        llmModelType: input.moduleType,
+        llmProvider: modelType ? "llama2" : "runwayml",
+        llmModel: modelType ? "7b" : "stable-diffusion-v1-5",
         llmConfig: {},
         // forkedFromId: null
       };

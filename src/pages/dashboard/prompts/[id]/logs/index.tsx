@@ -155,7 +155,14 @@ const PromptLogTable: NextPageWithLayout = () => {
                   {log.prompt}
                   <p>tokens: {log.prompt_tokens}</p>
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  style={{
+                    maxWidth: 150,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   {log.completion}
                   <p>tokens: {log.completion_tokens}</p>
                 </TableCell>

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 import { useRouter } from "next/router";
 import CustomSelect from "~/components/custom_selector";
-import type { FilterOptions } from '.';
-import { promptEnvironment, providers, models } from '~/validators/base';
+import type { FilterOptions } from ".";
+import { promptEnvironment, providerModels } from "~/validators/base";
 import { api } from "~/utils/api";
 
 interface LogSearchFilteringProps {
@@ -10,14 +10,15 @@ interface LogSearchFilteringProps {
   onFilterChange: (filterOptions: FilterOptions) => void;
 }
 
-
-
-const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({ filterOptions = {}, onFilterChange }) => {
+const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({
+  filterOptions = {},
+  onFilterChange,
+}) => {
   const router = useRouter();
   const packageId = router.query.id as string;
 
   const environmentOptions = [
-    { value: '', label: 'Select Environment' },
+    { value: "", label: "Select Environment" },
     ...Object.keys(promptEnvironment.Values).map((value) => ({
       value,
       label: value,
@@ -25,15 +26,26 @@ const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({ filterOptions =
   ];
 
   const llmModelOptions = [
-    { value: '', label: 'All llmModel' },
-    ...(Object.keys(models) as (keyof typeof models)[]).flatMap(provider =>
-      models[provider].map(([value, label]) => ({ value, label }))
+    { value: "", label: "All llmModel" },
+    ...(Object.keys(providerModels) as (keyof typeof providerModels)[]).flatMap(
+      (modelType) => {
+        const models = providerModels[modelType].models;
+        const allModels = Object.values(models).flat();
+        return allModels.map(({ name, label }) => ({ value: name, label }));
+      },
     ),
   ];
 
   const llmProviderOptions = [
-    { value: '', label: 'All Provider' },
-    ...providers.map(([value, label]) => ({ value, label })),
+    { value: "", label: "All Provider" },
+    ...providerModels.TEXT2TEXT.providers.map(({ name, label }) => ({
+      value: name,
+      label,
+    })),
+    ...providerModels.TEXT2IMAGE.providers.map(({ name, label }) => ({
+      value: name,
+      label,
+    })),
   ];
 
   const { data: versionList } = api.version.getLogVersions.useQuery({
@@ -41,15 +53,19 @@ const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({ filterOptions =
   });
 
   const versionOptions = [
-    { value: '', label: 'All Version' },
+    { value: "", label: "All Version" },
     ...(versionList
       ? versionList
           .sort((a, b) => {
-            const versionA = (a?.version || '0').split('.').map(Number);
-            const versionB = (b?.version || '0').split('.').map(Number);
+            const versionA = (a?.version || "0").split(".").map(Number);
+            const versionB = (b?.version || "0").split(".").map(Number);
 
             if (versionA && versionB) {
-              for (let i = 0; i < Math.min(versionA.length, versionB.length); i++) {
+              for (
+                let i = 0;
+                i < Math.min(versionA.length, versionB.length);
+                i++
+              ) {
                 if (versionA[i] !== versionB[i]) {
                   return (versionA[i] ?? 0) - (versionB[i] ?? 0);
                 }
@@ -59,41 +75,44 @@ const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({ filterOptions =
             return (versionA?.length ?? 0) - (versionB?.length ?? 0);
           })
           .map(({ version }) => ({ value: version, label: version }))
-      : [])
+      : []),
   ];
 
-  const handleFilterChange = (key: keyof FilterOptions, value: string | undefined) => {
+  const handleFilterChange = (
+    key: keyof FilterOptions,
+    value: string | undefined,
+  ) => {
     onFilterChange({ ...filterOptions, [key]: value || undefined });
   };
 
-  return(
-    <div className="grid gap-2 mb-6 md:grid-cols-4">
+  return (
+    <div className="mb-6 grid gap-2 md:grid-cols-4">
       <CustomSelect
         label="Environment"
         options={environmentOptions}
-        value={filterOptions.environment || ''}
-        onChange={(value) => handleFilterChange('environment', value)}
-      />
-      <CustomSelect
-        label="LLM Model"
-        options={llmModelOptions}
-        value={filterOptions.llmModel || ''}
-        onChange={(value) => handleFilterChange('llmModel', value)}
+        value={filterOptions.environment || ""}
+        onChange={(value) => handleFilterChange("environment", value)}
       />
       <CustomSelect
         label="LLM Provider"
         options={llmProviderOptions}
-        value={filterOptions.llmProvider || ''}
-        onChange={(value) => handleFilterChange('llmProvider', value)}
+        value={filterOptions.llmProvider || ""}
+        onChange={(value) => handleFilterChange("llmProvider", value)}
+      />
+      <CustomSelect
+        label="LLM Model"
+        options={llmModelOptions}
+        value={filterOptions.llmModel || ""}
+        onChange={(value) => handleFilterChange("llmModel", value)}
       />
       <CustomSelect
         label="Version"
         options={versionOptions}
-        value={filterOptions.version || ''}
-        onChange={(value) => handleFilterChange('version', value)}
+        value={filterOptions.version || ""}
+        onChange={(value) => handleFilterChange("version", value)}
       />
     </div>
-  )
-}
+  );
+};
 
 export default LogSearchFiltering;

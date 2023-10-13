@@ -71,6 +71,7 @@ export const serviceRouter = createTRPCRouter({
           pv.llmModel,
           pv.llmProvider,
           llmConfig,
+          input.llmModelType as string,
           input.isDevelopment,
         );
 
@@ -90,16 +91,18 @@ export const serviceRouter = createTRPCRouter({
               prompt: prompt,
               completion: output?.completion as string,
 
+              llmModelType: input.llmModelType,
               llmProvider: pv.llmProvider,
               llmModel: pv.llmModel,
               llmConfig: llmConfig,
-
               latency: output?.performance?.latency as number,
               prompt_tokens: output?.performance?.prompt_tokens as number,
               completion_tokens:
                 (output?.performance?.completion_tokens as number) || 0,
               total_tokens: output?.performance?.total_tokens as number,
-              extras: {},
+              extras: output?.performance?.extra
+                ? output?.performance?.extra
+                : {},
             },
           });
 

@@ -7,6 +7,8 @@ import {
   Grid,
   Stack,
   Checkbox,
+  Typography,
+  Chip,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import LLMSelector from "./llm_selector";
@@ -37,6 +39,8 @@ const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
 import { LogOutput } from "~/validators/prompt_log";
 import _debounce from "lodash/debounce";
+import { providerModels } from "~/validators/base";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 
 function PromptVersion({
   ns,
@@ -134,6 +138,7 @@ function PromptVersion({
       template: pt?.name || "",
       version: pv.version || "",
       isDevelopment: checked,
+      llmModelType: pt?.modelType,
       environment: promptEnvironment.Enum.DEV,
       data: data,
     } as GenerateInput);
@@ -269,9 +274,9 @@ function PromptVersion({
               color="success"
               variant="outlined"
               onClick={handleTest}
-              disabled={template.length <= 10}
+              disabled={true}
             >
-              Test
+              Backtest
             </Button>
 
             <Button
@@ -284,17 +289,26 @@ function PromptVersion({
             </Button>
 
             <Grid container justifyContent={"flex-end"}>
+              <Chip
+                sx={{ m: 1 }}
+                label={
+                  providerModels[pt?.modelType as keyof typeof providerModels]
+                    ?.label
+                }
+              />
               <LLMSelector
                 initialProvider={provider}
                 initialModel={model}
                 onProviderChange={setProvider}
                 onModelChange={setModel}
                 pv={pv}
+                pt={pt}
               ></LLMSelector>
               <LLMConfig
                 config={llmConfig}
                 setConfig={setLLMConfig}
                 pv={pv}
+                pt={pt}
               ></LLMConfig>
             </Grid>
           </Stack>
@@ -304,7 +318,10 @@ function PromptVersion({
           {promptOutput && (
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
               <Grid container justifyContent={"flex-start"}>
-                <PromptOutput output={promptOutput}></PromptOutput>
+                <PromptOutput
+                  output={promptOutput}
+                  modelType={pt?.modelType as string}
+                ></PromptOutput>
                 {pl && (
                   <Box sx={{ ml: 5 }}>
                     <LabelIcons
@@ -314,9 +331,13 @@ function PromptVersion({
                   </Box>
                 )}
               </Grid>
-              <Grid container alignItems="center" alignContent={"center"}>
-                <PromptPerformance data={promptPerformance}></PromptPerformance>
-              </Grid>
+              {pt?.modelType === ModelTypeSchema.Enum.TEXT2TEXT && (
+                <Grid container alignItems="center" alignContent={"center"}>
+                  <PromptPerformance
+                    data={promptPerformance}
+                  ></PromptPerformance>
+                </Grid>
+              )}
             </Stack>
           )}
         </Box>

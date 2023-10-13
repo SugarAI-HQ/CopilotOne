@@ -4,7 +4,7 @@ import {
   PromptVersion as pv,
 } from "@prisma/client";
 import { PromptVariableProps } from "~/components/prompt_variables";
-import { LLMConfig } from "~/services/openai";
+import { LLMConfig } from "~/services/providers/openai";
 import { JsonObject } from "@prisma/client/runtime/library";
 import { LlmConfigSchema } from "~/validators/prompt_version";
 

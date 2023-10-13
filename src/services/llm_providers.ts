@@ -5,15 +5,17 @@ export async function LlmProvider(
   llmModel: string,
   llmProvider: string,
   llmConfig: LlmConfigSchema,
-  isDevelopment: boolean = false
+  llmModelType: string,
+  isDevelopment: boolean = false,
 ) {
   console.log(`provider >>>> ${llmProvider}`);
-  const { run } = await import(`~/services/${llmProvider}`);
-  const output = await run(prompt, llmModel, llmConfig, isDevelopment);
-  return output
-
-
+  const { run } = await import(`~/services/providers/${llmProvider}`);
+  const output = await run(
+    prompt,
+    llmModel,
+    llmConfig,
+    llmModelType,
+    isDevelopment,
+  );
+  return output;
 }
-
-
-

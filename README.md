@@ -5,6 +5,7 @@ Sugar Factory is a service that allows dev teams to easily build, test, deploy a
 ## Dev Setup
 
     - Clone the repo
+    - `cp .nvmrc.example .nvmrc` and add the latest `V18` in `.nvmrc` ex: `v18.16.0`
     - Run `npm install` to install dependencies
     - Run `npm run prepare` to setup git
     - `cp .env.example .env` and populate environment variables in `.env`

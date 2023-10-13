@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { promptEnvironment, stringOpt } from "./base";
-import { LabelledStateSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  LabelledStateSchema,
+  ModelTypeSchema,
+} from "~/generated/prisma-client-zod.ts";
 
 export const getPromptInput = z.object({
   environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
@@ -48,6 +51,7 @@ export const generateInput = z
     // Template Data
     data: z.record(z.any()),
     isDevelopment: z.boolean(),
+    llmModelType: ModelTypeSchema,
   })
   .merge(getPromptInput)
   .strict();

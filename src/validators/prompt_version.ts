@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
+import {
+  InputJsonValue,
+  ModelTypeSchema,
+} from "~/generated/prisma-client-zod.ts";
 
 const versionNameInput = z.string();
 
@@ -38,6 +41,7 @@ export const createVersionInput = z
     promptTemplateId: z.string(),
     version: z.string(),
     forkedFromId: z.null().or(z.string().uuid()),
+    moduleType: ModelTypeSchema,
   })
   .strict()
   .required();

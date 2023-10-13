@@ -49,6 +49,11 @@ enum PromptEnvironment {
   RELEASE
 }
 
+enum ModelType {
+  TEXT2TEXT
+  TEXT2IMAGE
+}
+
 // Necessary for Next auth
 model Account {
   id                String   @id @default(uuid())
@@ -125,6 +130,7 @@ model PromptTemplate {
   releaseVersionId String?           @unique
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt @map("updated_at")
+  modelType        ModelType         @default(TEXT2TEXT)
   promptPackage    PromptPackage     @relation(fields: [promptPackageId], references: [id])
   previewVersion   PromptVersion?    @relation("previewVersion", fields: [previewVersionId], references: [id], map: "previewVersion")
   releaseVersion   PromptVersion?    @relation("releaseVersion", fields: [releaseVersionId], references: [id], map: "releaseVersion")
@@ -143,6 +149,7 @@ model PromptVersion {
   inputFields      String[]
   templateFields   String[]
   llmProvider      String
+  llmModelType     ModelType         @default(TEXT2TEXT)
   llmModel         String
   llmConfig        Json
   lang             String[]
@@ -197,6 +204,7 @@ model PromptLog {
   version           String
   prompt            String
   completion        String
+  llmModelType      ModelType         @default(TEXT2TEXT)
   llmProvider       String
   llmModel          String
   llmConfig         Json

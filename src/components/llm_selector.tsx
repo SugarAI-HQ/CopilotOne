@@ -15,9 +15,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { LlmConfigSchema } from "~/validators/prompt_version";
 import React, { useState } from "react";
-import { providers, models } from "~/validators/base";
+import { providerModels, Provider, Model } from "~/validators/base";
 import { api } from "~/utils/api";
 import { VersionSchema } from "~/validators/prompt_version";
+import { TemplateOutput as pt } from "~/validators/prompt_template";
 
 function LLMSelector({
   initialProvider,
@@ -25,12 +26,14 @@ function LLMSelector({
   onProviderChange,
   onModelChange,
   pv,
+  pt,
 }: {
   initialProvider: string;
   initialModel: string;
   onProviderChange: Function;
   onModelChange: Function;
   pv: VersionSchema;
+  pt: pt;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,9 +50,16 @@ function LLMSelector({
   const handleProviderChange = (event: any) => {
     const selectedProvider: string = event.target.value;
     setProvider(selectedProvider);
+    const modelValue: string | undefined =
+      providerModels[pt?.modelType as keyof typeof providerModels]?.models[
+        selectedProvider
+      ]?.[0]?.name;
     onProviderChange(selectedProvider);
     console.log(selectedProvider);
-    updateLLM(selectedProvider, model);
+    // Update default value for model
+    setModel(modelValue as string);
+    onModelChange(modelValue);
+    updateLLM(selectedProvider, modelValue as string);
   };
 
   const handleModelChange = (event: any) => {
@@ -96,13 +106,15 @@ function LLMSelector({
             <FormControl fullWidth>
               <FormLabel>Provider</FormLabel>
               <Select value={provider} onChange={handleProviderChange}>
-                {providers.map((p, index) => (
+                {providerModels[
+                  pt?.modelType as keyof typeof providerModels
+                ].providers.map((provider: Provider) => (
                   <MenuItem
-                    key={"pt-" + index}
-                    value={p[0]}
-                    disabled={index > 1}
+                    key={provider.name}
+                    value={provider.name}
+                    disabled={!provider.enabled}
                   >
-                    {p[1]}
+                    {provider.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -111,9 +123,15 @@ function LLMSelector({
             <FormControl fullWidth>
               <FormLabel>Model</FormLabel>
               <Select value={model} onChange={handleModelChange}>
-                {models[provider as keyof typeof models].map((mo, index) => (
-                  <MenuItem key={"pt-" + index} value={mo[0]}>
-                    {mo[1]}
+                {providerModels[
+                  pt?.modelType as keyof typeof providerModels
+                ].models?.[provider]?.map((model: Model) => (
+                  <MenuItem
+                    key={model.name}
+                    value={model.name}
+                    disabled={!model.enabled}
+                  >
+                    {model.label}
                   </MenuItem>
                 ))}
               </Select>

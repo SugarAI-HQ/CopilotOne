@@ -58,15 +58,15 @@ export const PromptVariablesScalarFieldEnumSchema = z.enum(['id','userId','promp
 
 export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt']);
 
-export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt']);
+export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType']);
 
-export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','inputFields','templateFields','llmProvider','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
+export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
 
 export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','image','createdAt','updatedAt']);
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires','createdAt','updatedAt']);
 
-export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
+export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -93,6 +93,10 @@ export type FinetunedStateType = `${z.infer<typeof FinetunedStateSchema>}`
 export const PromptEnvironmentSchema = z.enum(['DEV','PREVIEW','RELEASE']);
 
 export type PromptEnvironmentType = `${z.infer<typeof PromptEnvironmentSchema>}`
+
+export const ModelTypeSchema = z.enum(['TEXT2TEXT','TEXT2IMAGE']);
+
+export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -177,6 +181,7 @@ export type PromptPackage = z.infer<typeof PromptPackageSchema>
 /////////////////////////////////////////
 
 export const PromptTemplateSchema = z.object({
+  modelType: ModelTypeSchema,
   id: z.string().uuid(),
   userId: z.string(),
   promptPackageId: z.string(),
@@ -195,6 +200,7 @@ export type PromptTemplate = z.infer<typeof PromptTemplateSchema>
 /////////////////////////////////////////
 
 export const PromptVersionSchema = z.object({
+  llmModelType: ModelTypeSchema,
   id: z.string().uuid(),
   forkedFromId: z.string().nullable(),
   userId: z.string(),
@@ -255,6 +261,7 @@ export type VerificationToken = z.infer<typeof VerificationTokenSchema>
 
 export const PromptLogSchema = z.object({
   environment: PromptEnvironmentSchema,
+  llmModelType: ModelTypeSchema,
   labelledState: LabelledStateSchema,
   finetunedState: FinetunedStateSchema,
   id: z.string().uuid(),
