@@ -68,7 +68,7 @@ export const promptRouter = createTRPCRouter({
       const pkg = await ctx.prisma.promptPackage.findFirst({
         where: query,
       });
-      console.log(`package -------------- ${JSON.stringify(pkg)}`);
+      // console.log(`package -------------- ${JSON.stringify(pkg)}`);
       return pkg;
     }),
 
@@ -156,7 +156,7 @@ export const promptRouter = createTRPCRouter({
           releaseVersion: true,
         },
       });
-      console.log(`templates -------------- ${JSON.stringify(templates)}`);
+      // console.log(`templates -------------- ${JSON.stringify(templates)}`);
       return templates;
     }),
 
@@ -327,7 +327,7 @@ export const promptRouter = createTRPCRouter({
           createdAt: "desc",
         },
       });
-      console.log(`versions output -------------- ${JSON.stringify(versions)}`);
+      // console.log(`versions output -------------- ${JSON.stringify(versions)}`);
       return versions;
     }),
 });

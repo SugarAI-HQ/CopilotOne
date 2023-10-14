@@ -1,8 +1,8 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
   getPublicPackageInput,
-  packagePublicSchema,
   packagePublicOutput,
+  publicPackageListOutput,
 } from "~/validators/marketplace";
 import {
   getPackagesInput,
@@ -13,7 +13,7 @@ import {
 export const marketplaceRouter = createTRPCRouter({
   getPackages: publicProcedure
     .input(getPackagesInput)
-    .output(packageListOutput)
+    .output(publicPackageListOutput)
     .query(async ({ ctx, input }) => {
       console.log(`packages input -------------- ${JSON.stringify(input)}`);
 
@@ -21,6 +21,9 @@ export const marketplaceRouter = createTRPCRouter({
         where: {
           // userId: ctx.session?.user.id,
           visibility: input?.visibility,
+        },
+        include: {
+          User: true,
         },
       });
       console.log(`packages out -------------- ${JSON.stringify(packages)}`);
@@ -48,7 +51,7 @@ export const marketplaceRouter = createTRPCRouter({
           },
         },
       });
-      console.log(`package -------------- ${JSON.stringify(pkg)}`);
+      // console.log(`package -------------- ${JSON.stringify(pkg)}`);
       return pkg;
     }),
 });

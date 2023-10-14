@@ -82,9 +82,9 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   // Get the session from the server using the getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
-  console.log(`session ------------`);
-  console.log(session);
-  console.log(`session ------------`);
+  // console.log(`session ------------`);
+  // console.log(session);
+  // console.log(`session ------------`);
 
   return createInnerTRPCContext({
     session,
@@ -216,7 +216,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  console.log(`promptMiddleware ------------ ${JSON.stringify(opts.input)}`);
+  console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
   if (opts.input?.username) {
     if (opts.input?.username.toLowerCase() === "demo") {
@@ -232,10 +232,11 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
     }
   }
 
-  if (opts.input?.package) {
+  if (opts.input.userId && opts.input?.package) {
     const { id: promptPackageId } =
       (await opts.ctx.prisma.promptPackage.findFirst({
         where: {
+          userId: opts.input.userId,
           name: opts.input.package,
         },
         select: { id: true },
@@ -244,16 +245,21 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
     opts.input.promptPackageId = promptPackageId as string;
   }
 
-  if (opts.input?.template) {
+  if (opts.input.userId && opts.input.promptPackageId && opts.input?.template) {
     const { id: promptTemplateId } =
       (await opts.ctx.prisma.promptTemplate.findFirst({
         where: {
+          userId: opts.input.userId,
+          promptPackageId: opts.input.promptPackageId,
           name: opts.input.template,
         },
         select: { id: true },
       })) as { id: string | null };
     opts.input.promptTemplateId = promptTemplateId as string;
   }
+  console.log(
+    `promptMiddleware out ------------ ${JSON.stringify(opts.input)}`,
+  );
 
   return opts.next();
 });

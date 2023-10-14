@@ -71,7 +71,7 @@ export const serviceRouter = createTRPCRouter({
           pv.llmModel,
           pv.llmProvider,
           llmConfig,
-          input.llmModelType as string,
+          pv.llmModelType,
           input.isDevelopment,
         );
 
@@ -91,7 +91,7 @@ export const serviceRouter = createTRPCRouter({
               prompt: prompt,
               completion: output?.completion as string,
 
-              llmModelType: input.llmModelType,
+              llmModelType: pv.llmModelType,
               llmProvider: pv.llmProvider,
               llmModel: pv.llmModel,
               llmConfig: llmConfig,
@@ -122,10 +122,14 @@ async function getPv(ctx: any, input: any) {
   let pv = null;
 
   if (input.version && input.version !== "latest") {
-    console.info(`loading version ${input.version} for ${input.environment}`);
+    console.info(
+      `loading version ${input.version} for ${
+        input.environment
+      } ${JSON.stringify(input)}`,
+    );
     pv = await ctx.prisma.promptVersion.findFirst({
       where: {
-        userId: userId,
+        // userId: userId,
         promptPackageId: input.promptPackageId,
         promptTemplateId: input.promptTemplateId,
         version: input.version,

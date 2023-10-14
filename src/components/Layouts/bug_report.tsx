@@ -14,9 +14,10 @@ const BugReport = () => {
 
   return (
     <Button
-      variant="contained"
+      variant="outlined"
       size="small"
-      color="error" // You can choose the appropriate color
+      // color="error" // You can choose the appropriate color
+      color="inherit" // You can choose the appropriate color
       startIcon={<BugReportIcon />}
       onClick={handleClick}
     >

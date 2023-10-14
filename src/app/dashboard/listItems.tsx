@@ -8,6 +8,7 @@ import DocumentScanner from "@mui/icons-material/DocumentScanner";
 import Dataset from "@mui/icons-material/Dataset";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import Link from "next/link";
+import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 
 export const mainListItems = (
   <React.Fragment>
@@ -53,15 +54,17 @@ export const mainListItems = (
 
 export const secondaryListItems = (
   <React.Fragment>
-    <ListSubheader component="div" inset>
-      Saved reports xx
-    </ListSubheader>
+    {/* <ListSubheader component="div" inset>
+      Components
+    </ListSubheader> */}
 
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Current month" />
-    </ListItemButton>
+    <Link href="/marketplace/packages" target="blank">
+      <ListItemButton>
+        <ListItemIcon>
+          <LocalGroceryStoreIcon />
+        </ListItemIcon>
+        <ListItemText primary="Sugar Hub" />
+      </ListItemButton>
+    </Link>
   </React.Fragment>
 );

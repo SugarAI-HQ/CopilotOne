@@ -115,7 +115,7 @@ function PromptDeploy({
       <Button color="success" variant="text" onClick={handleOpenModal}>
         <RocketLaunchIcon></RocketLaunchIcon>
       </Button>
-      <Dialog sx={{ m: 2, p: 5 }} open={open} onClose={handleCloseModal}>
+      <Dialog sx={{ m: 2, p: 2 }} open={open} onClose={handleCloseModal}>
         <DialogTitle>Deploy Prompt via API</DialogTitle>
         <DialogContent>
           <Typography></Typography>

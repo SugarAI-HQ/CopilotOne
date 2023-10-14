@@ -25,27 +25,26 @@ const Index = () => {
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#040306] to-[#494952]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            Sugar <span className="text-[hsl(280,100%,70%)]">Factory</span>
+            Sugarcane <span className="text-[hsl(280,100%,70%)]">AI</span>
           </h1>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               href="/dashboard/prompts"
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
             >
-              <h3 className="text-2xl font-bold">First Step →</h3>
+              <h3 className="text-2xl font-bold">Sugar Factory →</h3>
               <div className="text-lg">
-                Create Prompt Packages - Build, version and ship your prompts
-                over APIs.
+                Build, Version, Train and Ship Prompt Packages over APIs.
               </div>
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="/marketplace"
+              href="/marketplace/packages"
               target="_blank"
             >
-              <h3 className="text-2xl font-bold">Second Step →</h3>
+              <h3 className="text-2xl font-bold">Sugar Hub →</h3>
               <div className="text-lg">
-                Share your prompt packages with dev community.
+                Discover and Integrate Prompt Packages built by the community.
               </div>
             </Link>
             <Link
@@ -54,10 +53,10 @@ const Index = () => {
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Documentation →</h3>
-              <div className="text-lg">
+              {/* <div className="text-lg">
                 Learn more about Sugarcane AI, architecture, problem it solves,
                 and how to deploy it.
-              </div>
+              </div> */}
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
@@ -65,9 +64,9 @@ const Index = () => {
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Contribute →</h3>
-              <div className="text-lg">
+              {/* <div className="text-lg">
                 Checkout the code and make your first contribution.
-              </div>
+              </div> */}
             </Link>
           </div>
 

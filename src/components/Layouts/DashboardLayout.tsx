@@ -166,7 +166,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
             ></Typography>
             {isPromptsRoute && (
               <div className="flex items-center gap-3">
-                <IconButton onClick={handleOpen} color="primary">
+                <IconButton onClick={handleOpen} color="inherit">
                   <MdSettings />
                 </IconButton>
                 <LikeButton count={1008}></LikeButton>
@@ -174,6 +174,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
                   onClick={handleSharePackageOpen}
                   startIcon={<MdShare />}
                   variant="outlined"
+                  color="inherit"
                   // sx={{ borderRadiuss: "40px" }}
                   size="small"
                 >
@@ -210,7 +211,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
           <List>
             {mainListItems}
             <Divider sx={{ my: 1 }} />
-            {/* {secondaryListItems} */}
+            {secondaryListItems}
           </List>
           <SidebarProfile />
         </Drawer>

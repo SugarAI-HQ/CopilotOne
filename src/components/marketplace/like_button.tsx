@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import FavoriteIcon from '@mui/icons-material/Favorite';
+import React, { useState } from "react";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
-function LikeButton({count}: {count: number}) {
+function LikeButton({ count }: { count: number }) {
   const [counter, setCounter] = useState(count);
 
   const handleLikeClick = () => {
@@ -13,21 +13,16 @@ function LikeButton({count}: {count: number}) {
 
   return (
     <div>
-      <ButtonGroup 
-        variant="outlined" 
-        color="primary"
-        size='small'
-      >
-        <Button 
-          size="small" 
-          startIcon={<FavoriteIcon />} 
-          onClick={handleLikeClick}>
+      <ButtonGroup variant="outlined" color="inherit" size="small">
+        <Button
+          size="small"
+          startIcon={<FavoriteIcon />}
+          onClick={handleLikeClick}
+        >
           Like
         </Button>
-        <Button
-        >{counter} Likes</Button>
+        <Button>{counter} Likes</Button>
       </ButtonGroup>
-      
     </div>
   );
 }

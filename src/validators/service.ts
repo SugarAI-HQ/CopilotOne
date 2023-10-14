@@ -51,7 +51,6 @@ export const generateInput = z
     // Template Data
     data: z.record(z.any()),
     isDevelopment: z.boolean(),
-    llmModelType: ModelTypeSchema,
   })
   .merge(getPromptInput)
   .strict();

@@ -25,3 +25,6 @@ export const packagePublicSchema = z.object({
 
 export const packagePublicOutput = packagePublicSchema.or(z.null());
 export type PackagePublicOutput = z.infer<typeof packagePublicOutput>;
+
+export const publicPackageListOutput = z.array(packagePublicSchema);
+export type PublicPackageListOutput = z.infer<typeof publicPackageListOutput>;
