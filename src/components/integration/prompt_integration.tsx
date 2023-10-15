@@ -24,7 +24,7 @@ export const PromptIntegration = ({
   pv: pv;
 }) => {
   const identifier = `${ns?.name}/${pp?.name}/${pt?.name || "<template>"}#${
-    pv?.version || "latest"
+    pv?.version || "PREVIEW"
   }`;
 
   const apiUrl = `${env.NEXT_PUBLIC_API_ENDPOINT}/${identifier}`;
@@ -42,7 +42,6 @@ export const PromptIntegration = ({
     
   output = query(
     { 
-      "environment": "PREVIEW",
       "data": {
         "@ANIMAL": "DOG"
       }
@@ -55,7 +54,7 @@ export const PromptIntegration = ({
   const curlExample = `
   curl ${apiUrl} \
 	-X POST \
-	-d '{"environment": "PREVIEW", "data": {"@ANIMAL": "DOG"}}' \
+	-d '{"data": {"@ANIMAL": "DOG"}}' \
 	-H 'Content-Type: application/json' \
 	-H "Authorization: Bearer ${jwt}"
 `;
@@ -64,8 +63,7 @@ export const PromptIntegration = ({
   async function query(variables) {
     
     var payload = {
-      "data": variables,
-      "environment": "PREVIEW"
+      "data": variables
     };
 
     const response = await fetch(

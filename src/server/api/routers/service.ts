@@ -18,7 +18,7 @@ export const serviceRouter = createTRPCRouter({
     .meta({
       openapi: {
         method: "GET",
-        path: "/{username}/{package}/{template}/{version}",
+        path: "/{username}/{package}/{template}/{versionOrEnvironment}",
         tags: ["prompts"],
         summary: "Get Prompt Template",
       },
@@ -48,7 +48,7 @@ export const serviceRouter = createTRPCRouter({
     .meta({
       openapi: {
         method: "POST",
-        path: "/{username}/{package}/{template}/{version}/generate",
+        path: "/{username}/{package}/{template}/{versionOrEnvironment}/generate",
         tags: ["prompts"],
         summary: "Generate prompt completion",
       },
@@ -121,21 +121,11 @@ async function getPv(ctx: any, input: any) {
   let pt = null;
   let pv = null;
 
-  if (input.version && input.version !== "latest") {
-    console.info(
-      `loading version ${input.version} for ${
-        input.environment
-      } ${JSON.stringify(input)}`,
-    );
-    pv = await ctx.prisma.promptVersion.findFirst({
-      where: {
-        // userId: userId,
-        promptPackageId: input.promptPackageId,
-        promptTemplateId: input.promptTemplateId,
-        version: input.version,
-      },
-    });
-  } else {
+  console.info(
+    `figuring out version for ${input.environment} version ${input.version}`,
+  );
+
+  if (input.environment in promptEnvironment.Values) {
     const ptd = {
       userId: userId,
       promptPackageId: input.promptPackageId,
@@ -145,6 +135,7 @@ async function getPv(ctx: any, input: any) {
     console.info(
       `finding the ${input.environment} version ${JSON.stringify(ptd)}`,
     );
+
     pt = await ctx.prisma.promptTemplate.findFirst({
       where: ptd,
       include: {
@@ -152,10 +143,23 @@ async function getPv(ctx: any, input: any) {
         releaseVersion: true,
       },
     });
+
     pv =
       input.environment == promptEnvironment.Enum.RELEASE
         ? pt?.releaseVersion
         : pt?.previewVersion;
+  } else if (input.version) {
+    console.info(
+      `loading version ${input.versionOrEnvironment} ${JSON.stringify(input)}`,
+    );
+    pv = await ctx.prisma.promptVersion.findFirst({
+      where: {
+        // userId: userId,
+        promptPackageId: input.promptPackageId,
+        promptTemplateId: input.promptTemplateId,
+        version: input.version,
+      },
+    });
   }
 
   if (!pv) {

@@ -40,10 +40,6 @@ const PackageShow: NextPageWithLayout = () => {
 
   const { data: sessionData } = useSession();
 
-  console.log("--------- session Data ------------");
-  console.log(sessionData);
-  console.log("--------- session Data ------------");
-
   // TODO: Fix this NS based on the route rather than current user
   const ns = sessionData?.user;
 

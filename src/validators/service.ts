@@ -6,13 +6,14 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 
 export const getPromptInput = z.object({
-  environment: promptEnvironment.default(promptEnvironment.Enum.RELEASE),
+  environment: promptEnvironment.optional(),
 
   // Prompt Template identitication
   username: z.string(),
   package: z.string(),
   template: z.string(),
-  version: z.string().default("latest"),
+  version: z.string().optional(),
+  versionOrEnvironment: z.string().default(promptEnvironment.Enum.RELEASE),
 
   userId: stringOpt,
   promptPackageId: stringOpt,
@@ -50,7 +51,7 @@ export const generateInput = z
   .object({
     // Template Data
     data: z.record(z.any()),
-    isDevelopment: z.boolean(),
+    isDevelopment: z.boolean().default(false),
   })
   .merge(getPromptInput)
   .strict();

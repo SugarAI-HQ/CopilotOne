@@ -24,6 +24,7 @@ import { PrismaClient } from "@prisma/client";
 import { GenerateInput } from "~/validators/service";
 import { JWT, getToken } from "next-auth/jwt";
 import { env } from "~/env.mjs";
+import { promptEnvironment, PromptEnvironment } from "~/validators/base";
 
 /**
  * 1. CONTEXT
@@ -257,6 +258,20 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
       })) as { id: string | null };
     opts.input.promptTemplateId = promptTemplateId as string;
   }
+
+  console.info(
+    `figuring versionOrEnvironment ${opts.input.versionOrEnvironment}`,
+  );
+  if (
+    opts.input.versionOrEnvironment &&
+    opts.input.versionOrEnvironment in promptEnvironment.Values
+  ) {
+    opts.input.environment = opts.input
+      .versionOrEnvironment as PromptEnvironment;
+  } else if (opts.input.versionOrEnvironment) {
+    opts.input.version = opts.input.versionOrEnvironment;
+  }
+
   console.log(
     `promptMiddleware out ------------ ${JSON.stringify(opts.input)}`,
   );
