@@ -72,6 +72,7 @@ export function CreateVersion({
       promptTemplateId: pt?.id,
       version: version,
       forkedFromId: forkedFromId,
+      moduleType: pt?.modelType,
     };
     pvCreateMutation.mutate(data as CreateVersionInput);
   };
@@ -79,11 +80,11 @@ export function CreateVersion({
   return (
     <>
       <Grid component="span">
-        {/* <Button 
-          variant="outlined" 
+        {/* <Button
+          variant="outlined"
           startIcon={<AddCircleIcon />}
           size="small"
-          aria-label="add version" 
+          aria-label="add version"
           onClick={() => setIsOpen(true)}
           color="primary"
         >

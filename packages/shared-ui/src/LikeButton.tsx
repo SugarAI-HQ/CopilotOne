@@ -13,7 +13,7 @@ function LikeButton({ count }: { count: number }) {
 
   return (
     <div>
-      <ButtonGroup variant="outlined" color="primary" size="small">
+      <ButtonGroup variant="outlined" color="inherit" size="small">
         <Button
           size="small"
           startIcon={<FavoriteIcon />}

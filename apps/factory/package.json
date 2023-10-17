@@ -9,7 +9,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "xpostinstall": "npx prisma generate",
+    "postinstall": "npx prisma generate",
     "lint": "next lint",
     "start": "next start",
     "storybook": "storybook dev -p 6006",
@@ -33,6 +33,7 @@
     "@trpc/next": "^10.34.0",
     "@trpc/react-query": "^10.34.0",
     "@trpc/server": "^10.34.0",
+    "build": "^0.1.4",
     "memoizee": "^0.4.15",
     "nanoid": "^5.0.1",
     "next": "13.4.13",
@@ -66,6 +67,7 @@
     "@storybook/nextjs": "^7.4.0",
     "@storybook/react": "^7.4.0",
     "@storybook/testing-library": "^0.2.0",
+    "@sugar/shared-ui": "workspace:*",
     "@types/eslint": "^8.44.2",
     "@types/memoizee": "^0.4.8",
     "@types/node": "^18.16.0",
@@ -91,8 +93,7 @@
     "prisma": "^5.3.1",
     "storybook": "^7.4.0",
     "tailwindcss": "^3.3.3",
-    "typescript": "^5.1.6",
-    "@sugar/shared-ui": "workspace:*"
+    "typescript": "^5.1.6"
   },
   "ct3aMetadata": {
     "initVersion": "7.19.0"

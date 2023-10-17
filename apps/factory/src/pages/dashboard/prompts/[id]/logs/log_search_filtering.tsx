@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import CustomSelect from "~/components/custom_selector";
 import type { FilterOptions } from ".";
-import { promptEnvironment, providers, models } from "~/validators/base";
+import { promptEnvironment, providerModels } from "~/validators/base";
 import { api } from "~/utils/api";
 
 interface LogSearchFilteringProps {
@@ -27,14 +27,25 @@ const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({
 
   const llmModelOptions = [
     { value: "", label: "All llmModel" },
-    ...(Object.keys(models) as (keyof typeof models)[]).flatMap((provider) =>
-      models[provider].map(([value, label]) => ({ value, label })),
+    ...(Object.keys(providerModels) as (keyof typeof providerModels)[]).flatMap(
+      (modelType) => {
+        const models = providerModels[modelType].models;
+        const allModels = Object.values(models).flat();
+        return allModels.map(({ name, label }) => ({ value: name, label }));
+      },
     ),
   ];
 
   const llmProviderOptions = [
     { value: "", label: "All Provider" },
-    ...providers.map(([value, label]) => ({ value, label })),
+    ...providerModels.TEXT2TEXT.providers.map(({ name, label }) => ({
+      value: name,
+      label,
+    })),
+    ...providerModels.TEXT2IMAGE.providers.map(({ name, label }) => ({
+      value: name,
+      label,
+    })),
   ];
 
   const { data: versionList } = api.version.getLogVersions.useQuery({
@@ -83,16 +94,16 @@ const LogSearchFiltering: React.FC<LogSearchFilteringProps> = ({
         onChange={(value) => handleFilterChange("environment", value)}
       />
       <CustomSelect
-        label="LLM Model"
-        options={llmModelOptions}
-        value={filterOptions.llmModel || ""}
-        onChange={(value) => handleFilterChange("llmModel", value)}
-      />
-      <CustomSelect
         label="LLM Provider"
         options={llmProviderOptions}
         value={filterOptions.llmProvider || ""}
         onChange={(value) => handleFilterChange("llmProvider", value)}
+      />
+      <CustomSelect
+        label="LLM Model"
+        options={llmModelOptions}
+        value={filterOptions.llmModel || ""}
+        onChange={(value) => handleFilterChange("llmModel", value)}
       />
       <CustomSelect
         label="Version"

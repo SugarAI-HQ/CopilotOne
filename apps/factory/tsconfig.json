@@ -32,10 +32,6 @@
       }
     ]
   },
-  "resolve": 
-  { 
-    "preserveSymlinks": true 
-  },
   "include": [
     ".eslintrc.cjs",
     "next-env.d.ts",

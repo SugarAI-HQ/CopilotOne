@@ -25,7 +25,7 @@ const Header = () => {
                 {/* <IconButton edge="start" color="inherit" aria-label="menu">
                   <MenuIcon />
                 </IconButton> */}
-                Sugar Marketpalce
+                Sugar Hub
               </Link>
             </Typography>
             <nav>
