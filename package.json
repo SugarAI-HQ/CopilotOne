@@ -5,13 +5,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npx husky install",
-    "pre-commit": "pnpm run --filter \"factory\" pre-commit"
+    "pre-commit": "pnpm run --filter \"factory\" pre-commit",
+    "dev": "pnpm run --filter \"factory\" dev"
   },
   "keywords": [],
   "packageManager": "pnpm@8.8.0",
   "author": "Ankur Agarwal <ankur@sugarcaneai.dev>",
   "dependencies": {
     "husky": "^8.0.3",
+    "next": "13.4.13",
     "react": "18.2.0"
   }
 }
