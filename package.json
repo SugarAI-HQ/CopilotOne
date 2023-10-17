@@ -2,13 +2,13 @@
   "name": "sugarcane-ai",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npx husky install",
     "pre-commit": "pnpm run --filter \"factory\" pre-commit"
   },
   "keywords": [],
+  "packageManager": "pnpm@8.8.0",
   "author": "Ankur Agarwal <ankur@sugarcaneai.dev>",
   "dependencies": {
     "husky": "^8.0.3",

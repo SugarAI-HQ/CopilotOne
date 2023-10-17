@@ -1,34 +1,49 @@
 {
     "compilerOptions": {
       "target": "es2017",
-      "allowSyntheticDefaultImports": true,
+      "lib": [
+        "dom",
+        "dom.iterable",
+        "esnext"
+      ],
       "outDir": "./dist",
       "allowJs": true,
       "checkJs": true,
       "skipLibCheck": true,
       "strict": true,
-      "strictNullChecks": true,
       "forceConsistentCasingInFileNames": true,
       "noEmit": true,
       "esModuleInterop": true,
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "module": "commonjs",
+      "module": "esnext",
       "moduleResolution": "node",
       "resolveJsonModule": true,
       "isolatedModules": true,
-      "jsx": "react-jsx",
+      "jsx": "preserve",
+      // "jsx": "react-jsx",
       "incremental": true,
       "noUncheckedIndexedAccess": true,
       "baseUrl": ".",
-      "sourceMap": true,
       "paths": {
         "~/*": [
           "./src/*"
         ]
-      }
+      },
+
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "sourceMap": true,
+      "allowSyntheticDefaultImports": true,
+      "strictNullChecks": true,
+      
     },
-    "include": ["."],
-    "exclude": ["dist", "node_modules", "**/*.spec.ts"]
+    "include": [
+      ".eslintrc.cjs",
+      "next-env.d.ts",
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.cjs",
+      "**/*.mjs",
+    ],
+    "exclude": ["node_modules", "**/*.spec.ts"]
   }
   

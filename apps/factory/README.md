@@ -12,13 +12,15 @@ Sugar Factory is a service that allows dev teams to easily build, test, deploy a
     - Setup db `npx prisma db push`
     - Run `npm run dev` to start service
 
-## References
+## Build Using
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- T3 https://create.t3.gg/
+- Nextjs
+- React
+- MUI
+- Typescript
+- Prisma
 
 ## Deploy
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+Coming Soon

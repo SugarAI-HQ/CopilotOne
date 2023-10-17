@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "author": "Ankur Agarwal<ankur@sugarcaneai.dev>",
   "private": true,
+  "sideEffects": false,
   "license": "",
   "main": "index.js",
   "keywords": [],

@@ -1,7 +1,6 @@
 {
   "name": "@sugar/shared-ui",
   "private": true,
-  "version": "0.0.1",
   "description": "Shared UI components",
   "main": "dist/index.js",
   "scripts": {
