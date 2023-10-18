@@ -2,6 +2,9 @@
   "name": "sugarcane-ai",
   "version": "0.0.1",
   "description": "",
+  "engines": {
+    "node": "18.18"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npx husky install",
