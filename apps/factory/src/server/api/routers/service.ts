@@ -125,7 +125,7 @@ async function getPv(ctx: any, input: any) {
     `figuring out version for ${input.environment} version ${input.version}`,
   );
 
-  if (input.environment in promptEnvironment.Values) {
+  if (!input.version && input.environment in promptEnvironment.Values) {
     const ptd = {
       userId: userId,
       promptPackageId: input.promptPackageId,

@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npx husky install",
     "pre-commit": "pnpm run --filter \"factory\" pre-commit",
-    "dev": "pnpm run --filter \"factory\" dev"
+    "dev": "pnpm run --filter \"factory\" dev",
+    "db": "pnpm run --filter \"factory\" db"
   },
   "keywords": [],
   "packageManager": "pnpm@8.8.0",

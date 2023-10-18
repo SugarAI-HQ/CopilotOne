@@ -136,7 +136,7 @@ function PromptVersion({
       username: ns.name,
       package: pp?.name || "",
       template: pt?.name || "",
-      version: pv.version || "",
+      versionOrEnvironment: pv.version || "",
       isDevelopment: checked,
       // llmModelType: pt?.modelType,
       environment: promptEnvironment.Enum.DEV,
