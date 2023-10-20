@@ -255,6 +255,10 @@ pnpm install
 
 - Run `pnpm dev` to start service
 
+### Project Build
+
+- Run `pnpm run  -r build`
+
 Explore our [Documentation](https://sugarcaneai.dev/docs/) for detailed instructions on getting started with Sugarcane AI. Dive into our Quick Start guide to build your first AI app in no time!
 
 ## 🤖 Contribute <a name="contribute--"></a>
