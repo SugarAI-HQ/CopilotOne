@@ -59,28 +59,27 @@ We believe that a community driven package ecosystem is a long term solution for
     - Version and backtest prompts for better performance
 
 <br> </br>
-![Sugar Factory](public/images/sugar/banner-factory.png)
+![Sugar Factory](public/images/sugar/sugarfactory.png)
 
 ##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
 
-### Sugar Cubes 🍬 🍬
-
-Sugar Cubes are Prompt Applications which are instantly deployable and sharable with your friends.
-
-![Sugar Cube](public/images/sugar/Sugar_cube.png)
-
 <br> </br>
+
 ### Sugar Hub 🛒 <a name="sugar-hub--"></a>
 
 ##### Managed Marketplace for high quality GenAI assets
 
 ##### Key Features :
 
-    - Implement workflows/plugins with just a few lines of code
-    - Client libraries supporting multiple languages
-    - Integrate managed prompt packages from Sugar Hub
+    - Publish, share and monetise your prompt packages
+    - Discover and use managed prompts in Sugar Bakery
+    - Leverage Open datasets and Finetuned Micro LLMs
 
-![Sugar Hub](public/images/sugar/banner-new.png)
+<br> </br>
+
+![Sugar Hub](public/images/sugar/sugarhub.png)
+
+<br> </br>
 
 ### Sugar Farm 🚜 <a name="sugar-farm--"></a>
 
@@ -254,10 +253,6 @@ pnpm install
 ### Local Setup
 
 - Run `pnpm dev` to start service
-
-### Project Build
-
-- Run `pnpm run  -r build`
 
 Explore our [Documentation](https://sugarcaneai.dev/docs/) for detailed instructions on getting started with Sugarcane AI. Dive into our Quick Start guide to build your first AI app in no time!
 
