@@ -2,24 +2,24 @@
   <img src="public/images/sugar/AI 3.png" alt="Sugarcane AI Logo" width="400">
 </p>
 
-# Open Source Microservices Framework for LLM Apps 🤖
+# npm like package ecosystem for Prompts 🤖
 
-### Develop reliable cross-LLM workflows and plugins powered by prompt packages and Micro LLMs
+### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
 
 [![License](https://img.shields.io/github/license/sugarcane-ai/sugarcane-ai.github.io)](https://github.com/sugarcane-ai/sugarcane-ai.github.io/blob/develop/LICENSE)
 
 ---
 
-### Important News : Code Repository launching on 15th October 2023 : ⭐ Star this Repo to support us ⭐
+### Important News : Prompt Package Playgroud launching on 1st November 2023 : ⭐ Star this Repo to support us ⭐
 
 ---
 
 1. [Introduction](#introduction--)
 2. [Key Features of Microservices Framework](#key-features--)
    - [Sugar Factory 🏭](#sugar-factory--)
-   - [Sugar Bakery 🍞](#sugar-bakery--)
-   - [Sugar Farm 🚜](#sugar-farm--)
    - [Sugar hub 🛒](#sugar-hub--)
+   - [Sugar Farm 🚜](#sugar-farm--)
+   - [Sugar Bakery 🍞](#sugar-bakery--)
 3. [Key Components of the Microservices Framework](#key-components--)
    - [Micro LLMs 🧬](#micro-llms--)
    - [Prompt Packages 📦](#prompt-packages--)
@@ -38,9 +38,13 @@
 
 ## Introduction 🙏 <a name="introduction--"></a>
 
-Sugarcane AI is an open-source Microservices framework for LLM-agnostic workflow development, allowing developers to prioritize business logic over LLM selection, cost, and performance.
+Sugarcane AI is creating an open marketplace for developers to package and sell high-accuracy, npm-like programmable prompt packages. 
 
-With a focus on fine-tuned Language Models (LLMs), prompt management, and Workflow Plugins, Sugarcane AI encourages collaborative dataset development and enhances reusability of prompt packages and fine-tuned LLMs, facilitating sharing and monetization on an open marketplace. 🎉
+The product is designed to address the issues of prompt accuracy and developer productivity by utilizing a microservices approach for prompt and LLM management, saving 80% of development time and server cost for LLM applications.
+
+Focused on the creation of reusable, high-accuracy prompt packages and Micro LLMs, we offer an open-source microservices framework to empower the next 10 million LLM application developers to build prompt packages and train Micro LLMs.
+
+We believe that a community driven package ecosystem is a long term solution for LLM application development similar to other programming languages ecosystems. 🎉
 
 ## Key Features of Microservices Framework 🚀 <a name="key-features--"></a>
 
@@ -54,27 +58,12 @@ With a focus on fine-tuned Language Models (LLMs), prompt management, and Workfl
     - Label and manage prompt completion datasets
     - Version and backtest prompts for better performance
 
+<br> </br>
+![Sugar Factory](public/images/sugar/sugarfactory.png)
+
 ##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
 
-### Sugar Bakery 🍞 <a name="sugar-bakery--"></a>
-
-##### SDK for **Application Develpers** to develop cross-LLM business logic applications
-
-##### Key Features :
-
-    - Implement workflows/plugins with just a few lines of code
-    - Client libraries supporting multiple languages
-    - Integrate managed prompt packages from Sugar Hub
-
-### Sugar Farm 🚜 <a name="sugar-farm--"></a>
-
-##### Data Assistant for **Data Scientists** to build Micro LLMs
-
-##### Key Features :
-
-    - Train and backtest Micro LLMs using labeled datasets
-    - Version and ship Fine tuned LLMs over APIs
-    - Publish fine-tuned Micro LLMs on Sugar Hub
+<br> </br>
 
 ### Sugar Hub 🛒 <a name="sugar-hub--"></a>
 
@@ -85,6 +74,33 @@ With a focus on fine-tuned Language Models (LLMs), prompt management, and Workfl
     - Publish, share and monetise your prompt packages
     - Discover and use managed prompts in Sugar Bakery
     - Leverage Open datasets and Finetuned Micro LLMs
+
+<br> </br>
+
+![Sugar Hub](public/images/sugar/sugarhub.png)
+
+<br> </br>
+### Sugar Farm 🚜 <a name="sugar-farm--"></a>
+
+##### Data Assistant for **Data Scientists** to build Micro LLMs
+
+##### Key Features :
+
+    - Train and backtest Micro LLMs using labeled datasets
+    - Version and ship Fine tuned LLMs over APIs
+    - Publish fine-tuned Micro LLMs on Sugar Hub
+
+<br> </br>
+
+### Sugar Bakery 🍞 <a name="sugar-bakery--"></a>
+
+##### SDK for **Application Develpers** to develop cross-LLM business logic applications
+
+##### Key Features :
+
+    - Implement workflows/plugins with just a few lines of code
+    - Client libraries supporting multiple languages
+    - Integrate managed prompt packages from Sugar Hub
 
 # Key Components of the Microservices Framework 🧩 <a name="key-components--"></a>
 

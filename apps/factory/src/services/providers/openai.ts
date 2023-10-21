@@ -4,6 +4,7 @@ import memoize from "memoizee";
 import { LlmConfigSchema } from "~/validators/prompt_version";
 import { generateOutput } from "../llm_response/response";
 import { fakeResponse } from "../llm_response/fake_response";
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 
 // Initialize OpenAI API client
 const openai = new OpenAI({
@@ -30,7 +31,7 @@ export async function run(
   prompt: string,
   llm_model: string,
   llmConfig: LlmConfigSchema,
-  llmModelType: string,
+  llmModelType: ModelTypeType,
   isDevelopment: boolean = false,
 ) {
   // Capture the start time

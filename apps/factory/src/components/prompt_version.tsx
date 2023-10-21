@@ -40,7 +40,10 @@ import LabelIcons from "./label_icon";
 import { LogOutput } from "~/validators/prompt_log";
 import _debounce from "lodash/debounce";
 import { providerModels } from "~/validators/base";
-import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
 
 function PromptVersion({
   ns,
@@ -323,7 +326,7 @@ function PromptVersion({
               <Grid container justifyContent={"flex-start"}>
                 <PromptOutput
                   output={promptOutput}
-                  modelType={pt?.modelType as string}
+                  modelType={pt?.modelType as ModelTypeType}
                 ></PromptOutput>
                 {pl && (
                   <Box sx={{ ml: 5 }}>

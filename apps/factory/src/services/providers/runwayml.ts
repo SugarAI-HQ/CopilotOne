@@ -2,6 +2,7 @@ import { LlmConfigSchema } from "~/validators/prompt_version";
 import { generateOutput } from "../llm_response/response";
 import { fakeResponse } from "../llm_response/fake_response";
 import { fetchWithRetry } from "./llama2";
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 
 export interface LLMConfig {
   max_tokens: number;
@@ -12,7 +13,7 @@ export async function run(
   prompt: string,
   llmModel: string,
   llmConfig: LlmConfigSchema,
-  llmModelType: string,
+  llmModelType: ModelTypeType,
   isDevelopment: boolean = false,
 ) {
   const maxRetries = 3;

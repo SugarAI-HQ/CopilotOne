@@ -1,7 +1,10 @@
 import { z } from "zod";
 import { promptEnvironment } from "./base";
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
-import { LabelledStateSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  LabelledStateSchema,
+  ModelTypeSchema,
+} from "~/generated/prisma-client-zod.ts";
 
 // const allowedLabelledStates = ["UNLABELLED", "SELECTED", "REJECTED", "NOTSURE"] as const;
 // export type LabelledState = typeof LabelledStateSchema;
@@ -35,6 +38,7 @@ const logSchema = z.object({
   llmProvider: z.string(),
   llmModel: z.string(),
   llmConfig: InputJsonValue.nullable(),
+  llmModelType: ModelTypeSchema,
 
   environment: promptEnvironment,
 
