@@ -38,7 +38,7 @@
 
 ## Introduction 🙏 <a name="introduction--"></a>
 
-Sugarcane AI is creating an open marketplace for developers to package and sell high-accuracy, npm-like programmable prompt packages. 
+Sugarcane AI is creating an open marketplace for developers to package and sell high-accuracy, npm-like programmable prompt packages.
 
 The product is designed to address the issues of prompt accuracy and developer productivity by utilizing a microservices approach for prompt and LLM management, saving 80% of development time and server cost for LLM applications.
 
@@ -63,9 +63,8 @@ We believe that a community driven package ecosystem is a long term solution for
 
 ##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
 
-##### Get Started : [Click Here](https://play.sugarcaneai.dev/api/auth/signin?callbackUrl=https%3A%2F%2Fplay.sugarcaneai.dev%2F)
-
 <br> </br>
+
 ### Sugar Hub 🛒 <a name="sugar-hub--"></a>
 
 ##### Managed Marketplace for high quality GenAI assets
@@ -81,6 +80,7 @@ We believe that a community driven package ecosystem is a long term solution for
 ![Sugar Hub](public/images/sugar/sugarhub.png)
 
 <br> </br>
+
 ### Sugar Farm 🚜 <a name="sugar-farm--"></a>
 
 ##### Data Assistant for **Data Scientists** to build Micro LLMs
