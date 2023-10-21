@@ -63,8 +63,9 @@ We believe that a community driven package ecosystem is a long term solution for
 
 ##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
 
-<br> </br>
+##### Get Started : [Click Here](https://play.sugarcaneai.dev/api/auth/signin?callbackUrl=https%3A%2F%2Fplay.sugarcaneai.dev%2F)
 
+<br> </br>
 ### Sugar Hub 🛒 <a name="sugar-hub--"></a>
 
 ##### Managed Marketplace for high quality GenAI assets
@@ -232,7 +233,7 @@ Join us on this exhilarating journey as we transform Sugarcane AI into a powerfu
 
 ## 🚀 Getting Started <a name="getting-started--"></a>
 
-### Prerequisites
+### Pre-requisites
 
 - [Node.js](https://nodejs.org/) (version V18 or higher)
 - [PNPM](https://pnpm.io/)
@@ -287,6 +288,20 @@ Thanks to the following contributors for their efforts and support in adding val
         <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
       </a>
       <br />
+      <a href="https://github.com/pulkit21">Pulkit</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/username2">
+        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
+      </a>
+      <br />
+      <a href="https://github.com/patil-vipul">Vipul</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/username2">
+        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
+      </a>
+      <br />
       <a href="https://github.com/yashmyeole">yashmyeole</a>
     </td>
     <td align="center">
@@ -317,7 +332,7 @@ Stay updated with the latest news, discussions, and support on our communities.
 
 ## 📅 Book an Appointment <a name="book-an-appointment--"></a>
 
-Have questions, need assistance, personalized support, or just want to share your thoughts on our product? Book an appointment with our team on Calendly [here](https://calendly.com/hi--qja).
+Have questions, need assistance, personalized support, or just want to share your thoughts on our product? Book an appointment with our team on Calendly [here](https://calendly.com/sugarcane-ai/team).
 
 ## License 📄 <a name="license--"></a>
 
