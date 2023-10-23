@@ -20,6 +20,9 @@ importers:
 
   apps/factory:
     dependencies:
+      '@hookform/resolvers':
+        specifier: ^3.3.2
+        version: 3.3.2(react-hook-form@7.47.0)
       '@mui/icons-material':
         specifier: ^5.14.8
         version: 5.14.13(@mui/material@5.14.13)(@types/react@18.2.28)(react@18.2.0)
@@ -80,6 +83,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-hook-form:
+        specifier: ^7.47.0
+        version: 7.47.0(react@18.2.0)
       react-hot-toast:
         specifier: ^2.4.1
         version: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
@@ -2443,6 +2449,14 @@ packages:
 
   /@floating-ui/utils@0.1.6:
     resolution: {integrity: sha512-OfX7E2oUDYxtBvsuS4e/jSn4Q9Qb6DzgeYtsAdkPZ47znpoNsMgZw0+tVijiv3uGNR6dgNlty6r9rzIzHjtd/A==}
+
+  /@hookform/resolvers@3.3.2(react-hook-form@7.47.0):
+    resolution: {integrity: sha512-Tw+GGPnBp+5DOsSg4ek3LCPgkBOuOgS5DsDV7qsWNH9LZc433kgsWICjlsh2J9p04H2K66hsXPPb9qn9ILdUtA==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.47.0(react@18.2.0)
+    dev: false
 
   /@humanwhocodes/config-array@0.11.11:
     resolution: {integrity: sha512-N2brEuAadi0CcdeMXUkhbZB84eskAc8MEX1By6qEchoVywSgXPIjou4rYsl0V3Hj0ZnuGycGCjdNgockbzeWNA==}
@@ -4845,6 +4859,7 @@ packages:
 
   /@swagger-api/apidom-ns-json-schema-draft-4@0.77.0:
     resolution: {integrity: sha512-LLfNNDuoLNgKgN8ddPJxc5QCYgst3G1BnXEU+0lIFyVlFb5xowZiW4utYtfx/eRBy+UxpgTIk04hvvbaYppFZQ==}
+    requiresBuild: true
     dependencies:
       '@babel/runtime-corejs3': 7.23.1
       '@swagger-api/apidom-ast': 0.77.0
@@ -13139,6 +13154,15 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-is: 18.1.0
     dev: true
+
+  /react-hook-form@7.47.0(react@18.2.0):
+    resolution: {integrity: sha512-F/TroLjTICipmHeFlMrLtNLceO2xr1jU3CyiNla5zdwsGUGu2UOxxR4UyJgLlhMwLW/Wzp4cpJ7CPfgJIeKdSg==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /react-hot-toast@2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==}
