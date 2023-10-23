@@ -47,6 +47,7 @@ export const promptRouter = createTRPCRouter({
       let query = {
         userId: ctx.jwt?.id as string,
       };
+
       console.log(`packages input -------------- ${JSON.stringify(query)}`);
 
       const packages = await ctx.prisma.promptPackage.findMany({
@@ -68,7 +69,7 @@ export const promptRouter = createTRPCRouter({
       const pkg = await ctx.prisma.promptPackage.findFirst({
         where: query,
       });
-      // console.log(`package -------------- ${JSON.stringify(pkg)}`);
+      console.log(`package -------------- ${JSON.stringify(pkg)}`);
       return pkg;
     }),
 
@@ -76,19 +77,24 @@ export const promptRouter = createTRPCRouter({
     .input(createPackageInput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
-      let promptPackage = null;
-
-      if (userId) {
-        promptPackage = await ctx.prisma.promptPackage.create({
+      try {
+        const promptPackage = await ctx.prisma.promptPackage.create({
           data: {
             name: input.name,
             description: input.description,
-
+            visibility: input.visibility,
             userId: userId,
           },
         });
+        return promptPackage;
+      } catch (error: any) {
+        console.log(`Error in creating Package-----------------  ${error}`);
+        if (error.code === "P2002" && error.meta?.target.includes("name")) {
+          const errorMessage = { error: { name: "Name already exist" } };
+          throw new Error(JSON.stringify(errorMessage));
+        }
+        throw new Error("Something went wrong");
       }
-      return promptPackage;
     }),
 
   createTemplate: protectedProcedure
@@ -145,7 +151,7 @@ export const promptRouter = createTRPCRouter({
     .input(getTemplatesInput)
     .output(templateListOutput)
     .query(async ({ ctx, input }) => {
-      // console.log(`templates -------------- ${JSON.stringify(input)}`);
+      console.log(`templates -------------- ${JSON.stringify(input)}`);
       const templates = await ctx.prisma.promptTemplate.findMany({
         where: {
           userId: ctx.jwt?.id as string,
