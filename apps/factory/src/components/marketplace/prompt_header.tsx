@@ -36,10 +36,10 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
             </Grid>
             <Grid item>
               <Link
-                href={"/" + pp?.User?.name}
+                href={"/" + pp?.User?.username}
                 className="text-gray-400 hover:text-blue-600"
               >
-                {pp?.User?.name}
+                {pp?.User?.username}
               </Link>
             </Grid>
             <Grid item>

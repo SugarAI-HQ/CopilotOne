@@ -37,7 +37,7 @@ export default function SidebarProfile() {
             />
             <div>
               <Typography sx={{ fontSize: 16 }}>
-                {sessionData?.user?.name}
+                {sessionData?.user?.username}
               </Typography>
               <Typography sx={{ fontSize: 14 }}>
                 {sessionData?.user?.email}

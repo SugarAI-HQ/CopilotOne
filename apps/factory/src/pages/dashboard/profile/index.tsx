@@ -38,7 +38,7 @@ const Profile = () => {
             />
 
             <Typography sx={{ fontSize: 16, marginTop: "16px" }} gutterBottom>
-              {sessionData?.user?.name}
+              {sessionData?.user?.username}
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>
               {sessionData?.user?.email}

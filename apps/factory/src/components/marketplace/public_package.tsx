@@ -30,7 +30,7 @@ function PublicPackages() {
           <Grid item key={index} xs={12} sm={6} md={12} lg={12}>
             <Card>
               <CardHeader
-                title={`${pkg?.User.name} / ${pkg?.name}`}
+                title={`${pkg?.User.username} / ${pkg?.name}`}
                 avatar={
                   <Avatar
                     src={pkg?.User?.image || "/default-avatar.png"}
