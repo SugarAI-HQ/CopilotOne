@@ -44,8 +44,14 @@ export const promptRouter = createTRPCRouter({
     .input(getPackagesInput)
     .output(packageListOutput)
     .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      if (!userId) {
+        console.log("No userId exist");
+        throw new Error("User Id not exist");
+      }
       let query = {
         userId: ctx.jwt?.id as string,
+        // userId:"29ba7283-fe27-4033-979b-f5187ed2cd04"
       };
 
       console.log(`packages input -------------- ${JSON.stringify(query)}`);
