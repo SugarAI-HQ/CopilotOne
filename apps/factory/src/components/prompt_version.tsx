@@ -136,7 +136,7 @@ function PromptVersion({
     }
 
     const pl = await generateMutation.mutateAsync({
-      username: ns.name,
+      username: ns.username,
       package: pp?.name || "",
       template: pt?.name || "",
       versionOrEnvironment: pv.version || "",

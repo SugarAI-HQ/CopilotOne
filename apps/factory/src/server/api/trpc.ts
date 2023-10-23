@@ -228,7 +228,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
     } else {
       const { id: userId } = (await opts.ctx.prisma.user.findFirst({
         where: {
-          name: opts.input.username,
+          username: opts.input.username,
         },
         select: { id: true },
       })) as { id: string | null };

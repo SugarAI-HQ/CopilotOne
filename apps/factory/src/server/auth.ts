@@ -23,6 +23,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
+      username: string;
       // ...other properties
       // role: UserRole;
     };
@@ -34,6 +35,15 @@ declare module "next-auth" {
   // }
 }
 
+function generateRandomUsername(username: string, length = 3) {
+  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    username += characters[randomIndex];
+  }
+  return username;
+}
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -42,11 +52,43 @@ declare module "next-auth" {
 function getAuthOptions(): NextAuthOptions {
   let options: NextAuthOptions = {
     callbacks: {
-      session: ({ session, user }) => ({
+      async signIn({ user, account, profile }: any) {
+        if (user) {
+          let existingUser;
+          if (user.username) {
+            existingUser = await prisma.user.findUnique({
+              where: { username: user.username },
+            });
+          }
+          if (existingUser) {
+            user.username = generateRandomUsername(user.username);
+          } else {
+            let username =
+              profile.username ||
+              profile.login ||
+              (profile.email && profile.email.split("@")[0]);
+
+            const userWithNewUsername = await prisma.user.findUnique({
+              where: { username: username },
+            });
+            username = userWithNewUsername
+              ? generateRandomUsername(username)
+              : username;
+            await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                username: username,
+              },
+            });
+          }
+        }
+        return true;
+      },
+      session: ({ session, user, token }) => ({
         ...session,
         user: {
           ...session.user,
-          // id: user.id,
+          username: token.username,
         },
       }),
       redirect: ({ url, baseUrl }: { url: string; baseUrl: string }) => {
@@ -54,7 +96,7 @@ function getAuthOptions(): NextAuthOptions {
         return "/dashboard";
       },
 
-      jwt({ token, user, account, profile, session }) {
+      jwt({ token, user, account, profile, session }: any) {
         let newToken = token;
         // Persist the OAuth access_token and or the user id to the token right after signin
 
@@ -68,6 +110,7 @@ function getAuthOptions(): NextAuthOptions {
 
           // token.accessToken = account.access_token;
           token.id = user.id;
+          token.username = user.username;
           const newToken = {
             v: 1,
             sub: token.sub,
@@ -95,10 +138,28 @@ function getAuthOptions(): NextAuthOptions {
       GithubProvider({
         clientId: env.GITHUB_CLIENT_ID,
         clientSecret: env.GITHUB_SECRET,
+        profile: (profile) => {
+          return {
+            id: profile.id,
+            name: profile.name,
+            username: profile.login,
+            email: profile.email,
+            image: profile.avatar_url,
+          };
+        },
       }),
       GoogleProvider({
         clientId: env.GOOGLE_CLIENT_ID,
         clientSecret: env.GOOGLE_CLIENT_SECRET,
+        profile: (profile) => {
+          return {
+            id: profile.sub,
+            name: profile.name,
+            username: profile.email.split("@")[0],
+            email: profile.email,
+            image: profile.picture,
+          };
+        },
       }),
 
       CredentialsProvider({
@@ -159,6 +220,16 @@ function getAuthOptions(): NextAuthOptions {
       DiscordProvider({
         clientId: env.DISCORD_CLIENT_ID,
         clientSecret: env.DISCORD_CLIENT_SECRET,
+        profile: (profile) => {
+          let userAvatar = `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png`;
+          return {
+            id: profile.id,
+            username: profile.username,
+            name: profile.global_name,
+            email: profile.email,
+            image: userAvatar,
+          };
+        },
       }),
     );
   }
@@ -167,6 +238,7 @@ function getAuthOptions(): NextAuthOptions {
 }
 
 export const authOptions: NextAuthOptions = getAuthOptions();
+console.log("authOptions:", authOptions);
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
