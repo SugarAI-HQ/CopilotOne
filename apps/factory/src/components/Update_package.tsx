@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Button,
   Dialog,
@@ -20,32 +20,28 @@ import {
 } from "@mui/material";
 import { packageVisibility } from "~/validators/base";
 import { api } from "~/utils/api";
-import { PackageVisibility } from "~/validators/base/PackageVisibility";
 import toast from "react-hot-toast";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createPackageInput,
+  CreatePackageInput,
+} from "~/validators/prompt_package";
 
-const Update_package = ({
-  open,
-  setOpen,
-  pckid,
-  updateArray,
-  checkNameExistence,
-}) => {
-  //   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState<string | undefined>();
-  const [description, setDescription] = useState<string | undefined>();
-  const [visibility, setVisibility] = React.useState<PackageVisibility>(
-    packageVisibility.Enum.PUBLIC,
-  );
-
-  const handleClose = () => {
-    setName("");
-    setDescription("");
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    console.log("id of the user", pckid);
-  }, [pckid]);
+const Update_package = ({ open, setOpen, pckid, updateArray }) => {
+  // zod schema
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setError,
+    watch,
+    setValue,
+  } = useForm<CreatePackageInput>({
+    resolver: zodResolver(createPackageInput),
+  });
 
   const input = {
     id: `${pckid}`,
@@ -54,36 +50,39 @@ const Update_package = ({
 
   api.prompt.getPackage.useQuery(input, {
     onSuccess(items) {
-      setName(items?.name);
-      setDescription(items?.description);
-      setVisibility(items?.visibility);
+      reset({
+        name: items?.name,
+        description: items?.description,
+        visibility: items?.visibility,
+      });
     },
   });
 
-  // const mutation = api.prompt.updatePackage.useMutation( )
+  const mutation = api.prompt.updatePackage.useMutation();
 
-  const handleSubmit = () => {
+  const submitData = (data: CreatePackageInput) => {
     // call api to update paticular package
-    // console.log(name, description, visibility)
-
-    // add condition to check whether the name of package exists or not
-    // if(checkNameExistence(name)){
-    //   console.log("somethign")
-    //   toast.error("Package name already exists")
-    //   return
-    // }
     const input = {
       id: pckid as string,
-      name: name!,
-      description: description!,
-      visibility: visibility,
+      name: data.name,
+      description: data.description,
+      visibility: data.visibility,
     };
-    // mutation.mutate( input )
-    // console.log("input", input)
-    updateArray(input);
-    // toast.success("Package Updated Successfully");
+    mutation.mutate(input, {
+      onSuccess() {
+        updateArray(input);
+        toast.success("Package Updated Successfully");
+      },
+      onError(error) {
+        const errorData = JSON.parse(error.message);
+        console.log("error for already existing name", errorData);
+        setError("name", { type: "manual", message: errorData.error?.name });
+      },
+    });
+  };
 
-    // handleClose(); // Close the modal after submitting
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -94,50 +93,46 @@ const Update_package = ({
         </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
-          <p>{pckid}</p>
           <Stack spacing={2} mt={2}>
             <FormControl fullWidth>
               <FormLabel>Name</FormLabel>
-              <TextField
-                variant="outlined"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+              <TextField variant="outlined" {...register("name")} />
             </FormControl>
+            {errors.name && (
+              <p style={{ color: "red" }}>{errors.name.message}</p>
+            )}
 
             <FormControl fullWidth>
               <FormLabel>Description</FormLabel>
-              <TextField
-                variant="outlined"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
+              <TextField variant="outlined" {...register("description")} />
             </FormControl>
 
             <FormControl component="fieldset">
               <FormLabel component="legend">Visibility</FormLabel>
-              <RadioGroup
-                aria-label="visibility"
-                name="visibilityGroup"
-                defaultValue={visibility}
-                value={visibility}
-                onChange={(e) => setVisibility(e.target.value)}
-              >
+              <RadioGroup aria-label="visibility">
                 <FormControlLabel
                   value={packageVisibility.Enum.PUBLIC}
                   control={<Radio />}
                   label="Public"
                   id="public-radio"
+                  {...register("visibility")}
+                  checked={
+                    watch("visibility") === packageVisibility.Enum.PUBLIC
+                  }
                 />
                 <FormControlLabel
                   value={packageVisibility.Enum.PRIVATE}
                   control={<Radio />}
                   label="Private"
                   id="private-radio"
+                  {...register("visibility")}
+                  checked={
+                    watch("visibility") === packageVisibility.Enum.PRIVATE
+                  }
                 />
               </RadioGroup>
               <div>
-                {visibility === packageVisibility.Enum.PUBLIC ? (
+                {watch("visibility") === packageVisibility.Enum.PUBLIC ? (
                   <span>
                     Anyone on the internet can use this package. You choose who
                     can edit.
@@ -160,7 +155,7 @@ const Update_package = ({
           </Button>
           <Button
             size="small"
-            onClick={handleSubmit}
+            onClick={handleSubmit(submitData)}
             variant="outlined"
             color="primary"
           >

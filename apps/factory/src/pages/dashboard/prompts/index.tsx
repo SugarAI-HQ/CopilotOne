@@ -27,7 +27,6 @@ function Packages(props) {
   const [arr, setArr] = useState<pp[]>();
   const [open, setOpen] = useState(false);
   const [pckid, setPckid] = useState("");
-  // const {  refetch: refectchPackages } =
   api.prompt.getPackages.useQuery(
     {},
     {
@@ -38,42 +37,22 @@ function Packages(props) {
     },
   );
 
-  const mutation = api.prompt.updatePackage.useMutation();
-
   const handleOpen = (id: string) => {
     setOpen(!open);
     setPckid(id);
   };
 
   const updateArray = (data: pp) => {
-    console.log("value", checkNameExistence(data!.name, data!.id));
-    if (checkNameExistence(data!.name, data!.id)) {
-      toast.error("Package name already exists");
-      return;
-    } else {
-      mutation.mutate(data!);
-      const newArray: pp[] = [];
-      arr?.forEach((item) => {
-        if (item?.id === data?.id) {
-          newArray.push(data);
-        } else {
-          newArray.push(item);
-        }
-      });
-      setArr([...newArray]);
-      setOpen(false);
-    }
-  };
-
-  const checkNameExistence = (name: string, id: string): boolean => {
-    let flag = false;
+    const newArray: pp[] = [];
     arr?.forEach((item) => {
-      if (item?.name === name && id != item.id) {
-        console.log("hello world");
-        flag = true;
+      if (item?.id === data?.id) {
+        newArray.push(data);
+      } else {
+        newArray.push(item);
       }
     });
-    return flag;
+    setArr([...newArray]);
+    setOpen(false);
   };
 
   return (
@@ -120,7 +99,6 @@ function Packages(props) {
             setOpen={setOpen}
             pckid={pckid}
             updateArray={updateArray}
-            checkNameExistence={checkNameExistence}
           ></Update_package>
         </>
       ) : (
@@ -135,10 +113,6 @@ const PackageHome = () => {
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
 
-  const [checks, setChecks] = useState(false);
-  useEffect(() => {
-    console.log(checks);
-  }, [checks]);
   function handlePackageCreationSuccess(createdPackage: pp) {
     setStatus("success");
     toast.success("Package Created Successfully");
