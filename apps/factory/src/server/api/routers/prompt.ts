@@ -7,6 +7,7 @@ import {
   deletePackageInput,
   packageOutput,
   packageListOutput,
+  updatePackageInput,
 } from "~/validators/prompt_package";
 import {
   getTemplatesInput,
@@ -89,6 +90,27 @@ export const promptRouter = createTRPCRouter({
         });
       }
       return promptPackage;
+    }),
+
+  updatePackage: protectedProcedure
+    .input(updatePackageInput)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      // let promptPackage = null;
+
+      if (userId) {
+        await ctx.prisma.promptPackage.update({
+          where: {
+            id: input.id,
+            userId: userId,
+          },
+          data: {
+            name: input.name,
+            description: input.description,
+            visibility: input.visibility,
+          },
+        });
+      }
     }),
 
   createTemplate: protectedProcedure

@@ -13,6 +13,7 @@ import {
   Chip,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
+import Update_package from "~/components/Update_package";
 import { api } from "~/utils/api";
 import { MutationObserverSuccessResult } from "@tanstack/react-query";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -22,13 +23,63 @@ import toast from "react-hot-toast";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { useRouter } from "next/router";
 
-function Packages() {
-  const { data: packages, refetch: refectchPackages } =
-    api.prompt.getPackages.useQuery({});
+function Packages(props) {
+  const [arr, setArr] = useState<pp[]>();
+  const [open, setOpen] = useState(false);
+  const [pckid, setPckid] = useState("");
+  // const {  refetch: refectchPackages } =
+  api.prompt.getPackages.useQuery(
+    {},
+    {
+      onSuccess(data: pp[]) {
+        setArr([...data]);
+        console.log("hello", data);
+      },
+    },
+  );
+
+  const mutation = api.prompt.updatePackage.useMutation();
+
+  const handleOpen = (id: string) => {
+    setOpen(!open);
+    setPckid(id);
+  };
+
+  const updateArray = (data: pp) => {
+    console.log("value", checkNameExistence(data!.name, data!.id));
+    if (checkNameExistence(data!.name, data!.id)) {
+      toast.error("Package name already exists");
+      return;
+    } else {
+      mutation.mutate(data!);
+      const newArray: pp[] = [];
+      arr?.forEach((item) => {
+        if (item?.id === data?.id) {
+          newArray.push(data);
+        } else {
+          newArray.push(item);
+        }
+      });
+      setArr([...newArray]);
+      setOpen(false);
+    }
+  };
+
+  const checkNameExistence = (name: string, id: string): boolean => {
+    let flag = false;
+    arr?.forEach((item) => {
+      if (item?.name === name && id != item.id) {
+        console.log("hello world");
+        flag = true;
+      }
+    });
+    return flag;
+  };
+
   return (
     <Grid container spacing={1}>
-      {packages && packages.length > 0 ? (
-        packages.map((pkg, index) => (
+      {arr && arr.length > 0 ? (
+        arr.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
             <Card>
               <CardHeader title={pkg?.name} />
@@ -46,6 +97,12 @@ function Packages() {
                 <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>
                   Logs
                 </MUILink>
+                <MUILink
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleOpen(pkg?.id)}
+                >
+                  Edit
+                </MUILink>
               </CardActions>
             </Card>
           </Grid>
@@ -55,6 +112,20 @@ function Packages() {
           <Typography>No cards created</Typography>
         </Grid>
       )}
+
+      {open === true ? (
+        <>
+          <Update_package
+            open={open}
+            setOpen={setOpen}
+            pckid={pckid}
+            updateArray={updateArray}
+            checkNameExistence={checkNameExistence}
+          ></Update_package>
+        </>
+      ) : (
+        <></>
+      )}
     </Grid>
   );
 }
@@ -62,6 +133,10 @@ function Packages() {
 const PackageHome = () => {
   const router = useRouter();
 
+  const [checks, setChecks] = useState(false);
+  useEffect(() => {
+    console.log(checks);
+  }, [checks]);
   function handlePackageCreationSuccess(createdPackage: pp) {
     toast.success("Package Created Successfully");
     router.push("/dashboard/prompts/" + createdPackage?.id);
