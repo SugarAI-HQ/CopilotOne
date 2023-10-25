@@ -184,7 +184,10 @@ export const publicProcedure = t.procedure.use(loggerMiddleware);
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.jwt?.id) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "User is not Authorized, Please login first",
+    });
   }
 
   // if (!ctx.session?.user) {
@@ -225,7 +228,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
     } else {
       const { id: userId } = (await opts.ctx.prisma.user.findFirst({
         where: {
-          name: opts.input.username,
+          username: opts.input.username,
         },
         select: { id: true },
       })) as { id: string | null };

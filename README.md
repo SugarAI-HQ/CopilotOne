@@ -2,24 +2,24 @@
   <img src="public/images/sugar/AI 3.png" alt="Sugarcane AI Logo" width="400">
 </p>
 
-# Open Source Microservices Framework for LLM Apps 🤖
+# npm like package ecosystem for Prompts 🤖
 
-### Develop reliable cross-LLM workflows and plugins powered by prompt packages and Micro LLMs
+### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
 
 [![License](https://img.shields.io/github/license/sugarcane-ai/sugarcane-ai.github.io)](https://github.com/sugarcane-ai/sugarcane-ai.github.io/blob/develop/LICENSE)
 
 ---
 
-### Important News : Code Repository launching on 15th October 2023 : ⭐ Star this Repo to support us ⭐
+### Important News : Prompt Package Playgroud launching on 1st November 2023 : ⭐ Star this Repo to support us ⭐
 
 ---
 
 1. [Introduction](#introduction--)
 2. [Key Features of Microservices Framework](#key-features--)
    - [Sugar Factory 🏭](#sugar-factory--)
-   - [Sugar Bakery 🍞](#sugar-bakery--)
-   - [Sugar Farm 🚜](#sugar-farm--)
    - [Sugar hub 🛒](#sugar-hub--)
+   - [Sugar Farm 🚜](#sugar-farm--)
+   - [Sugar Bakery 🍞](#sugar-bakery--)
 3. [Key Components of the Microservices Framework](#key-components--)
    - [Micro LLMs 🧬](#micro-llms--)
    - [Prompt Packages 📦](#prompt-packages--)
@@ -38,9 +38,13 @@
 
 ## Introduction 🙏 <a name="introduction--"></a>
 
-Sugarcane AI is an open-source Microservices framework for LLM-agnostic workflow development, allowing developers to prioritize business logic over LLM selection, cost, and performance.
+Sugarcane AI is creating an open marketplace for developers to package and sell high-accuracy, npm-like programmable prompt packages.
 
-With a focus on fine-tuned Language Models (LLMs), prompt management, and Workflow Plugins, Sugarcane AI encourages collaborative dataset development and enhances reusability of prompt packages and fine-tuned LLMs, facilitating sharing and monetization on an open marketplace. 🎉
+The product is designed to address the issues of prompt accuracy and developer productivity by utilizing a microservices approach for prompt and LLM management, saving 80% of development time and server cost for LLM applications.
+
+Focused on the creation of reusable, high-accuracy prompt packages and Micro LLMs, we offer an open-source microservices framework to empower the next 10 million LLM application developers to build prompt packages and train Micro LLMs.
+
+We believe that a community driven package ecosystem is a long term solution for LLM application development similar to other programming languages ecosystems. 🎉
 
 ## Key Features of Microservices Framework 🚀 <a name="key-features--"></a>
 
@@ -54,17 +58,28 @@ With a focus on fine-tuned Language Models (LLMs), prompt management, and Workfl
     - Label and manage prompt completion datasets
     - Version and backtest prompts for better performance
 
+<br> </br>
+![Sugar Factory](public/images/sugar/sugarfactory.png)
+
 ##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
 
-### Sugar Bakery 🍞 <a name="sugar-bakery--"></a>
+<br> </br>
 
-##### SDK for **Application Develpers** to develop cross-LLM business logic applications
+### Sugar Hub 🛒 <a name="sugar-hub--"></a>
+
+##### Managed Marketplace for high quality GenAI assets
 
 ##### Key Features :
 
-    - Implement workflows/plugins with just a few lines of code
-    - Client libraries supporting multiple languages
-    - Integrate managed prompt packages from Sugar Hub
+    - Publish, share and monetise your prompt packages
+    - Discover and use managed prompts in Sugar Bakery
+    - Leverage Open datasets and Finetuned Micro LLMs
+
+<br> </br>
+
+![Sugar Hub](public/images/sugar/sugarhub.png)
+
+<br> </br>
 
 ### Sugar Farm 🚜 <a name="sugar-farm--"></a>
 
@@ -76,15 +91,17 @@ With a focus on fine-tuned Language Models (LLMs), prompt management, and Workfl
     - Version and ship Fine tuned LLMs over APIs
     - Publish fine-tuned Micro LLMs on Sugar Hub
 
-### Sugar Hub 🛒 <a name="sugar-hub--"></a>
+<br> </br>
 
-##### Managed Marketplace for high quality GenAI assets
+### Sugar Bakery 🍞 <a name="sugar-bakery--"></a>
+
+##### SDK for **Application Develpers** to develop cross-LLM business logic applications
 
 ##### Key Features :
 
-    - Publish, share and monetise your prompt packages
-    - Discover and use managed prompts in Sugar Bakery
-    - Leverage Open datasets and Finetuned Micro LLMs
+    - Implement workflows/plugins with just a few lines of code
+    - Client libraries supporting multiple languages
+    - Integrate managed prompt packages from Sugar Hub
 
 # Key Components of the Microservices Framework 🧩 <a name="key-components--"></a>
 
@@ -216,7 +233,7 @@ Join us on this exhilarating journey as we transform Sugarcane AI into a powerfu
 
 ## 🚀 Getting Started <a name="getting-started--"></a>
 
-### Prerequisites
+### Pre-requisites
 
 - [Node.js](https://nodejs.org/) (version V18 or higher)
 - [PNPM](https://pnpm.io/)
@@ -271,6 +288,20 @@ Thanks to the following contributors for their efforts and support in adding val
         <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
       </a>
       <br />
+      <a href="https://github.com/pulkit21">Pulkit</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/username2">
+        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
+      </a>
+      <br />
+      <a href="https://github.com/patil-vipul">Vipul</a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/username2">
+        <img src="https://avatars.githubusercontent.com/u/2345678?v=4" width="80px;" alt="username2"/>
+      </a>
+      <br />
       <a href="https://github.com/yashmyeole">yashmyeole</a>
     </td>
     <td align="center">
@@ -301,7 +332,7 @@ Stay updated with the latest news, discussions, and support on our communities.
 
 ## 📅 Book an Appointment <a name="book-an-appointment--"></a>
 
-Have questions, need assistance, personalized support, or just want to share your thoughts on our product? Book an appointment with our team on Calendly [here](https://calendly.com/hi--qja).
+Have questions, need assistance, personalized support, or just want to share your thoughts on our product? Book an appointment with our team on Calendly [here](https://calendly.com/sugarcane-ai/team).
 
 ## License 📄 <a name="license--"></a>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Dialog,
@@ -7,44 +7,71 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
   Grid,
-  Input,
-  Radio,
-  RadioGroup,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { packageVisibility } from "~/validators/base";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { CreatePackageInput } from "~/validators/prompt_package";
+import { createPackageInput } from "~/validators/prompt_package";
+import { FormTextInput } from "./form_components/formTextInput";
+import { FormRadioInput } from "./form_components/formRadioInput";
 
-export function CreatePackage({ onSubmit }: { onSubmit: Function }) {
+export function CreatePackage({
+  onSubmit,
+  status,
+  customError,
+}: {
+  onSubmit: Function;
+  status: string;
+  customError: any;
+}) {
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [visibility, setVisibility] = React.useState(
-    packageVisibility.Enum.PUBLIC,
-  );
+
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm<CreatePackageInput>({
+    defaultValues: {
+      name: "",
+      description: "",
+      visibility: packageVisibility.enum.PUBLIC,
+    },
+    resolver: zodResolver(createPackageInput),
+  });
+
+  useEffect(() => {
+    if (customError && customError.error) {
+      setError("name", { type: "manual", message: customError.error?.name });
+    } else {
+      clearErrors("name");
+    }
+  }, [customError, setError, clearErrors]);
+
+  useEffect(() => {
+    if (status === "success") {
+      handleClose();
+    }
+  }, [status]);
 
   const handleClose = () => {
-    setName("");
-    setDescription("");
+    reset();
     setIsOpen(false);
   };
 
-  const handleSubmit = () => {
-    onSubmit({
-      name: name,
-      description: description,
-      visibility: visibility,
-    });
-    handleClose(); // Close the modal after submitting
-  };
-
-  const handleVisibilityChange = (event: any) => {
-    setVisibility(event.target.value);
+  const onFormSubmit = (data: CreatePackageInput) => {
+    try {
+      onSubmit(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -63,58 +90,37 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function }) {
           <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
-            <FormControl fullWidth>
-              <FormLabel>Name</FormLabel>
-              <TextField
-                variant="outlined"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </FormControl>
+            <FormTextInput
+              name="name"
+              control={control}
+              label="Name"
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
 
-            <FormControl fullWidth>
-              <FormLabel>Description</FormLabel>
-              <TextField
-                variant="outlined"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </FormControl>
+            <FormTextInput
+              name="description"
+              control={control}
+              label="Description"
+              error={!!errors.description}
+              helperText={errors.description?.message}
+            />
 
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Visibility</FormLabel>
-              <RadioGroup
-                aria-label="visibility"
-                name="visibilityGroup"
-                value={visibility}
-                onChange={handleVisibilityChange}
-              >
-                <FormControlLabel
-                  value={packageVisibility.Enum.PUBLIC}
-                  control={<Radio />}
-                  label="Public"
-                  id="public-radio"
-                />
-                <FormControlLabel
-                  value={packageVisibility.Enum.PRIVATE}
-                  control={<Radio />}
-                  label="Private"
-                  id="private-radio"
-                />
-              </RadioGroup>
-              <div>
-                {visibility === packageVisibility.Enum.PUBLIC ? (
-                  <span>
-                    Anyone on the internet can use this package. You choose who
-                    can edit.
-                  </span>
-                ) : (
-                  <span>
-                    You choose who can see and commit to this package.
-                  </span>
-                )}
-              </div>
-            </FormControl>
+            <FormRadioInput
+              name={"visibility"}
+              control={control}
+              label="Visibility"
+            />
+            <div>
+              {watch("visibility") === packageVisibility.Enum.PUBLIC ? (
+                <span>
+                  Anyone on the internet can use this package. You choose who
+                  can edit.
+                </span>
+              ) : (
+                <span>You choose who can see and commit to this package.</span>
+              )}
+            </div>
           </Stack>
         </DialogContent>
 
@@ -126,7 +132,7 @@ export function CreatePackage({ onSubmit }: { onSubmit: Function }) {
           </Button>
           <Button
             size="small"
-            onClick={handleSubmit}
+            onClick={handleSubmit(onFormSubmit)}
             variant="outlined"
             color="primary"
           >

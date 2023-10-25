@@ -1,8 +1,11 @@
-import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
 
 export function generateOutput(
   response: any,
-  llmModelType: string,
+  llmModelType: ModelTypeType,
   latency: number,
 ) {
   if (llmModelType === ModelTypeSchema.Enum.TEXT2TEXT) {

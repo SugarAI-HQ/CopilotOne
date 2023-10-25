@@ -91,6 +91,7 @@ export type StringOpt = z.infer<typeof stringOpt>;
 export const publicUserSchema = z.object({
   name: z.string().nullable(),
   image: z.string().nullable(),
+  username: z.string().nullable(),
 });
 export type PublicUserSchem = z.infer<typeof publicUserSchema>;
 

@@ -62,7 +62,7 @@ export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','prompt
 
 export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','image','createdAt','updatedAt']);
+export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','username','image','createdAt','updatedAt']);
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires','createdAt','updatedAt']);
 
@@ -234,6 +234,7 @@ export const UserSchema = z.object({
   name: z.string().nullable(),
   email: z.string().nullable(),
   emailVerified: z.coerce.date().nullable(),
+  username: z.string().nullable(),
   image: z.string().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

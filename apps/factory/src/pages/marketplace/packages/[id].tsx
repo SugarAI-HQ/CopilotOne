@@ -60,7 +60,7 @@ const MarketplacePage: NextPage = () => {
   };
 
   const subheader = () => {
-    return `Public • Published 1 days ago • ${pp?.User?.name}`;
+    return `Public • Published 1 days ago • ${pp?.User?.username}`;
   };
 
   return (

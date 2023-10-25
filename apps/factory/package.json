@@ -24,6 +24,7 @@
     ]
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.2",
     "@mui/icons-material": "^5.14.8",
     "@mui/lab": "^5.0.0-alpha.147",
     "@mui/material": "^5.14.8",
@@ -44,6 +45,7 @@
     "openai": "^4.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.47.0",
     "react-hot-toast": "^2.4.1",
     "react-hotkeys": "^2.0.0",
     "react-icons": "^4.11.0",

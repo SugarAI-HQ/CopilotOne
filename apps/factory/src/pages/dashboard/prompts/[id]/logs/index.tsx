@@ -19,7 +19,12 @@ import LabelIcons from "~/components/label_icon";
 import { NextPageWithLayout } from "~/pages/_app";
 
 import LogSearchFiltering from "./log_search_filtering";
-import { LabelledStateType } from "~/generated/prisma-client-zod.ts";
+import {
+  LabelledStateType,
+  ModelTypeType,
+  ModelTypeSchema,
+} from "~/generated/prisma-client-zod.ts";
+import PromptCompletion from "~/components/prompt_completion";
 
 interface PromptLog {
   id: string;
@@ -33,6 +38,7 @@ interface PromptLog {
     max_tokens: number;
     temperature: number;
   };
+  llmModelType: ModelTypeType;
   latency: number;
   prompt_tokens: number;
   environment: string;
@@ -163,8 +169,12 @@ const PromptLogTable: NextPageWithLayout = () => {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {log.completion}
-                  <p>tokens: {log.completion_tokens}</p>
+                  <PromptCompletion
+                    modelType={log.llmModelType}
+                    output={log.completion}
+                    tokens={log.completion_tokens}
+                    imgClassName={"h-48 w-96 object-contain"}
+                  />
                 </TableCell>
                 <TableCell>{log.version}</TableCell>
                 <TableCell>{log.llmProvider}</TableCell>
