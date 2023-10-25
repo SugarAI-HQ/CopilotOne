@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Dialog,
@@ -18,7 +18,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { packageVisibility } from "~/validators/base";
+import { packageVisibility, PackageVisibility } from "~/validators/base";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -30,6 +30,8 @@ import {
 } from "~/validators/prompt_package";
 
 const Update_package = ({ open, setOpen, pckid, updateArray }) => {
+  const [name, setName] = useState<string | undefined>("");
+
   // zod schema
   const {
     register,
@@ -55,6 +57,7 @@ const Update_package = ({ open, setOpen, pckid, updateArray }) => {
         description: items?.description,
         visibility: items?.visibility,
       });
+      setName(items?.name);
     },
   });
 
@@ -68,6 +71,7 @@ const Update_package = ({ open, setOpen, pckid, updateArray }) => {
       description: data.description,
       visibility: data.visibility,
     };
+
     mutation.mutate(input, {
       onSuccess() {
         updateArray(input);
@@ -96,7 +100,7 @@ const Update_package = ({ open, setOpen, pckid, updateArray }) => {
           <Stack spacing={2} mt={2}>
             <FormControl fullWidth>
               <FormLabel>Name</FormLabel>
-              <TextField variant="outlined" {...register("name")} />
+              <TextField variant="outlined" value={name} />
             </FormControl>
             {errors.name && (
               <p style={{ color: "red" }}>{errors.name.message}</p>
@@ -115,7 +119,6 @@ const Update_package = ({ open, setOpen, pckid, updateArray }) => {
                   control={<Radio />}
                   label="Public"
                   id="public-radio"
-                  {...register("visibility")}
                   checked={
                     watch("visibility") === packageVisibility.Enum.PUBLIC
                   }
@@ -125,7 +128,6 @@ const Update_package = ({ open, setOpen, pckid, updateArray }) => {
                   control={<Radio />}
                   label="Private"
                   id="private-radio"
-                  {...register("visibility")}
                   checked={
                     watch("visibility") === packageVisibility.Enum.PRIVATE
                   }
