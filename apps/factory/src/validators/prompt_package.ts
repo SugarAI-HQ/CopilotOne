@@ -47,31 +47,6 @@ export const createPackageInput = z
 
 export type CreatePackageInput = z.infer<typeof createPackageInput>;
 
-export const createTemplateInput = z
-  .object({
-    name: z
-      .string()
-      .min(3, {
-        message: "Name must be at least 3 characters long.",
-      })
-      .max(30, {
-        message: "Name must be at most 30 characters long.",
-      })
-      .regex(/^[a-z0-9-]+$/, {
-        message:
-          "Name must only contain lowercase letters, numbers, and dashes.",
-      })
-      .transform((value) => value.toLowerCase())
-      .refine((value) => !RESERVED_NAMES.includes(value), {
-        message: "This name is reserved.",
-      }),
-    description: z.string(),
-  })
-  .strict()
-  .required();
-
-export type CreateTemplateInput = z.infer<typeof createTemplateInput>;
-
 export const deletePackageInput = z
   .object({
     id: z.string(),

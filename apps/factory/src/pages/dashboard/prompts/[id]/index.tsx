@@ -38,6 +38,12 @@ const PackageShow: NextPageWithLayout = () => {
   const router = useRouter();
   const packageId = router.query.id as string;
 
+  // to handle the status of mutation
+  const [status, setStatus] = useState("");
+
+  //to throw error that we receive from backend
+  const [customError, setCustomError] = useState({});
+
   const { data: sessionData } = useSession();
 
   // TODO: Fix this NS based on the route rather than current user
@@ -73,13 +79,20 @@ const PackageShow: NextPageWithLayout = () => {
   };
 
   const ptCreateMutation = api.prompt.createTemplate.useMutation({
+    onError: (error) => {
+      const errorData = JSON.parse(error.message);
+      setCustomError(errorData);
+    },
     onSuccess: (uPt) => {
       if (uPt !== null) {
+        toast.success("Template Created Successfully");
+        setStatus("success");
         pts?.push(uPt);
         rpts();
         setPt(uPt);
         setPtId(uPt?.id);
-        toast.success("Template Created Successfully");
+      } else {
+        toast.error("Something went wrong, Please try again");
       }
     },
   });
@@ -137,6 +150,8 @@ const PackageShow: NextPageWithLayout = () => {
             <CreateTemplate
               pp={pp as pp}
               onCreate={ptCreateMutation.mutate}
+              status={status}
+              customError={customError}
             ></CreateTemplate>
             {pt && <Box sx={{ flexGrow: 1 }}></Box>}
             {pt && (

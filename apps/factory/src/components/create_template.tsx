@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -8,61 +8,81 @@ import {
   DialogContentText,
   DialogTitle,
   Divider,
-  FormControl,
-  FormLabel,
   Grid,
   IconButton,
-  Input,
   Stack,
-  TextField,
   Typography,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
 // import AddIcon from '@mui/icons-material/Add';
 // import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
-import { providerModels } from "~/validators/base";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { CreateTemplateInput } from "~/validators/prompt_template";
+import { createTemplateInput } from "~/validators/prompt_template";
+import { FormTextInput } from "./form_components/formTextInput";
+import { FormDropDownInput } from "./form_components/formDropDownInput";
 
 export function CreateTemplate({
   pp,
   onCreate,
   sx,
+  status,
+  customError,
 }: {
   pp: pp;
   onCreate: Function;
   sx?: any;
+  status: string;
+  customError: any;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [modelType, setModelType] = useState<string>(
-    ModelTypeSchema.Enum.TEXT2TEXT,
-  );
+  const {
+    control,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors },
+    reset,
+  } = useForm<CreateTemplateInput>({
+    defaultValues: {
+      name: "",
+      description: "",
+      modelType: ModelTypeSchema.enum.TEXT2TEXT,
+      promptPackageId: pp?.id,
+    },
+    resolver: zodResolver(createTemplateInput),
+  });
+
+  useEffect(() => {
+    if (customError && customError.error) {
+      setError("name", { type: "manual", message: customError.error?.name });
+    } else {
+      clearErrors("name");
+    }
+  }, [customError, setError, clearErrors]);
+
+  useEffect(() => {
+    if (status === "success") {
+      handleClose();
+    }
+  }, [status]);
 
   const handleClose = () => {
-    setName("");
-    setDescription("");
-    setModelType(ModelTypeSchema.Enum.TEXT2TEXT);
+    reset();
     setIsOpen(false);
   };
 
-  const handleSubmit = (e: any) => {
-    onCreate &&
-      onCreate({
-        promptPackageId: pp?.id,
-        name: name,
-        description: description,
-        modelType: modelType,
-      });
-    handleClose(); // Close the modal after submitting
-  };
-
-  const handleModelTypeChange = (e: any) => {
-    setModelType(e.target.value);
+  const onFormSubmit = (data: CreateTemplateInput) => {
+    try {
+      onCreate?.(data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -86,39 +106,27 @@ export function CreateTemplate({
           <DialogContentText></DialogContentText>
 
           <Stack spacing={2} mt={2}>
-            <FormControl fullWidth>
-              <FormLabel>Model Type</FormLabel>
-              <Select value={modelType} onChange={handleModelTypeChange}>
-                {Object.entries(providerModels).map(
-                  ([modelType, modelConfig]) => (
-                    <MenuItem
-                      key={modelType}
-                      value={modelType}
-                      disabled={!modelConfig.enabled}
-                    >
-                      {modelConfig.label}
-                    </MenuItem>
-                  ),
-                )}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <FormLabel>Name</FormLabel>
-              <TextField
-                variant="outlined"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </FormControl>
+            <FormDropDownInput
+              name="modelType"
+              control={control}
+              label="Model Type"
+            />
 
-            <FormControl fullWidth>
-              <FormLabel>Description</FormLabel>
-              <TextField
-                variant="outlined"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </FormControl>
+            <FormTextInput
+              name="name"
+              control={control}
+              label="Name"
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
+
+            <FormTextInput
+              name="description"
+              control={control}
+              label="Description"
+              error={!!errors.description}
+              helperText={errors.description?.message}
+            />
           </Stack>
         </DialogContent>
 
@@ -130,7 +138,7 @@ export function CreateTemplate({
           </Button>
           <Button
             size="small"
-            onClick={handleSubmit}
+            onClick={handleSubmit(onFormSubmit)}
             variant="outlined"
             color="primary"
           >

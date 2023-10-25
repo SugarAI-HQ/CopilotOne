@@ -71,6 +71,7 @@ export const promptRouter = createTRPCRouter({
         where: query,
       });
       console.log(`package -------------- ${JSON.stringify(pkg)}`);
+      // console.log(pkg);
       return pkg;
     }),
 
@@ -131,12 +132,11 @@ export const promptRouter = createTRPCRouter({
     .output(templateOutput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
-      let pt = null;
 
       console.log(`template input -------------- ${JSON.stringify(input)}`);
 
-      if (userId) {
-        pt = await ctx.prisma.promptTemplate.create({
+      try {
+        const pt = await ctx.prisma.promptTemplate.create({
           data: {
             userId: userId,
             promptPackageId: input.promptPackageId,
@@ -149,11 +149,16 @@ export const promptRouter = createTRPCRouter({
             releaseVersion: true,
           },
         });
+        console.log(`template output -------------- ${JSON.stringify(pt)}`);
+        return pt;
+      } catch (error: any) {
+        console.log(`Error in creating template -------------- ${error}`);
+        if (error.code === "P2002" && error.meta?.target.includes("name")) {
+          const errorMessage = { error: { name: "Name already exist" } };
+          throw new Error(JSON.stringify(errorMessage));
+        }
+        throw new Error("Something went wrong");
       }
-
-      console.log(`template output -------------- ${JSON.stringify(pt)}`);
-
-      return pt;
     }),
 
   // updateTemplate: protectedProcedure
@@ -180,7 +185,7 @@ export const promptRouter = createTRPCRouter({
     .input(getTemplatesInput)
     .output(templateListOutput)
     .query(async ({ ctx, input }) => {
-      console.log(`templates -------------- ${JSON.stringify(input)}`);
+      // console.log(`templates -------------- ${JSON.stringify(input)}`);
       const templates = await ctx.prisma.promptTemplate.findMany({
         where: {
           userId: ctx.jwt?.id as string,
