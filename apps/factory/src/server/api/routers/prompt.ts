@@ -86,6 +86,11 @@ export const promptRouter = createTRPCRouter({
             visibility: input.visibility,
             userId: userId,
           },
+          data: {
+            name: input.name,
+            description: input.description,
+            visibility: input.visibility,
+          },
         });
         return promptPackage;
       } catch (error: any) {
@@ -95,27 +100,6 @@ export const promptRouter = createTRPCRouter({
           throw new Error(JSON.stringify(errorMessage));
         }
         throw new Error("Something went wrong");
-      }
-    }),
-
-  updatePackage: protectedProcedure
-    .input(updatePackageInput)
-    .mutation(async ({ ctx, input }) => {
-      const userId = ctx.jwt?.id as string;
-      // let promptPackage = null;
-
-      if (userId) {
-        await ctx.prisma.promptPackage.update({
-          where: {
-            id: input.id,
-            userId: userId,
-          },
-          data: {
-            name: input.name,
-            description: input.description,
-            visibility: input.visibility,
-          },
-        });
       }
     }),
 
