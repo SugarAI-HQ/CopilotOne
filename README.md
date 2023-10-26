@@ -4,17 +4,11 @@
 
 # npm like package ecosystem for Prompts 🤖
 
-# npm like package ecosystem for Prompts 🤖
-
-### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
-
 ### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
 
 [![License](https://img.shields.io/github/license/sugarcane-ai/sugarcane-ai.github.io)](https://github.com/sugarcane-ai/sugarcane-ai.github.io/blob/develop/LICENSE)
 
 ---
-
-### Important News : Prompt Package Playgroud launching on 1st November 2023 : ⭐ Star this Repo to support us ⭐
 
 ### Important News : Prompt Package Playgroud launching on 1st November 2023 : ⭐ Star this Repo to support us ⭐
 
