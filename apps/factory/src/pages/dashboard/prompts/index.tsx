@@ -13,7 +13,7 @@ import {
   Chip,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
-import Update_package from "~/components/Update_package";
+import UpdatePackage from "~/components/update_package";
 import { api } from "~/utils/api";
 import { MutationObserverSuccessResult } from "@tanstack/react-query";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -93,12 +93,12 @@ function Packages(props) {
 
       {open === true ? (
         <>
-          <Update_package
+          <UpdatePackage
             open={open}
             setOpen={setOpen}
             packageId={packageId}
             updateArray={updateArray}
-          ></Update_package>
+          ></UpdatePackage>
         </>
       ) : (
         <></>

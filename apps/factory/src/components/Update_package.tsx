@@ -29,7 +29,7 @@ import {
   CreatePackageInput,
 } from "~/validators/prompt_package";
 
-const Update_package = ({ open, setOpen, packageId, updateArray }) => {
+const UpdatePackage = ({ open, setOpen, packageId, updateArray }) => {
   const [name, setName] = useState<string | undefined>("");
 
   // zod schema
@@ -169,4 +169,4 @@ const Update_package = ({ open, setOpen, packageId, updateArray }) => {
   );
 };
 
-export default Update_package;
+export default UpdatePackage;
