@@ -29,7 +29,7 @@ import {
   CreatePackageInput,
 } from "~/validators/prompt_package";
 
-const Update_package = ({ open, setOpen, pckid, updateArray }) => {
+const Update_package = ({ open, setOpen, packageId, updateArray }) => {
   const [name, setName] = useState<string | undefined>("");
 
   // zod schema
@@ -46,7 +46,7 @@ const Update_package = ({ open, setOpen, pckid, updateArray }) => {
   });
 
   const input = {
-    id: `${pckid}`,
+    id: `${packageId}`,
     visibility: packageVisibility.Enum.PUBLIC,
   };
 
@@ -66,7 +66,7 @@ const Update_package = ({ open, setOpen, pckid, updateArray }) => {
   const submitData = (data: CreatePackageInput) => {
     // call api to update paticular package
     const input = {
-      id: pckid as string,
+      id: packageId as string,
       name: data.name,
       description: data.description,
       visibility: data.visibility,

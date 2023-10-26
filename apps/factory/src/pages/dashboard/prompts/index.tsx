@@ -26,20 +26,19 @@ import { useRouter } from "next/router";
 function Packages(props) {
   const [arr, setArr] = useState<pp[]>();
   const [open, setOpen] = useState(false);
-  const [pckid, setPckid] = useState("");
+  const [packageId, setPackageId] = useState("");
   api.prompt.getPackages.useQuery(
     {},
     {
       onSuccess(data: pp[]) {
         setArr([...data]);
-        console.log("hello", data);
       },
     },
   );
 
   const handleOpen = (id: string) => {
     setOpen(!open);
-    setPckid(id);
+    setPackageId(id);
   };
 
   const updateArray = (data: pp) => {
@@ -97,7 +96,7 @@ function Packages(props) {
           <Update_package
             open={open}
             setOpen={setOpen}
-            pckid={pckid}
+            packageId={packageId}
             updateArray={updateArray}
           ></Update_package>
         </>
