@@ -24,14 +24,14 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { useRouter } from "next/router";
 
 function Packages(props) {
-  const [arr, setArr] = useState<pp[]>();
+  const [packages, setPackages] = useState<pp[]>();
   const [open, setOpen] = useState(false);
   const [packageId, setPackageId] = useState("");
   api.prompt.getPackages.useQuery(
     {},
     {
       onSuccess(data: pp[]) {
-        setArr([...data]);
+        setPackages([...data]);
       },
     },
   );
@@ -43,21 +43,21 @@ function Packages(props) {
 
   const updateArray = (data: pp) => {
     const newArray: pp[] = [];
-    arr?.forEach((item) => {
+    packages?.forEach((item) => {
       if (item?.id === data?.id) {
         newArray.push(data);
       } else {
         newArray.push(item);
       }
     });
-    setArr([...newArray]);
+    setPackages([...newArray]);
     setOpen(false);
   };
 
   return (
     <Grid container spacing={1}>
-      {arr && arr.length > 0 ? (
-        arr.map((pkg, index) => (
+      {packages && packages.length > 0 ? (
+        packages.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
             <Card>
               <CardHeader title={pkg?.name} />
