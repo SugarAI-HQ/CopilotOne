@@ -90,6 +90,20 @@ export const packageSchema = z.object({
   templates: z.array(templateSchema).optional(),
 });
 
+export const updatePackageInput = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    description: z.string(),
+    visibility: packageVisibility,
+  })
+  .strict()
+  .required();
+
+export type updatePackageInput = z.infer<typeof updatePackageInput>;
+
+export type UpdateVersionInput = z.infer<typeof UpdateVersionInput>;
+
 export const packageOutput = packageSchema.or(z.null());
 export type PackageOutput = z.infer<typeof packageOutput>;
 

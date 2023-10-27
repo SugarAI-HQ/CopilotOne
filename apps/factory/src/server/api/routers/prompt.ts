@@ -7,6 +7,7 @@ import {
   deletePackageInput,
   packageOutput,
   packageListOutput,
+  updatePackageInput,
 } from "~/validators/prompt_package";
 import {
   getTemplatesInput,
@@ -88,6 +89,34 @@ export const promptRouter = createTRPCRouter({
         });
         return promptPackage;
       } catch (error: any) {
+        console.log(`Error in creating Package-----------------  ${error}`);
+        if (error.code === "P2002" && error.meta?.target.includes("name")) {
+          const errorMessage = { error: { name: "Name already exist" } };
+          throw new Error(JSON.stringify(errorMessage));
+        }
+        throw new Error("Something went wrong");
+      }
+    }),
+
+  updatePackage: protectedProcedure
+    .input(updatePackageInput)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      try {
+        if (userId) {
+          await ctx.prisma.promptPackage.update({
+            where: {
+              id: input.id,
+              userId: userId,
+            },
+            data: {
+              name: input.name,
+              description: input.description,
+              visibility: input.visibility,
+            },
+          });
+        }
+      } catch (error) {
         console.log(`Error in creating Package-----------------  ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("name")) {
           const errorMessage = { error: { name: "Name already exist" } };

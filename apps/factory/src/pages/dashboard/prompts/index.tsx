@@ -13,6 +13,7 @@ import {
   Chip,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
+import UpdatePackage from "~/components/update_package";
 import { api } from "~/utils/api";
 import { MutationObserverSuccessResult } from "@tanstack/react-query";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -22,9 +23,37 @@ import toast from "react-hot-toast";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { useRouter } from "next/router";
 
-function Packages() {
-  const { data: packages, refetch: refectchPackages } =
-    api.prompt.getPackages.useQuery({});
+function Packages(props) {
+  const [packages, setPackages] = useState<pp[]>();
+  const [open, setOpen] = useState(false);
+  const [packageId, setPackageId] = useState("");
+  api.prompt.getPackages.useQuery(
+    {},
+    {
+      onSuccess(data: pp[]) {
+        setPackages([...data]);
+      },
+    },
+  );
+
+  const handleOpen = (id: string) => {
+    setOpen(!open);
+    setPackageId(id);
+  };
+
+  const updateArray = (data: pp) => {
+    const newArray: pp[] = [];
+    packages?.forEach((item) => {
+      if (item?.id === data?.id) {
+        newArray.push(data);
+      } else {
+        newArray.push(item);
+      }
+    });
+    setPackages([...newArray]);
+    setOpen(false);
+  };
+
   return (
     <Grid container spacing={1}>
       {packages && packages.length > 0 ? (
@@ -46,6 +75,12 @@ function Packages() {
                 <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>
                   Logs
                 </MUILink>
+                <MUILink
+                  sx={{ cursor: "pointer" }}
+                  onClick={() => handleOpen(pkg?.id)}
+                >
+                  Edit
+                </MUILink>
               </CardActions>
             </Card>
           </Grid>
@@ -54,6 +89,19 @@ function Packages() {
         <Grid item xs={12}>
           <Typography>No cards created</Typography>
         </Grid>
+      )}
+
+      {open === true ? (
+        <>
+          <UpdatePackage
+            open={open}
+            setOpen={setOpen}
+            packageId={packageId}
+            updateArray={updateArray}
+          ></UpdatePackage>
+        </>
+      ) : (
+        <></>
       )}
     </Grid>
   );
