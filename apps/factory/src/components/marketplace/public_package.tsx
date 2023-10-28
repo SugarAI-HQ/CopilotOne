@@ -41,7 +41,7 @@ function PublicPackages() {
                 action={
                   <span>
                     <IconButton aria-label="settings">
-                      <LikeButton count={100}></LikeButton>
+                      {/* <LikeButton count={100}></LikeButton> */}
                     </IconButton>
                     <IconButton href={`/marketplace/packages/${pkg?.id}`}>
                       <LaunchIcon />

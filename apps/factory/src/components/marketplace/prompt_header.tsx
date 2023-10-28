@@ -5,20 +5,16 @@ import {
   Button,
   Avatar,
   Link,
-  Box,
   Paper,
   Grid,
-  Chip,
   Stack,
 } from "@mui/material";
 import LikeButton from "./like_button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { PackagePublicOutput as pp } from "~/validators/marketplace";
+import PromptTags from "./prompt_tags";
 
 const PromptHeader = ({ pp }: { pp: pp }) => {
-  const likes = 1008;
-  const tags = ["intro", "greeting", "openai", "text-generation", "hello-llm"];
-
   return (
     <Paper
       elevation={0}
@@ -65,17 +61,13 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
               ></Button>
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
-              <LikeButton count={likes}></LikeButton>
+              {/* <LikeButton count={likes}></LikeButton> */}
             </Grid>
           </Grid>
         </Stack>
         <Stack direction="row" spacing={1} sx={{ p: 1 }}>
           {/* <Grid  direction="row" container alignItems="center" spacing={2}> */}
-          {tags &&
-            tags.map((tag, index) => (
-              <Chip key={index} label={tag} variant="outlined" sx={{ ml: 2 }} />
-            ))}
-
+          {/* <PromptTags></PromptTags> */}
           {/* </Grid> */}
         </Stack>
       </Container>

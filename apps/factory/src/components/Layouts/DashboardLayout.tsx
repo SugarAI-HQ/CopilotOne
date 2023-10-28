@@ -169,7 +169,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
                 <IconButton onClick={handleOpen} color="inherit">
                   <MdSettings />
                 </IconButton>
-                <LikeButton count={1008}></LikeButton>
+                {/* <LikeButton count={1008}></LikeButton> */}
                 <Button
                   onClick={handleSharePackageOpen}
                   startIcon={<MdShare />}
