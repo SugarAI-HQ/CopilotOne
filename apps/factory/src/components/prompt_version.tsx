@@ -350,11 +350,20 @@ function PromptVersion({
                   modelType={pt?.modelType as ModelTypeType}
                 ></PromptOutput>
                 {pl && (
-                  <Box sx={{ ml: 5 }}>
+                  <Box
+                    sx={{
+                      ml: 5,
+                      justifyContent: "space-evenly",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
                     <LabelIcons
                       logId={pl?.id}
                       labelledState={pl?.labelledState}
                     />
+                    |
+                    <PromotOutputLog pl={pl} />
                   </Box>
                 )}
               </Grid>
@@ -366,13 +375,6 @@ function PromptVersion({
                 </Grid>
               )}
             </Stack>
-          )}
-        </Box>
-        <Box sx={{ m: 1 }}>
-          {pl && (
-            <>
-              <PromotOutputLog pl={pl} />
-            </>
           )}
         </Box>
       </Box>

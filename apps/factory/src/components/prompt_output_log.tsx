@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import ChatIcon from "@mui/icons-material/Chat";
+import InfoIcon from "@mui/icons-material/Info";
 import Tooltip from "@mui/material/Tooltip";
 import CodeHighlight from "./integration/code_highlight";
 import { GenerateOutput } from "~/validators/service";
@@ -72,12 +72,12 @@ const PromotOutputLog: React.FC<PromotOutputLogProps> = ({ pl }) => {
   };
 
   return (
-    <>
-      <Tooltip title="Output Log">
-        <ChatIcon onClick={handleOpen} />
+    <div>
+      <Tooltip title="Output Log" sx={{ ml: 1 }}>
+        <InfoIcon onClick={handleOpen} />
       </Tooltip>
       {showLogs()}
-    </>
+    </div>
   );
 };
 
