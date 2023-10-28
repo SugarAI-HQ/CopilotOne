@@ -26,6 +26,15 @@ export const getLogsInput = z
 
 export type GetLogsInput = z.infer<typeof getLogsInput>;
 
+export const getLogInput = z
+  .object({
+    userId: z.string().optional(),
+    id: z.string(),
+  })
+  .strict();
+
+export type GetLogInput = z.infer<typeof getLogInput>;
+
 const logSchema = z.object({
   id: z.string(),
   // inputId: z.string().optional(),

@@ -73,6 +73,9 @@ export const generateOutput = z
     total_tokens: z.number(),
 
     labelledState: LabelledStateSchema,
+    llmProvider: z.string(),
+    llmModel: z.string(),
+    llmModelType: ModelTypeSchema,
 
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

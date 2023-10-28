@@ -3,6 +3,8 @@ import {
   getLogsInput,
   logListOutput,
   updateLabel,
+  getLogInput,
+  logOutput,
 } from "~/validators/prompt_log";
 
 export const logRouter = createTRPCRouter({
@@ -65,6 +67,27 @@ export const logRouter = createTRPCRouter({
       console.log(`updated label -------------- ${JSON.stringify(response)}`);
 
       return response;
+    }),
+
+  getLog: protectedProcedure
+    .input(getLogInput)
+    .output(logOutput)
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      const userId = ctx.jwt?.id;
+      console.log(id);
+      let query = {
+        // userId: userId,
+        id: id,
+      };
+
+      const log = await ctx.prisma.promptLog.findFirst({
+        where: query,
+      });
+
+      console.log(`log -------------- ${JSON.stringify(log)}`);
+
+      return log;
     }),
 
   updateLogLabel: protectedProcedure
