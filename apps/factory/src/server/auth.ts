@@ -238,7 +238,6 @@ function getAuthOptions(): NextAuthOptions {
 }
 
 export const authOptions: NextAuthOptions = getAuthOptions();
-console.log("authOptions:", authOptions);
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.

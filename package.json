@@ -16,6 +16,7 @@
   "packageManager": "pnpm@8.8.0",
   "author": "Ankur Agarwal <ankur@sugarcaneai.dev>",
   "dependencies": {
+    "@sentry/nextjs": "^7.75.1",
     "husky": "^8.0.3",
     "next": "13.4.13",
     "react": "18.2.0"

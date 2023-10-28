@@ -7,3 +7,4 @@ build
 .next/
 next-env.d.ts
 .nvmrc
+.sentryclirc
