@@ -3,6 +3,7 @@ import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import InfoIcon from "@mui/icons-material/Info";
+import CopyIcon from "@mui/icons-material/ContentCopy";
 import Tooltip from "@mui/material/Tooltip";
 import CodeHighlight from "./integration/code_highlight";
 import { GenerateOutput } from "~/validators/service";
@@ -59,6 +60,7 @@ const PromotOutputLog: React.FC<PromotOutputLogProps> = ({ pl }) => {
           <Button
             id="copy-to-clipboard"
             style={{ cursor: "pointer" }}
+            startIcon={<CopyIcon />}
             onClick={copyPromptLogUrlToClipboard}
           >
             Copy URL
