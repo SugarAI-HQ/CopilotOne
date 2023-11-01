@@ -14,7 +14,7 @@ import PublicPackages from "~/components/marketplace/public_package";
 const MarketplacePage: NextPage = () => {
   return (
     <>
-      <Header></Header>
+      <Header headerName={"Sugar Hub"}></Header>
       <Container>
         <PublicPackages></PublicPackages>
       </Container>

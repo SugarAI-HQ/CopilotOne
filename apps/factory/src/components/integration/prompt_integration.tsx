@@ -23,7 +23,7 @@ export const PromptIntegration = ({
   pt: pt;
   pv: pv;
 }) => {
-  const identifier = `${ns?.name}/${pp?.name}/${pt?.name || "<template>"}#${
+  const identifier = `${ns?.username}/${pp?.name}/${pt?.name || "<template>"}#${
     pv?.version || "PREVIEW"
   }`;
 
@@ -35,20 +35,20 @@ export const PromptIntegration = ({
 
   API_URL = "${apiUrl}"
   headers = {"Authorization": "Bearer ${jwt}"}
-  
+
   def query(payload):
     response = requests.post(API_URL, headers=headers, json=payload)
     return response.json()
-    
+
   output = query(
-    { 
+    {
       "data": {
         "@ANIMAL": "DOG"
       }
     }
-    
+
   )
-  
+
   `;
 
   const curlExample = `
@@ -61,7 +61,7 @@ export const PromptIntegration = ({
 
   const javascriptExample = `
   async function query(variables) {
-    
+
     var payload = {
       "data": variables
     };
@@ -77,7 +77,7 @@ export const PromptIntegration = ({
     const result = await response.json();
     return result;
   }
-  
+
   query({
     "@ANIMAL": "DOG"
   })

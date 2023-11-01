@@ -3,47 +3,12 @@ import {
   promptMiddleware,
   protectedProcedure,
 } from "~/server/api/trpc";
-import {
-  generateInput,
-  generateOutput,
-  getPromptInput,
-  getPromptOutput,
-} from "~/validators/service";
+import { generateInput, generateOutput } from "~/validators/service";
 import { generateLLmConfig, generatePrompt } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
 import { LlmProvider } from "~/services/llm_providers";
 
 export const serviceRouter = createTRPCRouter({
-  getPrompt: protectedProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/{username}/{package}/{template}/{versionOrEnvironment}",
-        tags: ["prompts"],
-        summary: "Get Prompt Template",
-      },
-    })
-    .input(getPromptInput)
-    .use(promptMiddleware)
-    .output(getPromptOutput)
-    .query(async ({ ctx, input }) => {
-      console.info(`Prompt get ----------------- ${JSON.stringify(input)}`);
-
-      const [pv, pt] = await getPv(ctx, input);
-
-      if (pv) {
-        console.info(`Prompt generating output ${JSON.stringify(pv)}`);
-        return {
-          template: pv.template,
-          version: pv.version,
-          createdAt: pv.createdAt,
-          updatedAt: pv.updatedAt,
-        };
-      }
-
-      return null;
-    }),
-
   generate: protectedProcedure
     .meta({
       openapi: {
@@ -116,7 +81,7 @@ export const serviceRouter = createTRPCRouter({
     }),
 });
 
-async function getPv(ctx: any, input: any) {
+export async function getPv(ctx: any, input: any) {
   const userId = ctx.jwt?.id;
   let pt = null;
   let pv = null;
@@ -127,10 +92,12 @@ async function getPv(ctx: any, input: any) {
 
   if (!input.version && input.environment in promptEnvironment.Values) {
     const ptd = {
-      userId: userId,
+      // userId: userId, disabled this for shared URL
       promptPackageId: input.promptPackageId,
       id: input.promptTemplateId,
     };
+
+    console.log(`ptd ----->>>>>> ${JSON.stringify(ptd)}`);
 
     console.info(
       `finding the ${input.environment} version ${JSON.stringify(ptd)}`,

@@ -40,7 +40,9 @@ export const getPromptOutput = z
   .object({
     version: z.string().optional(),
     template: z.string(),
-
+    description: z.string().optional(),
+    modelType: ModelTypeSchema,
+    versionOrEnvironment: z.string().default(promptEnvironment.Enum.RELEASE),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
   })

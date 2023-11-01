@@ -85,7 +85,7 @@ export const templateSchema = z.object({
 
   name: z.string(),
   description: z.string(),
-  modelType: z.string(),
+  modelType: ModelTypeSchema,
 
   releaseVersionId: z.string().or(z.null()),
   previewVersionId: z.string().or(z.null()),

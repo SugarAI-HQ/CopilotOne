@@ -33,6 +33,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { NextPageWithLayout } from "~/pages/_app";
 import { colorType } from "~/validators/base";
+import PublicUrl from "~/components/integration/public_url";
 
 const PackageShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -55,6 +56,7 @@ const PackageShow: NextPageWithLayout = () => {
   });
   // console.log(`pp <<<<>>>> ${JSON.stringify(pp)}`);
   const [ptId, setPtId] = useState<string>("");
+  const [ptName, setPtName] = useState<string>("");
   const [pt, setPt] = useState<pt>();
 
   const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery(
@@ -74,6 +76,8 @@ const PackageShow: NextPageWithLayout = () => {
 
   const handleTemplateSelection = (e: any) => {
     const id = e.target.value;
+    const selectedTemplate = pts?.find((t) => t.id === id);
+    setPtName(selectedTemplate?.name as string);
     setPtId(id);
     setPt(pts?.find((pt) => pt.id == id));
   };
@@ -204,6 +208,14 @@ const PackageShow: NextPageWithLayout = () => {
                         variant="outlined"
                       />
                     </Typography>
+                    {pt?.previewVersion?.version && (
+                      <Typography component="span" sx={{ ml: 1, p: 2 }}>
+                        <PublicUrl
+                          title={"Public URL"}
+                          url={`/${ns?.username}/${pp.name}/${ptName}/preview`}
+                        />
+                      </Typography>
+                    )}
                     <Typography component="span" sx={{ ml: 1 }}>
                       Release :{" "}
                       <Chip
@@ -213,6 +225,14 @@ const PackageShow: NextPageWithLayout = () => {
                         variant="outlined"
                       />
                     </Typography>
+                    {pt?.releaseVersion?.version && (
+                      <Typography component="span" sx={{ ml: 1, p: 2 }}>
+                        <PublicUrl
+                          title={"Public URL"}
+                          url={`/${ns?.username}/${pp.name}/${ptName}/release`}
+                        />
+                      </Typography>
+                    )}
                   </Box>
                 </Paper>
               </Box>

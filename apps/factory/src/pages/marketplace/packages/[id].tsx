@@ -41,6 +41,7 @@ import { PromptIntegration } from "~/components/integration/prompt_integration";
 import PromptHeader from "~/components/marketplace/prompt_header";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import PublicUrl from "~/components/integration/public_url";
 
 const MarketplacePage: NextPage = () => {
   const router = useRouter();
@@ -65,7 +66,7 @@ const MarketplacePage: NextPage = () => {
 
   return (
     <Container>
-      <Header></Header>
+      <Header headerName={"Sugar Hub"}></Header>
       <PromptHeader pp={pp as ppt}></PromptHeader>
       <MyTabs pp={pp as ppt}></MyTabs>
     </Container>
@@ -74,7 +75,7 @@ const MarketplacePage: NextPage = () => {
 
 export default MarketplacePage;
 
-function Row({ pt }: { pt: ptt }) {
+function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
   // const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -115,6 +116,10 @@ function Row({ pt }: { pt: ptt }) {
 
               {pt?.releaseVersion && (
                 <Typography component="p" gutterBottom>
+                  <PublicUrl
+                    title={"Public URL"}
+                    url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/release`}
+                  />
                   Release ({pt?.releaseVersion?.version}):{" "}
                   {pt?.releaseVersion?.template}
                 </Typography>
@@ -122,6 +127,10 @@ function Row({ pt }: { pt: ptt }) {
 
               {pt?.previewVersion && (
                 <Typography component="p" gutterBottom>
+                  <PublicUrl
+                    title={"Public URL"}
+                    url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/preview`}
+                  />
                   Preview ({pt?.previewVersion?.version}):{" "}
                   {pt?.previewVersion?.template}
                 </Typography>
@@ -157,7 +166,7 @@ export function CollapsibleTable({ pp }: { pp: ppt }) {
             pp.templates.map(
               (pt, index) =>
                 (pt.releaseVersion || pt.previewVersion) && (
-                  <Row key={index} pt={pt} />
+                  <Row key={index} pt={pt} pp={pp} />
                 ),
             )}
         </TableBody>

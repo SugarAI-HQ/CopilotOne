@@ -91,8 +91,10 @@ function getAuthOptions(): NextAuthOptions {
         },
       }),
       redirect: ({ url, baseUrl }: { url: string; baseUrl: string }) => {
-        console.log(url, baseUrl);
-        return "/dashboard";
+        const extraRoute = url.substring(baseUrl.length);
+        console.log(url, baseUrl, extraRoute);
+
+        return extraRoute === "/" ? "/dashboard" : url;
       },
 
       jwt({ token, user, account, profile, session }: any) {

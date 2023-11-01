@@ -9,9 +9,9 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 
-const Header = () => {
+const Header = ({ headerName }: { headerName: string }) => {
   return (
-    <AppBar position="sticky" color="default">
+    <AppBar position="sticky" color="default" className="mb-10">
       <Toolbar>
         <Container maxWidth="lg">
           <Box
@@ -25,7 +25,7 @@ const Header = () => {
                 {/* <IconButton edge="start" color="inherit" aria-label="menu">
                   <MenuIcon />
                 </IconButton> */}
-                Sugar Hub
+                {headerName}
               </Link>
             </Typography>
             <nav>

@@ -14,6 +14,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Radio,
+  Box,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -26,6 +27,7 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { PromptIntegration } from "./integration/prompt_integration";
 import { VersionSchema } from "~/validators/prompt_version";
+import PublicUrl from "~/components/integration/public_url";
 
 function PromptDeploy({
   ns,
@@ -115,12 +117,32 @@ function PromptDeploy({
       <Button color="success" variant="text" onClick={handleOpenModal}>
         <RocketLaunchIcon></RocketLaunchIcon>
       </Button>
-      <Dialog sx={{ m: 2, p: 2 }} open={open} onClose={handleCloseModal}>
-        <DialogTitle>Deploy Prompt via API</DialogTitle>
+      <Dialog
+        sx={{ m: 2, p: 2 }}
+        open={open}
+        onClose={handleCloseModal}
+        maxWidth={"md"}
+      >
+        <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+          <DialogTitle style={{ flex: 1, margin: 0 }}>
+            Deploy Prompt via API
+          </DialogTitle>
+          {deploymentSuccess && (
+            <>
+              <Typography className="pr-2">
+                Share your Sugar Cubes link
+              </Typography>
+              <PublicUrl
+                title={"Public URL"}
+                url={`/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`}
+              />
+            </>
+          )}
+        </Box>
         <DialogContent>
-          <Typography></Typography>
+          {/* <Typography></Typography>
           <Typography gutterBottom variant="h5" component="div"></Typography>
-          <Typography variant="body2" color="text.secondary"></Typography>
+          <Typography variant="body2" color="text.secondary"></Typography> */}
           {isDeploying ? (
             <div>
               <CircularProgress />
