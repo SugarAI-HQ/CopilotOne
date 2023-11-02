@@ -15,6 +15,7 @@ import {
   FormHelperText,
   Radio,
   Box,
+  Tooltip,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -114,9 +115,11 @@ function PromptDeploy({
 
   return (
     <span>
-      <Button color="success" variant="text" onClick={handleOpenModal}>
-        <RocketLaunchIcon></RocketLaunchIcon>
-      </Button>
+      <Tooltip title="Deploy" placement="top-start">
+        <Button color="success" variant="text" onClick={handleOpenModal}>
+          <RocketLaunchIcon></RocketLaunchIcon>
+        </Button>
+      </Tooltip>
       <Dialog
         sx={{ m: 2, p: 2 }}
         open={open}

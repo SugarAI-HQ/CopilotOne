@@ -11,6 +11,7 @@ import {
   Grid,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -88,14 +89,16 @@ export function CreateTemplate({
   return (
     <Box component="span" sx={{}}>
       <Grid component="span">
-        <IconButton
-          size="small"
-          aria-label="add template"
-          onClick={() => setIsOpen(true)}
-          color="primary"
-        >
-          <AddCircleIcon />
-        </IconButton>
+        <Tooltip title={"Add Template"} placement="top-start">
+          <IconButton
+            size="small"
+            aria-label="add template"
+            onClick={() => setIsOpen(true)}
+            color="primary"
+          >
+            <AddCircleIcon />
+          </IconButton>
+        </Tooltip>
       </Grid>
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">

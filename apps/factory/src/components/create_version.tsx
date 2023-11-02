@@ -14,6 +14,7 @@ import {
   Input,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -90,14 +91,19 @@ export function CreateVersion({
         >
           New Version
         </Button> */}
-        <IconButton
-          size="small"
-          aria-label="add template"
-          onClick={() => setIsOpen(true)}
-          color="primary"
+        <Tooltip
+          title={forkedFromId ? "Fork" : "Add Version"}
+          placement="top-start"
         >
-          {forkedFromId ? <ForkRightIcon /> : <AddCircleIcon />}
-        </IconButton>
+          <IconButton
+            size="small"
+            aria-label="add template"
+            onClick={() => setIsOpen(true)}
+            color="primary"
+          >
+            {forkedFromId ? <ForkRightIcon /> : <AddCircleIcon />}
+          </IconButton>
+        </Tooltip>
       </Grid>
 
       <Dialog open={isOpen} onClose={handleClose} maxWidth="sm">

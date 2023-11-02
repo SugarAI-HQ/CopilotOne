@@ -9,6 +9,7 @@ import {
   Checkbox,
   Typography,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import LLMSelector from "./llm_selector";
@@ -214,9 +215,11 @@ function PromptVersion({
           ></TextField> */}
           <Box display="inline" id={"prompt-version-actions" + pt?.id}>
             {!pv.publishedAt && (
-              <Button color="success" variant="text" onClick={handleSave}>
-                <SaveIcon />
-              </Button>
+              <Tooltip title="Deploy" placement="top-start">
+                <Button color="success" variant="text" onClick={handleSave}>
+                  <SaveIcon />
+                </Button>
+              </Tooltip>
             )}
 
             <CreateVersion

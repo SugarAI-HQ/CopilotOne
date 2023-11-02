@@ -9,8 +9,6 @@ import {
   CardActions,
   IconButton,
   Card,
-  Avatar,
-  CardHeader,
   Box,
   TableContainer,
   Table,
@@ -22,13 +20,7 @@ import {
 import Header from "~/components/marketplace/header";
 import { NextPage } from "next";
 import { api } from "~/utils/api";
-import PromptVariables from "~/components/prompt_variables";
 import { packageVisibility } from "~/validators/base";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { ExpandMore } from "@mui/icons-material";
 import React from "react";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -117,7 +109,7 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
               {pt?.releaseVersion && (
                 <Typography component="p" gutterBottom>
                   <PublicUrl
-                    title={"Public URL"}
+                    title={"Release URL"}
                     url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/release`}
                   />
                   Release ({pt?.releaseVersion?.version}):{" "}
@@ -128,7 +120,7 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
               {pt?.previewVersion && (
                 <Typography component="p" gutterBottom>
                   <PublicUrl
-                    title={"Public URL"}
+                    title={"Preview URL"}
                     url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/preview`}
                   />
                   Preview ({pt?.previewVersion?.version}):{" "}

@@ -10,7 +10,7 @@ interface PublicUrlProps {
 const PublicUrl: React.FC<PublicUrlProps> = ({ title, url }) => {
   return (
     <>
-      <Tooltip title={title}>
+      <Tooltip title={title} placement="top-start">
         <LinkIcon
           onClick={() => {
             window.open(url, "_blank");
