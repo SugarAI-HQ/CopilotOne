@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PromptVariableProps } from "./prompt_variables";
 import { InputAdornment, TextField } from "@mui/material";
+import { DisplayModes, displayModes } from "~/validators/base";
 
 enum TEMPLATE_VARIABLES {
   "#" = "Config",
@@ -19,9 +20,11 @@ const TV_VALUES = Object.values(TEMPLATE_VARIABLES);
 export function PromptVariable({
   pv,
   onChange,
+  mode,
 }: {
   pv: PromptVariableProps;
   onChange: (key: string, value: string) => void;
+  mode: DisplayModes;
 }) {
   let [val, setValue] = useState(pv.value);
 
@@ -90,18 +93,22 @@ export function PromptVariable({
     //   return "";
   }
   return (
-    <TextField
-      id={"prompt-variable-input" + pv.key}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">{pv.type}</InputAdornment>
-        ),
-      }}
-      label={TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " + pv.key}
-      variant="outlined"
-      value={val}
-      // defaultValue={pv.value}
-      onChange={handleValueChange}
-    />
+    <>
+      {
+        <TextField
+          id={"prompt-variable-input" + pv.key}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">{pv.type}</InputAdornment>
+            ),
+          }}
+          label={TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " + pv.key}
+          variant="outlined"
+          value={val}
+          // defaultValue={pv.value}
+          onChange={handleValueChange}
+        />
+      }
+    </>
   );
 }

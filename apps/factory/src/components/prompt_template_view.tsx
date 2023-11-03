@@ -21,6 +21,7 @@ import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import { useSession, signIn } from "next-auth/react";
 import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
+import { displayModes, DisplayModes } from "~/validators/base";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -127,6 +128,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   <PromptVariables
                     vars={pvrs}
                     onChange={handleVariablesChange}
+                    mode={displayModes.Enum.EDIT}
                   />
                 )}
               </Box>

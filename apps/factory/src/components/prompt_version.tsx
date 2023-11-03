@@ -46,6 +46,7 @@ import {
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
 import PromotOutputLog from "./prompt_output_log";
+import { displayModes } from "~/validators/base";
 
 function PromptVersion({
   ns,
@@ -340,7 +341,11 @@ function PromptVersion({
             </Grid>
           </Stack>
           <Box sx={{ m: 1 }}>
-            <PromptVariables vars={pvrs} onChange={handleVariablesChange} />
+            <PromptVariables
+              vars={pvrs}
+              onChange={handleVariablesChange}
+              mode={displayModes.Enum.VIEW}
+            />
           </Box>
         </Box>
 

@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import {
-  Typography,
-  Stack,
-  InputAdornment,
-  Input,
-  Box,
-  TextField,
-} from "@mui/material";
+import { Typography, Stack, Box } from "@mui/material";
 import { PromptVariable } from "./prompt_variable";
+import { DisplayModes } from "~/validators/base";
 
 export interface PromptVariableProps {
   key: string;
@@ -19,9 +13,11 @@ export interface PromptVariableProps {
 function PromptVariables({
   vars,
   onChange,
+  mode,
 }: {
   vars: Array<PromptVariableProps>;
   onChange: (key: string, value: string) => void;
+  mode: DisplayModes;
 }) {
   // console.log(`variables : ${JSON.stringify(vars)}`);
   const handleValueChange = (key: string, value: string) => {

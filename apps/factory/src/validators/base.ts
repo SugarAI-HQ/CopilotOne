@@ -105,3 +105,6 @@ export type colorType = OverridableStringUnion<
   | "warning",
   ChipPropsColorOverrides
 >;
+
+export const displayModes = z.enum(["EDIT", "VIEW"]);
+export type DisplayModes = z.infer<typeof displayModes>;
