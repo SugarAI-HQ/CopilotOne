@@ -59,12 +59,17 @@ We believe that a community driven package ecosystem is a long term solution for
     - Version and backtest prompts for better performance
 
 <br> </br>
-![Sugar Factory](public/images/sugar/sugarfactory.png)
+![Sugar Factory](public/images/sugar/banner-factory.png)
 
 ##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
 
-<br> </br>
+### Sugar Cubes 🍬 🍬
 
+Sugar Cubes are Prompt Applications which are instantly deployable and sharable with your friends.
+
+![Sugar Cube](public/images/sugar/Sugar_cube.png)
+
+<br> </br>
 ### Sugar Hub 🛒 <a name="sugar-hub--"></a>
 
 ##### Managed Marketplace for high quality GenAI assets
@@ -74,6 +79,8 @@ We believe that a community driven package ecosystem is a long term solution for
     - Implement workflows/plugins with just a few lines of code
     - Client libraries supporting multiple languages
     - Integrate managed prompt packages from Sugar Hub
+
+![Sugar Hub](public/images/sugar/banner-new.png)
 
 ### Sugar Farm 🚜 <a name="sugar-farm--"></a>
 
