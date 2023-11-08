@@ -244,26 +244,31 @@ export const promptRouter = createTRPCRouter({
         // defaultTemplate.forkedFromId = input.forkedFromId
       }
 
-      if (!userId) {
-        return null;
+      try {
+        const pv = await ctx.prisma.promptVersion.create({
+          data: {
+            userId: userId,
+            forkedFromId: input.forkedFromId,
+
+            promptPackageId: input.promptPackageId,
+            promptTemplateId: input.promptTemplateId,
+            version: input.version,
+
+            ...defaultTemplate,
+
+            changelog: "",
+          },
+        });
+
+        return pv;
+      } catch (error: any) {
+        console.log(`Error in creating version -------------- ${error}`);
+        if (error.code === "P2002" && error.meta?.target.includes("version")) {
+          const errorMessage = { error: { message: "Version already exist" } };
+          throw new Error(JSON.stringify(errorMessage));
+        }
+        throw new Error("Something went wrong");
       }
-
-      const pv = await ctx.prisma.promptVersion.create({
-        data: {
-          userId: userId,
-          forkedFromId: input.forkedFromId,
-
-          promptPackageId: input.promptPackageId,
-          promptTemplateId: input.promptTemplateId,
-          version: input.version,
-
-          ...defaultTemplate,
-
-          changelog: "",
-        },
-      });
-
-      return pv;
     }),
 
   updateVersion: protectedProcedure

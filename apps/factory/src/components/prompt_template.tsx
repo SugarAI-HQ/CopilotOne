@@ -42,11 +42,13 @@ const PromptTemplate = ({
   const [activeTab, setActiveTab] = useState(0);
 
   const handleChangeTab = (event: any, newValue: number) => {
-    setActiveTab(newValue);
+    const currentTab = newValue ?? activeTab;
+    setActiveTab(currentTab);
   };
 
   const handleVersionCreate = (pv: any) => {
     refectVersions();
+    console.log("Prompt_template ", pv);
     setActiveTab(0);
   };
 

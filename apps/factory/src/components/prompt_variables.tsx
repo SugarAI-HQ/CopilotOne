@@ -35,6 +35,7 @@ function PromptVariables({
               key={"pv-" + index}
               pv={v}
               onChange={handleValueChange}
+              mode={mode}
             />
           ))}
       </Stack>
