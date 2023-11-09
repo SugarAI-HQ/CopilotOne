@@ -23,7 +23,7 @@ import toast from "react-hot-toast";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { useRouter } from "next/router";
 
-function Packages(props) {
+function Packages() {
   const [packages, setPackages] = useState<pp[]>();
   const [open, setOpen] = useState(false);
   const [packageId, setPackageId] = useState("");
@@ -36,22 +36,43 @@ function Packages(props) {
     },
   );
 
+  const mutation = api.prompt.updatePackage.useMutation();
+
   const handleOpen = (id: string) => {
     setOpen(!open);
     setPackageId(id);
   };
 
-  const updateArray = (data: pp) => {
+  const updateArray = (id: string, description: string) => {
+    const obj = packages?.find((item) => item!.id === id);
+    obj!.description = description;
     const newArray: pp[] = [];
     packages?.forEach((item) => {
-      if (item?.id === data?.id) {
-        newArray.push(data);
+      if (item?.id === id) {
+        newArray.push(obj!);
       } else {
         newArray.push(item);
       }
     });
-    setPackages([...newArray]);
-    setOpen(false);
+
+    const input = {
+      id: id,
+      name: obj!.name,
+      description: obj!.description,
+      visibility: obj!.visibility,
+    };
+
+    mutation.mutate(input, {
+      onSuccess() {
+        toast.success("Package Updated Successfully");
+        setPackages([...newArray]);
+        setOpen(false);
+      },
+      onError(error) {
+        const errorData = JSON.parse(error.message);
+        console.log("error for already existing name", errorData);
+      },
+    });
   };
 
   return (
@@ -77,7 +98,7 @@ function Packages(props) {
                 </MUILink>
                 <MUILink
                   sx={{ cursor: "pointer" }}
-                  onClick={() => handleOpen(pkg?.id)}
+                  onClick={() => handleOpen(pkg!.id)}
                 >
                   Edit
                 </MUILink>

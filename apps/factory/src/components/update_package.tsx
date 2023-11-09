@@ -29,7 +29,14 @@ import {
   CreatePackageInput,
 } from "~/validators/prompt_package";
 
-const UpdatePackage = ({ open, setOpen, packageId, updateArray }) => {
+interface Props {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  packageId: string;
+  updateArray(id: string, description: string): void;
+}
+
+const UpdatePackage = ({ open, setOpen, packageId, updateArray }: Props) => {
   const [name, setName] = useState<string | undefined>("");
 
   // zod schema
@@ -38,9 +45,7 @@ const UpdatePackage = ({ open, setOpen, packageId, updateArray }) => {
     handleSubmit,
     reset,
     formState: { errors },
-    setError,
     watch,
-    setValue,
   } = useForm<CreatePackageInput>({
     resolver: zodResolver(createPackageInput),
   });
@@ -61,28 +66,8 @@ const UpdatePackage = ({ open, setOpen, packageId, updateArray }) => {
     },
   });
 
-  const mutation = api.prompt.updatePackage.useMutation();
-
   const submitData = (data: CreatePackageInput) => {
-    // call api to update paticular package
-    const input = {
-      id: packageId as string,
-      name: data.name,
-      description: data.description,
-      visibility: data.visibility,
-    };
-
-    mutation.mutate(input, {
-      onSuccess() {
-        updateArray(input);
-        toast.success("Package Updated Successfully");
-      },
-      onError(error) {
-        const errorData = JSON.parse(error.message);
-        console.log("error for already existing name", errorData);
-        setError("name", { type: "manual", message: errorData.error?.name });
-      },
-    });
+    updateArray(packageId, data.description);
   };
 
   const handleClose = () => {

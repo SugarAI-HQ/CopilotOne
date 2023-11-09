@@ -34,6 +34,7 @@ import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
 import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
@@ -81,7 +82,7 @@ function PromptVersion({
     getUniqueJsonArray(getVariables(pv?.template || ""), "key"),
   );
   const [isDirty, setIsDirty] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
@@ -129,22 +130,33 @@ function PromptVersion({
 
   const handleRun = async (e: any) => {
     console.log(`running template version ${version}`);
-
+    // loading
+    setIsLoading(true);
     let data: { [key: string]: any } = {};
     for (const item of pvrs) {
       data[`${item.type}${item.key}`] = item.value;
     }
 
-    const pl = await generateMutation.mutateAsync({
-      username: ns.username,
-      package: pp?.name || "",
-      template: pt?.name || "",
-      versionOrEnvironment: pv.version || "",
-      isDevelopment: checked,
-      // llmModelType: pt?.modelType,
-      environment: promptEnvironment.Enum.DEV,
-      data: data,
-    } as GenerateInput);
+    const pl = await generateMutation.mutateAsync(
+      {
+        username: ns.username,
+        package: pp?.name || "",
+        template: pt?.name || "",
+        versionOrEnvironment: pv.version || "",
+        isDevelopment: checked,
+        // llmModelType: pt?.modelType,
+        environment: promptEnvironment.Enum.DEV,
+        data: data,
+      } as GenerateInput,
+      {
+        onSuccess() {
+          setIsLoading(false);
+        },
+        onError() {
+          setIsLoading(false);
+        },
+      },
+    );
 
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
@@ -265,14 +277,23 @@ function PromptVersion({
               />
             )}
 
-            <Button
+            <LoadingButton
               color="success"
               variant="outlined"
               onClick={handleRun}
               disabled={template.length <= 10}
+              loadingPosition="start"
+              loading={isLoading}
+              sx={{ width: "8rem" }}
             >
-              Run
-            </Button>
+              {isLoading ? (
+                <>
+                  <Counter />s
+                </>
+              ) : (
+                <>Run</>
+              )}
+            </LoadingButton>
             <Button
               color="success"
               variant="outlined"
@@ -353,3 +374,14 @@ function PromptVersion({
 }
 
 export default PromptVersion;
+
+const Counter = () => {
+  const [seconds, setSeconds] = useState(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds(seconds + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [seconds]);
+  return <>{seconds}</>;
+};

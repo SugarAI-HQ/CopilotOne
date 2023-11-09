@@ -116,7 +116,7 @@ export const promptRouter = createTRPCRouter({
             },
           });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.log(`Error in creating Package-----------------  ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("name")) {
           const errorMessage = { error: { name: "Name already exist" } };

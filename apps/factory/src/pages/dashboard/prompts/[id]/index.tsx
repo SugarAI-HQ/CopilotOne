@@ -51,9 +51,19 @@ const PackageShow: NextPageWithLayout = () => {
   const [ptId, setPtId] = useState<string>("");
   const [pt, setPt] = useState<pt>();
 
-  const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery({
-    promptPackageId: packageId,
-  });
+  const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery(
+    {
+      promptPackageId: packageId,
+    },
+    {
+      onSuccess(item) {
+        if (item.length != 0) {
+          setPtId(item[0]!.id);
+          setPt(item[0]);
+        }
+      },
+    },
+  );
   // console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
   const handleTemplateSelection = (e: any) => {

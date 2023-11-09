@@ -102,7 +102,7 @@ export const updatePackageInput = z
 
 export type updatePackageInput = z.infer<typeof updatePackageInput>;
 
-export type UpdateVersionInput = z.infer<typeof UpdateVersionInput>;
+// export type UpdateVersionInput = z.infer<typeof UpdateVersionInput>;
 
 export const packageOutput = packageSchema.or(z.null());
 export type PackageOutput = z.infer<typeof packageOutput>;
