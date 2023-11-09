@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/images/sugar/AI 3.png" alt="Sugarcane AI Logo" width="400">
+  <img src="public/images/sugar/logo-black-3.png" alt="Sugarcane AI Logo" width="400">
 </p>
 
 # npm like package ecosystem for Prompts 🤖
