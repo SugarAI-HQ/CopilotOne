@@ -9,6 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npx husky install",
     "pre-commit": "pnpm run --filter \"factory\" pre-commit",
+    "build": " pnpm run  -r build",
     "dev": "pnpm run --filter \"factory\" dev",
     "db": "pnpm run --filter \"factory\" db"
   },
