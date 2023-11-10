@@ -120,7 +120,7 @@ export function CreateVersion({
           New Version
         </Button> */}
         <Tooltip
-          title={forkedFromId ? "Fork" : "Add Version"}
+          title={forkedFromId ? "Fork" : "Create Version"}
           placement="top-start"
         >
           <IconButton

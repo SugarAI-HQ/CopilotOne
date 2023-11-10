@@ -115,7 +115,7 @@ function PromptDeploy({
 
   return (
     <span>
-      <Tooltip title="Deploy" placement="top-start">
+      <Tooltip title="Deploy Version" placement="top-start">
         <Button color="success" variant="text" onClick={handleOpenModal}>
           <RocketLaunchIcon></RocketLaunchIcon>
         </Button>

@@ -89,7 +89,7 @@ export function CreateTemplate({
   return (
     <Box component="span" sx={{}}>
       <Grid component="span">
-        <Tooltip title={"Add Template"} placement="top-start">
+        <Tooltip title={"Create Template"} placement="top-start">
           <IconButton
             size="small"
             aria-label="add template"
