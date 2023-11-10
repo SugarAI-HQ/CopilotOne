@@ -37,7 +37,8 @@ import PublicUrl from "~/components/integration/public_url";
 
 const PackageShow: NextPageWithLayout = () => {
   const router = useRouter();
-  const packageId = router.query.id as string;
+  const { pathname, query } = router;
+  const packageId = query.id as string;
 
   // to handle the status of mutation
   const [status, setStatus] = useState("");
@@ -64,24 +65,30 @@ const PackageShow: NextPageWithLayout = () => {
       promptPackageId: packageId,
     },
     {
-      onSuccess(item) {
-        if (item.length != 0) {
-          if (!ptId) {
-            setPtId(item[0]!.id);
-            setPt(item[0]);
-          }
+      onSuccess(lPts) {
+        if (lPts.length != 0 && !ptId) {
+          let ptId: string = query.ptid ? (query.ptid as string) : lPts[0]!.id;
+          handleTemplateSelection(ptId, lPts);
         }
       },
     },
   );
-  // console.log(`pts <<<<>>>> ${JSON.stringify(pts)}`);
 
-  const handleTemplateSelection = (e: any) => {
-    const id = e.target.value;
-    const selectedTemplate = pts?.find((t) => t.id === id);
+  const handleTemplateSelection = (ptId: string, lPts: pt[] = []) => {
+    const selectedTemplate = lPts?.find((pt) => pt?.id === ptId);
+
+    console.log(
+      `ptId <> selected ${ptId} ${lPts?.length} ${selectedTemplate?.name}`,
+    );
+
+    // Update url query
+    query.ptid = ptId;
+    router.push({ pathname: pathname, query: query });
+
+    // Set states
     setPtName(selectedTemplate?.name as string);
-    setPtId(id);
-    setPt(pts?.find((pt) => pt.id == id));
+    setPtId(ptId);
+    setPt(selectedTemplate);
   };
 
   const ptCreateMutation = api.prompt.createTemplate.useMutation({
@@ -141,7 +148,7 @@ const PackageShow: NextPageWithLayout = () => {
                   label="Select Template"
                   id="pt-selector"
                   value={ptId}
-                  onChange={handleTemplateSelection}
+                  onChange={(e) => handleTemplateSelection(e.target.value, pts)}
                 >
                   {pts.map((t, index) => (
                     <MenuItem key={"pt-" + index} value={t.id}>
