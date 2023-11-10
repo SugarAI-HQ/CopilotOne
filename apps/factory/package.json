@@ -63,7 +63,6 @@
     "zod-prisma-types": "^2.7.9"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.6.1",
     "@mui/types": "^7.2.6",
     "@storybook/addon-essentials": "^7.4.0",
     "@storybook/addon-interactions": "^7.4.0",
