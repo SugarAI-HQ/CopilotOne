@@ -66,8 +66,10 @@ const PackageShow: NextPageWithLayout = () => {
     {
       onSuccess(item) {
         if (item.length != 0) {
-          setPtId(item[0]!.id);
-          setPt(item[0]);
+          if (!ptId) {
+            setPtId(item[0]!.id);
+            setPt(item[0]);
+          }
         }
       },
     },
