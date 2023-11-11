@@ -3,6 +3,8 @@ import Image from "next/image";
 
 import Head from "next/head";
 import Link from "next/link";
+import { env } from "~/env.mjs";
+
 const Hero = () => {
   const { data: sessionData } = useSession();
 
@@ -22,10 +24,10 @@ const Hero = () => {
             Sugarcane <span className="text-[hsl(280,100%,70%)]">AI</span>
           </h1> */}
           <Image
-            src="/images/logo-transparent.png"
+            src={env.NEXT_PUBLIC_APP_LOGO}
             width={600}
             height={600}
-            alt="Sugarcane AI logo"
+            alt="Logo"
           />
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">

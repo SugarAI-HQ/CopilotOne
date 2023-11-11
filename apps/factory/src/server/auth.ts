@@ -54,7 +54,7 @@ function getAuthOptions(): NextAuthOptions {
     theme: {
       colorScheme: "dark", // "auto" | "dark" | "light"
       // brandColor: "#26453E", // Hex color code
-      logo: "https://www.sugarcaneai.dev/images/sugar/logo-transparent.png", // Absolute URL to image
+      logo: env.NEXT_PUBLIC_APP_LOGO, // Absolute URL to image
       // buttonText: "#FF2400", // Hex color code
     },
     callbacks: {
