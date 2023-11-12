@@ -271,6 +271,13 @@ Thanks to the following contributors for their efforts and support in adding val
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://smugglr.co"><img src="https://avatars.githubusercontent.com/u/431165?v=4?s=100" width="100px;" alt="Ankur Agarwal"/><br /><sub><b>Ankur Agarwal</b></sub></a><br /><a href="#projectManagement-devilankur18" title="Project Management">📆</a></td>
+    </tr>
+  </tbody>
+</table>
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
