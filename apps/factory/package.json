@@ -41,7 +41,7 @@
     "lodash.debounce": "^4.0.8",
     "memoizee": "^0.4.15",
     "nanoid": "^5.0.1",
-    "next-auth": "^4.22.4",
+    "next-auth": "^4.24.5",
     "nextjs-cors": "^2.1.2",
     "openai": "^4.6.0",
     "react": "18.2.0",
