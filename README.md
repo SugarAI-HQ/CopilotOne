@@ -280,6 +280,7 @@ Thanks to the following contributors for their efforts and support in adding val
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/patil-vipul"><img src="https://avatars.githubusercontent.com/u/65603015?v=4?s=100" width="100px;" alt="Vipul Patil"/><br /><sub><b>Vipul Patil</b></sub></a><br /><a href="#code-patil-vipul" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jsaurav7"><img src="https://avatars.githubusercontent.com/u/89625052?v=4?s=100" width="100px;" alt="Saurav Jha"/><br /><sub><b>Saurav Jha</b></sub></a><br /><a href="#code-jsaurav7" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rahul917-Kumar"><img src="https://avatars.githubusercontent.com/u/82316009?v=4?s=100" width="100px;" alt="Rahul Kumar"/><br /><sub><b>Rahul Kumar</b></sub></a><br /><a href="#code-Rahul917-Kumar" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yashmyeole"><img src="https://avatars.githubusercontent.com/u/63413296?v=4?s=100" width="100px;" alt="yashmyeole"/><br /><sub><b>yashmyeole</b></sub></a><br /><a href="#design-yashmyeole" title="Design">🎨</a></td>
     </tr>
   </tbody>
 </table>
