@@ -22,6 +22,9 @@ export const marketplaceRouter = createTRPCRouter({
           // userId: ctx.session?.user.id,
           visibility: input?.visibility,
         },
+        orderBy: {
+          updatedAt: "desc",
+        },
         include: {
           User: true,
         },

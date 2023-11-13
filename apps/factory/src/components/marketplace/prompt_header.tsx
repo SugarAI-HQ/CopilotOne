@@ -32,10 +32,7 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
               />
             </Grid>
             <Grid item>
-              <Link
-                href={"/" + pp?.User?.username}
-                className="text-gray-400 hover:text-blue-600"
-              >
+              <Link href={"#"} className="text-gray-400 hover:text-blue-600">
                 {pp?.User?.username}
               </Link>
             </Grid>
@@ -46,7 +43,7 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
             </Grid>
             <Grid item>
               <Link
-                href="/meta-llama/Llama-2-7b"
+                href="#"
                 className="break-words font-mono font-semibold hover:text-blue-600"
               >
                 {pp?.name}
