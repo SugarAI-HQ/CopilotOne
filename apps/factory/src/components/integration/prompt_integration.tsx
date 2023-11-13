@@ -11,6 +11,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { useState } from "react";
 import { api } from "~/utils/api";
+import { getUniqueJsonArray, getVariables } from "~/utils/template";
 
 export const PromptIntegration = ({
   ns,
@@ -23,68 +24,70 @@ export const PromptIntegration = ({
   pt: pt;
   pv: pv;
 }) => {
-  const identifier = `${ns?.username}/${pp?.name}/${pt?.name || "<template>"}#${
-    pv?.version || "PREVIEW"
-  }`;
+  const identifier = `${ns?.username}/${pp?.name}/${pt?.name || "<template>"}/${
+    pv?.version || "RELEASE"
+  }/generate`;
+
+  // let variables = getUniqueJsonArray(
+  //   getVariables(pv?.template as string),
+  //   "key",
+  // );
+  let variables = {
+    variable1: "value1",
+    variable2: "value2",
+    variable3: "value3",
+  };
+
+  console.log(pv?.template, variables);
 
   const apiUrl = `${env.NEXT_PUBLIC_API_ENDPOINT}/${identifier}`;
-  const jwt = "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";
+  const jwt = "<jwt token>";
 
   const pythonExample = `
-  import requests
+import requests
 
-  API_URL = "${apiUrl}"
-  headers = {"Authorization": "Bearer ${jwt}"}
+API_URL = "${apiUrl}"
+headers = {"Authorization": "Bearer ${jwt}"}
 
-  def query(payload):
-    response = requests.post(API_URL, headers=headers, json=payload)
-    return response.json()
+def query(variables):
+  response = requests.post(API_URL, headers=headers, json={data: variables})
+  return response.json()
 
-  output = query(
-    {
-      "data": {
-        "@ANIMAL": "DOG"
-      }
-    }
+output = query(${JSON.stringify(variables, null, 2)})
 
-  )
-
-  `;
+`;
 
   const curlExample = `
   curl ${apiUrl} \
 	-X POST \
-	-d '{"data": {"@ANIMAL": "DOG"}}' \
+	-d '{"data": ${JSON.stringify(variables)}}' \
 	-H 'Content-Type: application/json' \
 	-H "Authorization: Bearer ${jwt}"
 `;
 
   const javascriptExample = `
-  async function query(variables) {
+async function query(variables) {
 
-    var payload = {
-      "data": variables
-    };
+  var payload = {
+    "data": variables
+  };
 
-    const response = await fetch(
-      "${apiUrl}",
-      {
-        headers: { Authorization: "Bearer ${jwt}" },
-        method: "POST",
-        body: JSON.stringify(payload),
-      }
-    );
-    const result = await response.json();
-    return result;
-  }
+  const response = await fetch(
+    "${apiUrl}",
+    {
+      headers: { Authorization: "Bearer ${jwt}" },
+      method: "POST",
+      body: JSON.stringify(payload),
+    }
+  );
+  const result = await response.json();
+  return result;
+}
 
-  query({
-    "@ANIMAL": "DOG"
-  })
-  .then((response) => {
-    console.log(JSON.stringify(response));
-  });
-
+query(${JSON.stringify(variables, null, 2)})
+.then((response) => {
+  console.log(JSON.stringify(response));
+});
 `;
 
   // const npmExample = `
