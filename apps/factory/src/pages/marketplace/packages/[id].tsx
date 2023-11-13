@@ -22,11 +22,12 @@ import { NextPage } from "next";
 import { api } from "~/utils/api";
 import { packageVisibility } from "~/validators/base";
 import React from "react";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import { PackagePublicOutput as ppt } from "~/validators/marketplace";
 import { TemplateOutput as ptt } from "~/validators/prompt_template";
+import { VersionOutput as pvt } from "~/validators/prompt_version";
 // import { CreateVersionInput, VersionOutput as pv } from "~/validators/prompt_version";
 import { getRandomValue } from "~/utils/math";
 import { PromptIntegration } from "~/components/integration/prompt_integration";
@@ -46,11 +47,11 @@ const MarketplacePage: NextPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const [expanded, setExpanded] = useState(false);
+  // const [expanded, setExpanded] = useState(false);
 
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+  // const handleExpandClick = () => {
+  //   setExpanded(!expanded);
+  // };
 
   const subheader = () => {
     return `Public • Published 1 days ago • ${pp?.User?.username}`;
@@ -84,7 +85,17 @@ const MarketplacePage: NextPage = () => {
 
 export default MarketplacePage;
 
-function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
+function VersionRow({
+  pt,
+  pp,
+  pv,
+  pvType,
+}: {
+  pt: ptt;
+  pp: ppt;
+  pv: pvt;
+  pvType: string;
+}) {
   // const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -98,7 +109,7 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
             onClick={() => setOpen(!open)}
             sx={{ color: "var(--sugarhub-text-color)" }}
           >
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            {open ? <KeyboardArrowDownIcon /> : <KeyboardArrowRightIcon />}
           </IconButton>
         </TableCell>
         <TableCell
@@ -108,18 +119,14 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
         >
           {pt?.name}
         </TableCell>
+
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {pt?.releaseVersion?.version || "NA"}
+          {pvType} - {pv?.version || "NA"}
         </TableCell>
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {pt?.previewVersion?.version || "NA"}
+          {pv ? `${pv?.llmProvider} / ${pv?.llmModel}` : ""}
         </TableCell>
-        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {pt?.releaseVersion?.llmProvider}
-        </TableCell>
-        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {pt?.releaseVersion?.llmModel}
-        </TableCell>
+
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
           {getRandomValue(1000, 5000)}
         </TableCell>
@@ -129,9 +136,17 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
           {getRandomValue(70, 98)}
         </TableCell>
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
+          <PublicUrl
+            title={`${pvType} URL`}
+            url={`/${pp?.User?.username}/${pp?.name}/${
+              pt.name
+            }/${pvType.toLocaleLowerCase()}`}
+          />
+        </TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography
@@ -139,35 +154,15 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
                 gutterBottom
                 component="div"
                 sx={{ color: "var(--sugarhub-text-color)" }}
-              >
-                Templates
-              </Typography>
+              ></Typography>
 
-              {pt?.releaseVersion && (
+              {pv && (
                 <Typography
                   component="p"
                   gutterBottom
                   sx={{ color: "var(--sugarhub-text-color)" }}
                 >
-                  <PublicUrl
-                    title={"Release URL"}
-                    url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/release`}
-                  />
-                  Release ({pt?.releaseVersion?.version}):{" "}
-                  {pt?.releaseVersion?.template}
-                </Typography>
-              )}
-
-              {pt?.previewVersion && (
-                <Typography component="p" gutterBottom>
-                  {" "}
-                  sx={{ color: "var(--sugarhub-text-color)" }}
-                  <PublicUrl
-                    title={"Preview URL"}
-                    url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/preview`}
-                  />
-                  Preview ({pt?.previewVersion?.version}):{" "}
-                  {pt?.previewVersion?.template}
+                  Template : {pv.template}
                 </Typography>
               )}
             </Box>
@@ -204,25 +199,13 @@ export function CollapsibleTable({ pp }: { pp: ppt }) {
               align="right"
               sx={{ color: "var(--sugarhub-text-color)" }}
             >
-              Release
+              Release/Preview
             </TableCell>
             <TableCell
               align="right"
               sx={{ color: "var(--sugarhub-text-color)" }}
             >
-              Preview
-            </TableCell>
-            <TableCell
-              align="right"
-              sx={{ color: "var(--sugarhub-text-color)" }}
-            >
-              LLM Provider
-            </TableCell>
-            <TableCell
-              align="right"
-              sx={{ color: "var(--sugarhub-text-color)" }}
-            >
-              LLM Model
+              LLM Provider / Model
             </TableCell>
             <TableCell
               align="right"
@@ -242,17 +225,39 @@ export function CollapsibleTable({ pp }: { pp: ppt }) {
             >
               Accuracy &nbsp;(%)
             </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              Try
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {pp?.templates &&
             pp?.templates.length > 0 &&
-            pp.templates.map(
-              (pt, index) =>
-                (pt.releaseVersion || pt.previewVersion) && (
-                  <Row key={index} pt={pt} pp={pp} />
-                ),
-            )}
+            pp.templates.map((pt, index) => (
+              <>
+                {pt.releaseVersion && (
+                  <VersionRow
+                    key={index}
+                    pt={pt}
+                    pp={pp}
+                    pv={pt.releaseVersion}
+                    pvType="Release"
+                  />
+                )}
+                {pt.previewVersion && (
+                  <VersionRow
+                    key={index}
+                    pt={pt}
+                    pp={pp}
+                    pv={pt.previewVersion}
+                    pvType="Preview"
+                  />
+                )}
+              </>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
