@@ -6,7 +6,6 @@ import {
   Paper,
   CardContent,
   Collapse,
-  CardActions,
   IconButton,
   Card,
   Box,
@@ -46,12 +45,6 @@ const MarketplacePage: NextPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-
-  // const [expanded, setExpanded] = useState(false);
-
-  // const handleExpandClick = () => {
-  //   setExpanded(!expanded);
-  // };
 
   const subheader = () => {
     return `Public • Published 1 days ago • ${pp?.User?.username}`;

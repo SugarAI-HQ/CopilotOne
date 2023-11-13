@@ -38,54 +38,56 @@ function PublicPackages() {
               <Grid
                 container
                 spacing={1}
-                sx={{ padding: "1rem", margin: "1rem" }}
+                sx={{ padding: "0.5rem", margin: "0.5rem" }}
               >
                 <Grid item xs={12} md={4} lg={4}>
                   <Grid container spacing={1} alignItems={"center"}>
-                    <Grid item xs={12} md={2} lg={2}>
+                    <Grid item xs={2} md={2} lg={2}>
                       <Avatar
                         src={pkg?.User?.image || "/default-avatar.png"}
                         alt=""
                         sx={{ width: 42, height: 42, borderRadius: "50%" }}
                       />
                     </Grid>
-                    <Grid item xs={12} md={8} lg={8}>
+                    <Grid item xs={8} md={8} lg={8}>
                       <Typography>
                         {`${pkg?.User.username} / ${pkg?.name}`}
                       </Typography>
+                      <Typography>
+                        <TimeAgo
+                          title="Updated at"
+                          date={pkg?.updatedAt}
+                          style={{ color: "var(--sugarhub-text-color)" }}
+                        />
+                      </Typography>
                     </Grid>
-                    <Box sx={{ paddingLeft: "1rem", marginTop: "1rem" }}>
-                      <TimeAgo
-                        title="Updated at"
-                        date={pkg?.updatedAt}
-                        style={{ color: "var(--sugarhub-text-color)" }}
-                      />
-                    </Box>
                   </Grid>
                 </Grid>
                 <Grid
                   item
                   xs={12}
-                  md={4}
-                  lg={4}
+                  md={7}
+                  lg={7}
                   alignItems={"center"}
                   justifyContent={"center"}
                 >
-                  <Typography>
-                    {pkg?.description.substring(
-                      0,
-                      pkg?.description.length > 50
-                        ? 50
-                        : pkg?.description.length,
-                    )}{" "}
-                    {pkg?.description.length > 50 ? "..." : ""}
+                  <Typography
+                    sx={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      display: "-webkit-box",
+                      WebkitLineClamp: "2",
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
+                    {pkg?.description}
                   </Typography>
                 </Grid>
                 <Grid
                   item
                   xs={12}
-                  md={4}
-                  lg={4}
+                  md={1}
+                  lg={1}
                   sx={{ paddingRight: "1rem" }}
                   textAlign={"right"}
                 >
