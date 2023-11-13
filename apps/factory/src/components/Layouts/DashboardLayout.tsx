@@ -108,7 +108,7 @@ const defaultTheme = createTheme({
 });
 
 export function Dashboard({ children }: { children: React.ReactNode }) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };

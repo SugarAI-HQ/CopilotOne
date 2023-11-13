@@ -36,6 +36,7 @@ import { PromptEnvironment, promptEnvironment } from "~/validators/base";
 import LogLabel from "./dataset/log_label";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
 import LoadingButton from "@mui/lab/LoadingButton";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 
 const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
@@ -289,6 +290,7 @@ function PromptVersion({
               onClick={handleRun}
               disabled={template.length <= 10}
               loadingPosition="start"
+              startIcon={<PlayArrowIcon />}
               loading={isLoading}
               sx={{ width: "8rem" }}
             >
