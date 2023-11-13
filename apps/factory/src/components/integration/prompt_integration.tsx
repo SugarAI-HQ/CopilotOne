@@ -112,10 +112,33 @@ query(${JSON.stringify(variables, null, 2)})
     <>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Javascript" value="1" />
-            <Tab label="Python" value="2" />
-            <Tab label="Curl" value="3" />
+          <TabList
+            onChange={handleChange}
+            aria-label="lab API tabs example"
+            TabIndicatorProps={{
+              style: { background: "var(--sugarhub-text-color)" },
+            }}
+            sx={{
+              ".Mui-selected": {
+                color: "var(--sugarhub-text-color)",
+              },
+            }}
+          >
+            <Tab
+              label="Javascript"
+              value="1"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            />
+            <Tab
+              label="Python"
+              value="2"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            />
+            <Tab
+              label="Curl"
+              value="3"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            />
           </TabList>
         </Box>
         <TabPanel value="1">

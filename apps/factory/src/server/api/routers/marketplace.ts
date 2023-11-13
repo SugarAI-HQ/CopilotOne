@@ -27,6 +27,15 @@ export const marketplaceRouter = createTRPCRouter({
         },
       });
       console.log(`packages out -------------- ${JSON.stringify(packages)}`);
+
+      // sort according to date when packages were created
+
+      // packages.sort((packageA, packageB) => {
+      //   return (
+      //     new Date(packageB.updatedAt).valueOf() -
+      //     new Date(packageA.updatedAt).valueOf()
+      //   );
+      // });
       return packages;
     }),
 

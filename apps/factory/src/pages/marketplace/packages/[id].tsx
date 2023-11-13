@@ -57,11 +57,28 @@ const MarketplacePage: NextPage = () => {
   };
 
   return (
-    <Container>
-      <Header headerName={"Sugar Hub"}></Header>
-      <PromptHeader pp={pp as ppt}></PromptHeader>
-      <MyTabs pp={pp as ppt}></MyTabs>
-    </Container>
+    <Box
+      sx={{
+        backgroundColor: "var(--sugarhub-main-color)",
+        width: "100vw",
+        height: "100vh",
+        overflowY: "scroll",
+      }}
+    >
+      <Container>
+        <Header headerName="Sugar Hub"></Header>
+        <Box
+          sx={{
+            backgroundColor: "var(--sugarhub-card-color)",
+            padding: "1rem",
+            borderRadius: "0.5rem",
+          }}
+        >
+          <PromptHeader pp={pp as ppt}></PromptHeader>
+          <MyTabs pp={pp as ppt}></MyTabs>
+        </Box>
+      </Container>
+    </Box>
   );
 };
 
@@ -79,35 +96,59 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
             aria-label="expand row"
             size="small"
             onClick={() => setOpen(!open)}
+            sx={{ color: "var(--sugarhub-text-color)" }}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
+        <TableCell
+          component="th"
+          scope="row"
+          sx={{ color: "var(--sugarhub-text-color)" }}
+        >
           {pt?.name}
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
           {pt?.releaseVersion?.version || "NA"}
         </TableCell>
-        <TableCell align="right">
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
           {pt?.previewVersion?.version || "NA"}
         </TableCell>
-        <TableCell align="right">{pt?.releaseVersion?.llmProvider}</TableCell>
-        <TableCell align="right">{pt?.releaseVersion?.llmModel}</TableCell>
-        <TableCell align="right">{getRandomValue(1000, 5000)}</TableCell>
-        <TableCell align="right">{getRandomValue(2000, 4000)}</TableCell>
-        <TableCell align="right">{getRandomValue(70, 98)}</TableCell>
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
+          {pt?.releaseVersion?.llmProvider}
+        </TableCell>
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
+          {pt?.releaseVersion?.llmModel}
+        </TableCell>
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
+          {getRandomValue(1000, 5000)}
+        </TableCell>
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
+          {getRandomValue(2000, 4000)}
+        </TableCell>
+        <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
+          {getRandomValue(70, 98)}
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
+              <Typography
+                variant="h6"
+                gutterBottom
+                component="div"
+                sx={{ color: "var(--sugarhub-text-color)" }}
+              >
                 Templates
               </Typography>
 
               {pt?.releaseVersion && (
-                <Typography component="p" gutterBottom>
+                <Typography
+                  component="p"
+                  gutterBottom
+                  sx={{ color: "var(--sugarhub-text-color)" }}
+                >
                   <PublicUrl
                     title={"Release URL"}
                     url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/release`}
@@ -119,6 +160,8 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
 
               {pt?.previewVersion && (
                 <Typography component="p" gutterBottom>
+                  {" "}
+                  sx={{ color: "var(--sugarhub-text-color)" }}
                   <PublicUrl
                     title={"Preview URL"}
                     url={`/${pp?.User?.username}/${pp?.name}/${pt.name}/preview`}
@@ -137,19 +180,68 @@ function Row({ pt, pp }: { pt: ptt; pp: ppt }) {
 
 export function CollapsibleTable({ pp }: { pp: ppt }) {
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
+    <TableContainer
+      component={Paper}
+      sx={{
+        backgroundColor: "var(--sugarhub-table-color)",
+        borderRadius: "0.5rem",
+      }}
+    >
+      <Table
+        aria-label="collapsible table"
+        sx={{
+          backgroundColor: "var(--sugarhub-table-color)",
+          borderRadius: "0.5rem",
+        }}
+      >
         <TableHead>
           <TableRow>
             <TableCell />
-            <TableCell>Template</TableCell>
-            <TableCell align="right">Release</TableCell>
-            <TableCell align="right">Preview</TableCell>
-            <TableCell align="right">LLM Provider</TableCell>
-            <TableCell align="right">LLM Model</TableCell>
-            <TableCell align="right">Latency(p95) &nbsp;(ms)</TableCell>
-            <TableCell align="right">Token (p95) &nbsp;(count)</TableCell>
-            <TableCell align="right">Accuracy &nbsp;(%)</TableCell>
+            <TableCell sx={{ color: "var(--sugarhub-text-color)" }}>
+              Template
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              Release
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              Preview
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              LLM Provider
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              LLM Model
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              Latency(p95) &nbsp;(ms)
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              Token (p95) &nbsp;(count)
+            </TableCell>
+            <TableCell
+              align="right"
+              sx={{ color: "var(--sugarhub-text-color)" }}
+            >
+              Accuracy &nbsp;(%)
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -191,23 +283,49 @@ function MyTabs({ pp }: { pp: ppt }) {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: "var(--sugarhub-ternary-bg-color)",
+        padding: "1rem",
+        borderRadius: "0.5rem",
+      }}
+    >
       <Tabs
         value={value}
         onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
         variant="scrollable" // This makes the tabs scrollable
         scrollButtons="auto" // This makes scroll buttons appear when there are more tabs than can fit
         aria-label="Scrollable tabs example"
+        TabIndicatorProps={{
+          style: { background: "var(--sugarhub-text-color)" },
+        }}
+        sx={{
+          ".Mui-selected": {
+            color: "var(--sugarhub-text-color)",
+          },
+        }}
       >
-        <Tab label="Prompt Package" />
-        <Tab label="Integration" />
+        <Tab
+          label="Prompt Package"
+          sx={{ color: "var(--sugarhub-text-color)" }}
+        />
+        <Tab label="Integration" sx={{ color: "var(--sugarhub-text-color)" }} />
         {/* Add more tabs as needed */}
       </Tabs>
       <TabPanel value={value} index={0}>
-        <Paper>
-          <Card>
+        <Paper
+          sx={{
+            backgroundColor: "var(--sugarhub-tab-color)",
+            borderRadius: "0.5rem",
+          }}
+        >
+          <Card
+            sx={{
+              backgroundColor: "var(--sugarhub-tab-color)",
+              borderRadius: "0.5rem",
+              color: "var(--sugarhub-text-color)",
+            }}
+          >
             <CardContent>
               <Typography paragraph variant="body1">
                 {pp?.description}
@@ -224,7 +342,7 @@ function MyTabs({ pp }: { pp: ppt }) {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        <Paper>
+        <Paper sx={{ backgroundColor: "var(--sugarhub-tab-color)" }}>
           <PromptIntegration ns={pp?.User} pp={pp}></PromptIntegration>
         </Paper>
       </TabPanel>

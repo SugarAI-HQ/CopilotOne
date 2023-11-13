@@ -9,6 +9,7 @@ import {
   Grid,
   Avatar,
   IconButton,
+  Box,
 } from "@mui/material";
 
 import { api } from "~/utils/api";
@@ -28,47 +29,97 @@ function PublicPackages() {
       {packages && packages.length > 0 ? (
         packages.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={12} lg={12}>
-            <Card>
-              <CardHeader
-                title={`${pkg?.User.username} / ${pkg?.name}`}
-                avatar={
-                  <Avatar
-                    src={pkg?.User?.image || "/default-avatar.png"}
-                    alt=""
-                    sx={{ width: 42, height: 42, borderRadius: "50%" }}
-                  />
-                }
-                action={
+            <Card
+              sx={{
+                backgroundColor: "var(--sugarhub-card-color)",
+                color: "var(--sugarhub-text-color)",
+              }}
+            >
+              <Grid
+                container
+                spacing={1}
+                sx={{ padding: "1rem", margin: "1rem" }}
+              >
+                <Grid item xs={12} md={4} lg={4}>
+                  <Grid container spacing={1} alignItems={"center"}>
+                    <Grid item xs={12} md={2} lg={2}>
+                      <Avatar
+                        src={pkg?.User?.image || "/default-avatar.png"}
+                        alt=""
+                        sx={{ width: 42, height: 42, borderRadius: "50%" }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={8} lg={8}>
+                      <Typography>
+                        {`${pkg?.User.username} / ${pkg?.name}`}
+                      </Typography>
+                    </Grid>
+                    <Box sx={{ paddingLeft: "1rem", marginTop: "1rem" }}>
+                      <TimeAgo
+                        title="Updated at"
+                        date={pkg?.updatedAt}
+                        style={{ color: "var(--sugarhub-text-color)" }}
+                      />
+                    </Box>
+                  </Grid>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={4}
+                  lg={4}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                >
+                  <Typography>
+                    {pkg?.description.substring(
+                      0,
+                      pkg?.description.length > 50
+                        ? 50
+                        : pkg?.description.length,
+                    )}{" "}
+                    {pkg?.description.length > 50 ? "..." : ""}
+                  </Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  md={4}
+                  lg={4}
+                  sx={{ paddingRight: "1rem" }}
+                  textAlign={"right"}
+                >
                   <span>
-                    <IconButton aria-label="settings">
-                      {/* <LikeButton count={100}></LikeButton> */}
-                    </IconButton>
-                    <IconButton href={`/marketplace/packages/${pkg?.id}`}>
+                    <IconButton
+                      href={`/marketplace/packages/${pkg?.id}`}
+                      sx={{ color: "var(--sugarhub-text-color)" }}
+                    >
                       <LaunchIcon />
                     </IconButton>
                   </span>
-                }
-                subheader={<TimeAgo title="Updated at" date={pkg?.updatedAt} />}
-              />
-              <CardContent>
-                <Typography>{pkg?.description}</Typography>
-              </CardContent>
-              <CardActions>
-                <PromptTags></PromptTags>
-                <Grid
-                  direction="row"
-                  container
-                  alignItems="left"
-                  spacing={2}
-                ></Grid>
-              </CardActions>
+                </Grid>
+              </Grid>
             </Card>
           </Grid>
         ))
       ) : (
-        <Grid item xs={12}>
-          <Typography>No cards created</Typography>
-        </Grid>
+        <Box
+          sx={{
+            width: "100vw",
+            height: "100vh",
+            padding: "0",
+            margin: "0",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            sx={{ color: "var(--sugarhub-text-color)", fontSize: "1.4rem" }}
+          >
+            No cards created
+          </Typography>
+        </Box>
       )}
     </Grid>
   );
