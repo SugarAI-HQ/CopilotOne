@@ -94,7 +94,7 @@ function AuthShowcase() {
         className="text-xlg rounded-full bg-white/10 px-10 py-6 font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
-        {sessionData ? "Sign out" : "Sign in"}
+        {sessionData ? "Sign out" : "Sign in / Sign up"}
       </button>
     </div>
   );
