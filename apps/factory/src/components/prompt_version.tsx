@@ -64,10 +64,11 @@ function PromptVersion({
   handleVersionCreate: Function;
   onTemplateUpdate: Function;
 }) {
-  const [version, setVersion] = useState<string>(pv?.version);
-  const [template, setTemplate] = useState(pv?.template || "");
-  const [provider, setProvider] = useState(pv?.llmProvider || "");
-  const [model, setModel] = useState(pv?.llmModel);
+  const [lpv, setPv] = useState<VersionSchema>(pv);
+  const [version, setVersion] = useState<string>(lpv?.version);
+  const [template, setTemplate] = useState(lpv?.template || "");
+  const [provider, setProvider] = useState(lpv?.llmProvider || "");
+  const [model, setModel] = useState(lpv?.llmModel);
   const [llmConfig, setLLMConfig] = useState<LlmConfigSchema>({
     temperature: 0,
     maxLength: 2000,
@@ -82,13 +83,14 @@ function PromptVersion({
   const [promptOutput, setPromptOutput] = useState("");
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(
-    getUniqueJsonArray(getVariables(pv?.template || ""), "key"),
+    getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
   );
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
+        setPv(v);
         toast.success("Saved");
       } else {
         toast.error("Failed to save");
@@ -145,7 +147,7 @@ function PromptVersion({
         username: ns.username,
         package: pp?.name || "",
         template: pt?.name || "",
-        versionOrEnvironment: pv.version || "",
+        versionOrEnvironment: lpv.version || "",
         isDevelopment: checked,
         // llmModelType: pt?.modelType,
         environment: promptEnvironment.Enum.DEV,
@@ -176,7 +178,7 @@ function PromptVersion({
 
   useEffect(() => {
     let saveTimer: NodeJS.Timeout;
-    if (!pv.publishedAt && isDirty) {
+    if (!lpv.publishedAt && isDirty) {
       saveTimer = setTimeout(() => {
         handleSave();
       }, 1000);
@@ -188,9 +190,9 @@ function PromptVersion({
 
   const handleSave = () => {
     pvUpdateMutation.mutate({
-      promptPackageId: pv.promptPackageId,
-      promptTemplateId: pv.promptTemplateId,
-      id: pv.id,
+      promptPackageId: lpv.promptPackageId,
+      promptTemplateId: lpv.promptTemplateId,
+      id: lpv.id,
 
       template: template,
       llmProvider: provider,
@@ -204,19 +206,17 @@ function PromptVersion({
     console.log("TTD");
   };
 
+  const onDeployUpdate = (pv: VersionSchema, pt: pt) => {
+    setPv(pv);
+    onTemplateUpdate(pt);
+  };
+
   return (
     <>
       <Box>
         <Box display="inline" id={"prompt-version-" + pt?.id}>
-          {/* <TextField
-            variant="outlined"
-            label="Version"
-            value={version}
-            disabled={true}
-            onChange={(e) => setVersion(e.target.value)}
-          ></TextField> */}
           <Box display="inline" id={"prompt-version-actions" + pt?.id}>
-            {!pv.publishedAt && (
+            {!lpv.publishedAt && (
               <Tooltip title="Save Version" placement="top-start">
                 <Button color="success" variant="text" onClick={handleSave}>
                   <SaveIcon />
@@ -227,30 +227,24 @@ function PromptVersion({
             <CreateVersion
               pp={pp}
               pt={pt}
-              forkedFromId={pv.id}
+              forkedFromId={lpv.id}
               v={inc(version, "patch") as string}
               onCreate={handleVersionCreate}
             ></CreateVersion>
 
-            {pv.publishedAt ? (
-              <Tooltip title="Published Version" placement="top-start">
-                <PublishedWithChangesIcon />
-              </Tooltip>
-            ) : (
-              <PromptDeploy
-                ns={ns}
-                pp={pp}
-                pt={pt}
-                pv={pv}
-                onTemplateUpdate={onTemplateUpdate}
-              ></PromptDeploy>
-            )}
+            <PromptDeploy
+              ns={ns}
+              pp={pp}
+              pt={pt}
+              pv={lpv}
+              onUpdate={onDeployUpdate}
+            ></PromptDeploy>
           </Box>
         </Box>
         <Box>
           <TextField
             label="Template"
-            disabled={!!pv.publishedAt}
+            disabled={!!lpv.publishedAt}
             multiline
             fullWidth
             style={{ width: "100%" }}
@@ -333,13 +327,13 @@ function PromptVersion({
                 initialModel={model}
                 onProviderChange={setProvider}
                 onModelChange={setModel}
-                pv={pv}
+                pv={lpv}
                 pt={pt}
               ></LLMSelector>
               <LLMConfig
                 config={llmConfig}
                 setConfig={setLLMConfig}
-                pv={pv}
+                pv={lpv}
                 pt={pt}
               ></LLMConfig>
             </Grid>

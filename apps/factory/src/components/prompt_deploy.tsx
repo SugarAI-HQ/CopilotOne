@@ -29,24 +29,29 @@ import toast from "react-hot-toast";
 import { PromptIntegration } from "./integration/prompt_integration";
 import { VersionSchema } from "~/validators/prompt_version";
 import PublicUrl from "~/components/integration/public_url";
+import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 
 function PromptDeploy({
   ns,
   pp,
   pt,
   pv,
-  onTemplateUpdate,
+  onUpdate,
 }: {
   ns: any;
   pp: pp;
   pt: pt;
   pv: VersionSchema;
-  onTemplateUpdate: Function;
+  onUpdate: Function;
 }) {
+  const [version, setVersion] = useState(pv);
+  // console.log(`published: ${version.version} ${version.publishedAt} `);
   const [open, setOpen] = useState(false);
   const [isDeploying, setIsDeploying] = useState(false);
-  const [deploymentSuccess, setDeploymentSuccess] = useState(false);
-  const [changelog, setChangelog] = useState(pv.changelog);
+  const [deploymentSuccess, setDeploymentSuccess] = useState(
+    !!version.publishedAt,
+  );
+  const [changelog, setChangelog] = useState(version.changelog);
 
   const [environmentType, setEnvironmentType] = React.useState("preview");
   const [error, setError] = React.useState(false);
@@ -65,10 +70,10 @@ function PromptDeploy({
       console.log(data.pv);
       console.log("<<<<<<<< Deployed");
       if (data.pv !== null) {
-        pv = data.pv;
-        onTemplateUpdate(data.pt);
+        setVersion(data.pv);
+        onUpdate(data.pv, data.pt);
         setIsDeploying(false);
-        setDeploymentSuccess(true);
+        setDeploymentSuccess(!!data.pv.publishedAt);
         toast.success("Deployed Successfully");
       }
     },
@@ -79,9 +84,9 @@ function PromptDeploy({
     setIsDeploying(true);
 
     deployMutation.mutate({
-      promptTemplateId: pv.promptTemplateId,
+      promptTemplateId: version.promptTemplateId,
       promptPackageId: pt?.promptPackageId,
-      promptVersionId: pv.id,
+      promptVersionId: version.id,
 
       environment: environmentType,
       changelog: changelog,
@@ -109,17 +114,25 @@ function PromptDeploy({
     setTimeout(() => {
       // Stop deployment animation and show success
       setIsDeploying(false);
-      setDeploymentSuccess(false);
+      setDeploymentSuccess(!!version.publishedAt);
     }, 1000);
   };
 
   return (
     <span>
-      <Tooltip title="Deploy Version" placement="top-start">
-        <Button color="success" variant="text" onClick={handleOpenModal}>
-          <RocketLaunchIcon></RocketLaunchIcon>
-        </Button>
-      </Tooltip>
+      {version.publishedAt ? (
+        <Tooltip title={`Published Version`} placement="top-start">
+          <Button color="success" variant="text" onClick={handleOpenModal}>
+            <PublishedWithChangesIcon />
+          </Button>
+        </Tooltip>
+      ) : (
+        <Tooltip title={`Deploy Version`} placement="top-start">
+          <Button color="success" variant="text" onClick={handleOpenModal}>
+            <RocketLaunchIcon></RocketLaunchIcon>
+          </Button>
+        </Tooltip>
+      )}
       <Dialog
         sx={{ m: 2, p: 2 }}
         open={open}
@@ -195,7 +208,6 @@ function PromptDeploy({
                     maxRows={10}
                     label="Changelog"
                     variant="outlined"
-                    fullWidth
                     value={changelog}
                     onChange={(e) => handleChangelog(e.target.value)}
                     // onKeyDown={(e) => e.key === "Enter" && handleSearch()}
