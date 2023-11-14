@@ -12,6 +12,7 @@ import {
   Alert,
   Chip,
   Button,
+  CardActionArea,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
 import UpdatePackage from "~/components/update_package";
@@ -73,98 +74,46 @@ function Packages({
     });
   };
 
-  const truncateDescription = (description: string, maxLines: number) => {
-    const lines = description.split(" ");
-    if (lines.length <= maxLines * 10) {
-      return description;
-    }
-    return lines.slice(0, maxLines * 10).join(" ") + "...";
-  };
-
   return (
     <Grid container spacing={1}>
       {/* {packages && packages.length > 0 ? ( */}
       {packages.map((pkg, index) => (
         <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
           <Card>
-            <CardHeader title={pkg?.name} />
-            {pkg!.description ? (
+            <CardActionArea href={`/dashboard/prompts/${pkg?.id}`}>
+              <CardHeader
+                title={pkg?.name}
+                action={
+                  <Chip
+                    sx={{ mr: 2 }}
+                    size="small"
+                    label={pkg?.visibility}
+                    // variant="conti"
+                  />
+                }
+              />
+
               <CardContent>
                 <Typography
-                  variant="body2"
-                  style={{
+                  sx={{
+                    height: "3em",
                     overflow: "hidden",
-                    height: "40px",
                     textOverflow: "ellipsis",
                     display: "-webkit-box",
+                    WebkitLineClamp: "2",
                     WebkitBoxOrient: "vertical",
-                    WebkitLineClamp: 2,
                   }}
                 >
-                  {truncateDescription(pkg?.description || "", 2)}
+                  {pkg?.description}
                 </Typography>
               </CardContent>
-            ) : (
-              <CardContent>
-                <Typography
-                  variant="body2"
-                  style={{
-                    height: "40px",
-                    alignItems: "center",
-                    alignContent: "center",
-                    paddingBottom: "20px",
-                    fontSize: "17px",
-                    opacity: "60%",
-                  }}
-                >
-                  {"No description entered"}
-                </Typography>
-              </CardContent>
-            )}
+            </CardActionArea>
             <CardActions>
-              <Chip
-                sx={{ mr: 2 }}
-                size="small"
-                label={pkg?.visibility}
-                // variant="conti"
-              />
-              <Button
-                href={`/dashboard/prompts/${pkg?.id}`}
-                style={{
-                  accentColor: "black",
-                  borderColor: "GrayText",
-                  borderRadius: "25px",
-                  padding: 0,
-                  textTransform: "none",
-                }}
-              >
-                View
-              </Button>
-              <Button
-                href={`/dashboard/prompts/${pkg?.id}/logs`}
-                style={{
-                  accentColor: "black",
-                  borderColor: "GrayText",
-                  borderRadius: "25px",
-                  padding: 0,
-                  textTransform: "none",
-                }}
-              >
-                Logs
-              </Button>
-              <Button
-                sx={{ cursor: "pointer" }}
-                onClick={() => handleOpen(pkg!.id)}
-                style={{
-                  accentColor: "black",
-                  borderColor: "GrayText",
-                  left: 1,
-                  borderRadius: "25px",
-                  padding: "0px",
-                  textTransform: "none",
-                }}
-              >
+              <Button size="small" onClick={() => handleOpen(pkg!.id)}>
                 Edit
+              </Button>
+              <Button size="small" href={`/dashboard/prompts/${pkg?.id}/logs`}>
+                Logs
               </Button>
             </CardActions>
           </Card>
@@ -259,11 +208,12 @@ const PackageHome = () => {
           <Grid item xs={12}>
             <Typography
               align="center"
-              fontSize={18}
-              padding={2}
-              fontWeight={700}
+              variant="h5"
+              // fontSize={18}
+              padding={3}
+              // fontWeight={700}
             >
-              No cards created
+              Create your first Prompt Package
             </Typography>
             <CreatePackage
               onSubmit={mutation.mutate}
