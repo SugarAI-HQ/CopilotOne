@@ -11,6 +11,7 @@ import {
   Snackbar,
   Alert,
   Chip,
+  Button,
 } from "@mui/material";
 import { CreatePackage } from "~/components/create_package";
 import UpdatePackage from "~/components/update_package";
@@ -23,18 +24,15 @@ import toast from "react-hot-toast";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import { useRouter } from "next/router";
 
-function Packages() {
-  const [packages, setPackages] = useState<pp[]>();
+function Packages({
+  packages,
+  setPackages,
+}: {
+  packages: Array<pp>;
+  setPackages: any;
+}) {
   const [open, setOpen] = useState(false);
   const [packageId, setPackageId] = useState("");
-  api.prompt.getPackages.useQuery(
-    {},
-    {
-      onSuccess(data: pp[]) {
-        setPackages([...data]);
-      },
-    },
-  );
 
   const mutation = api.prompt.updatePackage.useMutation();
 
@@ -75,42 +73,112 @@ function Packages() {
     });
   };
 
+  const truncateDescription = (description: string, maxLines: number) => {
+    const lines = description.split(" ");
+    if (lines.length <= maxLines * 10) {
+      return description;
+    }
+    return lines.slice(0, maxLines * 10).join(" ") + "...";
+  };
+
   return (
     <Grid container spacing={1}>
-      {packages && packages.length > 0 ? (
-        packages.map((pkg, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-            <Card>
-              <CardHeader title={pkg?.name} />
+      {/* {packages && packages.length > 0 ? ( */}
+      {packages.map((pkg, index) => (
+        <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+          <Card>
+            <CardHeader title={pkg?.name} />
+            {pkg!.description ? (
               <CardContent>
-                <Typography>{pkg?.description}</Typography>
-              </CardContent>
-              <CardActions>
-                <Chip
-                  sx={{ mr: 2 }}
-                  size="small"
-                  label={pkg?.visibility}
-                  // variant="conti"
-                />
-                <MUILink href={`/dashboard/prompts/${pkg?.id}`}>View</MUILink>
-                <MUILink href={`/dashboard/prompts/${pkg?.id}/logs`}>
-                  Logs
-                </MUILink>
-                <MUILink
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => handleOpen(pkg!.id)}
+                <Typography
+                  variant="body2"
+                  style={{
+                    overflow: "hidden",
+                    height: "40px",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitBoxOrient: "vertical",
+                    WebkitLineClamp: 2,
+                  }}
                 >
-                  Edit
-                </MUILink>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))
-      ) : (
-        <Grid item xs={12}>
-          <Typography>No cards created</Typography>
+                  {truncateDescription(pkg?.description || "", 2)}
+                </Typography>
+              </CardContent>
+            ) : (
+              <CardContent>
+                <Typography
+                  variant="body2"
+                  style={{
+                    height: "40px",
+                    alignItems: "center",
+                    alignContent: "center",
+                    paddingBottom: "20px",
+                    fontSize: "17px",
+                    opacity: "60%",
+                  }}
+                >
+                  {"No description entered"}
+                </Typography>
+              </CardContent>
+            )}
+            <CardActions>
+              <Chip
+                sx={{ mr: 2 }}
+                size="small"
+                label={pkg?.visibility}
+                // variant="conti"
+              />
+              <Button
+                href={`/dashboard/prompts/${pkg?.id}`}
+                style={{
+                  accentColor: "black",
+                  borderColor: "GrayText",
+                  borderRadius: "25px",
+                  padding: 0,
+                  textTransform: "none",
+                }}
+              >
+                View
+              </Button>
+              <Button
+                href={`/dashboard/prompts/${pkg?.id}/logs`}
+                style={{
+                  accentColor: "black",
+                  borderColor: "GrayText",
+                  borderRadius: "25px",
+                  padding: 0,
+                  textTransform: "none",
+                }}
+              >
+                Logs
+              </Button>
+              <Button
+                sx={{ cursor: "pointer" }}
+                onClick={() => handleOpen(pkg!.id)}
+                style={{
+                  accentColor: "black",
+                  borderColor: "GrayText",
+                  left: 1,
+                  borderRadius: "25px",
+                  padding: "0px",
+                  textTransform: "none",
+                }}
+              >
+                Edit
+              </Button>
+            </CardActions>
+          </Card>
         </Grid>
-      )}
+      ))}
+      {/* ) : (
+<Grid
+      container
+      justifyContent="center"
+      alignItems="center"
+      style={{ minHeight: '80vh' }}
+    >
+      </Grid>
+      )} */}
 
       {open === true ? (
         <>
@@ -130,6 +198,7 @@ function Packages() {
 
 const PackageHome = () => {
   const router = useRouter();
+
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
 
@@ -158,14 +227,53 @@ const PackageHome = () => {
   });
 
   // console.log("mutate", mutation);
+  const [packages, setPackages] = useState<pp[]>();
+  api.prompt.getPackages.useQuery(
+    {},
+    {
+      onSuccess(data: pp[]) {
+        setPackages([...data]);
+      },
+    },
+  );
+
   return (
     <>
-      <CreatePackage
-        onSubmit={mutation.mutate}
-        status={status}
-        customError={customError}
-      ></CreatePackage>
-      <Packages />
+      {packages && packages.length > 0 ? (
+        <>
+          <CreatePackage
+            onSubmit={mutation.mutate}
+            status={status}
+            customError={customError}
+            PackagesExits={true}
+          ></CreatePackage>
+          <Packages packages={packages || []} setPackages={setPackages} />
+        </>
+      ) : (
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          style={{ minHeight: "80vh" }}
+        >
+          <Grid item xs={12}>
+            <Typography
+              align="center"
+              fontSize={18}
+              padding={2}
+              fontWeight={700}
+            >
+              No cards created
+            </Typography>
+            <CreatePackage
+              onSubmit={mutation.mutate}
+              status={status}
+              customError={customError}
+              PackagesExits={false}
+            ></CreatePackage>
+          </Grid>
+        </Grid>
+      )}
     </>
   );
 };

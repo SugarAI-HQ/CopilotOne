@@ -23,10 +23,12 @@ export function CreatePackage({
   onSubmit,
   status,
   customError,
+  PackagesExits,
 }: {
   onSubmit: Function;
   status: string;
   customError: any;
+  PackagesExits: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -76,9 +78,9 @@ export function CreatePackage({
 
   return (
     <>
-      <Grid container justifyContent="flex-end">
+      <Grid container justifyContent={PackagesExits ? "flex-end" : "center"}>
         <Button size="small" variant="outlined" onClick={() => setIsOpen(true)}>
-          Create
+          Create Prompt Package
         </Button>
       </Grid>
 
