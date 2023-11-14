@@ -30,10 +30,8 @@ import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import SaveIcon from "@mui/icons-material/Save";
 import { CreateVersion } from "./create_version";
 import { inc } from "semver";
-import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
-import { PromptEnvironment, promptEnvironment } from "~/validators/base";
-import LogLabel from "./dataset/log_label";
+import { promptEnvironment } from "~/validators/base";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
 import LoadingButton from "@mui/lab/LoadingButton";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -223,7 +221,6 @@ function PromptVersion({
                 </Button>
               </Tooltip>
             )}
-
             <CreateVersion
               pp={pp}
               pt={pt}
@@ -239,6 +236,10 @@ function PromptVersion({
               pv={lpv}
               onUpdate={onDeployUpdate}
             ></PromptDeploy>
+            {/* {isDev &&
+              `published: ${lpv.publishedAt?.toDateString()} id: ${
+                lpv.id
+              } version: ${lpv.version}`} */}
           </Box>
         </Box>
         <Box>

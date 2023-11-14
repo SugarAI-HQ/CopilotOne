@@ -10,7 +10,6 @@ import { useSession, signOut, signIn } from "next-auth/react";
 import { Avatar, Button, MenuItem } from "@mui/material";
 import { useRouter } from "next/router";
 import Logo1 from "../../../public/navbar-logo.png";
-import Logo2 from "../../../public/favicon.ico";
 import Image from "next/image";
 
 const Header = (props: any) => {

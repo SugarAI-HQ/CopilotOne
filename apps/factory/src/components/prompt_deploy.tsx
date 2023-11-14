@@ -44,7 +44,7 @@ function PromptDeploy({
   pv: VersionSchema;
   onUpdate: Function;
 }) {
-  const [version, setVersion] = useState(pv);
+  const [version, setVersion] = useState<VersionSchema>(pv);
   // console.log(`published: ${version.version} ${version.publishedAt} `);
   const [open, setOpen] = useState(false);
   const [isDeploying, setIsDeploying] = useState(false);
@@ -166,8 +166,18 @@ function PromptDeploy({
             </div>
           ) : deploymentSuccess ? (
             <div>
-              <p>Deployment successful!</p>
-              <p>You can access it over the API</p>
+              <Typography
+                variant="h6"
+                component="div"
+                alignItems="center"
+                alignContent={"center"}
+                textAlign={"center"}
+                sx={{ mb: 3 }}
+              >
+                Deployment successful!
+                <br />
+                You can access it over the API
+              </Typography>
               <PromptIntegration
                 ns={ns}
                 pp={pp}
@@ -180,6 +190,8 @@ function PromptDeploy({
             </div>
           ) : (
             <div>
+              <Typography sx={{ ml: 3 }}>For Version: {pv.version}</Typography>
+
               <form onSubmit={handleDeployCode}>
                 <FormControl sx={{ m: 3 }} error={error} variant="standard">
                   <FormLabel id="deployType">Environment</FormLabel>
@@ -218,8 +230,9 @@ function PromptDeploy({
                     variant="body2"
                     color="text.secondary"
                   >
-                    <p>Are you sure you want to deploy the code?</p>
-                    <p>This action cannot be undone.</p>
+                    Are you sure you want to deploy the code?
+                    <br />
+                    This action cannot be undone
                   </Typography>
 
                   {/* <Button sx={{ mt: 1, mr: 1 }} type="submit" variant="outlined">

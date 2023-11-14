@@ -32,10 +32,17 @@ const PromptTemplate = ({
   onTemplateUpdate: Function;
 }) => {
   const { data: pvs, refetch: refectVersions } =
-    api.prompt.getVersions.useQuery({
-      promptPackageId: pt?.promptPackageId,
-      promptTemplateId: pt?.id,
-    } as GetVersionsInput);
+    api.prompt.getVersions.useQuery(
+      {
+        promptPackageId: pt?.promptPackageId,
+        promptTemplateId: pt?.id,
+      } as GetVersionsInput,
+      {
+        onSuccess: (rpvs) => {
+          console.log("refetched pvs versions");
+        },
+      },
+    );
 
   // console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
@@ -47,9 +54,9 @@ const PromptTemplate = ({
   };
 
   const handleVersionCreate = (pv: any) => {
-    refectVersions();
-    console.log("Prompt_template ", pv);
-    setActiveTab(0);
+    refectVersions().then((res) => {
+      setActiveTab(0);
+    });
   };
 
   return (
@@ -98,16 +105,15 @@ const PromptTemplate = ({
               pvs.length > 0 &&
               pvs.map((pv, index) => (
                 <Item key={index} hidden={index !== activeTab}>
-                  {pv && (
-                    <PromptVersion
-                      ns={ns}
-                      pp={pp}
-                      pt={pt}
-                      pv={pv}
-                      handleVersionCreate={handleVersionCreate}
-                      onTemplateUpdate={onTemplateUpdate}
-                    />
-                  )}
+                  <PromptVersion
+                    key={pv.id}
+                    ns={ns}
+                    pp={pp}
+                    pt={pt}
+                    pv={pv}
+                    handleVersionCreate={handleVersionCreate}
+                    onTemplateUpdate={onTemplateUpdate}
+                  />
                 </Item>
               ))}
             <Box p={2}></Box>
