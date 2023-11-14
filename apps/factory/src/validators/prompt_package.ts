@@ -39,7 +39,9 @@ export const createPackageInput = z
       .refine((value) => !RESERVED_NAMES.includes(value), {
         message: "This name is reserved.",
       }),
-    description: z.string(),
+    description: z.string().min(100, {
+      message: "Description must be atleast 100 characters long",
+    }),
     visibility: packageVisibility,
   })
   .strict()
