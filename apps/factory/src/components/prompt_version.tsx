@@ -283,7 +283,9 @@ function PromptVersion({
               color="success"
               variant="outlined"
               onClick={handleRun}
-              disabled={template.length <= 10}
+              disabled={
+                template.length <= 10 || pvrs.some((v) => v.value === "")
+              }
               loadingPosition="start"
               startIcon={<PlayArrowIcon />}
               loading={isLoading}
