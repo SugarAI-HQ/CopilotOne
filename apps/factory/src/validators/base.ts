@@ -31,14 +31,14 @@ export const providerModels: ProviderModels = {
     enabled: true,
     providers: [
       { name: "llama2", label: "Llama2", enabled: true },
-      { name: "openai", label: "OpenAI", enabled: true },
+      { name: "openai", label: "OpenAI", enabled: false },
       { name: "falcon", label: "Falcon", enabled: false },
       { name: "mpt", label: "MPT", enabled: false },
     ],
     models: {
       openai: [
-        { name: "davinci", label: "Davinci", enabled: true },
-        { name: "gpt-3.5-turbo", label: "Gpt 3.5 Turbo", enabled: true },
+        { name: "davinci", label: "Davinci", enabled: false },
+        { name: "gpt-3.5-turbo", label: "Gpt 3.5 Turbo", enabled: false },
         { name: "gpt-4", label: "Gpt 4", enabled: false },
       ],
       llama2: [
