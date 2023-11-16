@@ -1,7 +1,7 @@
 import { LlmConfigSchema } from "~/validators/prompt_version";
 import { generateOutput } from "../llm_response/response";
-import { fakeResponse } from "../llm_response/fake_response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+import DeepInfraVendor from "../vendors/deepinfra_vendor";
 
 export interface LLMConfig {
   max_tokens: number;
@@ -40,38 +40,13 @@ export async function run(
   llmModel: string,
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,
-  isDevelopment: boolean = false,
+  dryRun: boolean = false,
 ) {
-  const maxRetries = 3;
-  const retryDelay = 1000;
-
-  const startTime = new Date();
-  let response;
-  if (isDevelopment) {
-    response = fakeResponse.llama2FakeResponse;
-  } else {
-    const apiUrl = `https://api.deepinfra.com/v1/inference/meta-llama/Llama-2-${llmModel}-chat-hf`;
-    const requestOptions: RequestInit = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.DEEPINFRA_API_TOKEN}`,
-      },
-      body: JSON.stringify({ input: prompt }),
-    };
-
-    response = await fetchWithRetry(
-      apiUrl,
-      requestOptions,
-      maxRetries,
-      retryDelay,
-    );
-
-    console.log(`llm response -------------- ${JSON.stringify(response)}`);
-  }
-
-  const endTime = new Date();
-  const latency: number = Number(endTime) - Number(startTime);
+  let client = new DeepInfraVendor("meta-llama", `Llama-2-${llmModel}-chat-hf`);
+  const { response, latency } = await client.makeApiCallWithRetry(
+    prompt,
+    dryRun,
+  );
 
   return generateOutput(response, llmModelType, latency);
 }
