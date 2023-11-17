@@ -282,6 +282,9 @@ Thanks to the following contributors for their efforts and support in adding val
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rahul917-Kumar"><img src="https://avatars.githubusercontent.com/u/82316009?v=4?s=100" width="100px;" alt="Rahul Kumar"/><br /><sub><b>Rahul Kumar</b></sub></a><br /><a href="#code-Rahul917-Kumar" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/yashmyeole"><img src="https://avatars.githubusercontent.com/u/63413296?v=4?s=100" width="100px;" alt="yashmyeole"/><br /><sub><b>yashmyeole</b></sub></a><br /><a href="#design-yashmyeole" title="Design">🎨</a></td>
     </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/LovedeepSingh19"><img src="https://avatars.githubusercontent.com/u/91473234?v=4?s=100" width="100px;" alt="Lovedeep"/><br /><sub><b>Lovedeep</b></sub></a><br /><a href="#code-LovedeepSingh19" title="Code">💻</a></td>
+    </tr>
   </tbody>
 </table>
 
