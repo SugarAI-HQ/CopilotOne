@@ -39,7 +39,7 @@ class DeepInfraVendor extends BaseVendor {
 
     if (allowedModels.includes(this.model)) {
       return fakeResponse.stableDiffusionFakeResponse;
-    } else if (this.provider === "meta-llama") {
+    } else if (this.provider === "meta-llama" || this.provider == "mistralai") {
       return fakeResponse.llama2FakeResponse;
     } else {
       throw `Not implemented for ${this.provider}/${this.model}`;
@@ -47,7 +47,7 @@ class DeepInfraVendor extends BaseVendor {
   }
 
   protected createRequestOptions(prompt: string): RequestInit {
-    if (this.provider === "meta-llama") {
+    if (this.provider === "meta-llama" || this.provider == "mistralai") {
       return this.createLlama2RequestOptions(prompt);
     } else {
       return super.createRequestOptions(prompt);

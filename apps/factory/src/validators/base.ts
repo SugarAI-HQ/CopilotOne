@@ -31,6 +31,7 @@ export const providerModels: ProviderModels = {
     enabled: true,
     providers: [
       { name: "llama2", label: "Llama2", enabled: true },
+      { name: "mistral", label: "Mistral", enabled: true },
       { name: "openai", label: "OpenAI", enabled: false },
       { name: "falcon", label: "Falcon", enabled: false },
       { name: "mpt", label: "MPT", enabled: false },
@@ -55,8 +56,12 @@ export const providerModels: ProviderModels = {
         { name: "7b", label: "7B", enabled: false },
         { name: "30b", label: "30B", enabled: false },
       ],
+      mistral: [
+        { name: "7b-instruct-v01  ", label: "7B Instruct v0.1", enabled: true },
+      ],
     },
   },
+
   TEXT2IMAGE: {
     label: "Text-to-Image",
     enabled: true,
