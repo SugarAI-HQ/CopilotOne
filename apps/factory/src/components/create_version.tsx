@@ -146,6 +146,7 @@ export function CreateVersion({
               label="Version"
               error={!!errors.version}
               helperText={errors.version?.message}
+              readonly={false}
             />
           </Stack>
         </DialogContent>

@@ -98,6 +98,7 @@ export function CreatePackage({
               label="Name"
               error={!!errors.name}
               helperText={errors.name?.message}
+              readonly={false}
             />
 
             <FormTextInput
@@ -106,6 +107,7 @@ export function CreatePackage({
               label="Description"
               error={!!errors.description}
               helperText={errors.description?.message}
+              readonly={false}
             />
 
             <FormRadioInput
