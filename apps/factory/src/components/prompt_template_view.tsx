@@ -22,6 +22,7 @@ import { useSession, signIn } from "next-auth/react";
 import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
 import { displayModes, DisplayModes } from "~/validators/base";
+import PromptViewArrow from "./prompt_view_arrow";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -120,16 +121,21 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         <div className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6">
           {data || !versionOrEnvironment ? (
             <>
-              <h5 className="mb-3 text-base font-semibold text-gray-900 dark:text-white md:text-xl">
+              <h5 className="mb-3 text-base font-semibold text-gray-900 md:text-xl">
                 {data?.description}
               </h5>
               <Box sx={{ m: 1 }}>
                 {pvrs && (
-                  <PromptVariables
-                    vars={pvrs}
-                    onChange={handleVariablesChange}
-                    mode={displayModes.Enum.EDIT}
-                  />
+                  <>
+                    {data && (
+                      <PromptViewArrow promptTemplate={data?.template} />
+                    )}
+                    <PromptVariables
+                      vars={pvrs}
+                      onChange={handleVariablesChange}
+                      mode={displayModes.Enum.EDIT}
+                    />
+                  </>
                 )}
               </Box>
               <Stack direction="row" spacing={1} sx={{ p: 1 }}>
