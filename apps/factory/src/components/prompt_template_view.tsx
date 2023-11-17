@@ -149,7 +149,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   color="success"
                   variant="outlined"
                   onClick={session ? handleRun : handleOpen}
-                  // disabled={data?.template.length <= 10}
+                  disabled={pvrs?.some((v) => v.value === "")}
                 >
                   Run
                 </Button>
