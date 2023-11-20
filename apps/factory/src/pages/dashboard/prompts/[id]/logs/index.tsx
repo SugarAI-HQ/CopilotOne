@@ -25,6 +25,7 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
+import DownloadButtonImg from "~/components/download_button_img";
 
 interface PromptLog {
   id: string;
@@ -169,12 +170,24 @@ const PromptLogTable: NextPageWithLayout = () => {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <PromptCompletion
-                    modelType={log.llmModelType}
-                    output={log.completion}
-                    tokens={log.completion_tokens}
-                    imgClassName={"h-48 w-96 object-contain"}
-                  />
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      display: "flex",
+                    }}
+                  >
+                    <PromptCompletion
+                      modelType={log.llmModelType}
+                      output={log.completion}
+                      tokens={log.completion_tokens}
+                      imgClassName={"h-42 w-96 object-contain"}
+                    />
+                    {log.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT && (
+                      <DownloadButtonImg base64image={log.completion} />
+                    )}
+                  </div>
                 </TableCell>
                 <TableCell>{log.version}</TableCell>
                 <TableCell>{log.llmProvider}</TableCell>

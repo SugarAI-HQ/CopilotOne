@@ -17,12 +17,16 @@ import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import PromptOutput from "./prompt_output";
-import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
 import { useSession, signIn } from "next-auth/react";
 import Link from "@mui/material/Link";
 const isDev = process.env.NODE_ENV === "development";
 import { displayModes, DisplayModes } from "~/validators/base";
 import PromptViewArrow from "./prompt_view_arrow";
+import DownloadButtonImg from "./download_button_img";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -179,10 +183,23 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         <Typography variant="h6" className="mb-5">
                           Output
                         </Typography>
-                        <PromptOutput
-                          output={promptOutput}
-                          modelType={data?.modelType as ModelTypeType}
-                        />
+                        <div
+                          style={{
+                            flexDirection: "row",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <PromptOutput
+                            output={promptOutput}
+                            modelType={data?.modelType as ModelTypeType}
+                          />
+                          {data?.modelType !==
+                            ModelTypeSchema.Enum.TEXT2TEXT && (
+                            <DownloadButtonImg base64image={promptOutput} />
+                          )}
+                        </div>
                       </Box>
                     </Grid>
                   </Stack>
