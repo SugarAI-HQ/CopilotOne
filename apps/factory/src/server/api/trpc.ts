@@ -190,18 +190,16 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
     });
   }
 
-  // if (!ctx.session?.user) {
-  //   throw new TRPCError({ code: "UNAUTHORIZED" });
-  // }
+  if ((ctx.jwt?.exp as number) < Date.now() / 1000) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Token Expired",
+    });
+  }
 
   return next({
     ctx: {
       jwt: ctx.jwt as JWT | null,
-      // infers the `session` as non-nullable
-      // session: {
-      //   // ...ctx.session,
-      //   // user: ctx.session?.user,
-      // },
     },
   });
 });

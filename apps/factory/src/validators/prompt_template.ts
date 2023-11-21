@@ -11,7 +11,7 @@ const templateNameInput = z
     message: "Name must be at most 30 characters long.",
   })
   .regex(/^[a-z0-9-]+$/, {
-    message: "Name must only contain lowercase letters, numbers, and dashes.",
+    message: "Name must only contain lowercase letters, numbers, and hyphen.",
   })
   .transform((value) => value.toLowerCase())
   .refine((value) => !RESERVED_NAMES.includes(value), {

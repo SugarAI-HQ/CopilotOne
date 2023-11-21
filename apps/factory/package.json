@@ -38,6 +38,7 @@
     "@trpc/react-query": "^10.34.0",
     "@trpc/server": "^10.34.0",
     "build": "^0.1.4",
+    "jsonwebtoken": "^9.0.2",
     "lodash.debounce": "^4.0.8",
     "memoizee": "^0.4.15",
     "nanoid": "^5.0.1",
