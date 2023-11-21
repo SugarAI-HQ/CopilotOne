@@ -61,28 +61,29 @@ export const generateInput = z
   .strict();
 export type GenerateInput = z.infer<typeof generateInput>;
 
-export const generateOutput = z
-  .object({
-    id: z.string(),
+export const logSchema = z.object({
+  id: z.string(),
 
-    environment: promptEnvironment,
+  environment: promptEnvironment,
 
-    version: z.string(),
-    prompt: z.string(),
-    completion: z.string(),
+  version: z.string(),
+  prompt: z.string(),
+  completion: z.string(),
 
-    latency: z.number(),
-    prompt_tokens: z.number(),
-    completion_tokens: z.number(),
-    total_tokens: z.number(),
+  latency: z.number(),
+  prompt_tokens: z.number(),
+  completion_tokens: z.number(),
+  total_tokens: z.number(),
 
-    labelledState: LabelledStateSchema,
-    llmProvider: z.string(),
-    llmModel: z.string(),
-    llmModelType: ModelTypeSchema,
+  labelledState: LabelledStateSchema,
+  llmProvider: z.string(),
+  llmModel: z.string(),
+  llmModelType: ModelTypeSchema,
 
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
-  })
-  .or(z.null());
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+
+export const generateOutput = logSchema.or(z.null());
+export type LogSchema = z.infer<typeof logSchema>;
 export type GenerateOutput = z.infer<typeof generateOutput>;

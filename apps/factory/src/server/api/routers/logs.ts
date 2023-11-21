@@ -14,6 +14,7 @@ export const logRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const {
         promptPackageId,
+        promptTemplateId,
         cursor,
         perPage,
         version,
@@ -24,6 +25,7 @@ export const logRouter = createTRPCRouter({
 
       const baseWhere = {
         promptPackageId,
+        promptTemplateId,
         version,
         environment,
         llmModel,

@@ -26,33 +26,43 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
 import DownloadButtonImg from "~/components/download_button_img";
+import { LogSchema, GenerateOutput } from "~/validators/service";
+import PromotOutputLog from "~/components/prompt_output_log";
 
-interface PromptLog {
-  id: string;
-  inputId?: string;
-  prompt: string;
-  version: string;
-  completion: string;
-  llmProvider: string;
-  llmModel: string;
-  llmConfig: {
-    max_tokens: number;
-    temperature: number;
-  };
-  llmModelType: ModelTypeType;
-  latency: number;
-  prompt_tokens: number;
-  environment: string;
-  completion_tokens: number;
-  total_tokens: number;
-  extras: Record<string, any>;
-  labelledState: LabelledStateType;
-  finetunedState: FinetunedState;
-  promptPackageId: string;
-  promptTemplateId: string;
-  promptVersionId: string;
-  createdAt: string;
-  updatedAt: string;
+// interface PromptLog {
+//   id: string;
+//   inputId?: string;
+//   prompt: string;
+//   version: string;
+//   completion: string;
+//   llmProvider: string;
+//   llmModel: string;
+//   llmConfig: {
+//     max_tokens: number;
+//     temperature: number;
+//   };
+//   llmModelType: ModelTypeType;
+//   latency: number;
+//   prompt_tokens: number;
+//   environment: string;
+//   completion_tokens: number;
+//   total_tokens: number;
+//   extras: Record<string, any>;
+//   labelledState: LabelledStateType;
+//   finetunedState: FinetunedState;
+//   promptPackageId: string;
+//   promptTemplateId: string;
+//   promptVersionId: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
+
+interface PromptLogTableProps {
+  logModeMax: boolean;
+  promptTemplateId: string | undefined;
+  promptVersionId: string | undefined;
+  itemsPerPage: number;
+  outputLog: LogSchema | null;
 }
 
 export interface FilterOptions {
@@ -65,26 +75,31 @@ export interface FilterOptions {
 // type LabelledState = "UNLABELLED" | "SELECTED" | "REJECTED" | "NOTSURE";
 type FinetunedState = "UNPROCESSED" | "PROCESSED";
 
-const itemsPerPage = 10;
-
-const PromptLogTable: NextPageWithLayout = () => {
+const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
+  logModeMax = true,
+  promptTemplateId = undefined,
+  promptVersionId = undefined,
+  itemsPerPage = 10,
+  outputLog = undefined,
+}) => {
   const router = useRouter();
   const packageId = router.query.id as string;
 
-  const [promptLogs, setPromptLogs] = useState<PromptLog[]>([]);
+  const [promptLogs, setPromptLogs] = useState<LogSchema[]>([]);
   const [searchText, setSearchText] = useState<string>("");
 
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     environment: undefined,
     llmModel: undefined,
     llmProvider: undefined,
-    version: undefined,
+    version: promptVersionId,
   });
 
   const { data, hasNextPage, fetchNextPage, refetch } =
     api.log.getLogs.useInfiniteQuery(
       {
         promptPackageId: packageId,
+        promptTemplateId: promptTemplateId,
         perPage: itemsPerPage,
         ...filterOptions,
       },
@@ -107,6 +122,25 @@ const PromptLogTable: NextPageWithLayout = () => {
     refetch();
   }, [searchText, filterOptions]);
 
+  useEffect(() => {
+    if (outputLog) {
+      const logId = outputLog.id;
+      if (!promptLogs.some((log) => log.id === logId)) {
+        setPromptLogs((prevLogs) => {
+          const newLog = {
+            ...outputLog,
+            llmConfig: {},
+            extras: {},
+            finetunedState: "",
+            promptPackageId: "",
+            promptPackageVersion: "",
+          } as unknown as LogSchema;
+          return [newLog, ...prevLogs];
+        });
+      }
+    }
+  }, [outputLog]);
+
   const handleSearch = () => {
     const filteredLogs = promptLogs.filter((log) =>
       log.prompt.toLowerCase().includes(searchText.toLowerCase()),
@@ -128,47 +162,54 @@ const PromptLogTable: NextPageWithLayout = () => {
         onChange={(e) => setSearchText(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
       /> */}
-      <LogSearchFiltering
-        filterOptions={filterOptions}
-        onFilterChange={(newFilterOptions) =>
-          setFilterOptions(newFilterOptions)
-        }
-      />
+      {logModeMax && (
+        <LogSearchFiltering
+          filterOptions={filterOptions}
+          onFilterChange={(newFilterOptions) =>
+            setFilterOptions(newFilterOptions)
+          }
+        />
+      )}
 
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
+              {logModeMax && <TableCell>ID</TableCell>}
               <TableCell>Prompt</TableCell>
               <TableCell>Completion</TableCell>
-              <TableCell>Version</TableCell>
+              {logModeMax && <TableCell>Version</TableCell>}
               <TableCell>LLM Provider</TableCell>
               <TableCell>LLM Model</TableCell>
               <TableCell>Total Tokens</TableCell>
-              <TableCell>Environment</TableCell>
+              {logModeMax && <TableCell>Environment</TableCell>}
               <TableCell>Latency(in ms)</TableCell>
               <TableCell>Labelled State</TableCell>
-              <TableCell>Finetuned State</TableCell>
-              <TableCell>Created At</TableCell>
+              {/* <TableCell>Finetuned State</TableCell> */}
+              {logModeMax && <TableCell>Created At</TableCell>}
               <TableCell>Updated At</TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {promptLogs.map((log) => (
               <TableRow key={log.id}>
-                <TableCell>{log.id}</TableCell>
+                {logModeMax && <TableCell>{log.id}</TableCell>}
                 <TableCell>
                   {log.prompt}
                   <p>tokens: {log.prompt_tokens}</p>
                 </TableCell>
                 <TableCell
-                  style={{
-                    maxWidth: 150,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
+                  style={
+                    logModeMax
+                      ? {
+                          maxWidth: 150,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }
+                      : { whiteSpace: "normal" }
+                  }
                 >
                   <div
                     style={{
@@ -189,11 +230,11 @@ const PromptLogTable: NextPageWithLayout = () => {
                     )}
                   </div>
                 </TableCell>
-                <TableCell>{log.version}</TableCell>
+                {logModeMax && <TableCell>{log.version}</TableCell>}
                 <TableCell>{log.llmProvider}</TableCell>
                 <TableCell>{log.llmModel}</TableCell>
                 <TableCell>{log.total_tokens}</TableCell>
-                <TableCell>{log.environment}</TableCell>
+                {logModeMax && <TableCell>{log.environment}</TableCell>}
                 <TableCell>{log.latency}</TableCell>
                 <TableCell>
                   <LabelIcons
@@ -201,12 +242,17 @@ const PromptLogTable: NextPageWithLayout = () => {
                     labelledState={log.labelledState}
                   />
                 </TableCell>
-                <TableCell>{log.finetunedState}</TableCell>
-                <TableCell>
-                  <TimeAgo date={log.createdAt} />
-                </TableCell>
+                {/* <TableCell>{log.finetunedState}</TableCell> */}
+                {logModeMax && (
+                  <TableCell>
+                    <TimeAgo date={log.createdAt} />
+                  </TableCell>
+                )}
                 <TableCell>
                   <TimeAgo date={log.updatedAt} />
+                </TableCell>
+                <TableCell>
+                  <PromotOutputLog pl={log} />
                 </TableCell>
               </TableRow>
             ))}

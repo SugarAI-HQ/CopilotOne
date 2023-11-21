@@ -47,7 +47,9 @@ import {
 import PromotOutputLog from "./prompt_output_log";
 import { displayModes } from "~/validators/base";
 import DownloadButtonImg from "./download_button_img";
+import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import Counter from "./counter_responsetime";
+
 function PromptVersion({
   ns,
   pp,
@@ -86,6 +88,7 @@ function PromptVersion({
   );
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [outputLog, setOutputLog] = useState<GenerateOutput>(null);
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
@@ -172,6 +175,7 @@ function PromptVersion({
         completion_tokens: pl.completion_tokens,
         total_tokens: pl.total_tokens,
       });
+      setOutputLog(pl);
     }
   };
 
@@ -397,6 +401,17 @@ function PromptVersion({
               )}
             </Stack>
           )}
+        </Box>
+
+        <Box sx={{ m: 1 }} padding={2}>
+          <Typography variant="h6">Log History</Typography>
+          <PromptLogTable
+            logModeMax={false}
+            promptTemplateId={pt?.id}
+            promptVersionId={pv?.version}
+            itemsPerPage={5}
+            outputLog={outputLog}
+          />
         </Box>
       </Box>
     </>
