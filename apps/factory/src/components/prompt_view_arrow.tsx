@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Stack, Box, Typography } from "@mui/material";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 
 type PromptViewArrowProps = {
   promptTemplate: string;
@@ -17,15 +17,22 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
         className="dark:border-gray-60 w-full rounded-lg border p-3 shadow"
         onClick={() => setIsTextOpen(!isTextOpen)}
         flexDirection={"row"}
+        sx={{ backgroundColor: "var(--sugarcube-component-bg-color)" }}
       >
         <Box>
           {isTextOpen ? (
-            <FaCaretDown size={20} style={{ paddingRight: 5 }} />
+            <FaCaretDown
+              size={20}
+              style={{ paddingRight: 5, color: "var(--sugarhub-text-color)" }}
+            />
           ) : (
-            <FaCaretUp size={20} style={{ paddingRight: 5 }} />
+            <FaCaretRight
+              size={20}
+              style={{ paddingRight: 5, color: "var(--sugarhub-text-color)" }}
+            />
           )}
         </Box>
-        <Typography className="text-gray-500">
+        <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
           {isTextOpen ? promptTemplate : "Click to view prompt Template"}
         </Typography>
       </Stack>

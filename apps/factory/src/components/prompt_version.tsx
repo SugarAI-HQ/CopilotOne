@@ -47,7 +47,7 @@ import {
 import PromotOutputLog from "./prompt_output_log";
 import { displayModes } from "~/validators/base";
 import DownloadButtonImg from "./download_button_img";
-
+import Counter from "./counter_responsetime";
 function PromptVersion({
   ns,
   pp,
@@ -404,14 +404,3 @@ function PromptVersion({
 }
 
 export default PromptVersion;
-
-const Counter = () => {
-  const [seconds, setSeconds] = useState(0);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(seconds + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [seconds]);
-  return <>{seconds}</>;
-};

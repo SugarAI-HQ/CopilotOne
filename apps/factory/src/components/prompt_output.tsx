@@ -17,7 +17,14 @@ const PromptOutput = ({
   modelType: ModelTypeType;
 }) => {
   return (
-    <Box>
+    <Box
+      sx={{
+        backgroundColor: "var(--sugarcube-component-bg-color)",
+        color: "white",
+        padding: "1rem 1rem",
+        borderRadius: "0.5rem",
+      }}
+    >
       <PromptCompletion
         modelType={modelType}
         output={output}

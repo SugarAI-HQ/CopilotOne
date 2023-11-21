@@ -93,7 +93,9 @@ function getAuthOptions(): NextAuthOptions {
         ...session,
         user: {
           ...session.user,
+          id: token.sub,
           username: token.username,
+          v: 1,
         },
       }),
       redirect: ({ url, baseUrl }: { url: string; baseUrl: string }) => {

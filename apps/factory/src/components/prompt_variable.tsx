@@ -21,10 +21,12 @@ export function PromptVariable({
   pv,
   onChange,
   mode,
+  cube = false,
 }: {
   pv: PromptVariableProps;
   onChange: (key: string, value: string) => void;
   mode: DisplayModes;
+  cube?: boolean;
 }) {
   let [val, setValue] = useState(pv.value);
 
@@ -97,12 +99,40 @@ export function PromptVariable({
       {
         <TextField
           id={"prompt-variable-input" + pv.key}
+          sx={{
+            input: { color: "var(--sugarhub-text-color)" },
+            "& .MuiOutlinedInput-root": {
+              "&.Mui-focused fieldset": {
+                borderColor: "var(--sugarhub-card-color)",
+              },
+              "& fieldset": {
+                borderColor: "var(--sugarhub-card-color)",
+              },
+            },
+            "&:hover": {
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "var(--sugarhub-card-color)",
+                },
+              },
+            },
+          }}
           InputProps={{
             startAdornment: (
-              <InputAdornment position="start">{pv.type}</InputAdornment>
+              <InputAdornment position="start">
+                <span style={{ color: "var(--sugarhub-text-color)" }}>
+                  {pv.type}
+                </span>
+              </InputAdornment>
             ),
           }}
-          label={TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " + pv.key}
+          InputLabelProps={{
+            style: { color: "var(--sugarhub-text-color)" },
+          }}
+          label={
+            (!cube ? TV_VALUES[TV_KEYS.indexOf(pv.type)] + " :   " : "") +
+            pv.key
+          }
           variant="outlined"
           value={val}
           // defaultValue={pv.value}

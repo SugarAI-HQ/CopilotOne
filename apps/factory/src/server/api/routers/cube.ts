@@ -21,9 +21,11 @@ export const cubeRouter = createTRPCRouter({
     .output(getPromptOutput)
     .query(async ({ ctx, input }) => {
       console.info(`Prompt get ----------------- ${JSON.stringify(input)}`);
-
       const [pv, pt] = await getPv(ctx, input);
-
+      console.log(
+        "pt-------------------------------------------------------------->",
+        pt,
+      );
       if (pv) {
         console.info(`Prompt generating output ${JSON.stringify(pv)}`);
         return {
@@ -33,6 +35,8 @@ export const cubeRouter = createTRPCRouter({
           updatedAt: pv.updatedAt,
           description: pt?.description,
           modelType: pv.llmModelType,
+          promptPackageId: pt.promptPackageId,
+          templateId: pt.id,
         };
       }
       return null;

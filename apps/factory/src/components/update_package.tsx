@@ -52,7 +52,6 @@ const UpdatePackage = ({ open, setOpen, packageId, updateArray }: Props) => {
 
   const input = {
     id: `${packageId}`,
-    visibility: packageVisibility.Enum.PUBLIC,
   };
 
   api.prompt.getPackage.useQuery(input, {

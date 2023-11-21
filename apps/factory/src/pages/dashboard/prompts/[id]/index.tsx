@@ -40,7 +40,6 @@ const PackageShow: NextPageWithLayout = () => {
   const router = useRouter();
   const { pathname, query } = router;
   const packageId = query.id as string;
-
   // to handle the status of mutation
   const [status, setStatus] = useState("");
 

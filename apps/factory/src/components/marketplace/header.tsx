@@ -43,7 +43,7 @@ const Header = (props: any) => {
                 <IconButton sx={{ p: 0 }}>
                   <Image src={Logo1.src} alt="logo" width="40" height="40" />
                 </IconButton>
-                Sugar Hub
+                {props.headerName}
               </Link>
             </Typography>
             {sessionData && (

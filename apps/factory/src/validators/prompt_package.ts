@@ -15,7 +15,6 @@ export type GetPackagesInput = z.infer<typeof getPackagesInput>;
 export const getPackageInput = z
   .object({
     id: z.string().uuid(),
-    visibility: z.null().optional().or(packageVisibility),
   })
   .strict()
   .required();

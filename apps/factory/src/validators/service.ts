@@ -45,6 +45,8 @@ export const getPromptOutput = z
     versionOrEnvironment: z.string().default(promptEnvironment.Enum.RELEASE),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
+    promptPackageId: z.string(),
+    templateId: z.string(),
   })
   .or(z.null());
 export type GetPromptOutput = z.infer<typeof getPromptOutput>;
