@@ -309,12 +309,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                             onClick={() => void signIn()}
                             sx={{
                               textDecoration: "none",
-                              marginRight: "0.5rem",
                             }}
                           >
                             Signup
                           </Link>{" "}
-                          to run the task!
+                          to run the cube!
                         </Typography>
                       </Box>
                     )}
