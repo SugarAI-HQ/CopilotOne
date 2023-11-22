@@ -4,12 +4,15 @@ import {
   ModelTypeType,
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
+import OutputTextAnimation from "./output_text_animation";
+import { Box } from "@mui/material";
 
 interface PromptCompletionProps {
   modelType: ModelTypeType;
   output: string;
   tokens?: number;
   imgClassName?: string;
+  textAnimation: boolean;
 }
 
 const PromptCompletion: React.FC<PromptCompletionProps> = ({
@@ -17,19 +20,40 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   output,
   tokens,
   imgClassName,
+  textAnimation,
 }) => {
   if (modelType === ModelTypeSchema.Enum.TEXT2TEXT) {
     return (
       <>
-        {tokens ? (
-          <>
-            {output}
-            <p>tokens: {tokens}</p>
-          </>
+        {textAnimation === false ? (
+          <Box
+            sx={{
+              "&::-webkit-scrollbar-thumb": {
+                backgroundColor: "Highlight",
+              },
+              maxHeight: "150px",
+              overflowY: "auto",
+              "&::-webkit-scrollbar": {
+                width: "0.4em",
+              },
+              "&::-webkit-scrollbar-track": {
+                boxShadow: "none",
+              },
+            }}
+          >
+            {tokens ? (
+              <>
+                {output}
+                <p>tokens: {tokens}</p>
+              </>
+            ) : (
+              <Typography variant="body2" textAlign={"left"}>
+                {output}
+              </Typography>
+            )}
+          </Box>
         ) : (
-          <Typography variant="body2" textAlign={"left"}>
-            {output}
-          </Typography>
+          <OutputTextAnimation output={output} modelType={modelType} />
         )}
       </>
     );

@@ -26,36 +26,9 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
 import DownloadButtonImg from "~/components/download_button_img";
+import CopyToClipboardButton from "~/components/copy_button";
 import { LogSchema, GenerateOutput } from "~/validators/service";
 import PromotOutputLog from "~/components/prompt_output_log";
-
-// interface PromptLog {
-//   id: string;
-//   inputId?: string;
-//   prompt: string;
-//   version: string;
-//   completion: string;
-//   llmProvider: string;
-//   llmModel: string;
-//   llmConfig: {
-//     max_tokens: number;
-//     temperature: number;
-//   };
-//   llmModelType: ModelTypeType;
-//   latency: number;
-//   prompt_tokens: number;
-//   environment: string;
-//   completion_tokens: number;
-//   total_tokens: number;
-//   extras: Record<string, any>;
-//   labelledState: LabelledStateType;
-//   finetunedState: FinetunedState;
-//   promptPackageId: string;
-//   promptTemplateId: string;
-//   promptVersionId: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -217,6 +190,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       flexDirection: "column",
                       alignItems: "center",
                       display: "flex",
+                      maxHeight: 150,
                     }}
                   >
                     <PromptCompletion
@@ -224,9 +198,15 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       output={log.completion}
                       tokens={log.completion_tokens}
                       imgClassName={"h-42 w-96 object-contain"}
+                      textAnimation={false}
                     />
-                    {log.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT && (
+                    {log.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
                       <DownloadButtonImg base64image={log.completion} />
+                    ) : (
+                      <CopyToClipboardButton
+                        textToCopy={log.completion}
+                        textToDisplay={"Copy"}
+                      />
                     )}
                   </div>
                 </TableCell>

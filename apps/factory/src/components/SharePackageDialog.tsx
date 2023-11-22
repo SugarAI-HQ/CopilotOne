@@ -27,6 +27,7 @@ import { MdContentCopy, MdDelete } from "react-icons/md";
 import toast from "react-hot-toast";
 import IconButton from "@mui/material/IconButton";
 import { useRouter } from "next/router";
+import CopyToClipboardButton from "./copy_button";
 
 interface SharePackageDialogProps {
   open: boolean;
@@ -48,10 +49,6 @@ const SharePackageDialog: React.FC<SharePackageDialogProps> = ({
       setPromptRoute(completePath);
     }
   }, []);
-  function copyPromptRouteToClipboard() {
-    navigator.clipboard.writeText(promptRoute);
-    toast.success("Copied");
-  }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -75,9 +72,10 @@ const SharePackageDialog: React.FC<SharePackageDialogProps> = ({
                 defaultValue={promptRoute}
                 disabled
               />
-              <IconButton onClick={copyPromptRouteToClipboard}>
-                <MdContentCopy size={17} />
-              </IconButton>
+              <CopyToClipboardButton
+                textToCopy={promptRoute}
+                textToDisplay={"Copy"}
+              />
             </div>
           </div>
         </div>

@@ -29,6 +29,7 @@ const PromptOutput = ({
         modelType={modelType}
         output={output}
         imgClassName={"h-48 w-48 object-fill"}
+        textAnimation={true}
       />
     </Box>
   );

@@ -17,7 +17,12 @@ import {
 import TimeAgo from "react-timeago";
 import PromptCompletion from "~/components/prompt_completion";
 import LabelIcons from "~/components/label_icon";
-import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
+import DownloadButtonImg from "~/components/download_button_img";
+import CopyToClipboardButton from "~/components/copy_button";
 
 const LogShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -79,13 +84,26 @@ const LogShow: NextPageWithLayout = () => {
                 <TableCell>{data.prompt}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Completion</TableCell>
+                <TableCell>
+                  <Box>
+                    <Typography>Completion</Typography>
+                    {data.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
+                      <DownloadButtonImg base64image={data?.completion} />
+                    ) : (
+                      <CopyToClipboardButton
+                        textToCopy={data?.completion}
+                        textToDisplay={"Copy"}
+                      />
+                    )}
+                  </Box>
+                </TableCell>
                 <TableCell>
                   <PromptCompletion
                     modelType={data?.llmModelType}
                     output={data?.completion}
                     tokens={data?.completion_tokens}
                     imgClassName={"h-48 w-96 object-contain"}
+                    textAnimation={false}
                   />
                 </TableCell>
               </TableRow>

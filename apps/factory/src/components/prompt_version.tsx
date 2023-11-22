@@ -49,6 +49,7 @@ import { displayModes } from "~/validators/base";
 import DownloadButtonImg from "./download_button_img";
 import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import Counter from "./counter_responsetime";
+import CopyToClipboardButton from "./copy_button";
 
 function PromptVersion({
   ns,
@@ -358,7 +359,11 @@ function PromptVersion({
         <Box sx={{ m: 1 }}>
           {promptOutput && (
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
-              <Grid container justifyContent={"flex-start"}>
+              <Grid
+                container
+                justifyContent={"flex-start"}
+                flexDirection={"column"}
+              >
                 <PromptOutput
                   output={promptOutput}
                   modelType={pt?.modelType as ModelTypeType}
@@ -367,7 +372,6 @@ function PromptVersion({
                   <Box
                     sx={{
                       ml: 5,
-                      justifyContent: "space-evenly",
                       display: "flex",
                       alignItems: "center",
                     }}
@@ -377,7 +381,7 @@ function PromptVersion({
                       labelledState={pl?.labelledState}
                     />
                     |
-                    {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT && (
+                    {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
                       <div
                         style={{
                           justifyContent: "center",
@@ -386,6 +390,20 @@ function PromptVersion({
                         }}
                       >
                         <DownloadButtonImg base64image={promptOutput} />|
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <CopyToClipboardButton
+                          textToCopy={promptOutput}
+                          textToDisplay={"Copy"}
+                        />
+                        |
                       </div>
                     )}
                     <PromotOutputLog pl={pl} />
