@@ -95,7 +95,7 @@ const Header = (props: any) => {
                     color="inherit"
                     onClick={() => void signIn()}
                   >
-                    Sign up / Sign in
+                    Sign up
                   </Button>
                 </Box>
               </>
