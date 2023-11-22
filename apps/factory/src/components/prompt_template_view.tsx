@@ -255,7 +255,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     spacing={1}
                     sx={{ p: 1, marginLeft: "1rem" }}
                   >
-                    {isDev && (
+                    {isDev && false && (
                       <FormControlLabel
                         sx={{ color: "var(--sugarhub-text-color)" }}
                         control={
