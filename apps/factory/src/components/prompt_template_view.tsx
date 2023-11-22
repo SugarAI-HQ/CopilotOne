@@ -154,208 +154,225 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "var(--sugarhub-main-color)",
-      }}
-    >
-      <Header headerName={"Sugar Cube"} />
+    <>
       <Box
         sx={{
-          padding: "1rem 0rem",
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          backgroundColor: "var(--sugarhub-main-color)",
         }}
       >
-        <Container className="center">
-          <div
-            className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6"
-            style={{ backgroundColor: "var(--sugarhub-tab-color)" }}
-          >
-            {data || !versionOrEnvironment ? (
-              <>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Grid container columnSpacing={2}>
-                    <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
-                    <Grid item xs={9} sm={10} md={10} lg={10}>
-                      <Typography
-                        sx={{
-                          textAlign: "center",
-                          color: "var(--sugarhub-text-color)",
-                          fontSize: { xs: "2rem", sm: "3rem", lg: "3rem" },
-                        }}
-                      >
-                        {!template ? "" : template.replaceAll("-", " ")}
-                      </Typography>
+        <Header headerName={"Sugar Cube"} />
+        <Box
+          sx={{
+            padding: "1rem 0rem",
+          }}
+        >
+          <Container className="center">
+            <div
+              className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6"
+              style={{ backgroundColor: "var(--sugarhub-tab-color)" }}
+            >
+              {data || !versionOrEnvironment ? (
+                <>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Grid container columnSpacing={2}>
+                      <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
+                      <Grid item xs={9} sm={10} md={10} lg={10}>
+                        <Typography
+                          sx={{
+                            textAlign: "center",
+                            color: "var(--sugarhub-text-color)",
+                            fontSize: { xs: "2rem", sm: "3rem", lg: "3rem" },
+                          }}
+                        >
+                          {!template ? "" : template.replaceAll("-", " ")}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={1.5} sm={1} md={1} lg={1}>
+                        {false && (
+                          <IconButton>
+                            <WhatsAppIcon
+                              sx={{
+                                color: "var(--sugarhub-text-color)",
+                                fontSize: "2rem",
+                              }}
+                            />
+                          </IconButton>
+                        )}
+                      </Grid>
                     </Grid>
-                    <Grid item xs={1.5} sm={1} md={1} lg={1}>
-                      {false && (
-                        <IconButton>
-                          <WhatsAppIcon
+                  </Box>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <Grid container wrap="nowrap" columnSpacing={2}>
+                      <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
+                      <Grid item xs={9.4} sm={10} md={10} lg={10}>
+                        <Typography
+                          variant="h6"
+                          component="h6"
+                          sx={{
+                            textAlign: "center",
+                            color: "var(--sugarhub-text-color)",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {data?.description}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={1.3} sm={1} md={1} lg={1}>
+                        <IconButton color="primary">
+                          {session?.user.username == username && (
+                            <EditIcon
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                                )
+                              }
+                            ></EditIcon>
+                          )}
+                        </IconButton>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <Box sx={{ m: 1 }}>
+                    {pvrs && (
+                      <>
+                        {data && (
+                          <PromptViewArrow promptTemplate={data?.template} />
+                        )}
+                        <PromptVariables
+                          vars={pvrs}
+                          onChange={handleVariablesChange}
+                          mode={displayModes.Enum.EDIT}
+                          cube={true}
+                        />
+                      </>
+                    )}
+                  </Box>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ p: 1, marginLeft: "1rem" }}
+                  >
+                    {isDev && false && (
+                      <FormControlLabel
+                        sx={{ color: "var(--sugarhub-text-color)" }}
+                        control={
+                          <Checkbox
+                            checked={checked}
+                            onChange={handleChange}
                             sx={{
-                              color: "var(--sugarhub-text-color)",
-                              fontSize: "2rem",
+                              color: "var(--button-color-disable)",
+                              "&.Mui-checked": {
+                                color: "var(--sugarcube-component-bg-color)",
+                              },
                             }}
                           />
-                        </IconButton>
-                      )}
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Grid container wrap="nowrap" columnSpacing={2}>
-                    <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
-                    <Grid item xs={9.4} sm={10} md={10} lg={10}>
-                      <Typography
-                        variant="h6"
-                        component="h6"
-                        sx={{
-                          textAlign: "center",
-                          color: "var(--sugarhub-text-color)",
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        {data?.description}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                      <IconButton color="primary">
-                        {session?.user.username == username && (
-                          <EditIcon
-                            onClick={() =>
-                              router.push(
-                                `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
-                              )
-                            }
-                          ></EditIcon>
-                        )}
-                      </IconButton>
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Box sx={{ m: 1 }}>
-                  {pvrs && (
-                    <>
-                      {data && (
-                        <PromptViewArrow promptTemplate={data?.template} />
-                      )}
-                      <PromptVariables
-                        vars={pvrs}
-                        onChange={handleVariablesChange}
-                        mode={displayModes.Enum.EDIT}
-                        cube={true}
+                        }
+                        label="Dummy"
                       />
-                    </>
-                  )}
-                </Box>
-                <Stack direction="row" spacing={1} sx={{ p: 1 }}>
-                  {isDev && (
-                    <FormControlLabel
-                      sx={{ color: "var(--sugarhub-text-color)" }}
-                      control={
-                        <Checkbox
-                          checked={checked}
-                          onChange={handleChange}
-                          sx={{
-                            color: "var(--button-color-disable)",
-                            "&.Mui-checked": {
-                              color: "var(--sugarcube-component-bg-color)",
-                            },
-                          }}
-                        />
-                      }
-                      label="Dummy"
-                    />
-                  )}
-                  <LoadingButton
-                    color="success"
-                    variant="outlined"
-                    onClick={session ? handleRun : handleOpen}
-                    disabled={pvrs?.some((v) => v.value === "")}
-                    sx={{
-                      "&.Mui-disabled": {
-                        borderColor: "var(--button-color-disable)",
-                        color: "var(--button-color-disable)",
-                      },
-                      width: "8rem",
-                    }}
-                    loadingPosition="start"
-                    startIcon={<PlayArrowIcon />}
-                    loading={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Counter />s
-                      </>
-                    ) : (
-                      <>Run</>
                     )}
-                  </LoadingButton>
-                  {!session && isOpen && (
-                    <Box>
-                      <Typography className="mt-2">
-                        <Link href="#" onClick={() => void signIn()}>
-                          Signup
-                        </Link>{" "}
-                        to run the task!
-                      </Typography>
-                    </Box>
-                  )}
-                </Stack>
-
-                <Box sx={{ m: 1 }}>
-                  {promptOutput && (
-                    <Stack direction="row" spacing={2} sx={{ p: 1 }}>
-                      <Grid>
-                        <Box padding={2}>
-                          <Typography
-                            variant="h6"
-                            className="mb-5"
-                            sx={{ color: "var(--sugarhub-text-color)" }}
-                          >
-                            Output
-                          </Typography>
-                          <div
-                            style={{
-                              flexDirection: "row",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
+                    <LoadingButton
+                      color="success"
+                      variant="outlined"
+                      onClick={session ? handleRun : handleOpen}
+                      disabled={pvrs?.some((v) => v.value === "")}
+                      sx={{
+                        "&.Mui-disabled": {
+                          borderColor: "var(--button-color-disable)",
+                          color: "var(--button-color-disable)",
+                          cursor: "not-allowed",
+                          width: "8rem",
+                        },
+                      }}
+                      loadingPosition="start"
+                      startIcon={<PlayArrowIcon />}
+                      loading={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Counter />s
+                        </>
+                      ) : (
+                        <>Run</>
+                      )}
+                    </LoadingButton>
+                    {!session && isOpen && (
+                      <Box>
+                        <Typography
+                          className="mt-2"
+                          sx={{ color: "var(--sugarhub-text-color)" }}
+                        >
+                          <Link
+                            href="#"
+                            onClick={() => void signIn()}
+                            sx={{
+                              textDecoration: "none",
+                              marginRight: "0.5rem",
                             }}
                           >
-                            <PromptOutput
-                              output={promptOutput}
-                              modelType={data?.modelType as ModelTypeType}
-                            />
-                            {data?.modelType !==
-                              ModelTypeSchema.Enum.TEXT2TEXT && (
-                              <DownloadButtonImg base64image={promptOutput} />
-                            )}
-                          </div>
-                        </Box>
-                      </Grid>
-                    </Stack>
-                  )}
-                </Box>
-              </>
-            ) : (
-              <>
-                <Typography
-                  sx={{
-                    color: "var(--sugarhub-text-color)",
-                    textAlign: "center",
-                  }}
-                >
-                  No template found
-                </Typography>
-              </>
-            )}
-          </div>
-        </Container>
+                            Signup
+                          </Link>{" "}
+                          to run the task!
+                        </Typography>
+                      </Box>
+                    )}
+                  </Stack>
+
+                  <Box sx={{ m: 1 }}>
+                    {promptOutput && (
+                      <Stack direction="row" spacing={2} sx={{ p: 1 }}>
+                        <Grid>
+                          <Box padding={2}>
+                            <Typography
+                              variant="h6"
+                              className="mb-5"
+                              sx={{ color: "var(--sugarhub-text-color)" }}
+                            >
+                              Output
+                            </Typography>
+                            <div
+                              style={{
+                                flexDirection: "row",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <PromptOutput
+                                output={promptOutput}
+                                modelType={data?.modelType as ModelTypeType}
+                              />
+                              {data?.modelType !==
+                                ModelTypeSchema.Enum.TEXT2TEXT && (
+                                <DownloadButtonImg base64image={promptOutput} />
+                              )}
+                            </div>
+                          </Box>
+                        </Grid>
+                      </Stack>
+                    )}
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Typography
+                    sx={{
+                      color: "var(--sugarhub-text-color)",
+                      textAlign: "center",
+                    }}
+                  >
+                    No template found
+                  </Typography>
+                </>
+              )}
+            </div>
+          </Container>
+        </Box>
+        <Footer />
       </Box>
-      <Footer />
-    </Box>
+    </>
   );
 };
 

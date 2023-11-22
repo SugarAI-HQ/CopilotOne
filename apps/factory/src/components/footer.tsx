@@ -8,8 +8,9 @@ const Footer = () => {
     <Box
       sx={{
         backgroundColor: "var(--sugarhub-tab-color)",
-        marginTop: "auto",
         padding: "1rem",
+        position: "sticky",
+        top: "100vh",
       }}
     >
       <Typography

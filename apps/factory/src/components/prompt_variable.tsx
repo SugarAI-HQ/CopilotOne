@@ -103,16 +103,16 @@ export function PromptVariable({
             input: { color: "var(--sugarhub-text-color)" },
             "& .MuiOutlinedInput-root": {
               "&.Mui-focused fieldset": {
-                borderColor: "var(--sugarhub-card-color)",
+                borderColor: "var(--sugarhub-text-color)",
               },
               "& fieldset": {
-                borderColor: "var(--sugarhub-card-color)",
+                borderColor: "var(--sugarhub-text-color)",
               },
             },
             "&:hover": {
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  borderColor: "var(--sugarhub-card-color)",
+                  borderColor: "var(--sugarhub-text-color)",
                 },
               },
             },
