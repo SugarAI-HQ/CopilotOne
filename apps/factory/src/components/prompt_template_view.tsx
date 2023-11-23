@@ -10,6 +10,7 @@ import {
   Typography,
   Dialog,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { api } from "~/utils/api";
 import { promptEnvironment } from "~/validators/base";
@@ -61,9 +62,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [packageData, setPackageData] = useState<pp>({} as pp);
   const [templateId, setTemplateId] = useState<string>("");
   const handleOpen = () => setIsOpen(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingState, setIsLoading] = useState(false);
   const router = useRouter();
-  const { data } = api.cube.getPrompt.useQuery({
+  const { data, isLoading } = api.cube.getPrompt.useQuery({
     username: username,
     package: packageName,
     template: template,
@@ -174,7 +175,17 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
               className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6"
               style={{ backgroundColor: "var(--sugarhub-tab-color)" }}
             >
-              {data || !versionOrEnvironment ? (
+              {isLoading ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <CircularProgress size={50} />
+                </Box>
+              ) : data || !versionOrEnvironment ? (
                 <>
                   <Box sx={{ flexGrow: 1 }}>
                     <Grid container columnSpacing={2}>
@@ -288,9 +299,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       }}
                       loadingPosition="start"
                       startIcon={<PlayArrowIcon />}
-                      loading={isLoading}
+                      loading={isLoadingState}
                     >
-                      {isLoading ? (
+                      {isLoadingState ? (
                         <>
                           <Counter />s
                         </>
