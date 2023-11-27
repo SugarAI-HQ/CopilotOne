@@ -49,12 +49,12 @@ export const promptRouter = createTRPCRouter({
         userId: ctx.jwt?.id as string,
       };
 
-      console.log(`packages input -------------- ${JSON.stringify(query)}`);
+      // console.log(`packages input -------------- ${JSON.stringify(query)}`);
 
       const packages = await ctx.prisma.promptPackage.findMany({
         where: query,
       });
-      console.log(`packages out -------------- ${JSON.stringify(packages)}`);
+      // console.log(`packages out -------------- ${JSON.stringify(packages)}`);
       return packages;
     }),
 
@@ -70,7 +70,7 @@ export const promptRouter = createTRPCRouter({
       const pkg = await ctx.prisma.promptPackage.findFirst({
         where: query,
       });
-      console.log(`package -------------- ${JSON.stringify(pkg)}`);
+      // console.log(`package -------------- ${JSON.stringify(pkg)}`);
       // console.log(pkg);
       return pkg;
     }),
@@ -90,7 +90,7 @@ export const promptRouter = createTRPCRouter({
         });
         return promptPackage;
       } catch (error: any) {
-        console.log(`Error in creating Package-----------------  ${error}`);
+        console.error(`Error in creating Package-----------------  ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("name")) {
           const errorMessage = { error: { name: "Name already exist" } };
           throw new Error(JSON.stringify(errorMessage));
@@ -118,7 +118,7 @@ export const promptRouter = createTRPCRouter({
           });
         }
       } catch (error: any) {
-        console.log(`Error in creating Package-----------------  ${error}`);
+        console.error(`Error in creating Package-----------------  ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("name")) {
           const errorMessage = { error: { name: "Name already exist" } };
           throw new Error(JSON.stringify(errorMessage));
@@ -152,7 +152,7 @@ export const promptRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
 
-      console.log(`template input -------------- ${JSON.stringify(input)}`);
+      // console.log(`template input -------------- ${JSON.stringify(input)}`);
 
       try {
         const pt = await ctx.prisma.promptTemplate.create({
@@ -168,10 +168,10 @@ export const promptRouter = createTRPCRouter({
             releaseVersion: true,
           },
         });
-        console.log(`template output -------------- ${JSON.stringify(pt)}`);
+        // console.log(`template output -------------- ${JSON.stringify(pt)}`);
         return pt;
       } catch (error: any) {
-        console.log(`Error in creating template -------------- ${error}`);
+        console.error(`Error in creating template -------------- ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("name")) {
           const errorMessage = { error: { name: "Name already exist" } };
           throw new Error(JSON.stringify(errorMessage));
@@ -217,7 +217,7 @@ export const promptRouter = createTRPCRouter({
         where: query,
       });
 
-      console.log(`templates -------------- ${JSON.stringify(template)}`);
+      // console.log(`templates -------------- ${JSON.stringify(template)}`);
       return template;
     }),
 
@@ -314,7 +314,7 @@ export const promptRouter = createTRPCRouter({
           },
         });
       }
-      console.log(`updated version -------------- ${JSON.stringify(pv)}`);
+      // console.log(`updated version -------------- ${JSON.stringify(pv)}`);
 
       return pv;
     }),
@@ -326,7 +326,7 @@ export const promptRouter = createTRPCRouter({
       const userId = ctx.jwt?.id as string;
       let pv = null;
       let pt = null;
-      console.log(`deploy template -------------- ${JSON.stringify(input)}`);
+      // console.log(`deploy template -------------- ${JSON.stringify(input)}`);
 
       let data = {
         changelog: input.changelog,
@@ -366,11 +366,11 @@ export const promptRouter = createTRPCRouter({
           return { pv, pt };
         });
       }
-      console.log(
-        `deployed version -------------- ${JSON.stringify(pv)} ${JSON.stringify(
-          pt,
-        )}`,
-      );
+      // console.log(
+      //   `deployed version -------------- ${JSON.stringify(pv)} ${JSON.stringify(
+      //     pt,
+      //   )}`,
+      // );
       return { pv, pt };
     }),
 

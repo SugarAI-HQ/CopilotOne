@@ -130,9 +130,9 @@ export async function getPv(ctx: any, input: any) {
   }
 
   if (!pv) {
-    console.error(`promptVersion >>>> not found - ${JSON.stringify(input)}`);
+    console.error(`<<<>>> version: not found - ${JSON.stringify(input)}`);
   } else {
-    console.error(`promptVersion >>>>  ${JSON.stringify(pv)}`);
+    console.log(`<<<>>> version: ${pv.version}  ${JSON.stringify(pv)}`);
   }
 
   return [pv, pt];

@@ -66,7 +66,7 @@ export const logRouter = createTRPCRouter({
         nextCursor: nextPageCursor,
       };
 
-      console.log(`updated label -------------- ${JSON.stringify(response)}`);
+      // console.log(`updated label -------------- ${JSON.stringify(response)}`);
 
       return response;
     }),
@@ -87,7 +87,7 @@ export const logRouter = createTRPCRouter({
         where: query,
       });
 
-      console.log(`log -------------- ${JSON.stringify(log)}`);
+      // console.log(`log -------------- ${JSON.stringify(log)}`);
 
       return log;
     }),
@@ -97,7 +97,7 @@ export const logRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id;
       let pL = null;
-      console.log(`update label -------------- ${JSON.stringify(input)}`);
+      // console.log(`update label -------------- ${JSON.stringify(input)}`);
 
       if (userId) {
         pL = await ctx.prisma.promptLog.update({
@@ -110,7 +110,7 @@ export const logRouter = createTRPCRouter({
           },
         });
       }
-      console.log(`updated label -------------- ${JSON.stringify(pL)}`);
+      // console.log(`updated label -------------- ${JSON.stringify(pL)}`);
 
       return pL;
     }),

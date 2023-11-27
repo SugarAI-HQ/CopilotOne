@@ -24,7 +24,13 @@ import { PrismaClient } from "@prisma/client";
 import { GenerateInput } from "~/validators/service";
 import { JWT, getToken } from "next-auth/jwt";
 import { env } from "~/env.mjs";
-import { promptEnvironment, PromptEnvironment } from "~/validators/base";
+import {
+  packageVisibility,
+  PackageVisibility,
+  promptEnvironment,
+  PromptEnvironment,
+} from "~/validators/base";
+import { contextProps } from "@trpc/react-query/shared";
 
 /**
  * 1. CONTEXT
@@ -230,21 +236,51 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
         },
         select: { id: true },
       })) as { id: string | null };
+
       opts.input.userId = userId as string;
+      console.log(
+        ` <<<>>> username : ${opts.input.username} userId : ${opts.input.userId}`,
+      );
+      console.log(
+        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${opts.ctx?.jwt
+          ?.id},  ${opts.input.userId == opts.ctx?.jwt?.id}`,
+      );
     }
   }
 
   if (opts.input.userId && opts.input?.package) {
-    const { id: promptPackageId } =
+    const { id: promptPackageId, visibility: visibility } =
       (await opts.ctx.prisma.promptPackage.findFirst({
         where: {
           userId: opts.input.userId,
           name: opts.input.package,
         },
-        select: { id: true },
-      })) as { id: string | null };
+        select: { id: true, visibility: true },
+      })) as { id: string | null; visibility: PackageVisibility };
+
+    if (!promptPackageId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Prompt package not ",
+      });
+    }
+    if (
+      promptPackageId &&
+      !(
+        visibility == packageVisibility.enum.PUBLIC ||
+        opts.input.userId == opts.ctx?.jwt?.id
+      )
+    ) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Not allowed",
+      });
+    }
 
     opts.input.promptPackageId = promptPackageId as string;
+    console.log(
+      ` <<<>>> package : ${opts.input.package} userId : ${opts.input.promptPackageId}`,
+    );
   }
 
   if (opts.input.userId && opts.input.promptPackageId && opts.input?.template) {
@@ -258,6 +294,9 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
         select: { id: true },
       })) as { id: string | null };
     opts.input.promptTemplateId = promptTemplateId as string;
+    console.log(
+      ` <<<>>> template : ${opts.input.template} templateId : ${opts.input.promptTemplateId}`,
+    );
   }
 
   console.info(

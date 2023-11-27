@@ -22,10 +22,10 @@ export const cubeRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       console.info(`Prompt get ----------------- ${JSON.stringify(input)}`);
       const [pv, pt] = await getPv(ctx, input);
-      console.log(
-        "pt-------------------------------------------------------------->",
-        pt,
-      );
+      // console.log(
+      //   "pt-------------------------------------------------------------->",
+      //   pt,
+      // );
       if (pv) {
         console.info(`Prompt generating output ${JSON.stringify(pv)}`);
         return {
