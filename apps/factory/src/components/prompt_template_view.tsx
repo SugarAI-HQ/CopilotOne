@@ -277,7 +277,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       color="success"
                       variant="outlined"
                       onClick={session ? handleRun : handleOpen}
-                      disabled={pvrs?.some((v) => v.value === "")}
+                      // disabled={pvrs?.some((v) => v.value === "")}
                       sx={{
                         "&.Mui-disabled": {
                           borderColor: "var(--button-color-disable)",

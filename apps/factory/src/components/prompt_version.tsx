@@ -289,9 +289,9 @@ function PromptVersion({
               color="success"
               variant="outlined"
               onClick={handleRun}
-              disabled={
-                template.length <= 10 || pvrs.some((v) => v.value === "")
-              }
+              // disabled={
+              //   template.length <= 10 || pvrs.some((v) => v.value === "")
+              // }
               loadingPosition="start"
               startIcon={<PlayArrowIcon />}
               loading={isLoading}
@@ -305,6 +305,11 @@ function PromptVersion({
                 <>Run</>
               )}
             </LoadingButton>
+            {/* <Typography>
+              Length: {template.length}
+              Vars: {pvrs.some((v) => v.value === "") ? true : false}
+            </Typography> */}
+
             <Button
               color="success"
               variant="outlined"

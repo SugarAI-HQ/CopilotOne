@@ -217,13 +217,13 @@ const PreferencesModal: React.FC<PreferencesModalProps> = ({
                               }}
                             >
                               {" "}
-                              <IconButton aria-label="delete">
-                                <MdDelete
-                                  onClick={() =>
-                                    deleteUserEnvironmentalVariable(index)
-                                  }
-                                  size={16}
-                                />
+                              <IconButton
+                                aria-label="delete"
+                                onClick={() =>
+                                  deleteUserEnvironmentalVariable(index)
+                                }
+                              >
+                                <MdDelete size={16} />
                               </IconButton>
                             </TableCell>
                           </TableRow>
