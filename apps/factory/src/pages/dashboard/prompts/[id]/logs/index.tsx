@@ -179,13 +179,14 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                           maxWidth: 150,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
+                          //     whiteSpace: "nowrap",
                         }
-                      : { whiteSpace: "normal" }
+                      : { whiteSpace: "normal", maxWidth: 150 }
                   }
                 >
                   <div
                     style={{
+                      paddingTop: 5,
                       justifyContent: "center",
                       flexDirection: "column",
                       alignItems: "center",

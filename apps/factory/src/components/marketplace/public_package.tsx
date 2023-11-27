@@ -10,6 +10,7 @@ import {
   Avatar,
   IconButton,
   Box,
+  CircularProgress,
 } from "@mui/material";
 
 import { api } from "~/utils/api";
@@ -20,13 +21,28 @@ import PromptTags from "./prompt_tags";
 import LaunchIcon from "@mui/icons-material/Launch";
 
 function PublicPackages() {
-  const { data: packages, refetch: refectchPackages } =
-    api.marketplace.getPackages.useQuery({
-      visibility: packageVisibility.Enum.PUBLIC,
-    });
+  const {
+    data: packages,
+    isLoading,
+    refetch: refectchPackages,
+  } = api.marketplace.getPackages.useQuery({
+    visibility: packageVisibility.Enum.PUBLIC,
+  });
   return (
     <Grid container spacing={1}>
-      {packages && packages.length > 0 ? (
+      {isLoading ? (
+        <Box
+          sx={{
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircularProgress size={50} />
+        </Box>
+      ) : packages && packages.length > 0 ? (
         packages.map((pkg, index) => (
           <Grid item key={index} xs={12} sm={6} md={12} lg={12}>
             <Card
