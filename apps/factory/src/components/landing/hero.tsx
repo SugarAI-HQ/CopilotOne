@@ -57,9 +57,9 @@ const Hero = () => {
             >
               <h3 className="text-2xl font-bold">Documentation →</h3>
               {/* <div className="text-lg">
-                Learn more about Sugarcane AI, architecture, problem it solves,
-                and how to deploy it.
-              </div> */}
+                 Learn more about Sugarcane AI, architecture, problem it solves,
+                 and how to deploy it.
+               </div> */}
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
@@ -68,8 +68,8 @@ const Hero = () => {
             >
               <h3 className="text-2xl font-bold">Contribute →</h3>
               {/* <div className="text-lg">
-                Checkout the code and make your first contribution.
-              </div> */}
+                 Checkout the code and make your first contribution.
+               </div> */}
             </Link>
           </div>
 
