@@ -3,36 +3,38 @@
 </p>
 
 # npm like package ecosystem for Prompts 🤖
+```Huggingface like platform for Programable Prompts```
 
-### Open Source Framework to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
+### Open Source Cloud based IDE to build, train and monetise cross LLM and high accuracy Prompt Packages powered by Micro LLMs
 
 [![License](https://img.shields.io/github/license/sugarcane-ai/sugarcane-ai.github.io)](https://github.com/sugarcane-ai/sugarcane-ai.github.io/blob/develop/LICENSE)
 
 ---
 
-### Important News : Prompt Package Playgroud launching on 1st November 2023 : ⭐ Star this Repo to support us ⭐
+### ⭐⭐ Star this Repo to support us ⭐⭐
 
+### Try our Prompt Package IDE here : [Sugar Factory](https://play.sugarcaneai.dev/)
 ---
-
 1. [Introduction](#introduction--)
-2. [Key Features of Microservices Framework](#key-features--)
+2. [Key Solutions](#key-features--)
+
    - [Sugar Factory 🏭](#sugar-factory--)
-   - [Sugar hub 🛒](#sugar-hub--)
-   - [Sugar Farm 🚜](#sugar-farm--)
-   - [Sugar Bakery 🍞](#sugar-bakery--)
-3. [Key Components of the Microservices Framework](#key-components--)
-   - [Micro LLMs 🧬](#micro-llms--)
+   - [Sugar Cubes 🧊](#sugar-cubes--)
+   - [Sugar Hub 🛒](#sugar-hub--)
+     
+3. [Key Components](#key-components--)
+
    - [Prompt Packages 📦](#prompt-packages--)
    - [Prompt Templates 📑](#prompt-templates--)
-4. [Key Benefits of Microservices Framework 🏗️](#microservices-architecture--)
-5. [Demo Videos](#demo-videos--)
+   - [Micro LLMs 🧬](#micro-llms--)
+
+4. [Getting Started](#getting-started--)
+5. [Key Benefits of Microservices Framework 🏗️](#microservices-architecture--)
 6. [Roadmap](#roadmap--)
-7. [Getting Started](#getting-started--)
-8. [Contribute](#contribute--)
-9. [Connect with Us](#connect-with-us--)
-10. [Book an Appointment](#book-an-appointment--)
-11. [License](#license--)
-12. [Acknowledgments](#acknowledgments--)
+7. [Connect with Us](#connect-with-us--)
+8. [Book an Appointment](#book-an-appointment--)
+9. [License](#license--)
+10. [Acknowledgments](#acknowledgments--)
 
 ---
 
@@ -42,82 +44,69 @@ Sugarcane AI is creating an open marketplace for developers to package and sell 
 
 The product is designed to address the issues of prompt accuracy and developer productivity by utilizing a microservices approach for prompt and LLM management, saving 80% of development time and server cost for LLM applications.
 
-Focused on the creation of reusable, high-accuracy prompt packages and Micro LLMs, we offer an open-source microservices framework to empower the next 10 million LLM application developers to build prompt packages and train Micro LLMs.
+Focused on the creation of reusable, high-accuracy prompt packages and Micro LLMs, we offer an open-source microservices solution to empower the next 10 million LLM application developers to build prompt packages and train Micro LLMs.
 
 We believe that a community driven package ecosystem is a long term solution for LLM application development similar to other programming languages ecosystems. 🎉
 
-## Key Features of Microservices Framework 🚀 <a name="key-features--"></a>
+## Key Solutions 🚀 <a name="key-features--"></a>
 
 ### Sugar Factory 🏭 <a name="sugar-factory--"></a>
 
-##### No-code Playground for **Prompt Developers** for faster & efficient prompt engineering
+##### No-code Cloud Based IDE for **Prompt Developers** to create Prompt Packages
 
 ##### Key Features :
 
-    - Build and ship your prompts over APIs
-    - Label and manage prompt completion datasets
+    - Build and ship your prompts over APIs as packages
+    - Log, Label and Manage prompt completion datasets
     - Version and backtest prompts for better performance
+    - Experiment and test Prompts with multiple available LLMs 
 
-<br> </br>
+##### Prompt Package Creation
 ![Sugar Factory](public/images/sugar/sugarfactory.png)
 
-##### View Demo : [Decouple your Prompts with Sugarcane AI](/docs/guides/demo/)
+##### Prompt Package Observablity
+![Prompt Observablity](public/images/sugar/sugar-logs.png)
 
-<br> </br>
+#### View Demo : How to Create Prompt Packages & Templates ?
+
+[![Prompt Packages](https://img.youtube.com/vi/n9tYg541kWE/maxresdefault.jpg)](https://www.youtube.com/watch?v=n9tYg541kWE)
+
+-------------------------------------------------------
+### Sugar Cubes 🧊 <a name="sugar-cubes--"></a>
+
+##### No Code UI tool to create and deploy Prompt pacakges as a real-time and shareable LLM based Applications
+
+    - Create and share re-usable Prompts in just few clicks
+    - Collect Feedaback & Training data from actual prompt usage
+    - Single Click Deploy and Use as an API over any Platform
+
+Demo Sugar Cubes :
+
+Text Generator : [Birthday Wish Generator](https://bit.ly/Birthdaycube)
+
+Image Generator : [Santa with Celebrity Face](https://bit.ly/santaceleb)
+
+View Demo : How to Create Sugar Cubes ?
+
+[![Sugar Cubes](https://img.youtube.com/vi/5oeRkHOqW28/maxresdefault.jpg)](https://www.youtube.com/watch?v=5oeRkHOqW28)
+
+-------------------------------------------------------
 
 ### Sugar Hub 🛒 <a name="sugar-hub--"></a>
 
-##### Managed Marketplace for high quality GenAI assets
+##### Managed Marketplace for sharing and monetising high quality GenAI assets with the ecosystem
 
 ##### Key Features :
 
-    - Implement workflows/plugins with just a few lines of code
-    - Client libraries supporting multiple languages
-    - Integrate managed prompt packages from Sugar Hub
+    - Publish, share and monetise your prompt packages
+    - Discover and use managed prompts in Sugar Bakery
+    - Leverage Open datasets and Finetuned Micro LLMs
 
-### Sugar Farm 🚜 <a name="sugar-farm--"></a>
+#### Prompt Package Marketplace : [Access Marketplace](https://play.sugarcaneai.dev/marketplace/packages)
 
-##### Data Assistant for **Data Scientists** to build Micro LLMs
+-------------------------------------------------------
 
-##### Key Features :
-
-    - Train and backtest Micro LLMs using labeled datasets
-    - Version and ship Fine tuned LLMs over APIs
-    - Publish fine-tuned Micro LLMs on Sugar Hub
-
-<br> </br>
-
-### Sugar Bakery 🍞 <a name="sugar-bakery--"></a>
-
-##### SDK for **Application Develpers** to develop cross-LLM business logic applications
-
-##### Key Features :
-
-    - Implement workflows/plugins with just a few lines of code
-    - Client libraries supporting multiple languages
-    - Integrate managed prompt packages from Sugar Hub
-
-# Key Components of the Microservices Framework 🧩 <a name="key-components--"></a>
-
-### Micro LLMs 🧬 <a name="micro-llms--"></a>
-
-Micro LLMs, short for Micro Language Models, serve as the core foundation of Sugarcane AI's microservices architecture. These precision-tuned language models are designed to deliver exceptional accuracy, cost-efficiency, and speed, particularly in app development scenarios. In comparison to conventional base LLMs, Micro LLMs excel by providing developers with superior results while requiring fewer computational resources.
-
-![Micro LLMs](public/images/sugar/micro-llm.png)
-
-**Key Benefits of Micro LLMs**
-
-##### Fine-Tuned for Specific Tasks
-
-Micro LLMs are tailored to excel in specific tasks, ensuring high accuracy and relevance in targeted applications.
-
-##### Resource-Efficient
-
-These models are designed to be lightweight and efficient, consuming fewer computational resources while delivering excellent results.
-
-##### Versatile Integration
-
-Micro LLMs seamlessly integrate into various applications, from chatbots to data analysis, providing versatile solutions for AI-driven tasks.
+# Key Components 🧩 <a name="key-components--"></a>
 
 ### Prompt Packages 📦 <a name="prompt-packages--"></a>
 
@@ -125,19 +114,7 @@ Prompt Packages are a fundamental component of Sugarcane AI, designed to streaml
 
 ![Prompt Packages](public/images/sugar/prompt-packages.png)
 
-**Key Benefits of Prompt Packages:**
-
-##### Structured Prompt Sets
-
-Prompt Packages provide predefined prompts with clear objectives, reducing the complexity of creating custom prompts from scratch
-
-##### Task-Specific Efficiency
-
-Developers and data scientists can leverage these packages to quickly build AI models for specific tasks, saving time and effort
-
-##### Prompt Reusability
-
-Prompt Packages can be easily shared and reused across projects, fostering collaboration and accelerating AI development
+-------------------------------------------------------
 
 ### Prompt Templates 📑 <a name="prompt-templates--"></a>
 
@@ -145,85 +122,15 @@ Prompt templates in Sugarcane AI are powerful tools designed to streamline the c
 
 ![Prompt Templates](public/images/sugar/prompt-templates.png)
 
-**Key Benefits of Prompt Templates:**
+-------------------------------------------------------
 
-##### Time-Saving Efficiency
+### Micro LLMs 🧬 <a name="micro-llms--"></a>
 
-Prompt templates eliminate the need to create prompts from scratch, saving valuable development time. Developers can choose from a library of templates that fit various use cases, ensuring prompt consistency and accuracy.
+Micro LLMs, short for Micro Language Models, serve as the core foundation of Sugarcane AI's microservices architecture. These precision-tuned language models are designed to deliver exceptional accuracy, cost-efficiency, and speed, particularly in app development scenarios. In comparison to conventional base LLMs, Micro LLMs excel by providing developers with superior results while requiring fewer computational resources.
 
-##### Flexible Customization
+![Micro LLMs](public/images/sugar/micro-llm.png)
 
-While prompt templates provide a structured starting point, they also allow for customization. Developers can modify templates to align with specific requirements, ensuring prompts are tailored to the task at hand.
-
-##### Consistency and Standardization
-
-By using prompt templates, development teams can maintain consistency in prompts across AI applications. This standardization enhances prompt quality and ensures predictable AI model behavior.
-
-# Key Benefits of Microservices Framework 🏗️ <a name="microservices-architecture--"></a>
-
-Sugarcane AI's Microservices Architecture is a game-changer for LLM app development, offering developers a streamlined, efficient, and scalable approach.
-
-With a laser focus on Micro LLMs, we provide tools for training, versioning, and shipping these models with ease. You can publish fine-tuned Micro LLMs on Sugar Hub, our collaborative platform, and utilize our Data Assistant to expedite model creation.
-
-This architecture empowers you to harness the full potential of Micro LLMs while simplifying your development journey. It's about clean code, rapid iterations, and improved teamwork, enabling you to supercharge your AI projects.
-
-#### Separation of Concerns & Boosted Collaboration
-
-Microservices foster collaboration among development teams promoting clean and modular code. Separate teams can work on different services concurrently, accelerating development and innovation for top-notch AI apps.
-
-#### Decoupled Flexibility
-
-In microservices, prompts, data, and the application layer are decoupled, providing flexibility. Developers can fine-tune LLMs, manage prompts, and handle data independently, enabling rapid experimentation and innovation.
-
-#### Robust Reliability, Scalability, and Maintenance
-
-Microservices offer improved reliability, effortless scalability, and streamlined maintenance, ensuring consistent AI app performance without disruptions, regardless of app size, while allowing efficient updates and bug fixes.
-
-## Comparison of Monolthic vs Microservices Architecture
-
-![Mono Vs Micro Architecture](public/images/sugar/mono-vs-micro.png)
-
-Supercharge your AI Projects : Experience the benefits of clean code, rapid iterations, and improved teamwork!
-
-## 📺 Demo Videos <a name="demo-videos--"></a>
-
-Get a firsthand look at how Sugarcane AI supercharges AI app development.
-
-Explore practical examples and watch demo videos showcasing Sugarcane AI in action. See how our microservices framework streamlines AI app development and empowers developers to build, train, and manage complex workflows effortlessly.
-
-#### [**Sugar Factory**](/docs/guides/introduction/) : Docouple you Prompts from Application
-
-[![Video Thumbnail](https://img.youtube.com/vi/ns0UWOv-xGo/maxresdefault.jpg)](https://www.youtube.com/watch?v=ns0UWOv-xGo)
-
-#### [**Sugar Bakery**](/docs/guides/introduction/) : Coming soon..
-
-#### [**Sugar Farm**](/docs/guides/introduction/) : Coming soon..
-
-#### [**Sugar Hub**](/docs/guides/introduction/) : Coming soon..
-
-## Roadmap 🗺️ <a name="roadmap--"></a>
-
-Our roadmap for Sugarcane AI is structured around three critical layers within the LLM ecosystem, each designed to empower data scientists and prompt & application developers:
-
-### 1. Sugar Factory : Prompt Layer 📑 <a name="sugar-factory--"></a>
-
-In this phase, we're doubling down on the Prompt Layer. Our mission is to equip you with robust tools for efficient dataset management, prompt control, and Micro LLM training. Expect precise and high-accuracy prompts at your fingertips.
-
-### 2. Sugar Bakery : Workflow Layer 🚀 <a name="sugar-bakery--"></a>
-
-Next, we're turning our focus to the Workflow Layer. Brace yourself for a user-friendly UI toolkit that simplifies workflow design, deployment, and integration. We're making it effortless to build workflows into web, mobile, and chat applications.
-
-### 3. Sugar Farm : LLM Layer 🤖 <a name="sugar-farm--"></a>
-
-At the heart of our roadmap lies the LLM Layer, where the magic of Micro LLMs unfolds. We're revamping the way you train and backtest Micro LLMs using labeled datasets, making it more intuitive and efficient. Seamlessly ship your models over APIs, and dive into Sugar Hub, our dedicated platform for sharing and collaborating on fine-tuned Micro LLMs.
-
-### 4. Sugar Hub : Marketplace Layer 🌐 <a name="sugar-hub--"></a>
-
-The Marketplace Layer is where the magic happens. We're enhancing this core component to allow you to package, share, and reuse workflows, prompts, and datasets effortlessly across the developer ecosystem, fostering collaboration and innovation across the community.
-
-![Roadmap](public/images/sugar/Roadmap.png)
-
-Join us on this exhilarating journey as we transform Sugarcane AI into a powerful and user-friendly platform for Micro LLM-driven workflow automation solutions tailored to developers like you.
+-------------------------------------------------------
 
 ## 🚀 Getting Started <a name="getting-started--"></a>
 
@@ -250,11 +157,11 @@ pnpm install
 
 Explore our [Documentation](https://sugarcaneai.dev/docs/) for detailed instructions on getting started with Sugarcane AI. Dive into our Quick Start guide to build your first AI app in no time!
 
+-------------------------------------------------------
+
 ## 🤖 Contribute <a name="contribute--"></a>
 
 Sugarcane AI is an Open Source Framework : Join our growing community of developers and contributors. Contribute to Sugarcane AI, report issues, or submit feature requests on our [GitHub Repository](https://github.com/sugarcane-ai/sugarcane-ai).
-
-## Important News : Code Repository launching on 15th October 2023 : ⭐ Star on Github ⭐
 
 Contribute to Sugarcane AI with the following steps:
 
@@ -264,34 +171,77 @@ Contribute to Sugarcane AI with the following steps:
 4. Push your changes to your forked repository.
 5. Open a pull request, and we'll review your contributions.
 
-## 👨‍💻 Contributors
+-------------------------------------------------------
 
-Thanks to the following contributors for their efforts and support in adding value to the project.
+## Comparison of Monolthic vs Microservices Architecture
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://sugarcaneai.dev"><img src="https://avatars.githubusercontent.com/u/431165?v=4?s=100" width="100px;" alt="Ankur Agarwal"/><br /><sub><b>Ankur Agarwal</b></sub></a><br /><a href="#projectManagement-devilankur18" title="Project Management">📆</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ravinderk1191"><img src="https://avatars.githubusercontent.com/u/145797535?v=4?s=100" width="100px;" alt="ravinderk1191"/><br /><sub><b>ravinderk1191</b></sub></a><br /><a href="#maintenance-ravinderk1191" title="Maintenance">🚧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="http://pulkitagarwal.com"><img src="https://avatars.githubusercontent.com/u/3229362?v=4?s=100" width="100px;" alt="Pulkit Agarwal"/><br /><sub><b>Pulkit Agarwal</b></sub></a><br /><a href="#code-pulkit21" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/patil-vipul"><img src="https://avatars.githubusercontent.com/u/65603015?v=4?s=100" width="100px;" alt="Vipul Patil"/><br /><sub><b>Vipul Patil</b></sub></a><br /><a href="#code-patil-vipul" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jsaurav7"><img src="https://avatars.githubusercontent.com/u/89625052?v=4?s=100" width="100px;" alt="Saurav Jha"/><br /><sub><b>Saurav Jha</b></sub></a><br /><a href="#code-jsaurav7" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Rahul917-Kumar"><img src="https://avatars.githubusercontent.com/u/82316009?v=4?s=100" width="100px;" alt="Rahul Kumar"/><br /><sub><b>Rahul Kumar</b></sub></a><br /><a href="#code-Rahul917-Kumar" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/yashmyeole"><img src="https://avatars.githubusercontent.com/u/63413296?v=4?s=100" width="100px;" alt="yashmyeole"/><br /><sub><b>yashmyeole</b></sub></a><br /><a href="#design-yashmyeole" title="Design">🎨</a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/LovedeepSingh19"><img src="https://avatars.githubusercontent.com/u/91473234?v=4?s=100" width="100px;" alt="Lovedeep"/><br /><sub><b>Lovedeep</b></sub></a><br /><a href="#code-LovedeepSingh19" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
+![Mono Vs Micro Architecture](public/images/sugar/mono-vs-micro.png)
 
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
+-------------------------------------------------------
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+# Key Benefits of Microservices Framework 🏗️ <a name="microservices-architecture--"></a>
+
+Sugarcane AI's Microservices Architecture is a game-changer for LLM app development, offering developers a streamlined, efficient, and scalable approach.
+
+With a laser focus on Micro LLMs, we provide tools for training, versioning, and shipping these models with ease. You can publish fine-tuned Micro LLMs on Sugar Hub, our collaborative platform, and utilize our Data Assistant to expedite model creation.
+
+This architecture empowers you to harness the full potential of Micro LLMs while simplifying your development journey. It's about clean code, rapid iterations, and improved teamwork, enabling you to supercharge your AI projects.
+
+#### Separation of Concerns & Boosted Collaboration
+
+Microservices foster collaboration among development teams promoting clean and modular code. Separate teams can work on different services concurrently, accelerating development and innovation for top-notch AI apps.
+
+#### Decoupled Flexibility
+
+In microservices, prompts, data, and the application layer are decoupled, providing flexibility. Developers can fine-tune LLMs, manage prompts, and handle data independently, enabling rapid experimentation and innovation.
+
+#### Robust Reliability, Scalability, and Maintenance
+
+Microservices offer improved reliability, effortless scalability, and streamlined maintenance, ensuring consistent AI app performance without disruptions, regardless of app size, while allowing efficient updates and bug fixes.
+
+-------------------------------------------------------
+
+## Roadmap 🗺️ <a name="roadmap--"></a>
+
+Our roadmap for Sugarcane AI is structured around three critical layers within the LLM ecosystem, each designed to empower data scientists and prompt & application developers:
+
+### 1. Sugar Factory : Prompt Layer 📑 <a name="sugar-factory--"></a>
+
+In this phase, we're doubling down on the Prompt Layer. Our mission is to equip you with robust tools for efficient dataset management, prompt control, and Micro LLM training. Expect precise and high-accuracy prompts at your fingertips.
+
+### 2. Sugar Hub : Marketplace Layer 🌐 <a name="sugar-hub--"></a>
+
+The Marketplace Layer is where the magic happens. We're enhancing this core component to allow you to package, share, and reuse workflows, prompts, and datasets effortlessly across the developer ecosystem, fostering collaboration and innovation across the community.
+
+### 3. Sugar Farm : LLM Layer 🤖 <a name="sugar-farm--"></a>
+
+At the heart of our roadmap lies the LLM Layer, where the magic of Micro LLMs unfolds. We're revamping the way you train and backtest Micro LLMs using labeled datasets, making it more intuitive and efficient. Seamlessly ship your models over APIs, and dive into Sugar Hub, our dedicated platform for sharing and collaborating on fine-tuned Micro LLMs.
+
+##### Data Assistant for **Data Scientists** to build Micro LLMs
+
+##### Key Features :
+
+    - Train and backtest Micro LLMs using labeled datasets
+    - Version and ship Fine tuned LLMs over APIs
+    - Publish fine-tuned Micro LLMs on Sugar Hub
+
+### 4. Sugar Bakery : Workflow Layer 🚀 <a name="sugar-bakery--"></a>
+
+Next, we're turning our focus to the Workflow Layer. Brace yourself for a user-friendly UI toolkit that simplifies workflow design, deployment, and integration. We're making it effortless to build workflows into web, mobile, and chat applications.
+
+##### SDK for **Application Develpers** to develop cross-LLM business logic applications
+
+##### Key Features :
+
+    - Implement workflows/plugins with just a few lines of code
+    - Client libraries supporting multiple languages
+    - Integrate managed prompt packages from Sugar Hub
+
+![Roadmap](public/images/sugar/Roadmap.png)
+
+Join us on this exhilarating journey as we transform Sugarcane AI into a powerful and user-friendly platform for Micro LLM-driven workflow automation solutions tailored to developers like you.
+
+-------------------------------------------------------
 
 ## 🌐 Connect with Us <a name="connect-with-us--"></a>
 
