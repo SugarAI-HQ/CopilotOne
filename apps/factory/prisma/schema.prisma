@@ -136,6 +136,7 @@ model PromptTemplate {
   releaseVersion   PromptVersion?    @relation("releaseVersion", fields: [releaseVersionId], references: [id], map: "releaseVersion")
   PromptVariables  PromptVariables[]
   versions         PromptVersion[]   @relation("template")
+  User             User              @relation(fields: [userId], references: [id])
 
   @@unique([promptPackageId, name])
 }
@@ -173,18 +174,19 @@ model PromptVersion {
 }
 
 model User {
-  id             String          @id @default(uuid())
+  id             String           @id @default(uuid())
   name           String?
-  email          String?         @unique
+  email          String?          @unique
   emailVerified  DateTime?
-  username       String?         @unique
+  username       String?          @unique
   image          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt @map("updated_at")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt @map("updated_at")
   accounts       Account[]
   promptPackages PromptPackage[]
   PromptVersion  PromptVersion[]
   sessions       Session[]
+  PromptTemplate PromptTemplate[]
 }
 
 model VerificationToken {

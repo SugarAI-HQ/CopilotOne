@@ -10,10 +10,10 @@ import {
   Typography,
   Dialog,
   IconButton,
+  Tooltip,
   CircularProgress,
 } from "@mui/material";
 import { api } from "~/utils/api";
-import { promptEnvironment } from "~/validators/base";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getUniqueJsonArray, getVariables } from "~/utils/template";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
@@ -31,13 +31,16 @@ import PromptViewArrow from "./prompt_view_arrow";
 import { LoadingButton } from "@mui/lab";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import Counter from "./counter_responsetime";
-import { CreateTemplate } from "./create_template";
 import { PackageOutput as pp } from "~/validators/prompt_package";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import Footer from "./footer";
-import DownloadButtonImg from "./download_button_img";
 import EditIcon from "@mui/icons-material/Edit";
 import { useRouter } from "next/router";
+import ShareIcon from "@mui/icons-material/Share";
+import ShareCube from "./cubes/share_cube";
+import { NextSeo } from "next-seo";
+import DownloadButtonImg from "./download_button_img";
+import { prisma } from "~/server/db";
+import { env } from "~/env.mjs";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -60,9 +63,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [packageData, setPackageData] = useState<pp>({} as pp);
-  const [templateId, setTemplateId] = useState<string>("");
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
+  const [openShareModal, setOpenShareModal] = useState<boolean>(false);
   const router = useRouter();
   const { data, isLoading } = api.cube.getPrompt.useQuery({
     username: username,
@@ -154,8 +157,33 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     setChecked((prevChecked) => !prevChecked);
   };
 
+  const shareUrl = `${env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
+  const imageUrl = `${process.env.NEXT_PUBLIC_APP_LOGO}`;
+
   return (
     <>
+      <NextSeo
+        title={template}
+        description={data?.description}
+        // canonical={shareUrl}
+        openGraph={{
+          url: `${shareUrl}`,
+          title: `${template}`,
+          description: `${data?.description}`,
+          type: "website",
+          images: [
+            {
+              url: `${imageUrl}`,
+              width: 1200,
+              height: 630,
+              type: "image/png",
+            },
+          ],
+        }}
+        twitter={{
+          cardType: "summary_large_image",
+        }}
+      />
       <Box
         sx={{
           display: "flex",
@@ -202,16 +230,26 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}>
-                        {false && (
-                          <IconButton>
-                            <WhatsAppIcon
-                              sx={{
-                                color: "var(--sugarhub-text-color)",
-                                fontSize: "2rem",
-                              }}
-                            />
+                        <Tooltip title="share cube" placement="top">
+                          <IconButton
+                            onClick={() => setOpenShareModal(!openShareModal)}
+                          >
+                            {session?.user.username == username && (
+                              <ShareIcon
+                                sx={{
+                                  color: "var(--sugarhub-text-color)",
+                                  fontSize: "2rem",
+                                }}
+                              />
+                            )}
                           </IconButton>
-                        )}
+                        </Tooltip>
+                        {/* modal to show sharing option */}
+                        <ShareCube
+                          setOpenShareModal={setOpenShareModal}
+                          open={openShareModal}
+                          shareUrl={shareUrl}
+                        />
                       </Grid>
                     </Grid>
                   </Box>
@@ -232,17 +270,19 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                        <IconButton color="primary">
-                          {session?.user.username == username && (
-                            <EditIcon
-                              onClick={() =>
-                                router.push(
-                                  `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
-                                )
-                              }
-                            ></EditIcon>
-                          )}
-                        </IconButton>
+                        <Tooltip title="edti template" placement="top">
+                          <IconButton color="primary">
+                            {session?.user.username == username && (
+                              <EditIcon
+                                onClick={() =>
+                                  router.push(
+                                    `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                                  )
+                                }
+                              ></EditIcon>
+                            )}
+                          </IconButton>
+                        </Tooltip>
                       </Grid>
                     </Grid>
                   </Box>
@@ -296,6 +336,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           cursor: "not-allowed",
                           width: "8rem",
                         },
+                        width: "8rem",
                       }}
                       loadingPosition="start"
                       startIcon={<PlayArrowIcon />}
