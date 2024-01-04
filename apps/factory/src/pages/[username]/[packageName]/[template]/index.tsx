@@ -9,16 +9,12 @@ const TemplateWithoutVersion = () => {
   const packageName = router.query.packageName as string;
   const template = router.query.template as string;
 
-  //// Hack for fixing of redirection to sugarcubes instead of api/auth/signin from homepage button
-  //
-
-  if (username === "api" && packageName === "auth" && template === "signin") {
-    useEffect(() => {
+  useEffect(() => {
+    // Hack for fixing of redirection to sugarcubes instead of api/auth/signin from homepage button
+    if (username === "api" && packageName === "auth" && template === "signin") {
       window.location.reload();
-    }, []);
-  }
-
-  //
+    }
+  }, []);
 
   return (
     <>

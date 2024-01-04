@@ -4,17 +4,25 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - docker
       - develop
+      - main
+      - docker/*
   pull_request:
     branches:
       - main
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  SHORT_SHA: ${{ github.sha || github.ref_name }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,28 +36,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # - name: Login to Amazon ECR Public
-      #   id: login-ecr-public
-      #   uses: aws-actions/amazon-ecr-login@v2
-      #   with:
-      #     registry-type: public
-      #     aws-region: us-east-1
+      # - name: Npm version name
+      #   run: echo running on branch ${NPM_PACKAGE_VERSION} --- ${GITHUB_ENV}
 
-      - name: Set up Docker
+      - name: Build Docker Image
         uses: docker/build-push-action@v5.1.0
+
         with:
           build-args: |
             "PROJECT_NAME=factory"
           tags: |
-            sugarcaneai/factory:latest
+            ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.BRANCH_NAME }}-latest
+            ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.SHORT_SHA }}
           push: true
-
-      # - name: Build, tag, and push docker image to Amazon ECR Public
-      #   env:
-      #     REGISTRY: ${{ steps.login-ecr-public.outputs.registry }}
-      #     REGISTRY_ALIAS: my-ecr-public-registry-alias
-      #     REPOSITORY: my-ecr-public-repo
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: |
-      #     docker build -t $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG .
-      #     docker push $REGISTRY/$REGISTRY_ALIAS/$REPOSITORY:$IMAGE_TAG
