@@ -1,5 +1,3 @@
-import { warn } from "console";
-
 /** @type {import("eslint").Linter.Config} */
 const config = {
   parser: "@typescript-eslint/parser",

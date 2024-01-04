@@ -1,0 +1,16 @@
+*
+!.env.example
+!.eslintrc.cjs
+!next-env.d.ts
+!.next
+!.sentryclirc
+!next.config.mjs
+!package.json
+!prisma
+!public
+!sentry.client.config.ts
+!sentry.edge.config.ts
+!sentry.server.config.ts
+!src
+!tailwind.config.ts
+!tsconfig.json
