@@ -1,4 +1,8 @@
 Dockerfile
+.env
+app/factory/.env
+app/factory/.env.example
+app/factory/.env.production
 .dockerignore
 node_modules
 npm-debug.log

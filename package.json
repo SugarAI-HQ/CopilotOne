@@ -10,7 +10,7 @@
     "prepare": "npx husky install",
     "pre-commit": "pnpm run --filter \"factory\" pre-commit",
     "build": "pnpm run  -r build",
-    "docker:build": "docker build . --build-arg='PROJECT_NAME=factory' --tag f2:latest",
+    "docker:build": "docker build . --build-arg='PROJECT_NAME=factory' --tag factory:local-latest",
     "dev": "pnpm run --filter \"factory\" dev",
     "db": "pnpm run --filter \"factory\" db"
   },

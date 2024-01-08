@@ -1,5 +1,4 @@
 *
-!.env.example
 !.eslintrc.cjs
 !next-env.d.ts
 !.next
