@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { useSession, signOut, signIn } from "next-auth/react";
 import { Avatar, Button, MenuItem } from "@mui/material";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Logo1 from "../../../public/navbar-logo.png";
 import Image from "next/image";
 

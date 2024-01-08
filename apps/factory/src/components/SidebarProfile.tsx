@@ -11,7 +11,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import RouteGuard from "~/components/RouteGuard";
 import { MdLogout } from "react-icons/md";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function SidebarProfile() {
   const router = useRouter();

@@ -30,7 +30,7 @@ import { FormDropDownInput } from "./form_components/formDropDownInput";
 import EditIcon from "@mui/icons-material/Edit";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 export function CreateTemplate({
   pp,
@@ -48,8 +48,9 @@ export function CreateTemplate({
   ptId: string | boolean | undefined;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-  const edit = router.query.edit;
+  // const router = useRouter();
+  const searchParams = useSearchParams();
+  const edit = searchParams?.get("edit");
   const [defaultModelType, setDefaultModelType] = useState<
     ModelTypeType | undefined
   >(ModelTypeSchema.enum.TEXT2TEXT);

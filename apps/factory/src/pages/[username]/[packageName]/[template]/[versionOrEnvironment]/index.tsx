@@ -1,5 +1,5 @@
 import React from "react";
-import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import PromptTemplateView from "~/components/prompt_template_view";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 
@@ -13,11 +13,14 @@ import {
 import { prisma } from "~/server/db";
 
 const TemplateWithVersion = () => {
-  const router = useRouter();
-  const username = router.query.username as string;
-  const packageName = router.query.packageName as string;
-  const template = router.query.template as string;
-  const versionOrEnvironment = router.query.versionOrEnvironment as string;
+  // const router = useRouter();
+  const searchParams = useSearchParams();
+  const username = searchParams?.get("username") as string;
+  const packageName = searchParams?.get("packageName") as string;
+  const template = searchParams?.get("template") as string;
+  const versionOrEnvironment = searchParams?.get(
+    "versionOrEnvironment",
+  ) as string;
 
   return (
     <>

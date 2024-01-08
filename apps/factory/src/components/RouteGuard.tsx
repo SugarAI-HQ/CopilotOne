@@ -1,7 +1,7 @@
 // RouteGuard.tsx
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import PageLoader from "./PageLoader";
 
@@ -12,10 +12,9 @@ export default function RouteGuard({
 }) {
   const { data: session } = useSession();
   const router = useRouter();
+  const pathName = usePathname();
   const [loading, setLoading] = useState(true); // Add a loading state
-  const isPromptPackageRoute = router.pathname.startsWith(
-    "/dashboard/prompts/",
-  );
+  const isPromptPackageRoute = pathName?.startsWith("/dashboard/prompts/");
   useEffect(() => {
     if (isPromptPackageRoute) {
       return;

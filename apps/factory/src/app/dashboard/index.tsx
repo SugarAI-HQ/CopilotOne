@@ -21,7 +21,7 @@ import { mainListItems, secondaryListItems } from "~/app/dashboard/listItems";
 import Chart from "./Chart";
 import Deposits from "./Deposits";
 import Orders from "./Orders";
-import Footer from "./footer";
+// import Footer from "./footer";
 
 function Copyright(props: any) {
   return (
