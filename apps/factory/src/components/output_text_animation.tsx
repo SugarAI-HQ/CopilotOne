@@ -30,7 +30,7 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
         if (currentIndex <= output.length) {
           setDisplayedText(output.slice(0, currentIndex));
           currentIndex++;
-          scrollToBottom(); // Scroll to bottom whenever new text is added
+          scrollToBottom();
         } else {
           clearInterval(intervalId);
         }
@@ -39,7 +39,8 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
       return () => clearInterval(intervalId);
     } else {
       setDisplayedText(output);
-      scrollToBottom(); // Scroll to bottom whenever new text is added
+      scrollToBottom();
+      if (containerRef.current) containerRef.current.scrollLeft = 0;
     }
   }, [output, modelType]);
 
@@ -50,8 +51,8 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
         "&::-webkit-scrollbar-thumb": {
           backgroundColor: "Highlight",
         },
-        maxHeight: "150px",
-        overflowY: "auto",
+        maxHeight: "250px",
+        overflow: "auto",
         "&::-webkit-scrollbar": {
           width: "0.4em",
         },
@@ -67,7 +68,16 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
         </>
       ) : (
         <Typography variant="body2" textAlign={"left"}>
-          {displayedText}
+          <pre>
+            <code
+              style={{
+                whiteSpace: "pre-wrap",
+                wordWrap: "break-word",
+              }}
+            >
+              {displayedText}
+            </code>
+          </pre>
         </Typography>
       )}
     </Box>

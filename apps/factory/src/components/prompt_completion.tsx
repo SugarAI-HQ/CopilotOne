@@ -48,7 +48,16 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
               </>
             ) : (
               <Typography variant="body2" textAlign={"left"}>
-                {output}
+                <pre>
+                  <code
+                    style={{
+                      whiteSpace: "pre-wrap",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    {output}
+                  </code>
+                </pre>
               </Typography>
             )}
           </Box>

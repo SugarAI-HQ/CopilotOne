@@ -366,62 +366,65 @@ function PromptVersion({
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
               <Grid
                 container
-                justifyContent={"flex-start"}
-                flexDirection={"column"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                flexDirection={"row"}
               >
-                <PromptOutput
-                  output={promptOutput}
-                  modelType={pt?.modelType as ModelTypeType}
-                ></PromptOutput>
-                {pl && (
-                  <Box
-                    sx={{
-                      ml: 5,
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <LabelIcons
-                      logId={pl?.id}
-                      labelledState={pl?.labelledState}
-                    />
-                    |
-                    {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
-                      <div
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          display: "flex",
-                        }}
-                      >
-                        <DownloadButtonImg base64image={promptOutput} />|
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          display: "flex",
-                        }}
-                      >
-                        <CopyToClipboardButton
-                          textToCopy={promptOutput}
-                          textToDisplay={"Copy"}
-                        />
-                        |
-                      </div>
-                    )}
-                    <PromotOutputLog pl={pl} />
-                  </Box>
+                <Grid item lg={8} md={8} sm={12} xs={12}>
+                  <PromptOutput
+                    output={promptOutput}
+                    modelType={pt?.modelType as ModelTypeType}
+                  ></PromptOutput>
+                  {pl && (
+                    <Box
+                      sx={{
+                        ml: 5,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <LabelIcons
+                        logId={pl?.id}
+                        labelledState={pl?.labelledState}
+                      />
+                      |
+                      {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <DownloadButtonImg base64image={promptOutput} />|
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <CopyToClipboardButton
+                            textToCopy={promptOutput}
+                            textToDisplay={"Copy"}
+                          />
+                          |
+                        </div>
+                      )}
+                      <PromotOutputLog pl={pl} />
+                    </Box>
+                  )}
+                </Grid>
+                {pt?.modelType === ModelTypeSchema.Enum.TEXT2TEXT && (
+                  <Grid item lg={3} md={3} sm={12} xs={12}>
+                    <PromptPerformance
+                      data={promptPerformance}
+                    ></PromptPerformance>
+                  </Grid>
                 )}
               </Grid>
-              {pt?.modelType === ModelTypeSchema.Enum.TEXT2TEXT && (
-                <Grid container alignItems="center" alignContent={"center"}>
-                  <PromptPerformance
-                    data={promptPerformance}
-                  ></PromptPerformance>
-                </Grid>
-              )}
             </Stack>
           )}
         </Box>
