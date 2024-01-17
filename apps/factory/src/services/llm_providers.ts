@@ -1,5 +1,6 @@
 import type { LlmConfigSchema } from "~/validators/prompt_version";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+import { getProvider } from "~/services/providers";
 
 export async function LlmProvider(
   prompt: string,
@@ -10,8 +11,8 @@ export async function LlmProvider(
   isDevelopment: boolean = false,
 ) {
   console.log(`provider >>>> ${llmProvider}`);
-  const { run } = await import(`~/services/providers/${llmProvider}`);
-  const output = await run(
+  const provider = getProvider(llmProvider);
+  const output = await provider(
     prompt,
     llmModel,
     llmConfig,

@@ -35,7 +35,7 @@ export async function fetchWithRetry(
   return null;
 }
 
-export async function llama2Run(
+export async function run(
   prompt: string,
   llmModel: string,
   llmConfig: LlmConfigSchema,

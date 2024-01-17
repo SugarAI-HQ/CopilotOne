@@ -19,7 +19,7 @@ export interface LLMConfig {
 //     'CHAT_HISTORY': 'No recent conversation',
 //   };
 
-export async function openaiRun(
+export async function run(
   prompt: string,
   llm_model: string,
   llmConfig: LlmConfigSchema,
