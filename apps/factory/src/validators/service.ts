@@ -40,6 +40,9 @@ export const getPromptOutput = z
   .object({
     version: z.string().optional(),
     template: z.string(),
+    promptData: z.unknown(),
+    llmProvider: z.string(),
+    model: z.string(),
     description: z.string().optional(),
     modelType: ModelTypeSchema,
     versionOrEnvironment: z.string().default(promptEnvironment.Enum.RELEASE),
@@ -55,6 +58,7 @@ export const generateInput = z
   .object({
     // Template Data
     data: z.record(z.any()),
+    // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
   })
   .merge(getPromptInput)

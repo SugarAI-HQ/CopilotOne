@@ -35,6 +35,7 @@ import { promptEnvironment } from "~/validators/base";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
 import LoadingButton from "@mui/lab/LoadingButton";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { v4 as uuidv4 } from "uuid";
 
 const isDev = process.env.NODE_ENV === "development";
 import LabelIcons from "./label_icon";
@@ -50,6 +51,14 @@ import DownloadButtonImg from "./download_button_img";
 import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import Counter from "./counter_responsetime";
 import CopyToClipboardButton from "./copy_button";
+import { promptRole } from "~/validators/base";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import {
+  PromptJsonDataType,
+  PromptDataType,
+  PromptDataSchemaType,
+} from "~/validators/prompt_version";
 
 function PromptVersion({
   ns,
@@ -90,6 +99,17 @@ function PromptVersion({
   const [isDirty, setIsDirty] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [outputLog, setOutputLog] = useState<GenerateOutput>(null);
+  const [prompt, setPrompt] = useState<PromptDataSchemaType>(
+    lpv.promptData as PromptDataSchemaType,
+  );
+
+  const [promptInputs, setPromptInputs] = useState<PromptDataType>(prompt.data);
+
+  // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
+  const haveroleUserAssistant = providerModels[
+    `${pt?.modelType as keyof typeof providerModels}`
+  ].models[`${provider}`]?.find((mod) => mod.name === model)?.role;
+
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
@@ -103,17 +123,17 @@ function PromptVersion({
 
   const generateMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
 
-  const handleTemplateChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const txt = e.target.value;
+  const handleTemplateChange = (txt: string) => {
     debouncedHandleTemplateChange(txt);
-    // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
 
+  // useEffect(() => {
+  //   console.log("----------", lpv, "---------------");
+  // });
+
   const debouncedHandleTemplateChange = _debounce((txt: string) => {
-    setTemplate(txt);
-    setIsDirty(true);
     const variables = getUniqueJsonArray(getVariables(txt), "key");
-    setVariables(variables);
+    setVariables([...variables]);
   }, 500);
 
   const handleVariablesChange = (k: string, v: string) => {
@@ -128,9 +148,24 @@ function PromptVersion({
         return pvr;
       });
     });
-
     // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
+
+  useEffect(() => {
+    if (haveroleUserAssistant) {
+      setVariables([
+        ...getUniqueJsonArray(
+          getVariables(JSON.stringify(lpv?.promptData) || ""),
+          "key",
+        ),
+      ]);
+    } else {
+      setVariables([
+        ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
+      ]);
+    }
+    // setOpenAiVariables([...openAivariables]);
+  }, []);
 
   const handleChange = () => {
     setChecked((prevChecked) => !prevChecked);
@@ -181,6 +216,22 @@ function PromptVersion({
   };
 
   useEffect(() => {
+    if (haveroleUserAssistant) {
+      setVariables([
+        ...getUniqueJsonArray(
+          getVariables(JSON.stringify(lpv?.promptData) || ""),
+          "key",
+        ),
+      ]);
+    } else {
+      setVariables([
+        ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
+      ]);
+    }
+    handleSave();
+  }, [provider, model]);
+
+  useEffect(() => {
     let saveTimer: NodeJS.Timeout;
     if (!lpv.publishedAt && isDirty) {
       saveTimer = setTimeout(() => {
@@ -193,12 +244,13 @@ function PromptVersion({
   }, [template, isDirty]);
 
   const handleSave = () => {
+    JSON.stringify(promptInputs);
     pvUpdateMutation.mutate({
       promptPackageId: lpv.promptPackageId,
       promptTemplateId: lpv.promptTemplateId,
       id: lpv.id,
-
       template: template,
+      promptData: { v: prompt.v, data: promptInputs },
       llmProvider: provider,
       llmModel: model,
       llmConfig: llmConfig,
@@ -213,6 +265,64 @@ function PromptVersion({
   const onDeployUpdate = (pv: VersionSchema, pt: pt) => {
     setPv(pv);
     onTemplateUpdate(pt);
+  };
+
+  // CRUD functionality for Json promptData
+
+  const addNewPropmtInput = () => {
+    const length = promptInputs.length;
+    const newObj = {
+      id: uuidv4(),
+      role: promptRole.Enum.user as string,
+      content: "",
+    };
+    if (
+      length > 0 &&
+      promptInputs[length - 1]!.role === (promptRole.Enum.user as string)
+    ) {
+      newObj.role = promptRole.Enum.assistant as string;
+    }
+    const tempArray = [...promptInputs, newObj];
+    handleTemplateChange(JSON.stringify(tempArray));
+    setPromptInputs(tempArray);
+  };
+
+  const changePromptInputRole = (index: number) => {
+    const tempArray = promptInputs.map(
+      (prompt: PromptJsonDataType, idx: number) => ({
+        ...prompt,
+        role:
+          index === idx
+            ? prompt.role === (promptRole.Enum.user as string)
+              ? (promptRole.Enum.assistant as string)
+              : (promptRole.Enum.user as string)
+            : prompt.role,
+      }),
+    );
+    handleTemplateChange(JSON.stringify(tempArray));
+    setPromptInputs([...tempArray]);
+  };
+
+  const changePromptInputContent = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    index: number,
+  ) => {
+    const tempArray = [
+      ...promptInputs.map((prompt: PromptJsonDataType, idx: number) => ({
+        ...prompt,
+        content: idx === index ? e.target.value : prompt.content,
+      })),
+    ];
+
+    handleTemplateChange(JSON.stringify(tempArray));
+    setPromptInputs([...tempArray]);
+  };
+  const deletePrompt = (index: number) => {
+    const tempArray = promptInputs.filter(
+      (_: any, idx: number) => index !== idx,
+    );
+    handleTemplateChange(JSON.stringify(tempArray));
+    setPromptInputs([...tempArray]);
   };
 
   return (
@@ -249,26 +359,119 @@ function PromptVersion({
           </Box>
         </Box>
         <Box>
-          <TextField
-            label="Template"
-            disabled={!!lpv.publishedAt}
-            multiline
-            fullWidth
-            style={{ width: "100%" }}
-            minRows={5}
-            maxRows={10}
-            defaultValue={template}
-            onChange={handleTemplateChange}
-            variant="outlined"
-          />
-          {/* <TextareaAutosize
-            minRows={5}
-            maxRows={10}
-            placeholder="Write your Smart Template"
-            value={template}
-            onChange={handleTemplateChange}
-            style={{ width: '100%' }}
-          /> */}
+          {/* add all the code from promptEditor here */}
+          <>
+            {!haveroleUserAssistant ? (
+              <>
+                <TextField
+                  label="Template"
+                  disabled={!!lpv.publishedAt}
+                  multiline
+                  fullWidth
+                  style={{ width: "100%" }}
+                  minRows={5}
+                  maxRows={10}
+                  defaultValue={template}
+                  onChange={(e) => handleTemplateChange(e.target.value)}
+                  variant="outlined"
+                />
+              </>
+            ) : (
+              <>
+                <Box sx={{ maxHeight: "300px", overflowY: "auto" }}>
+                  {promptInputs.map(
+                    (prompts: PromptJsonDataType, ind: number) => {
+                      return (
+                        <>
+                          <Box sx={{ margin: "1rem" }} key={prompts.id}>
+                            <Grid container spacing={2}>
+                              <Grid item xs={2} sm={2} md={2} lg={2}>
+                                <Button
+                                  onClick={() => {
+                                    prompts.role !== "system"
+                                      ? changePromptInputRole(ind)
+                                      : "";
+                                  }}
+                                  sx={{ padding: "1rem" }}
+                                >
+                                  {prompts.role}
+                                </Button>
+                              </Grid>
+                              <Grid item xs={8} sm={8} md={8} lg={8}>
+                                <TextField
+                                  fullWidth
+                                  multiline
+                                  defaultValue={prompts.content}
+                                  onChange={(e) =>
+                                    changePromptInputContent(e, ind)
+                                  }
+                                />
+                              </Grid>
+                              <Grid item xs={2} sm={2} md={2} lg={2}>
+                                <Box sx={{ display: "flex" }}>
+                                  <Button
+                                    sx={{
+                                      padding: "1rem",
+                                      display: `${
+                                        prompts.role !== "system"
+                                          ? "block"
+                                          : "none"
+                                      }`,
+                                    }}
+                                    onClick={() => deletePrompt(ind)}
+                                  >
+                                    <RemoveCircleIcon />
+                                  </Button>
+                                  {ind === promptInputs.length - 1 ? (
+                                    <>
+                                      <Button
+                                        onClick={addNewPropmtInput}
+                                        sx={{
+                                          padding: "1rem",
+                                          display: `${
+                                            prompts.role !== "system"
+                                              ? "block"
+                                              : "none"
+                                          }`,
+                                        }}
+                                      >
+                                        <AddIcon />
+                                      </Button>
+                                    </>
+                                  ) : (
+                                    <></>
+                                  )}
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        </>
+                      );
+                    },
+                  )}
+                </Box>
+
+                {promptInputs.length === 1 ? (
+                  <>
+                    <Tooltip title="Add Input" placement="top">
+                      <Button
+                        onClick={addNewPropmtInput}
+                        color="primary"
+                        variant="outlined"
+                        sx={{ margin: "1rem" }}
+                      >
+                        <AddIcon sx={{ fontSize: "2rem" }} />
+                      </Button>
+                    </Tooltip>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+            )}
+          </>
+
+          {/*  */}
 
           <Divider textAlign="right"></Divider>
           <Stack direction="row" spacing={1} sx={{ p: 1 }}>
@@ -289,9 +492,18 @@ function PromptVersion({
               color="success"
               variant="outlined"
               onClick={handleRun}
-              // disabled={
-              //   template.length <= 10 || pvrs.some((v) => v.value === "")
-              // }
+              disabled={
+                haveroleUserAssistant
+                  ? // promptInputs.length >0 || openAivariables.some((v) => v.value === "")
+                    promptInputs.length > 0 &&
+                    !promptInputs.some(
+                      (input: { id: string; role: string; content: string }) =>
+                        input.content.length === 0,
+                    )
+                    ? pvrs.some((v) => v.value === "")
+                    : true
+                  : template.length <= 10 || pvrs.some((v) => v.value === "")
+              }
               loadingPosition="start"
               startIcon={<PlayArrowIcon />}
               loading={isLoading}

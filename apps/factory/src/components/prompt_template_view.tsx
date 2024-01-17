@@ -41,6 +41,12 @@ import { NextSeo } from "next-seo";
 import DownloadButtonImg from "./download_button_img";
 import { prisma } from "~/server/db";
 import { env } from "~/env.mjs";
+import { providerModels } from "~/validators/base";
+import {
+  PromptDataSchemaType,
+  PromptDataType,
+} from "~/validators/prompt_version";
+import { promptEnvironment } from "~/validators/base";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -66,6 +72,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
   const [openShareModal, setOpenShareModal] = useState<boolean>(false);
+
   const router = useRouter();
   const { data, isLoading } = api.cube.getPrompt.useQuery({
     username: username,
@@ -85,12 +92,31 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     },
   );
 
+  const haveroleUserAssistant = providerModels[
+    `${data?.modelType as keyof typeof providerModels}`
+  ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
+    ?.role;
+
   useEffect(() => {
-    const variables = getUniqueJsonArray(
-      getVariables(data?.template || ""),
-      "key",
-    );
-    setVariables(variables);
+    if (haveroleUserAssistant) {
+      setVariables([
+        ...getUniqueJsonArray(
+          getVariables(
+            JSON.stringify((data?.promptData as PromptDataSchemaType).data) ||
+              "",
+          ),
+          "key",
+        ),
+      ]);
+    } else {
+      setVariables([
+        ...getUniqueJsonArray(getVariables(data?.template || ""), "key"),
+      ]);
+    }
+  }, []);
+
+  useEffect(() => {
+    setVariables(getUniqueJsonArray(getVariables(data?.template || ""), "key"));
   }, [data]);
 
   const handleVariablesChange = (k: string, v: string) => {
@@ -127,7 +153,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         template: template || "",
         versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
         isDevelopment: checked,
-
+        environment: promptEnvironment.Enum.DEV,
         data: data,
       } as GenerateInput,
       {
@@ -215,7 +241,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                 </Box>
               ) : data || !versionOrEnvironment ? (
                 <>
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, paddingRight: "1rem" }}>
                     <Grid container columnSpacing={2}>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
                       <Grid item xs={9} sm={10} md={10} lg={10}>
@@ -230,7 +256,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.5} sm={1} md={1} lg={1}>
-                        <Tooltip title="share cube" placement="top">
+                        <Tooltip title="Share Cube" placement="top">
                           <IconButton
                             onClick={() => setOpenShareModal(!openShareModal)}
                           >
@@ -253,7 +279,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       </Grid>
                     </Grid>
                   </Box>
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ flexGrow: 1, paddingRight: "1rem" }}>
                     <Grid container wrap="nowrap" columnSpacing={2}>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
                       <Grid item xs={9.4} sm={10} md={10} lg={10}>
@@ -270,7 +296,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         </Typography>
                       </Grid>
                       <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                        <Tooltip title="edti template" placement="top">
+                        <Tooltip title="Edit Template" placement="top">
                           <IconButton color="primary">
                             {session?.user.username == username && (
                               <EditIcon
@@ -279,6 +305,10 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                                     `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
                                   )
                                 }
+                                sx={{
+                                  color: "var(--sugarhub-text-color)",
+                                  fontSize: "2rem",
+                                }}
                               ></EditIcon>
                             )}
                           </IconButton>
@@ -290,7 +320,13 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     {pvrs && (
                       <>
                         {data && (
-                          <PromptViewArrow promptTemplate={data?.template} />
+                          <PromptViewArrow
+                            promptTemplate={data?.template}
+                            promptInputs={
+                              (data?.promptData as PromptDataSchemaType).data
+                            }
+                            haveroleUserAssistant={haveroleUserAssistant}
+                          />
                         )}
                         <PromptVariables
                           vars={pvrs}

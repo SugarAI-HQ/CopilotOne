@@ -60,7 +60,7 @@ export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','
 
 export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType']);
 
-export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
+export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','promptData','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
 
 export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','username','image','createdAt','updatedAt']);
 
@@ -206,6 +206,7 @@ export const PromptVersionSchema = z.object({
   userId: z.string(),
   version: z.string(),
   template: z.string(),
+  promptData: InputJsonValue,
   inputFields: z.string().array(),
   templateFields: z.string().array(),
   llmProvider: z.string(),

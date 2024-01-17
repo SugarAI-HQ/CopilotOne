@@ -16,7 +16,7 @@ function PromptVariables({
   mode,
   cube,
 }: {
-  vars: Array<PromptVariableProps>;
+  vars: Array<PromptVariableProps> | undefined;
   onChange: (key: string, value: string) => void;
   mode: DisplayModes;
   cube?: boolean;

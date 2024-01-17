@@ -7,7 +7,11 @@ import { generateInput, generateOutput } from "~/validators/service";
 import { generateLLmConfig, generatePrompt } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
 import { LlmProvider } from "~/services/llm_providers";
-
+import { providerModels } from "~/validators/base";
+import {
+  ModelTypeType,
+  ModelTypeSchema,
+} from "~/generated/prisma-client-zod.ts";
 export const serviceRouter = createTRPCRouter({
   generate: protectedProcedure
     .meta({
@@ -26,10 +30,30 @@ export const serviceRouter = createTRPCRouter({
       let [pv, pt] = await getPv(ctx, input);
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
       if (pv) {
+        const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
-        const prompt = generatePrompt(pv.template, input.data || {});
+        let prompt = "";
+        if (modelType === ModelTypeSchema.Enum.TEXT2IMAGE) {
+          // get template data
+          prompt = generatePrompt(pv.template, input.data || {});
+        } else {
+          // here decide whether to take template data or promptData
+          if (
+            providerModels[`${modelType}`].models[`${pv.llmProvider}`]?.find(
+              (item) => item.name === pv.llmModel,
+            )?.role
+          ) {
+            prompt = generatePrompt(
+              JSON.stringify(pv.promptData.data),
+              input.data || {},
+            );
+          } else {
+            prompt = generatePrompt(pv.template, input.data || {});
+          }
+        }
+
         console.log(`prompt >>>> ${prompt}`);
-        // Todo: Load a provider on the fly
+
         const llmConfig = generateLLmConfig(pv.llmConfig);
         const output = await LlmProvider(
           prompt,

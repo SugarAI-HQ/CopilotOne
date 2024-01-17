@@ -19,6 +19,17 @@ export const llmConfigSchema = z.object({
 });
 export type LlmConfigSchema = z.infer<typeof llmConfigSchema>;
 
+export const promptJsonDataSchema = z.object({
+  id: z.string(),
+  role: z.string(),
+  content: z.string(),
+});
+
+export type PromptJsonDataType = z.infer<typeof promptJsonDataSchema>;
+
+export const PromptJsonDataSchema = z.array(promptJsonDataSchema).default([]);
+export type PromptDataType = z.infer<typeof PromptJsonDataSchema>;
+
 export const getVersionsInput = z
   .object({
     userId: z.string().optional(),
@@ -51,6 +62,12 @@ export const createVersionInput = z
 
 export type CreateVersionInput = z.infer<typeof createVersionInput>;
 
+export const PromptDataSchema = z.object({
+  v: z.number(),
+  data: PromptJsonDataSchema,
+});
+export type PromptDataSchemaType = z.infer<typeof PromptDataSchema>;
+
 export const updateVersionInput = z
   .object({
     id: z.string(),
@@ -59,6 +76,7 @@ export const updateVersionInput = z
 
     // version: z.string(),
     template: z.string(),
+    promptData: z.unknown(),
     // changelog: z.string().optional(),
     llmProvider: z.string(),
     llmModel: z.string(),
@@ -84,7 +102,7 @@ const versionSchema = z.object({
   promptTemplateId: z.string(),
   version: z.string(),
   template: z.string(),
-
+  promptData: z.unknown(),
   llmProvider: z.string(),
   llmModel: z.string(),
   llmConfig: InputJsonValue.nullable(),

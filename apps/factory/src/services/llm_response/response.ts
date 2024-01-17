@@ -31,7 +31,7 @@ export function generateOutput(
   } else {
     if (response?.images?.length > 0) {
       return {
-        completion: response.images[0],
+        completion: response.images[0] || "",
         performance: {
           latency: latency || 0,
           prompt_tokens: 0,

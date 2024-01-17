@@ -5,6 +5,7 @@ import {
 } from "~/server/api/trpc";
 import { getPromptInput, getPromptOutput } from "~/validators/service";
 import { getPv } from "./service";
+import { PromptDataSchemaType } from "~/validators/prompt_version";
 
 export const cubeRouter = createTRPCRouter({
   getPrompt: publicProcedure
@@ -30,6 +31,9 @@ export const cubeRouter = createTRPCRouter({
         console.info(`Prompt generating output ${JSON.stringify(pv)}`);
         return {
           template: pv.template,
+          promptData: pv.promptData as PromptDataSchemaType,
+          llmProvider: pv.llmProvider,
+          model: pv.llmModel,
           version: pv.version,
           createdAt: pv.createdAt,
           updatedAt: pv.updatedAt,

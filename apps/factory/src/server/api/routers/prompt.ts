@@ -1,5 +1,7 @@
 import { ppid } from "process";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { v4 as uuidv4 } from "uuid";
+import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
 import {
   getPackagesInput,
   getPackageInput,
@@ -27,10 +29,16 @@ import {
   deleteVersionInput,
   versionOutput,
   versionListOutput,
+  PromptDataType,
+  VersionOutput,
+  VersionListOutput,
+  PromptDataSchemaType,
+  PromptDataSchema,
 } from "~/validators/prompt_version";
-import { JsonObject } from "@prisma/client/runtime/library";
+import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { Visibility } from "@mui/icons-material";
+import { JSONArray } from "superjson/dist/types";
 
 export const promptRouter = createTRPCRouter({
   getPackages: protectedProcedure
@@ -236,8 +244,24 @@ export const promptRouter = createTRPCRouter({
         ? `I am looking at the {@OBJECT}`
         : `A photo of an astronaut riding a horse on {@OBJECT}`;
 
-      let defaultTemplate = {
+      let promptData: PromptDataSchemaType = {
+        v: 1,
+        data: [
+          {
+            id: uuidv4(),
+            role: "system",
+            content: "you are a smart mathematician",
+          },
+          {
+            id: uuidv4(),
+            role: "user",
+            content: `help me with {@OBJECT}`,
+          },
+        ],
+      };
+      const defaultTemplate = {
         template: template,
+        promptData: promptData,
         llmModelType: input.moduleType,
         llmProvider: modelType ? "llama2" : "runwayml",
         llmModel: modelType ? "7b" : "stable-diffusion-v1-5",
@@ -253,12 +277,12 @@ export const promptRouter = createTRPCRouter({
         });
         if (forkedFrom) {
           defaultTemplate.template = forkedFrom.template;
+          defaultTemplate.promptData =
+            forkedFrom.promptData as PromptDataSchemaType;
           defaultTemplate.llmProvider = forkedFrom.llmProvider;
           defaultTemplate.llmModel = forkedFrom.llmModel;
           defaultTemplate.llmConfig = forkedFrom.llmConfig as JsonObject;
         }
-
-        // defaultTemplate.forkedFromId = input.forkedFromId
       }
 
       try {
@@ -276,7 +300,6 @@ export const promptRouter = createTRPCRouter({
             changelog: "",
           },
         });
-
         return pv;
       } catch (error: any) {
         console.log(`Error in creating version -------------- ${error}`);
@@ -307,7 +330,7 @@ export const promptRouter = createTRPCRouter({
           data: {
             // version: input.version,
             template: input.template,
-            // changelog: input.changelog,
+            promptData: input.promptData as PromptDataSchemaType,
             llmProvider: input.llmProvider,
             llmModel: input.llmModel,
             llmConfig: input.llmConfig,

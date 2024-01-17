@@ -1,15 +1,32 @@
-import React, { useState } from "react";
-import { Stack, Box, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Stack, Box, Typography, Grid } from "@mui/material";
 import { FaCaretDown, FaCaretRight } from "react-icons/fa";
+import { PromptDataType } from "~/validators/prompt_version";
 
-type PromptViewArrowProps = {
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+
+interface PromptViewArrowProps {
+  promptInputs: PromptDataType | undefined;
+  haveroleUserAssistant: boolean | undefined;
   promptTemplate: string;
-};
+}
 
 const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
   promptTemplate,
+  promptInputs,
+  haveroleUserAssistant,
 }) => {
   const [isTextOpen, setIsTextOpen] = useState(false);
+
+  useEffect(() => {
+    console.log(promptInputs);
+  }, []);
 
   return (
     <div style={{ paddingLeft: 15, paddingRight: 15 }}>
@@ -32,11 +49,86 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
             />
           )}
         </Box>
-        <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
-          {isTextOpen ? promptTemplate : "Click to view prompt Template"}
-        </Typography>
+        {isTextOpen ? (
+          <>
+            <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+              Click to view prompt Template
+            </Typography>
+          </>
+        ) : (
+          <>
+            <PromptView
+              promptInputs={promptInputs}
+              haveroleUserAssistant={haveroleUserAssistant}
+              promptTemplate={promptTemplate}
+            />
+          </>
+        )}
       </Stack>
     </div>
+  );
+};
+
+export const PromptView = ({
+  promptInputs,
+  haveroleUserAssistant,
+  promptTemplate,
+}: PromptViewArrowProps) => {
+  return (
+    <>
+      {haveroleUserAssistant ? (
+        <>
+          <TableContainer>
+            <Table aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ color: "var(--sugarhub-text-color)" }}>
+                    ROLE
+                  </TableCell>
+                  <TableCell
+                    align="right"
+                    sx={{ color: "var(--sugarhub-text-color)" }}
+                  >
+                    CONTENT
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {promptInputs?.map((promptInput) => (
+                  <TableRow
+                    key={promptInput.role}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell
+                      component="th"
+                      scope="row"
+                      sx={{ color: "var(--sugarhub-text-color)" }}
+                    >
+                      {promptInput.role}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{
+                        color: "var(--sugarhub-text-color)",
+                        overflowWrap: "break-word",
+                      }}
+                    >
+                      {promptInput.content}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      ) : (
+        <>
+          <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+            {promptTemplate}
+          </Typography>
+        </>
+      )}
+    </>
   );
 };
 

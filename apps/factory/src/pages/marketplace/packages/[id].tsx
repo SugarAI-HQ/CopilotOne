@@ -15,18 +15,22 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  Grid,
 } from "@mui/material";
 import Header from "~/components/marketplace/header";
 import { NextPage } from "next";
 import { api } from "~/utils/api";
-import { packageVisibility } from "~/validators/base";
+import { packageVisibility, providerModels } from "~/validators/base";
 import React from "react";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import { PackagePublicOutput as ppt } from "~/validators/marketplace";
 import { TemplateOutput as ptt } from "~/validators/prompt_template";
-import { VersionOutput as pvt } from "~/validators/prompt_version";
+import {
+  PromptDataSchemaType,
+  VersionOutput as pvt,
+} from "~/validators/prompt_version";
 // import { CreateVersionInput, VersionOutput as pv } from "~/validators/prompt_version";
 import { getRandomValue } from "~/utils/math";
 import { PromptIntegration } from "~/components/integration/prompt_integration";
@@ -34,7 +38,7 @@ import PromptHeader from "~/components/marketplace/prompt_header";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PublicUrl from "~/components/integration/public_url";
-
+import { PromptView } from "~/components/prompt_view_arrow";
 const MarketplacePage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
@@ -91,6 +95,13 @@ function VersionRow({
 }) {
   // const { row } = props;
   const [open, setOpen] = React.useState(false);
+  const [prompt, setPrompt] = useState<PromptDataSchemaType>(
+    pv?.promptData as PromptDataSchemaType,
+  );
+  const haveroleUserAssistant = providerModels[
+    `${pt?.modelType as keyof typeof providerModels}`
+  ]?.models[`${pv?.llmProvider}`]?.find((mod) => mod.name === pv?.llmModel)
+    ?.role;
 
   return (
     <React.Fragment>
@@ -121,13 +132,13 @@ function VersionRow({
         </TableCell>
 
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {getRandomValue(1000, 5000)}
+          60
         </TableCell>
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {getRandomValue(2000, 4000)}
+          50
         </TableCell>
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
-          {getRandomValue(70, 98)}
+          90
         </TableCell>
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
           <PublicUrl
@@ -154,7 +165,14 @@ function VersionRow({
                   gutterBottom
                   sx={{ color: "var(--sugarhub-text-color)" }}
                 >
-                  Template : {pv.template}
+                  <Typography variant="h6" sx={{ marginBottom: "1rem" }}>
+                    Template :
+                  </Typography>
+                  <PromptView
+                    promptInputs={prompt.data}
+                    haveroleUserAssistant={haveroleUserAssistant}
+                    promptTemplate={pv.template}
+                  />
                 </Typography>
               )}
             </Box>
