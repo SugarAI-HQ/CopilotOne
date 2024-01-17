@@ -124,12 +124,9 @@ function PromptVersion({
   const generateMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
 
   const handleTemplateChange = (txt: string) => {
+    setIsDirty(!isDirty);
     debouncedHandleTemplateChange(txt);
   };
-
-  // useEffect(() => {
-  //   console.log("----------", lpv, "---------------");
-  // });
 
   const debouncedHandleTemplateChange = _debounce((txt: string) => {
     const variables = getUniqueJsonArray(getVariables(txt), "key");
@@ -148,7 +145,6 @@ function PromptVersion({
         return pvr;
       });
     });
-    // console.log(`pvrs >>>> ${JSON.stringify(pvrs)}`);
   };
 
   useEffect(() => {
@@ -164,7 +160,6 @@ function PromptVersion({
         ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
       ]);
     }
-    // setOpenAiVariables([...openAivariables]);
   }, []);
 
   const handleChange = () => {
@@ -282,8 +277,8 @@ function PromptVersion({
       newObj.role = promptRole.Enum.assistant as string;
     }
     const tempArray = [...promptInputs, newObj];
-    handleTemplateChange(JSON.stringify(tempArray));
     setPromptInputs(tempArray);
+    handleTemplateChange(JSON.stringify(tempArray));
   };
 
   const changePromptInputRole = (index: number) => {
@@ -298,8 +293,8 @@ function PromptVersion({
             : prompt.role,
       }),
     );
-    handleTemplateChange(JSON.stringify(tempArray));
     setPromptInputs([...tempArray]);
+    handleTemplateChange(JSON.stringify(tempArray));
   };
 
   const changePromptInputContent = (
@@ -313,15 +308,15 @@ function PromptVersion({
       })),
     ];
 
-    handleTemplateChange(JSON.stringify(tempArray));
     setPromptInputs([...tempArray]);
+    handleTemplateChange(JSON.stringify(tempArray));
   };
   const deletePrompt = (index: number) => {
     const tempArray = promptInputs.filter(
       (_: any, idx: number) => index !== idx,
     );
-    handleTemplateChange(JSON.stringify(tempArray));
     setPromptInputs([...tempArray]);
+    handleTemplateChange(JSON.stringify(tempArray));
   };
 
   return (
@@ -371,7 +366,10 @@ function PromptVersion({
                   minRows={5}
                   maxRows={10}
                   defaultValue={template}
-                  onChange={(e) => handleTemplateChange(e.target.value)}
+                  onChange={(e) => {
+                    setTemplate(e.target.value);
+                    handleTemplateChange(e.target.value);
+                  }}
                   variant="outlined"
                 />
               </>
@@ -493,15 +491,15 @@ function PromptVersion({
               onClick={handleRun}
               disabled={
                 haveroleUserAssistant
-                  ? // promptInputs.length >0 || openAivariables.some((v) => v.value === "")
-                    promptInputs.length > 0 &&
+                  ? promptInputs.length > 0 &&
                     !promptInputs.some(
                       (input: { id: string; role: string; content: string }) =>
                         input.content.length === 0,
                     )
-                    ? pvrs.some((v) => v.value === "")
+                    ? pvrs.some((v) => v.value.length === 0)
                     : true
-                  : template.length <= 10 || pvrs.some((v) => v.value === "")
+                  : template.length <= 10 ||
+                    pvrs.some((v) => v.value.length === 0)
               }
               loadingPosition="start"
               startIcon={<PlayArrowIcon />}

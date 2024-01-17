@@ -29,6 +29,8 @@ import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
 import { LogSchema, GenerateOutput } from "~/validators/service";
 import PromotOutputLog from "~/components/prompt_output_log";
+import { providerModels } from "~/validators/base";
+import { PromptView } from "~/components/prompt_view_arrow";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -169,8 +171,32 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
               <TableRow key={log.id}>
                 {logModeMax && <TableCell>{log.id}</TableCell>}
                 <TableCell>
-                  {log.prompt}
-                  <p>tokens: {log.prompt_tokens}</p>
+                  {/* we are checking wether the role is true or false */}
+                  {providerModels[
+                    `${log?.llmModelType as keyof typeof providerModels}`
+                  ].models[`${log.llmProvider}`]?.find(
+                    (mod) => mod.name === log.llmModel,
+                  )?.role ? (
+                    <>
+                      <PromptView
+                        promptInputs={JSON.parse(log.prompt)}
+                        haveroleUserAssistant={true}
+                        promptTemplate={""}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <PromptView
+                        promptInputs={[]}
+                        haveroleUserAssistant={false}
+                        promptTemplate={log.prompt}
+                      />
+                    </>
+                  )}
+                  <hr />
+                  <p style={{ paddingTop: "1rem" }}>
+                    tokens: {log.prompt_tokens}
+                  </p>
                 </TableCell>
                 <TableCell
                   style={
