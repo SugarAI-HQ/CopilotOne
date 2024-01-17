@@ -10,12 +10,7 @@ export async function LlmProvider(
   isDevelopment: boolean = false,
 ) {
   console.log(`provider >>>> ${llmProvider}`);
-  // const { run } = await import(`~/services/providers/${llmProvider}`);
-  const { llama2Run } = await import("~/services/providers/llama2");
-  const { openaiRun } = await import("~/services/providers/openai");
-  let run;
-  if (llmProvider === "openai") run = openaiRun;
-  else run = llama2Run;
+  const { run } = await import(`~/services/providers/${llmProvider}`);
   const output = await run(
     prompt,
     llmModel,

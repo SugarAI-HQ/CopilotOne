@@ -241,7 +241,7 @@ export const promptRouter = createTRPCRouter({
       let modelType = input.moduleType === ModelTypeSchema.Enum.TEXT2TEXT;
 
       let template = modelType
-        ? `I am looking at the {@OBJECT}`
+        ? `Tell me a joke on topic "{@topic}"`
         : `A photo of an astronaut riding a horse on {@OBJECT}`;
 
       let promptData: PromptDataSchemaType = {

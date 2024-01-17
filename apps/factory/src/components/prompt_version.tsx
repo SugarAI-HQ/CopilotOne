@@ -244,7 +244,6 @@ function PromptVersion({
   }, [template, isDirty]);
 
   const handleSave = () => {
-    JSON.stringify(promptInputs);
     pvUpdateMutation.mutate({
       promptPackageId: lpv.promptPackageId,
       promptTemplateId: lpv.promptTemplateId,
