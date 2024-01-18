@@ -71,7 +71,7 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
                     flexWrap: "wrap",
                   }}
                 >
-                  <Box style={{ margin: "0 5px" }}>
+                  <Box style={{ margin: "5px 5px" }}>
                     <FacebookShareButton
                       url={shareUrl}
                       style={{ cursor: "pointer" }}
@@ -79,40 +79,32 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
                       <FacebookIcon size={32} round />
                     </FacebookShareButton>
                   </Box>
-                  <Box style={{ margin: "0 5px" }}>
+                  <Box style={{ margin: "5px 5px" }}>
                     <WhatsappShareButton url={shareUrl}>
                       <WhatsappIcon size={32} round />
                     </WhatsappShareButton>
                   </Box>
-                  <Box style={{ margin: "0 5px" }}>
+                  <Box style={{ margin: "5px 5px" }}>
                     <TwitterShareButton url={shareUrl}>
                       <XIcon size={32} round />
                     </TwitterShareButton>
                   </Box>
-                  <Box style={{ margin: "0 5px" }}>
+                  <Box style={{ margin: "5px 5px" }}>
                     <EmailShareButton url={shareUrl}>
                       <EmailIcon size={32} round />
                     </EmailShareButton>
                   </Box>
-                  <Box style={{ margin: "0 5px" }}>
+                  <Box style={{ margin: "5px 5px" }}>
                     <RedditShareButton url={shareUrl}>
                       <RedditIcon size={32} round />
                     </RedditShareButton>
                   </Box>
-                  <Box style={{ margin: "0 5px" }}>
+                  <Box style={{ margin: "5px 5px" }}>
                     <TelegramShareButton url={shareUrl}>
                       <TelegramIcon size={32} round />
                     </TelegramShareButton>
                   </Box>
-                  <Box style={{ margin: "0 5px" }}>
-                    <FacebookMessengerShareButton
-                      url={shareUrl}
-                      appId="346094688227574"
-                    >
-                      <FacebookMessengerIcon size={32} round />
-                    </FacebookMessengerShareButton>
-                  </Box>
-                  <Box style={{ margin: "0 5px" }}>
+                  <Box style={{ margin: "5px 5px" }}>
                     <LinkedinShareButton url={shareUrl}>
                       <LinkedinIcon size={32} round />
                     </LinkedinShareButton>
