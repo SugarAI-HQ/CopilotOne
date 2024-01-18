@@ -113,6 +113,16 @@ const versionSchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
+export const imageDownloadInput = z.object({
+  base64image: z.string(),
+});
+
+export type ImageDownloadInput = z.infer<typeof imageDownloadInput>;
+
+export const imageDownloadOutput = z.object({
+  blob: z.unknown(),
+});
+
 export type VersionSchema = z.infer<typeof versionSchema>;
 
 export const versionOutput = versionSchema.or(z.null());

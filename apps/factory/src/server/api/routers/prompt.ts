@@ -34,6 +34,9 @@ import {
   VersionListOutput,
   PromptDataSchemaType,
   PromptDataSchema,
+  imageDownloadInput,
+  ImageDownloadInput,
+  imageDownloadOutput,
 } from "~/validators/prompt_version";
 import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
@@ -414,5 +417,21 @@ export const promptRouter = createTRPCRouter({
       });
       // console.log(`versions output -------------- ${JSON.stringify(versions)}`);
       return versions;
+    }),
+
+  downloadImage: protectedProcedure
+    .input(imageDownloadInput)
+    .output(imageDownloadOutput)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const response = await fetch(input.base64image);
+        const buffer = await response.arrayBuffer();
+
+        const base64String = Buffer.from(buffer).toString("base64");
+        return { blob: base64String };
+      } catch (error) {
+        console.error("Error downloading image:", error);
+        return { blob: "" };
+      }
     }),
 });

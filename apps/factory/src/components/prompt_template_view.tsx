@@ -260,14 +260,12 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           <IconButton
                             onClick={() => setOpenShareModal(!openShareModal)}
                           >
-                            {session?.user.username == username && (
-                              <ShareIcon
-                                sx={{
-                                  color: "var(--sugarhub-text-color)",
-                                  fontSize: "2rem",
-                                }}
-                              />
-                            )}
+                            <ShareIcon
+                              sx={{
+                                color: "var(--sugarhub-text-color)",
+                                fontSize: "2rem",
+                              }}
+                            />
                           </IconButton>
                         </Tooltip>
                         {/* modal to show sharing option */}
