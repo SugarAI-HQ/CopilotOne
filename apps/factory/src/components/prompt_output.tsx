@@ -21,7 +21,7 @@ const PromptOutput = ({
       sx={{
         backgroundColor: "var(--sugarcube-component-bg-color)",
         color: "white",
-        padding: "1rem 1rem",
+        padding: "0.5rem 0.5rem",
         borderRadius: "0.5rem",
       }}
     >

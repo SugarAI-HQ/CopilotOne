@@ -47,6 +47,7 @@ import {
   PromptDataType,
 } from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
+import CopyToClipboardButton from "./copy_button";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -224,9 +225,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
             padding: "1rem 0rem",
           }}
         >
-          <Container className="center">
+          <Container sx={{ paddingLeft: "6px", paddingRight: "6px" }}>
             <div
-              className="dark:border-gray-70  w-full rounded-lg border p-4 shadow sm:p-6"
+              className="dark:border-gray-70  w-full rounded-lg border pb-2 pt-1 shadow"
               style={{ backgroundColor: "var(--sugarhub-tab-color)" }}
             >
               {isLoading ? (
@@ -241,80 +242,64 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                 </Box>
               ) : data || !versionOrEnvironment ? (
                 <>
-                  <Box sx={{ flexGrow: 1, paddingRight: "1rem" }}>
-                    <Grid container columnSpacing={2}>
-                      <Grid item xs={1.5} sm={1} md={1} lg={1}></Grid>
-                      <Grid item xs={9} sm={10} md={10} lg={10}>
-                        <Typography
+                  <Box sx={{ display: "flex", justifyContent: "end" }}>
+                    <Tooltip title="Share Cube" placement="top">
+                      <IconButton
+                        onClick={() => setOpenShareModal(!openShareModal)}
+                      >
+                        <ShareIcon
                           sx={{
-                            textAlign: "center",
                             color: "var(--sugarhub-text-color)",
-                            fontSize: { xs: "2rem", sm: "3rem", lg: "3rem" },
+                            fontSize: "2rem",
                           }}
-                        >
-                          {!template ? "" : template.replaceAll("-", " ")}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={1.5} sm={1} md={1} lg={1}>
-                        <Tooltip title="Share Cube" placement="top">
-                          <IconButton
-                            onClick={() => setOpenShareModal(!openShareModal)}
-                          >
-                            <ShareIcon
-                              sx={{
-                                color: "var(--sugarhub-text-color)",
-                                fontSize: "2rem",
-                              }}
-                            />
-                          </IconButton>
-                        </Tooltip>
-                        {/* modal to show sharing option */}
-                        <ShareCube
-                          setOpenShareModal={setOpenShareModal}
-                          open={openShareModal}
-                          shareUrl={shareUrl}
                         />
-                      </Grid>
-                    </Grid>
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Edit Template" placement="top">
+                      <IconButton color="primary">
+                        {session?.user.username == username && (
+                          <EditIcon
+                            onClick={() =>
+                              router.push(
+                                `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                              )
+                            }
+                            sx={{
+                              color: "var(--sugarhub-text-color)",
+                              fontSize: "2rem",
+                            }}
+                          ></EditIcon>
+                        )}
+                      </IconButton>
+                    </Tooltip>
                   </Box>
-                  <Box sx={{ flexGrow: 1, paddingRight: "1rem" }}>
-                    <Grid container wrap="nowrap" columnSpacing={2}>
-                      <Grid item xs={1.3} sm={1} md={1} lg={1}></Grid>
-                      <Grid item xs={9.4} sm={10} md={10} lg={10}>
-                        <Typography
-                          variant="h6"
-                          component="h6"
-                          sx={{
-                            textAlign: "center",
-                            color: "var(--sugarhub-text-color)",
-                            wordBreak: "break-word",
-                          }}
-                        >
-                          {data?.description}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={1.3} sm={1} md={1} lg={1}>
-                        <Tooltip title="Edit Template" placement="top">
-                          <IconButton color="primary">
-                            {session?.user.username == username && (
-                              <EditIcon
-                                onClick={() =>
-                                  router.push(
-                                    `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
-                                  )
-                                }
-                                sx={{
-                                  color: "var(--sugarhub-text-color)",
-                                  fontSize: "2rem",
-                                }}
-                              ></EditIcon>
-                            )}
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  <Box sx={{ m: 1 }}>
+                  <ShareCube
+                    setOpenShareModal={setOpenShareModal}
+                    open={openShareModal}
+                    shareUrl={shareUrl}
+                  />
+                  <Typography
+                    sx={{
+                      padding: { xs: "0 15px" },
+                      color: "var(--sugarhub-text-color)",
+                      fontSize: { xs: "3rem", sm: "3rem", lg: "3rem" },
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {!template ? "" : template.replaceAll("-", " ")}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    component="h6"
+                    sx={{
+                      padding: { xs: "0 15px" },
+                      color: "var(--sugarhub-text-color)",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {data?.description}
+                  </Typography>
+                  <Box sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
                     {pvrs && (
                       <>
                         {data && (
@@ -338,7 +323,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   <Stack
                     direction="row"
                     spacing={1}
-                    sx={{ p: 1, marginLeft: "1rem" }}
+                    sx={{ padding: { xs: "0 15px" } }}
                   >
                     {isDev && (
                       <FormControlLabel
@@ -361,7 +346,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     <LoadingButton
                       color="success"
                       variant="outlined"
-                      onClick={session ? handleRun : handleOpen}
+                      onClick={session ? handleRun : () => void signIn()}
                       // disabled={pvrs?.some((v) => v.value === "")}
                       sx={{
                         "&.Mui-disabled": {
@@ -381,59 +366,65 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           <Counter />s
                         </>
                       ) : (
-                        <>Run</>
+                        <>Submit</>
                       )}
                     </LoadingButton>
-                    {!session && isOpen && (
-                      <Box>
-                        <Typography
-                          className="mt-2"
-                          sx={{ color: "var(--sugarhub-text-color)" }}
-                        >
-                          <Link
-                            href="#"
-                            onClick={() => void signIn()}
-                            sx={{
-                              textDecoration: "none",
-                            }}
-                          >
-                            Signup
-                          </Link>{" "}
-                          to run the cube!
-                        </Typography>
-                      </Box>
-                    )}
                   </Stack>
 
-                  <Box sx={{ m: 1 }}>
+                  <Box>
                     {promptOutput && (
-                      <Stack direction="row" spacing={2} sx={{ p: 1 }}>
+                      <Stack direction="row" spacing={2}>
                         <Grid>
-                          <Box padding={2}>
-                            <Typography
-                              variant="h6"
-                              className="mb-5"
-                              sx={{ color: "var(--sugarhub-text-color)" }}
-                            >
-                              Output
-                            </Typography>
-                            <div
-                              style={{
-                                flexDirection: "row",
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                              }}
-                            >
-                              <PromptOutput
-                                output={promptOutput}
-                                modelType={data?.modelType as ModelTypeType}
-                              />
+                          <Box
+                            sx={{
+                              padding: {
+                                xs: "0 16px",
+                                sm: "0 16px",
+                                md: "16px",
+                              },
+                            }}
+                          >
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                              <Typography
+                                variant="h6"
+                                sx={{
+                                  color: "var(--sugarhub-text-color)",
+                                  fontWeight: "2rem",
+                                }}
+                              >
+                                Result
+                              </Typography>
                               {data?.modelType !==
                                 ModelTypeSchema.Enum.TEXT2TEXT && (
                                 <DownloadButtonImg base64image={promptOutput} />
                               )}
+                              {data?.modelType ===
+                                ModelTypeSchema.Enum.TEXT2TEXT && (
+                                <CopyToClipboardButton
+                                  textToCopy={promptOutput}
+                                  textToDisplay={"Copy"}
+                                />
+                              )}
+                            </Box>
+                            <div>
+                              <PromptOutput
+                                output={promptOutput}
+                                modelType={data?.modelType as ModelTypeType}
+                              />
                             </div>
+                            <Box>
+                              <Button
+                                variant="outlined"
+                                sx={{
+                                  margin: "1rem 0",
+                                  borderColor: "var(--)",
+                                }}
+                              >
+                                <Link href="https://www.youtube.com/watch?v=5oeRkHOqW28">
+                                  Create your Cube
+                                </Link>
+                              </Button>
+                            </Box>
                           </Box>
                         </Grid>
                       </Stack>

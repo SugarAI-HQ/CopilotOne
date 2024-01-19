@@ -63,6 +63,7 @@ const Header = (props: any) => {
                         backgroundColor: "var(--sugarhub-ternary-bg-color)",
                         borderRadius: "0.5rem",
                         top: "2rem",
+                        right: { xs: "1rem", sm: "1rem", md: "0", lg: "0" },
                       }}
                     >
                       <MenuItem>

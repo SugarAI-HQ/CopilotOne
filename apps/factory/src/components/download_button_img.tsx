@@ -56,7 +56,9 @@ const DownloadButtonImg: React.FC<DownloadButtonImgProps> = ({
             }}
           >
             <Tooltip title="Download Image">
-              <DownloadForOfflineIcon />
+              <DownloadForOfflineIcon
+                sx={{ color: "var(--sugarhub-text-color)" }}
+              />
             </Tooltip>
           </IconButton>
         </>

@@ -67,14 +67,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
       </>
     );
   } else {
-    return (
-      <img
-        className={imgClassName}
-        src={output}
-        alt="Image"
-        style={{ marginBottom: "0.5rem" }}
-      />
-    );
+    return <img className={imgClassName} src={output} alt="Image" />;
   }
 };
 

@@ -30,7 +30,7 @@ function PromptVariables({
     <Box padding={2}>
       <Typography
         variant="h6"
-        sx={{ color: "var(--sugarhub-text-color)", marginBottom: "1rem" }}
+        sx={{ color: "var(--sugarhub-text-color)", margin: "1rem 0" }}
       >
         {cube ? "Enter Input" : "Variables"}
       </Typography>

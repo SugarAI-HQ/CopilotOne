@@ -26,7 +26,10 @@ const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
           margin: 1,
         }}
       >
-        <FileCopyIcon fontSize="small" />
+        <FileCopyIcon
+          fontSize="small"
+          sx={{ color: "var(--sugarhub-text-color)" }}
+        />
       </IconButton>
     </Tooltip>
   );
