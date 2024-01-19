@@ -49,7 +49,7 @@
     "next-auth": "^4.24.5",
     "next-seo": "^6.4.0",
     "nextjs-cors": "^2.1.2",
-    "openai": "^4.6.0",
+    "openai": "^4.24.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.47.0",

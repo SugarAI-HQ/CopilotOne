@@ -77,10 +77,13 @@ class OpenAIVendor extends BaseVendor {
   }
   protected async executeDalleModel(prompt: string, dryRun: boolean) {
     const res = await this.openai.images.generate({
+      model: "dall-e-3",
       prompt: prompt,
       n: 1,
       size: "1024x1024",
+      quality: "hd",
     });
+
     let response: DalleSchemaType = {
       created: "",
       images: [

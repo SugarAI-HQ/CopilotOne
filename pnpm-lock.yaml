@@ -96,8 +96,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(next@13.4.13)
       openai:
-        specifier: ^4.6.0
-        version: 4.11.1
+        specifier: ^4.24.7
+        version: 4.24.7
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -11373,8 +11373,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openai@4.11.1:
-    resolution: {integrity: sha512-GU0HQWbejXuVAQlDjxIE8pohqnjptFDIm32aPlNT1H9ucMz1VJJD0DaTJRQsagNaJ97awWjjVLEG7zCM6sm4SA==}
+  /openai@4.24.7:
+    resolution: {integrity: sha512-JUesECWPtsDHO0TlZGb6q73hnAmXUdzj9NrwgZeL4lqlRt/kR1sWrXoy8LocxN/6uOtitywvcJqe0O1PLkG45g==}
     hasBin: true
     dependencies:
       '@types/node': 18.18.4
@@ -11385,6 +11385,7 @@ packages:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0
+      web-streams-polyfill: 3.2.1
     transitivePeerDependencies:
       - encoding
     dev: false
