@@ -12,9 +12,11 @@ import PromptCompletion from "./prompt_completion";
 const PromptOutput = ({
   output,
   modelType,
+  cube,
 }: {
   output: string;
   modelType: ModelTypeType;
+  cube?: boolean;
 }) => {
   return (
     <Box
@@ -23,13 +25,17 @@ const PromptOutput = ({
         color: "white",
         padding: "0.5rem 0.5rem",
         borderRadius: "0.5rem",
+        overflow: "hidden",
+        width: "100%",
+        height: "100%",
       }}
     >
       <PromptCompletion
         modelType={modelType}
         output={output}
-        imgClassName={"h-48 w-48 object-fill"}
+        imgClassName={"h-48 w-48"}
         textAnimation={true}
+        cube={cube}
       />
     </Box>
   );

@@ -60,7 +60,7 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
         ) : (
           <>
             <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
-              Click to view prompt Template
+              Click to view Prompt Template
             </Typography>
           </>
         )}

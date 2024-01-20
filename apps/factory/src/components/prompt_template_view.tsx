@@ -48,6 +48,7 @@ import {
 } from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
 import CopyToClipboardButton from "./copy_button";
+import AddIcon from "@mui/icons-material/Add";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -75,12 +76,45 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [openShareModal, setOpenShareModal] = useState<boolean>(false);
 
   const router = useRouter();
-  const { data, isLoading } = api.cube.getPrompt.useQuery({
-    username: username,
-    package: packageName,
-    template: template,
-    versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
-  });
+
+  const { data, isLoading } = api.cube.getPrompt.useQuery(
+    {
+      username: username,
+      package: packageName,
+      template: template,
+      versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
+    },
+    {
+      onSuccess(item) {
+        const haveroleUserAssistant = providerModels[
+          `${item?.modelType as keyof typeof providerModels}`
+        ]?.models[`${item?.llmProvider}`]?.find(
+          (mod) => mod.name === item?.model,
+        )?.role;
+        if (haveroleUserAssistant) {
+          setVariables([
+            ...getUniqueJsonArray(
+              getVariables(
+                JSON.stringify(
+                  (item?.promptData as PromptDataSchemaType).data,
+                ) || "",
+              ),
+              "key",
+            ),
+          ]);
+        } else {
+          setVariables([
+            ...getUniqueJsonArray(getVariables(data?.template || ""), "key"),
+          ]);
+        }
+      },
+    },
+  );
+
+  const haveroleUserAssistant = providerModels[
+    `${data?.modelType as keyof typeof providerModels}`
+  ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
+    ?.role;
 
   api.prompt.getPackage.useQuery(
     {
@@ -92,34 +126,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       },
     },
   );
-
-  const haveroleUserAssistant = providerModels[
-    `${data?.modelType as keyof typeof providerModels}`
-  ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
-    ?.role;
-
-  useEffect(() => {
-    if (haveroleUserAssistant) {
-      setVariables([
-        ...getUniqueJsonArray(
-          getVariables(
-            JSON.stringify((data?.promptData as PromptDataSchemaType).data) ||
-              "",
-          ),
-          "key",
-        ),
-      ]);
-    } else {
-      setVariables([
-        ...getUniqueJsonArray(getVariables(data?.template || ""), "key"),
-      ]);
-    }
-  }, []);
-
-  useEffect(() => {
-    setVariables(getUniqueJsonArray(getVariables(data?.template || ""), "key"));
-  }, [data]);
-
   const handleVariablesChange = (k: string, v: string) => {
     setVariables((pvrs) => {
       // Step 2: Update the state
@@ -186,6 +192,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
   const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`;
+
+  const loadingButtonClass = {
+    "&:hover ": {
+      backgroundColor: "var(--sugarcube-component-bg-color-hover) !important",
+      borderColor: "!important",
+    },
+
+    color: "white",
+    backgroundColor: "var(--sugarcube-component-bg-color) !important",
+  };
 
   return (
     <>
@@ -322,7 +338,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   </Box>
                   <Stack
                     direction="row"
-                    spacing={1}
+                    spacing={2}
                     sx={{ padding: { xs: "0 15px" } }}
                   >
                     {isDev && (
@@ -344,18 +360,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       />
                     )}
                     <LoadingButton
-                      color="success"
-                      variant="outlined"
                       onClick={session ? handleRun : () => void signIn()}
-                      // disabled={pvrs?.some((v) => v.value === "")}
                       sx={{
+                        ...loadingButtonClass,
+                        width: "8rem",
                         "&.Mui-disabled": {
                           borderColor: "var(--button-color-disable)",
                           color: "var(--button-color-disable)",
                           cursor: "not-allowed",
                           width: "8rem",
                         },
-                        width: "8rem",
                       }}
                       loadingPosition="start"
                       startIcon={<PlayArrowIcon />}
@@ -368,6 +382,19 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       ) : (
                         <>Submit</>
                       )}
+                    </LoadingButton>
+
+                    <LoadingButton
+                      variant="contained"
+                      sx={{ ...loadingButtonClass }}
+                      startIcon={<AddIcon />}
+                    >
+                      <Link
+                        href="https://www.youtube.com/watch?v=5oeRkHOqW28"
+                        sx={{ textDecoration: "none", color: "white" }}
+                      >
+                        Create your Cube
+                      </Link>
                     </LoadingButton>
                   </Stack>
 
@@ -410,21 +437,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                               <PromptOutput
                                 output={promptOutput}
                                 modelType={data?.modelType as ModelTypeType}
+                                cube={true}
                               />
                             </div>
-                            <Box>
-                              <Button
-                                variant="outlined"
-                                sx={{
-                                  margin: "1rem 0",
-                                  borderColor: "var(--)",
-                                }}
-                              >
-                                <Link href="https://www.youtube.com/watch?v=5oeRkHOqW28">
-                                  Create your Cube
-                                </Link>
-                              </Button>
-                            </Box>
                           </Box>
                         </Grid>
                       </Stack>

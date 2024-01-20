@@ -10,6 +10,7 @@
   --sugarhub-tab-color: #262b32;
   --sugarhub-table-color: #1f1f1f;
   --sugarcube-component-bg-color: #57667c;
+  --sugarcube-component-bg-color-hover: #8b97ac;
   --button-color-disable: #abaeb4;
   /* --template-bg-color:#141313; */
   --modal-bg-color: #383838;
@@ -44,4 +45,22 @@
 
 .bouncing-loader > div:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+.outputImage {
+  width: 100%;
+  height: auto;
+}
+
+.outputImage:hover {
+  animation: zoom-animation 0.9s ease-in;
+}
+
+@keyframes zoom-animation {
+  from {
+    transform: scale(2);
+  }
+  to {
+    transform: scale(1);
+  }
 }

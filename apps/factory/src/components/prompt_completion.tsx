@@ -13,6 +13,7 @@ interface PromptCompletionProps {
   tokens?: number;
   imgClassName?: string;
   textAnimation: boolean;
+  cube?: boolean;
 }
 
 const PromptCompletion: React.FC<PromptCompletionProps> = ({
@@ -21,6 +22,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   tokens,
   imgClassName,
   textAnimation,
+  cube,
 }) => {
   if (modelType === ModelTypeSchema.Enum.TEXT2TEXT) {
     return (
@@ -67,7 +69,15 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
       </>
     );
   } else {
-    return <img className={imgClassName} src={output} alt="Image" />;
+    return (
+      <img
+        className={`${
+          cube ? "outputImage h-full w-full" : imgClassName
+        } object-fill`}
+        src={output}
+        alt="Image"
+      />
+    );
   }
 };
 
