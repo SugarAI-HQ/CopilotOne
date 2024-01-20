@@ -58,7 +58,7 @@ export const PromptVariablesScalarFieldEnumSchema = z.enum(['id','userId','promp
 
 export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt']);
 
-export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType']);
+export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','runMode','createdAt','updatedAt','modelType']);
 
 export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','promptData','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
 
@@ -97,6 +97,10 @@ export type PromptEnvironmentType = `${z.infer<typeof PromptEnvironmentSchema>}`
 export const ModelTypeSchema = z.enum(['TEXT2TEXT','TEXT2IMAGE']);
 
 export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
+
+export const PromptRunModesSchema = z.enum(['AUTHORISED_ONLY','LOGGEDIN_ONLY','ALL']);
+
+export type PromptRunModesType = `${z.infer<typeof PromptRunModesSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -181,6 +185,7 @@ export type PromptPackage = z.infer<typeof PromptPackageSchema>
 /////////////////////////////////////////
 
 export const PromptTemplateSchema = z.object({
+  runMode: PromptRunModesSchema,
   modelType: ModelTypeSchema,
   id: z.string().uuid(),
   userId: z.string(),

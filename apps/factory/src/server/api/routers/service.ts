@@ -1,7 +1,7 @@
 import {
   createTRPCRouter,
   promptMiddleware,
-  protectedProcedure,
+  publicProcedure,
 } from "~/server/api/trpc";
 import { generateInput, generateOutput } from "~/validators/service";
 import { generateLLmConfig, generatePrompt } from "~/utils/template";
@@ -11,9 +11,11 @@ import { providerModels } from "~/validators/base";
 import {
   ModelTypeType,
   ModelTypeSchema,
+  PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
+import { env } from "~/env.mjs";
 export const serviceRouter = createTRPCRouter({
-  generate: protectedProcedure
+  generate: publicProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -28,8 +30,14 @@ export const serviceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
+      const userId =
+        pt.runMode === PromptRunModesSchema.Enum.ALL
+          ? (env.DEMO_USER_ID as string)
+          : (ctx.jwt?.id as string);
+
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
-      if (pv) {
+
+      if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
         let prompt = "";
@@ -69,7 +77,7 @@ export const serviceRouter = createTRPCRouter({
         if (output?.completion) {
           const pl = await ctx.prisma.promptLog.create({
             data: {
-              userId: ctx.jwt?.id as string,
+              userId: userId,
               promptPackageId: pv.promptPackageId,
               promptTemplateId: pv.promptTemplateId,
               promptVersionId: pv.id,

@@ -41,6 +41,7 @@ export const cubeRouter = createTRPCRouter({
           modelType: pv.llmModelType,
           promptPackageId: pt.promptPackageId,
           templateId: pt.id,
+          runMode: pt.runMode,
         };
       }
       return null;

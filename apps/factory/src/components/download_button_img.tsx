@@ -26,7 +26,7 @@ const DownloadButtonImg: React.FC<DownloadButtonImgProps> = ({
 
           const link = document.createElement("a");
           link.href = dataUrl;
-          link.download = "downloaded_image.png";
+          link.download = "sugarcane-ai-image.png";
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);

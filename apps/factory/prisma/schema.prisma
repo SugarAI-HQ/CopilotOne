@@ -54,6 +54,12 @@ enum ModelType {
   TEXT2IMAGE
 }
 
+enum PromptRunModes {
+  AUTHORISED_ONLY
+  LOGGEDIN_ONLY
+  ALL
+}
+
 // Necessary for Next auth
 model Account {
   id                String   @id @default(uuid())
@@ -128,6 +134,7 @@ model PromptTemplate {
   description      String
   previewVersionId String?           @unique
   releaseVersionId String?           @unique
+  runMode          PromptRunModes    @default(LOGGEDIN_ONLY)
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt @map("updated_at")
   modelType        ModelType         @default(TEXT2TEXT)

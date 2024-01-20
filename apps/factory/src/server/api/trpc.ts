@@ -31,6 +31,10 @@ import {
   PromptEnvironment,
 } from "~/validators/base";
 import { contextProps } from "@trpc/react-query/shared";
+import {
+  PromptRunModesSchema,
+  PromptRunModesType,
+} from "~/generated/prisma-client-zod.ts";
 
 /**
  * 1. CONTEXT
@@ -46,6 +50,7 @@ interface CreateContextOptions {
   session: NullableSession;
   jwt: NullableJwt;
   prisma: PrismaClient;
+  runMode: PromptRunModesType;
 }
 
 /**
@@ -62,6 +67,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     jwt: opts.jwt,
+    runMode: opts.runMode,
     prisma,
   };
 };
@@ -74,6 +80,11 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
+
+  // Get Run Mode
+  const runMode: PromptRunModesType =
+    (res.getHeader("x-run-mode") as PromptRunModesType) ||
+    PromptRunModesSchema.Enum.LOGGEDIN_ONLY;
 
   const requestId = uuid();
   res.setHeader("x-request-id", requestId);
@@ -97,6 +108,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     session,
     prisma,
     jwt: token,
+    runMode: runMode,
   });
 };
 
@@ -187,8 +199,7 @@ const loggerMiddleware = t.middleware(async (opts) => {
  */
 export const publicProcedure = t.procedure.use(loggerMiddleware);
 
-/** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+function checkUserAuth(ctx: CreateContextOptions) {
   if (!ctx.jwt?.id) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
@@ -201,6 +212,25 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
       code: "UNAUTHORIZED",
       message: "Token Expired",
     });
+  }
+  return true;
+}
+
+/** Reusable middleware that enforces users are logged in before running the procedure. */
+const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+  checkUserAuth(ctx);
+
+  return next({
+    ctx: {
+      jwt: ctx.jwt as JWT | null,
+      runMode: ctx.runMode,
+    },
+  });
+});
+
+const conditionalUserIsAuthed = t.middleware(({ ctx, next }) => {
+  if (ctx.runMode !== PromptRunModesSchema.Enum.ALL) {
+    checkUserAuth(ctx);
   }
 
   return next({
@@ -328,3 +358,5 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+
+// export const conditionalProtectedProcedure = t.procedure.use(conditionalUserIsAuthed);

@@ -3,6 +3,7 @@ import { promptEnvironment, stringOpt } from "./base";
 import {
   LabelledStateSchema,
   ModelTypeSchema,
+  PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 
 export const getPromptInput = z.object({
@@ -50,6 +51,7 @@ export const getPromptOutput = z
     updatedAt: z.coerce.date(),
     promptPackageId: z.string(),
     templateId: z.string(),
+    runMode: PromptRunModesSchema,
   })
   .or(z.null());
 export type GetPromptOutput = z.infer<typeof getPromptOutput>;

@@ -1,5 +1,9 @@
 import { ppid } from "process";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { v4 as uuidv4 } from "uuid";
 import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
 import {
@@ -419,7 +423,7 @@ export const promptRouter = createTRPCRouter({
       return versions;
     }),
 
-  downloadImage: protectedProcedure
+  downloadImage: publicProcedure
     .input(imageDownloadInput)
     .output(imageDownloadOutput)
     .mutation(async ({ ctx, input }) => {

@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  PromptRunModesSchema,
+} from "~/generated/prisma-client-zod.ts";
 import { RESERVED_NAMES } from "./reserved_names";
 
 const templateNameInput = z
@@ -40,6 +43,7 @@ export const createTemplateInput = z
     description: z.string(),
     promptPackageId: z.string(),
     modelType: ModelTypeSchema,
+    runMode: PromptRunModesSchema,
   })
   .strict()
   .required();
@@ -86,6 +90,7 @@ export const templateSchema = z.object({
   name: z.string(),
   description: z.string(),
   modelType: ModelTypeSchema,
+  runMode: PromptRunModesSchema,
 
   releaseVersionId: z.string().or(z.null()),
   previewVersionId: z.string().or(z.null()),
