@@ -379,6 +379,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       <Link
                         href="https://www.youtube.com/watch?v=5oeRkHOqW28"
                         sx={{ textDecoration: "none", color: "white" }}
+                        target="_blank"
                       >
                         Create your Cube
                       </Link>

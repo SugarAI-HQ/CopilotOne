@@ -30,12 +30,11 @@ export const serviceRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
+      console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
       const userId =
         pt.runMode === PromptRunModesSchema.Enum.ALL
           ? (env.DEMO_USER_ID as string)
           : (ctx.jwt?.id as string);
-
-      console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
 
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
@@ -158,7 +157,11 @@ export async function getPv(ctx: any, input: any) {
         promptTemplateId: input.promptTemplateId,
         version: input.version,
       },
+      include: {
+        promptTemplate: true,
+      },
     });
+    pt = pv.promptTemplate;
   }
 
   if (!pv) {
