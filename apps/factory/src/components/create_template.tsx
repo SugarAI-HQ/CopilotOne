@@ -113,7 +113,7 @@ export function CreateTemplate({
       onCreate?.(data);
       handleClose();
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
@@ -153,6 +153,7 @@ export function CreateTemplate({
   const updateMutation = api.prompt.updateTemplate.useMutation();
 
   const updateTemplate = (data: CreateTemplateInput) => {
+    debugger;
     const input = {
       id: ptId as string,
       description: data.description,
@@ -237,14 +238,14 @@ export function CreateTemplate({
               readonly={false}
             />
 
-            {/* <FormSelectInput
+            <FormSelectInput
               name="runMode"
               control={control}
               label="Who can run this template"
               defaultValue={runMode}
               readonly={false}
               enumValues={PromptRunModesSchema.enum}
-            /> */}
+            />
           </Stack>
         </DialogContent>
 

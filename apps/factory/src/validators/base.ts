@@ -77,17 +77,20 @@ export const providerModels: ProviderModels = {
     label: "Text-to-Image",
     enabled: true,
     providers: [
-      { name: "openai", label: "OpenAI", enabled: true, role: false },
-      { name: "runwayml", label: "RunwayMl", enabled: true, role: false },
-      { name: "prompthero", label: "PromptHero", enabled: true, role: false },
+      { name: "openai", label: "Open AI", enabled: true, role: false },
+      { name: "runwayml", label: "Runway ML", enabled: true, role: false },
+      { name: "prompthero", label: "Prompt Hero", enabled: true, role: false },
       {
         name: "stabilityai",
-        label: "StabilityAI",
-        enabled: false,
+        label: "Stability AI",
+        enabled: true,
         role: false,
       },
     ],
     models: {
+      stabilityai: [
+        { name: "sdxl", label: "SDXL", enabled: true, role: false },
+      ],
       openai: [
         {
           name: "dall-e",
@@ -117,9 +120,6 @@ export const providerModels: ProviderModels = {
           enabled: true,
           role: false,
         },
-      ],
-      stabilityai: [
-        { name: "sdxl", label: "SDXL", enabled: false, role: false },
       ],
     },
   },

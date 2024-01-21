@@ -4,6 +4,7 @@ import { run as mistralRun } from "./mistral";
 import { run as openaiRun } from "./openai";
 import { run as phRun } from "./prompthero";
 import { run as runwaymlRun } from "./runwayml";
+import { run as stabilityaiRun } from "./stabilityai";
 
 // Export all providers
 // export { llama2Run, run };
@@ -12,8 +13,9 @@ const providers: Record<string, Function> = {
   mistral: mistralRun,
   llama2: llama2Run,
   openai: openaiRun,
-  promopthero: phRun,
+  prompthero: phRun,
   runwayml: runwaymlRun,
+  stabilityai: stabilityaiRun,
 };
 
 export function getProvider(providerName: string) {

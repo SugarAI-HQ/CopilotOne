@@ -41,6 +41,20 @@ export function generateOutput(
         },
       };
     }
+
+    // Stability AI
+    if (response?.output && response?.output.length > 0) {
+      return {
+        completion: response.output[0],
+        performance: {
+          latency: latency || 0,
+          prompt_tokens: 0,
+          completion_tokens: 0,
+          total_tokens: 0,
+          extra: response.inference_status,
+        },
+      };
+    }
   }
   return null;
 }
