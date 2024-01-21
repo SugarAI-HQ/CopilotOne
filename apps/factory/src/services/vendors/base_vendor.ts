@@ -63,7 +63,7 @@ class BaseVendor {
     const latency: number = endTime.getTime() - startTime.getTime();
 
     console.log(
-      `${this.constructor.name} response -------------- ${JSON.stringify(
+      `${this.constructor.name} llm response -------------- ${JSON.stringify(
         response,
       )}`,
     );

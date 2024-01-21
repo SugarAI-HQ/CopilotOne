@@ -43,7 +43,7 @@ export function generateOutput(
     }
 
     // Stability AI
-    if (response?.output && response?.output.length > 0) {
+    if (response?.output) {
       return {
         completion: response.output[0],
         performance: {
