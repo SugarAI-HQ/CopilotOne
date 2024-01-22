@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "~/components/marketplace/header";
+import humanizeString from "humanize-string";
+
 import {
   Container,
   Box,
@@ -209,7 +211,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   return (
     <>
       <NextSeo
-        title={template}
+        title={humanizeString(template)}
         description={data?.description}
         // canonical={shareUrl}
         openGraph={{
@@ -305,7 +307,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       fontWeight: "bold",
                     }}
                   >
-                    {!template ? "" : template.replaceAll("-", " ")}
+                    {!template ? "" : humanizeString(template)}
                   </Typography>
                   <Typography
                     variant="h6"
@@ -315,7 +317,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                       color: "var(--sugarhub-text-color)",
                       wordBreak: "break-word",
                     }}
-                  ></Typography>
+                  >
+                    {data?.description}
+                  </Typography>
                   <Box sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
                     {pvrs && (
                       <>
