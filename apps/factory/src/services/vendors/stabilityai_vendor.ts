@@ -70,11 +70,13 @@ class StabilityAIVendor extends BaseVendor {
             text: prompt,
           },
         ],
-        // cfg_scale: 7,
+        steps: 40,
+        // seed: 0,
+        cfg_scale: 5,
+        samples: 1,
+        style_preset: "photographic",
         height: dimension,
         width: dimension,
-        steps: 30,
-        // samples: 1,
       }),
     };
   }

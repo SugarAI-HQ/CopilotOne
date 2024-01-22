@@ -8,7 +8,7 @@ class BaseVendor {
 
   constructor(
     endpoint: string,
-    maxRetries: number = 3,
+    maxRetries: number = 1,
     retryDelay: number = 1000,
   ) {
     this.endpoint = endpoint;
@@ -91,7 +91,7 @@ export async function fetchWithRetry(
             await truncateObj(response.text()),
           )}`,
         );
-        throw new Error(`Non-200 response: ${response.text()}`);
+        throw new Error(`Non-200 response: ${JSON.stringify(response.text())}`);
       }
     } catch (error) {
       console.error(`Request failed: ${url}`, error);

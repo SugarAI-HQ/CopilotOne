@@ -38,8 +38,11 @@ async function run_si(
   llmModelType: ModelTypeType,
   dryRun: boolean = false,
 ) {
-  // let client = new StabilityAIVendor("stable-diffusion-xl-1024-v1-0", "text-to-image");
-  let client = new StabilityAIVendor("stable-diffusion-v1-6", "text-to-image");
+  let client = new StabilityAIVendor(
+    "stable-diffusion-xl-1024-v1-0",
+    "text-to-image",
+  );
+  // let client = new StabilityAIVendor("stable-diffusion-v1-6", "text-to-image");
 
   const { response, latency } = await client.makeApiCallWithRetry(
     prompt,

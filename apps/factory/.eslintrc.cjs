@@ -38,6 +38,7 @@ const config = {
     "@typescript-eslint/no-redundant-type-constituents": "warn",
     "@typescript-eslint/restrict-template-expressions": "warn",
     "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+    "@typescript-eslint/no-base-to-string": "warn",
 
     "@typescript-eslint/consistent-type-imports": [
       "warn",

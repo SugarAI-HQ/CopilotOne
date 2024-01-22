@@ -3,6 +3,7 @@ import { fakeResponse } from "~/services/llm_response/fake_response";
 import OpenAI from "openai";
 import { env } from "~/env.mjs";
 import { GPTResponseType, DalleSchemaType } from "~/validators/openaiResponse";
+import { logLLMResponse } from "~/utils/log";
 
 class OpenAIVendor extends BaseVendor {
   private openai = new OpenAI({
@@ -81,6 +82,7 @@ class OpenAIVendor extends BaseVendor {
       prompt: prompt,
       n: 1,
       size: "1024x1024",
+      response_format: "b64_json",
       // quality: "hd",
     });
 
@@ -91,10 +93,14 @@ class OpenAIVendor extends BaseVendor {
       ],
       inference_status: "",
     };
+
     if (dryRun) {
       return response;
     }
-    response.images[0] = res.data[0]!.url;
+
+    // response.images[0] = res.data[0]!.url;
+    logLLMResponse("openai", res);
+    response.images[0] = `data:image/png;base64,${res.data[0]!.b64_json}`;
     return response;
   }
 

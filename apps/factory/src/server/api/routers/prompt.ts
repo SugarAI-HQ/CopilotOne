@@ -27,21 +27,15 @@ import {
 } from "~/validators/prompt_template";
 import {
   getVersionsInput,
-  getVersionInput,
   createVersionInput,
   updateVersionInput,
-  deleteVersionInput,
   versionOutput,
   versionListOutput,
-  PromptDataType,
-  VersionOutput,
-  VersionListOutput,
   PromptDataSchemaType,
   PromptDataSchema,
   imageDownloadInput,
   ImageDownloadInput,
   imageDownloadOutput,
-  logDownloadInput,
 } from "~/validators/prompt_version";
 import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
