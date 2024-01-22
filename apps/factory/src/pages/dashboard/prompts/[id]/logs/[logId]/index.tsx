@@ -23,6 +23,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
+import DownloadButtonBase64 from "~/components/download_button_base64";
 
 const LogShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -87,8 +88,8 @@ const LogShow: NextPageWithLayout = () => {
                 <TableCell>
                   <Box>
                     <Typography>Completion</Typography>
-                    {data.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
-                      <DownloadButtonImg base64image={data?.completion} />
+                    {data.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
+                      <DownloadButtonBase64 base64image={data?.completion} />
                     ) : (
                       <CopyToClipboardButton
                         textToCopy={data?.completion}

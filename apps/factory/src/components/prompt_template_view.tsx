@@ -4,11 +4,9 @@ import {
   Container,
   Box,
   Stack,
-  Button,
   Checkbox,
   Grid,
   Typography,
-  Dialog,
   IconButton,
   Tooltip,
   CircularProgress,
@@ -39,14 +37,12 @@ import { useRouter } from "next/router";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
 import { NextSeo } from "next-seo";
-import DownloadButtonImg from "./download_button_img";
-import { prisma } from "~/server/db";
-import { env } from "~/env.mjs";
 import { providerModels } from "~/validators/base";
 import { PromptDataSchemaType } from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
 import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
+import DownloadButtonBase64 from "./download_button_base64";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -435,9 +431,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                               >
                                 Result
                               </Typography>
-                              {data?.modelType !==
-                                ModelTypeSchema.Enum.TEXT2TEXT && (
-                                <DownloadButtonImg base64image={promptOutput} />
+                              {data?.modelType ===
+                                ModelTypeSchema.Enum.TEXT2IMAGE && (
+                                <DownloadButtonBase64
+                                  base64image={promptOutput}
+                                />
                               )}
                               {data?.modelType ===
                                 ModelTypeSchema.Enum.TEXT2TEXT && (

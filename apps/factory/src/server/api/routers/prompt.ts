@@ -41,6 +41,7 @@ import {
   imageDownloadInput,
   ImageDownloadInput,
   imageDownloadOutput,
+  logDownloadInput,
 } from "~/validators/prompt_version";
 import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";

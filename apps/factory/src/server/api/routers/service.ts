@@ -70,9 +70,6 @@ export const serviceRouter = createTRPCRouter({
           pv.llmModelType,
           input.isDevelopment,
         );
-
-        console.log(`output -------------- ${JSON.stringify(output)}`);
-        // const pl = await createPromptLog(ctx, pv, prompt, output);
         if (output?.completion) {
           const pl = await ctx.prisma.promptLog.create({
             data: {

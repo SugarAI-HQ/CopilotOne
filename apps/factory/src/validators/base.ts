@@ -89,12 +89,17 @@ export const providerModels: ProviderModels = {
     ],
     models: {
       stabilityai: [
-        { name: "sdxl", label: "SDXL", enabled: true, role: false },
+        {
+          name: "sdxl",
+          label: "stable-diffusion-xl-1024-v1-0",
+          enabled: true,
+          role: false,
+        },
       ],
       openai: [
         {
           name: "dall-e",
-          label: "Dall-E",
+          label: "Dall-E-3",
           enabled: true,
           role: false,
         },

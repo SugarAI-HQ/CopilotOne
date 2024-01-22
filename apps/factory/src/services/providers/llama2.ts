@@ -8,33 +8,6 @@ export interface LLMConfig {
   temperature: number;
 }
 
-export async function fetchWithRetry(
-  url: string,
-  options: RequestInit,
-  maxRetries: number,
-  retryDelay: number,
-) {
-  let retryCount = 0;
-
-  while (retryCount < maxRetries) {
-    try {
-      const response = await fetch(url, options);
-      if (response.ok) {
-        return response.json();
-      }
-    } catch (error) {
-      console.error("Request failed:", error);
-    }
-
-    retryCount++;
-    if (retryCount < maxRetries) {
-      await new Promise((resolve) => setTimeout(resolve, retryDelay));
-    }
-  }
-
-  return null;
-}
-
 export async function run(
   prompt: string,
   llmModel: string,

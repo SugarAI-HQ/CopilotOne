@@ -59,6 +59,7 @@ import {
   PromptDataType,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
+import DownloadButtonBase64 from "./download_button_base64";
 
 function PromptVersion({
   ns,
@@ -597,7 +598,7 @@ function PromptVersion({
                         labelledState={pl?.labelledState}
                       />
                       |
-                      {pt?.modelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
+                      {pt?.modelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
                         <div
                           style={{
                             justifyContent: "center",
@@ -606,6 +607,7 @@ function PromptVersion({
                           }}
                         >
                           <DownloadButtonImg base64image={promptOutput} />|
+                          <DownloadButtonBase64 base64image={promptOutput} />|
                         </div>
                       ) : (
                         <div

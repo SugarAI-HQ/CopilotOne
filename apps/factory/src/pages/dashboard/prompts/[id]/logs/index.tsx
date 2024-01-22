@@ -31,6 +31,7 @@ import { LogSchema, GenerateOutput } from "~/validators/service";
 import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
+import DownloadButtonBase64 from "~/components/download_button_base64";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -228,7 +229,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       textAnimation={false}
                     />
                     {log.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
-                      <DownloadButtonImg base64image={log.completion} />
+                      <DownloadButtonBase64 base64image={log.completion} />
                     ) : (
                       <CopyToClipboardButton
                         textToCopy={log.completion}
