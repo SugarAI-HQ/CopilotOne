@@ -10,6 +10,10 @@ import {
   Typography,
   MenuItem,
   Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -39,7 +43,11 @@ function LLMSelector({
 
   const [provider, setProvider] = useState(initialProvider);
 
+  const [nextProvider, setNextProvider] = useState("");
+
   const [model, setModel] = useState(initialModel);
+
+  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const handleClose = () => setIsOpen(false);
 
@@ -48,25 +56,15 @@ function LLMSelector({
   const mutation = api.prompt.updateVersion.useMutation();
 
   const handleProviderChange = (event: any) => {
-    const selectedProvider: string = event.target.value;
-    setProvider(selectedProvider);
-    const modelValue: string | undefined =
-      providerModels[pt?.modelType as keyof typeof providerModels]?.models[
-        selectedProvider
-      ]?.[0]?.name;
-    onProviderChange(selectedProvider);
-    console.log(selectedProvider);
-    // Update default value for model
-    setModel(modelValue as string);
-    onModelChange(modelValue);
-    updateLLM(selectedProvider, modelValue as string);
+    setNextProvider(event.target.value);
+    setOpenWarningModal(true);
   };
 
   const handleModelChange = (event: any) => {
     const selectedModel: string = event.target.value;
     setModel(selectedModel);
     onModelChange(selectedModel);
-    updateLLM(provider, selectedModel);
+    // updateLLM(provider, selectedModel);
   };
 
   const updateLLM = (llmProvider: string, llmModel: string) => {
@@ -81,8 +79,35 @@ function LLMSelector({
     });
   };
 
+  const handleChangeProviderWithoutWarning = () => {
+    setOpenWarningModal(false);
+  };
+
+  const handleChangeProviderWithWarning = () => {
+    const selectedProvider: string = nextProvider;
+    setProvider(selectedProvider);
+    const modelValue: string | undefined =
+      providerModels[pt?.modelType as keyof typeof providerModels]?.models[
+        selectedProvider
+      ]?.[0]?.name;
+    onProviderChange(selectedProvider);
+    // console.log(selectedProvider);
+    // Update default value for model
+    setModel(modelValue as string);
+    // onProviderChange(selectedProvider, modelValue);
+    onModelChange(modelValue);
+    // updateLLM(selectedProvider, modelValue as string);
+    setOpenWarningModal(false);
+  };
+
   return (
     <>
+      <WarningModal
+        nextProvider={nextProvider}
+        handleChangeProviderWithWarning={handleChangeProviderWithWarning}
+        handleChangeProviderWithoutWarning={handleChangeProviderWithoutWarning}
+        openWarningModal={openWarningModal}
+      />
       <Button variant="text" onClick={handleOpen} disabled={!!pv.publishedAt}>
         {provider} - {model}
       </Button>
@@ -153,3 +178,51 @@ function LLMSelector({
 }
 
 export default LLMSelector;
+
+const WarningModal = ({
+  nextProvider,
+  handleChangeProviderWithWarning,
+  handleChangeProviderWithoutWarning,
+  openWarningModal,
+}: {
+  nextProvider: string;
+  handleChangeProviderWithWarning: (nextProvider: string) => void;
+  handleChangeProviderWithoutWarning: () => void;
+  openWarningModal: boolean;
+}) => {
+  return (
+    <div>
+      <Dialog
+        open={openWarningModal}
+        onClose={handleChangeProviderWithoutWarning}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{ color: "red", fontSize: "2rem", fontWeight: "bold" }}
+        >
+          {"Warning"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ color: "white" }}
+          >
+            You will loose your current progress by changing to different format
+            provider
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleChangeProviderWithoutWarning}>Disagree</Button>
+          <Button
+            onClick={() => handleChangeProviderWithWarning(nextProvider)}
+            autoFocus
+          >
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+};

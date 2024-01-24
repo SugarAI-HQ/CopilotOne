@@ -60,6 +60,7 @@ import {
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
 import DownloadButtonBase64 from "./download_button_base64";
+import { ChooseTemplate } from "~/services/providers";
 
 function PromptVersion({
   ns,
@@ -105,15 +106,27 @@ function PromptVersion({
   );
 
   const [promptInputs, setPromptInputs] = useState<PromptDataType>(prompt.data);
+  const [haveroleUserAssistant, setHaveroleUserAssistant] =
+    useState<boolean>(false);
 
   // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
-  const haveroleUserAssistant = providerModels[
-    `${pt?.modelType as keyof typeof providerModels}`
-  ].models[`${provider}`]?.find((mod) => mod.name === model)?.role;
+  const CheckRole = (providerName: string, modelName: string) => {
+    return providerModels[
+      `${pt?.modelType as keyof typeof providerModels}`
+    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.role;
+  };
 
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
+        console.log(
+          "---------------------------------version-------------------------------",
+        );
+        console.log(v);
+        console.log(
+          "---------------------------------version-------------------------------",
+        );
+
         setPv(v);
         toast.success("Saved");
       } else {
@@ -149,7 +162,7 @@ function PromptVersion({
   };
 
   useEffect(() => {
-    if (haveroleUserAssistant) {
+    if (CheckRole(provider, model)) {
       setVariables([
         ...getUniqueJsonArray(
           getVariables(JSON.stringify(lpv?.promptData) || ""),
@@ -212,24 +225,30 @@ function PromptVersion({
   };
 
   useEffect(() => {
-    if (haveroleUserAssistant) {
-      setVariables([
-        ...getUniqueJsonArray(
-          getVariables(JSON.stringify(lpv?.promptData) || ""),
-          "key",
-        ),
-      ]);
-    } else {
-      setVariables([
-        ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
-      ]);
-    }
-    handleSave();
+    const testing = async () => {
+      if (CheckRole(provider, model)) {
+        await setPrompt(ChooseTemplate(provider));
+        await setPromptInputs(ChooseTemplate(provider).data);
+        await setVariables([
+          ...getUniqueJsonArray(
+            getVariables(JSON.stringify(ChooseTemplate(provider).data) || ""),
+            "key",
+          ),
+        ]);
+      } else {
+        await setVariables([
+          ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
+        ]);
+      }
+      setIsDirty(true);
+    };
+    testing();
   }, [provider, model]);
 
   useEffect(() => {
     let saveTimer: NodeJS.Timeout;
     if (!lpv.publishedAt && isDirty) {
+      console.log("handle save inside useEffect");
       saveTimer = setTimeout(() => {
         handleSave();
       }, 1000);
@@ -237,15 +256,25 @@ function PromptVersion({
     return () => {
       clearTimeout(saveTimer);
     };
-  }, [template, isDirty]);
+  }, [template, model, provider, isDirty]);
 
   const handleSave = () => {
+    console.log(
+      "--------------------",
+      provider,
+      model,
+      "----------------------",
+    );
+    console.log("-------------------", prompt, "-----------------------");
+    console.log("-------------------", promptInputs, "-----------------------");
+    console.log(CheckRole(provider, model));
     pvUpdateMutation.mutate({
       promptPackageId: lpv.promptPackageId,
       promptTemplateId: lpv.promptTemplateId,
       id: lpv.id,
       template: template,
       promptData: { v: prompt.v, data: promptInputs },
+      // promptData: prompt,
       llmProvider: provider,
       llmModel: model,
       llmConfig: llmConfig,
@@ -356,7 +385,7 @@ function PromptVersion({
         <Box>
           {/* add all the code from promptEditor here */}
           <>
-            {!haveroleUserAssistant ? (
+            {!CheckRole(provider, model) ? (
               <>
                 <TextField
                   label="Template"
@@ -411,9 +440,10 @@ function PromptVersion({
                                     sx={{
                                       padding: "1rem",
                                       display: `${
-                                        prompts.role !== "system"
-                                          ? "block"
-                                          : "none"
+                                        promptInputs.length === 1 ||
+                                        prompts.role === "system"
+                                          ? "none"
+                                          : "block"
                                       }`,
                                     }}
                                     onClick={() => deletePrompt(ind)}
@@ -426,11 +456,6 @@ function PromptVersion({
                                         onClick={addNewPropmtInput}
                                         sx={{
                                           padding: "1rem",
-                                          display: `${
-                                            prompts.role !== "system"
-                                              ? "block"
-                                              : "none"
-                                          }`,
                                         }}
                                       >
                                         <AddIcon />
@@ -448,23 +473,6 @@ function PromptVersion({
                     },
                   )}
                 </Box>
-
-                {promptInputs.length === 1 ? (
-                  <>
-                    <Tooltip title="Add Input" placement="top">
-                      <Button
-                        onClick={addNewPropmtInput}
-                        color="primary"
-                        variant="outlined"
-                        sx={{ margin: "1rem" }}
-                      >
-                        <AddIcon sx={{ fontSize: "2rem" }} />
-                      </Button>
-                    </Tooltip>
-                  </>
-                ) : (
-                  <></>
-                )}
               </>
             )}
           </>

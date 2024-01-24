@@ -247,19 +247,8 @@ export const promptRouter = createTRPCRouter({
         : `A photo of an astronaut riding a horse on {@OBJECT}`;
 
       let promptData: PromptDataSchemaType = {
-        v: 1,
-        data: [
-          {
-            id: uuidv4(),
-            role: "system",
-            content: "you are a smart mathematician",
-          },
-          {
-            id: uuidv4(),
-            role: "user",
-            content: `help me with {@OBJECT}`,
-          },
-        ],
+        v: "",
+        data: [],
       };
       const defaultTemplate = {
         template: template,

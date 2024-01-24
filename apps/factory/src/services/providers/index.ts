@@ -1,21 +1,22 @@
 // Import individual providers
-import { run as llama2Run } from "./llama2";
-import { run as mistralRun } from "./mistral";
-import { run as openaiRun } from "./openai";
-import { run as phRun } from "./prompthero";
-import { run as runwaymlRun } from "./runwayml";
-import { run as stabilityaiRun } from "./stabilityai";
+import * as llama2 from "./llama2";
+import * as ph from "./prompthero";
+import * as runwayml from "./runwayml";
+import * as stabilityai from "./stabilityai";
+
+import * as openai from "./openai";
+import * as mistral from "./mistral";
 
 // Export all providers
 // export { llama2Run, run };
 
 const providers: Record<string, Function> = {
-  mistral: mistralRun,
-  llama2: llama2Run,
-  openai: openaiRun,
-  prompthero: phRun,
-  runwayml: runwaymlRun,
-  stabilityai: stabilityaiRun,
+  mistral: mistral.run,
+  llama2: llama2.run,
+  openai: openai.run,
+  prompthero: ph.run,
+  runwayml: runwayml.run,
+  stabilityai: stabilityai.run,
 };
 
 export function getProvider(providerName: string) {
@@ -26,3 +27,14 @@ export function getProvider(providerName: string) {
 
   return runMethod;
 }
+
+export const ChooseTemplate = (provider: string) => {
+  switch (provider) {
+    case "openai":
+      return openai.template;
+    case "mistral":
+      return mistral.template;
+    default:
+      return { v: "", data: [] };
+  }
+};

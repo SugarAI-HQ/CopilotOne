@@ -50,3 +50,8 @@ async function run_si(
   );
   return generateOutput(response, llmModelType, latency);
 }
+
+export const template = {
+  v: "stabilityai",
+  data: [],
+};

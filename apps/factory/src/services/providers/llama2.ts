@@ -23,3 +23,8 @@ export async function run(
 
   return generateOutput(response, llmModelType, latency);
 }
+
+export const template = {
+  v: "llama2",
+  data: [],
+};

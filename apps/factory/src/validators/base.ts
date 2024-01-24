@@ -64,8 +64,20 @@ export const providerModels: ProviderModels = {
       ],
       mistral: [
         {
-          name: "7b-instruct-v01  ",
-          label: "7B Instruct v0.1",
+          name: "Mistral-7B",
+          label: "Mistral-7B",
+          enabled: true,
+          role: true,
+        },
+        {
+          name: "WizardCoder-34B",
+          label: "WizardCoder-34B",
+          enabled: true,
+          role: false,
+        },
+        {
+          name: "Mistral-7B-Instruct-v0.1",
+          label: "Mistral-7B-Instruct",
           enabled: true,
           role: false,
         },

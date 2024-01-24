@@ -63,7 +63,7 @@ export const createVersionInput = z
 export type CreateVersionInput = z.infer<typeof createVersionInput>;
 
 export const PromptDataSchema = z.object({
-  v: z.number(),
+  v: z.string(),
   data: PromptJsonDataSchema,
 });
 export type PromptDataSchemaType = z.infer<typeof PromptDataSchema>;

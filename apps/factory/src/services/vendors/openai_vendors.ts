@@ -35,46 +35,35 @@ class OpenAIVendor extends BaseVendor {
   }
 
   protected createnewGptResponse(response: any) {
-    const newResponse: GPTResponseType = {
-      warning: "",
-      id: response.id,
-      object: response.object,
-      created: response.created,
-      model: response.model,
-      choices: [
-        {
-          index: 0,
-          text: response.choices[0]?.message.content,
-          logprobs: null,
-          finish_reason: "stop",
-        },
-      ],
-      usage: response.usage,
-      system_fingerprint: response.system_fingerprint,
-    };
-    return newResponse;
+    // const newResponse: GPTResponseType = {
+    //   warning: "",
+    //   id: response.id,
+    //   object: response.object,
+    //   created: response.created,
+    //   model: response.model,
+    //   choices: [
+    //     {
+    //       index: 0,
+    //       text: response.choices[0]?.message.content,
+    //       logprobs: null,
+    //       finish_reason: "stop",
+    //     },
+    //   ],
+    //   usage: response.usage,
+    //   system_fingerprint: response.system_fingerprint,
+    // };
+    // return newResponse;
   }
 
   protected async executeGptModel(prompt: string, dryRun: boolean) {
     if (dryRun) {
       return this.createFakeResponse();
     }
-
     const response = await this.openai.chat.completions.create({
-      messages: [
-        ...JSON.parse(prompt).map(
-          (item: { id: string; role: string; content: string }) => {
-            return {
-              role: item.role,
-              content: item.content,
-            };
-          },
-        ),
-      ],
+      messages: [...this.parsePromptChat(prompt)],
       model: this.model,
     });
-    const newResponse = this.createnewGptResponse(response);
-    return newResponse;
+    return this.createChatResponse(response);
   }
   protected async executeDalleModel(prompt: string, dryRun: boolean) {
     const res = await this.openai.images.generate({
