@@ -105,9 +105,7 @@ function PromptVersion({
     lpv.promptData as PromptDataSchemaType,
   );
 
-  const [promptInputs, setPromptInputs] = useState<PromptDataType>(prompt.data);
-  const [haveroleUserAssistant, setHaveroleUserAssistant] =
-    useState<boolean>(false);
+  const [promptInputs, setPromptInputs] = useState<PromptDataType>([]);
 
   // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
   const CheckRole = (providerName: string, modelName: string) => {
@@ -119,14 +117,6 @@ function PromptVersion({
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
     onSuccess: (v) => {
       if (v !== null) {
-        console.log(
-          "---------------------------------version-------------------------------",
-        );
-        console.log(v);
-        console.log(
-          "---------------------------------version-------------------------------",
-        );
-
         setPv(v);
         toast.success("Saved");
       } else {
@@ -225,30 +215,36 @@ function PromptVersion({
   };
 
   useEffect(() => {
-    const testing = async () => {
+    const handleChange = () => {
+      let newPrompt, newPromptInputs, newVariables;
+
       if (CheckRole(provider, model)) {
-        await setPrompt(ChooseTemplate(provider));
-        await setPromptInputs(ChooseTemplate(provider).data);
-        await setVariables([
-          ...getUniqueJsonArray(
-            getVariables(JSON.stringify(ChooseTemplate(provider).data) || ""),
-            "key",
-          ),
-        ]);
+        newPrompt = ChooseTemplate(provider);
+        newPromptInputs = newPrompt.data;
+        newVariables = getUniqueJsonArray(
+          getVariables(JSON.stringify(newPrompt.data) || ""),
+          "key",
+        );
+        setPrompt(newPrompt!);
+        setPromptInputs(newPromptInputs!);
+        setVariables([...newVariables]);
       } else {
-        await setVariables([
-          ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
-        ]);
+        newVariables = getUniqueJsonArray(
+          getVariables(lpv?.template || ""),
+          "key",
+        );
+        setVariables([...newVariables]);
       }
+
       setIsDirty(true);
     };
-    testing();
+
+    handleChange();
   }, [provider, model]);
 
   useEffect(() => {
     let saveTimer: NodeJS.Timeout;
     if (!lpv.publishedAt && isDirty) {
-      console.log("handle save inside useEffect");
       saveTimer = setTimeout(() => {
         handleSave();
       }, 1000);
@@ -256,25 +252,15 @@ function PromptVersion({
     return () => {
       clearTimeout(saveTimer);
     };
-  }, [template, model, provider, isDirty]);
+  }, [template, provider, model, isDirty]);
 
   const handleSave = () => {
-    console.log(
-      "--------------------",
-      provider,
-      model,
-      "----------------------",
-    );
-    console.log("-------------------", prompt, "-----------------------");
-    console.log("-------------------", promptInputs, "-----------------------");
-    console.log(CheckRole(provider, model));
     pvUpdateMutation.mutate({
       promptPackageId: lpv.promptPackageId,
       promptTemplateId: lpv.promptTemplateId,
       id: lpv.id,
       template: template,
-      promptData: { v: prompt.v, data: promptInputs },
-      // promptData: prompt,
+      promptData: { v: provider, data: promptInputs },
       llmProvider: provider,
       llmModel: model,
       llmConfig: llmConfig,
@@ -499,7 +485,7 @@ function PromptVersion({
               variant="outlined"
               onClick={handleRun}
               disabled={
-                haveroleUserAssistant
+                CheckRole(provider, model)
                   ? promptInputs.length > 0 &&
                     !promptInputs.some(
                       (input: { id: string; role: string; content: string }) =>

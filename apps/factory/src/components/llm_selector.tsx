@@ -64,7 +64,6 @@ function LLMSelector({
     const selectedModel: string = event.target.value;
     setModel(selectedModel);
     onModelChange(selectedModel);
-    // updateLLM(provider, selectedModel);
   };
 
   const updateLLM = (llmProvider: string, llmModel: string) => {
@@ -91,12 +90,12 @@ function LLMSelector({
         selectedProvider
       ]?.[0]?.name;
     onProviderChange(selectedProvider);
-    // console.log(selectedProvider);
+
     // Update default value for model
     setModel(modelValue as string);
-    // onProviderChange(selectedProvider, modelValue);
+
     onModelChange(modelValue);
-    // updateLLM(selectedProvider, modelValue as string);
+
     setOpenWarningModal(false);
   };
 

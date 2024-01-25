@@ -38,20 +38,12 @@ class XylemVendor extends BaseVendor {
       return fakeResponse.openAIFakeResponse;
     }
     try {
-      // let message =[...this.parsePromptChat(prompt)]
-      // let message = this.parsePromptChat(prompt).filter((item: { id: string; role: string; content: string })=>item.role!=="system")
-      // console.log("--------------------------------MEssagE")
-      // console.log(message)
-      // console.log("--------------------------------MEssagE")
       const response = await this.openaiMistral.chat.completions.create({
         messages: [...this.parsePromptChat(prompt)],
         model: this.model,
         max_tokens: this.llmConfig.maxTokens,
         temperature: this.llmConfig.temperature,
       });
-      // console.log("--------------------------RESPONSE-----------------")
-      // console.log(response.choices)
-      // console.log("--------------------------RESPONSE-----------------")
       return this.createChatResponse(response);
     } catch (error) {
       console.log(error);
@@ -64,9 +56,6 @@ class XylemVendor extends BaseVendor {
       max_tokens: this.llmConfig.maxTokens,
       temperature: this.llmConfig.temperature,
     });
-    // console.log("--------------------------RESPONSE-----------------")
-    // console.log(response.choices)
-    // console.log("--------------------------RESPONSE-----------------")
     return response;
   };
   async main(prompt: string, dryRun: boolean) {
