@@ -53,36 +53,13 @@ function LLMSelector({
 
   const handleOpen = () => setIsOpen(true);
 
-  const mutation = api.prompt.updateVersion.useMutation();
-
-  const handleProviderChange = (event: any) => {
-    setNextProvider(event.target.value);
-    setOpenWarningModal(true);
-  };
-
   const handleModelChange = (event: any) => {
     const selectedModel: string = event.target.value;
     setModel(selectedModel);
     onModelChange(selectedModel);
   };
 
-  const updateLLM = (llmProvider: string, llmModel: string) => {
-    mutation.mutate({
-      id: pv.id,
-      promptPackageId: pv.promptPackageId,
-      promptTemplateId: pv.promptTemplateId,
-      template: pv.template,
-      llmConfig: pv.llmConfig as LlmConfigSchema,
-      llmProvider,
-      llmModel,
-    });
-  };
-
-  const handleChangeProviderWithoutWarning = () => {
-    setOpenWarningModal(false);
-  };
-
-  const handleChangeProviderWithWarning = () => {
+  const onSuccess = () => {
     const selectedProvider: string = nextProvider;
     setProvider(selectedProvider);
     const modelValue: string | undefined =
@@ -95,17 +72,15 @@ function LLMSelector({
     setModel(modelValue as string);
 
     onModelChange(modelValue);
-
-    setOpenWarningModal(false);
+    setNextProvider("");
   };
 
   return (
     <>
-      <WarningModal
+      <ConsentProvider
         nextProvider={nextProvider}
-        handleChangeProviderWithWarning={handleChangeProviderWithWarning}
-        handleChangeProviderWithoutWarning={handleChangeProviderWithoutWarning}
-        openWarningModal={openWarningModal}
+        setNextProvider={setNextProvider}
+        onSuccess={onSuccess}
       />
       <Button variant="text" onClick={handleOpen} disabled={!!pv.publishedAt}>
         {provider} - {model}
@@ -129,7 +104,10 @@ function LLMSelector({
           <Stack spacing={2} mt={2}>
             <FormControl fullWidth>
               <FormLabel>Provider</FormLabel>
-              <Select value={provider} onChange={handleProviderChange}>
+              <Select
+                value={provider}
+                onChange={(event) => setNextProvider(event.target.value)}
+              >
                 {providerModels[
                   pt?.modelType as keyof typeof providerModels
                 ].providers.map((provider: Provider) => (
@@ -178,22 +156,20 @@ function LLMSelector({
 
 export default LLMSelector;
 
-const WarningModal = ({
+const ConsentProvider = ({
   nextProvider,
-  handleChangeProviderWithWarning,
-  handleChangeProviderWithoutWarning,
-  openWarningModal,
+  setNextProvider,
+  onSuccess,
 }: {
   nextProvider: string;
-  handleChangeProviderWithWarning: (nextProvider: string) => void;
-  handleChangeProviderWithoutWarning: () => void;
-  openWarningModal: boolean;
+  setNextProvider: React.Dispatch<React.SetStateAction<string>>;
+  onSuccess: (nextProvider: string) => void;
 }) => {
   return (
     <div>
       <Dialog
-        open={openWarningModal}
-        onClose={handleChangeProviderWithoutWarning}
+        open={nextProvider.length > 0 ? true : false}
+        onClose={() => setNextProvider("")}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -213,11 +189,8 @@ const WarningModal = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleChangeProviderWithoutWarning}>Disagree</Button>
-          <Button
-            onClick={() => handleChangeProviderWithWarning(nextProvider)}
-            autoFocus
-          >
+          <Button onClick={() => setNextProvider("")}>Disagree</Button>
+          <Button onClick={() => onSuccess(nextProvider)} autoFocus>
             Agree
           </Button>
         </DialogActions>

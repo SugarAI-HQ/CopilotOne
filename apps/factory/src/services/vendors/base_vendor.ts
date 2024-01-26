@@ -43,36 +43,6 @@ class BaseVendor {
   protected createFakeResponse() {
     throw "To be implemented";
   }
-  public createChatResponse(response: any) {
-    const newResponse: GPTResponseType = {
-      warning: "",
-      id: response.id,
-      object: response.object,
-      created: response.created,
-      model: response.model,
-      choices: [
-        {
-          index: 0,
-          text: response.choices[0]?.message.content,
-          logprobs: null,
-          finish_reason: "stop",
-        },
-      ],
-      usage: response.usage,
-      system_fingerprint: response.system_fingerprint,
-    };
-    return newResponse;
-  }
-  public parsePromptChat(prompt: string) {
-    return JSON.parse(prompt).map(
-      (item: { id: string; role: string; content: string }) => {
-        return {
-          role: item.role,
-          content: item.content,
-        };
-      },
-    );
-  }
 
   async makeApiCallWithRetry(
     prompt: string,

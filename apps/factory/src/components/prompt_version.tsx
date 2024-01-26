@@ -60,7 +60,7 @@ import {
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
 import DownloadButtonBase64 from "./download_button_base64";
-import { ChooseTemplate } from "~/services/providers";
+import { getTemplate } from "~/services/providers";
 
 function PromptVersion({
   ns,
@@ -108,7 +108,7 @@ function PromptVersion({
   const [promptInputs, setPromptInputs] = useState<PromptDataType>([]);
 
   // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
-  const CheckRole = (providerName: string, modelName: string) => {
+  const getRole = (providerName: string, modelName: string) => {
     return providerModels[
       `${pt?.modelType as keyof typeof providerModels}`
     ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.role;
@@ -152,7 +152,7 @@ function PromptVersion({
   };
 
   useEffect(() => {
-    if (CheckRole(provider, model)) {
+    if (getRole(provider, model)) {
       setVariables([
         ...getUniqueJsonArray(
           getVariables(JSON.stringify(lpv?.promptData) || ""),
@@ -215,31 +215,24 @@ function PromptVersion({
   };
 
   useEffect(() => {
-    const handleChange = () => {
-      let newPrompt, newPromptInputs, newVariables;
-
-      if (CheckRole(provider, model)) {
-        newPrompt = ChooseTemplate(provider);
-        newPromptInputs = newPrompt.data;
-        newVariables = getUniqueJsonArray(
-          getVariables(JSON.stringify(newPrompt.data) || ""),
-          "key",
-        );
-        setPrompt(newPrompt!);
-        setPromptInputs(newPromptInputs!);
-        setVariables([...newVariables]);
-      } else {
-        newVariables = getUniqueJsonArray(
-          getVariables(lpv?.template || ""),
-          "key",
-        );
-        setVariables([...newVariables]);
-      }
-
-      setIsDirty(true);
-    };
-
-    handleChange();
+    let newPrompt, newPromptInputs, newVariables;
+    if (getRole(provider, model)) {
+      newPrompt = getTemplate(provider);
+      newPromptInputs = newPrompt.data;
+      newVariables = getUniqueJsonArray(
+        getVariables(JSON.stringify(newPrompt.data) || ""),
+        "key",
+      );
+      setPrompt(newPrompt!);
+      setPromptInputs(newPromptInputs!);
+    } else {
+      newVariables = getUniqueJsonArray(
+        getVariables(lpv?.template || ""),
+        "key",
+      );
+    }
+    setVariables([...newVariables]);
+    setIsDirty(true);
   }, [provider, model]);
 
   useEffect(() => {
@@ -260,7 +253,7 @@ function PromptVersion({
       promptTemplateId: lpv.promptTemplateId,
       id: lpv.id,
       template: template,
-      promptData: { v: provider, data: promptInputs },
+      promptData: { v: prompt.v, p: prompt.p, data: promptInputs },
       llmProvider: provider,
       llmModel: model,
       llmConfig: llmConfig,
@@ -283,14 +276,15 @@ function PromptVersion({
     const length = promptInputs.length;
     const newObj = {
       id: uuidv4(),
-      role: promptRole.Enum.user as string,
+      role: (promptRole.Enum.USER as string).toLowerCase(),
       content: "",
     };
     if (
       length > 0 &&
-      promptInputs[length - 1]!.role === (promptRole.Enum.user as string)
+      promptInputs[length - 1]!.role ===
+        (promptRole.Enum.USER as string).toLowerCase()
     ) {
-      newObj.role = promptRole.Enum.assistant as string;
+      newObj.role = (promptRole.Enum.ASSISTANT as string).toLowerCase();
     }
     const tempArray = [...promptInputs, newObj];
     setPromptInputs(tempArray);
@@ -303,9 +297,9 @@ function PromptVersion({
         ...prompt,
         role:
           index === idx
-            ? prompt.role === (promptRole.Enum.user as string)
-              ? (promptRole.Enum.assistant as string)
-              : (promptRole.Enum.user as string)
+            ? prompt.role === (promptRole.enum.USER as string).toLowerCase()
+              ? (promptRole.Enum.ASSISTANT as string).toLowerCase()
+              : (promptRole.Enum.USER as string).toLowerCase()
             : prompt.role,
       }),
     );
@@ -371,7 +365,7 @@ function PromptVersion({
         <Box>
           {/* add all the code from promptEditor here */}
           <>
-            {!CheckRole(provider, model) ? (
+            {!getRole(provider, model) ? (
               <>
                 <TextField
                   label="Template"
@@ -401,7 +395,10 @@ function PromptVersion({
                               <Grid item xs={2} sm={2} md={2} lg={2}>
                                 <Button
                                   onClick={() => {
-                                    prompts.role !== "system"
+                                    prompts.role !==
+                                    (
+                                      promptRole.enum.SYSTEM as string
+                                    ).toLowerCase()
                                       ? changePromptInputRole(ind)
                                       : "";
                                   }}
@@ -427,7 +424,10 @@ function PromptVersion({
                                       padding: "1rem",
                                       display: `${
                                         promptInputs.length === 1 ||
-                                        prompts.role === "system"
+                                        prompts.role ===
+                                          (
+                                            promptRole.enum.SYSTEM as string
+                                          ).toLowerCase()
                                           ? "none"
                                           : "block"
                                       }`,
@@ -485,7 +485,7 @@ function PromptVersion({
               variant="outlined"
               onClick={handleRun}
               disabled={
-                CheckRole(provider, model)
+                getRole(provider, model)
                   ? promptInputs.length > 0 &&
                     !promptInputs.some(
                       (input: { id: string; role: string; content: string }) =>

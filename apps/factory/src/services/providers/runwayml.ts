@@ -1,4 +1,7 @@
-import { LlmConfigSchema } from "~/validators/prompt_version";
+import {
+  LlmConfigSchema,
+  PromptDataSchemaType,
+} from "~/validators/prompt_version";
 import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
@@ -24,7 +27,8 @@ export async function run(
   return generateOutput(response, llmModelType, latency);
 }
 
-export const template = {
-  v: "runwayml",
+export const template: PromptDataSchemaType = {
+  v: 1,
+  p: "runwayml",
   data: [],
 };

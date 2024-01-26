@@ -69,12 +69,12 @@ export const providerModels: ProviderModels = {
           enabled: true,
           role: true,
         },
-        {
-          name: "WizardCoder-34B",
-          label: "WizardCoder-34B",
-          enabled: true,
-          role: false,
-        },
+        // {
+        //   name: "WizardCoder-34B",
+        //   label: "WizardCoder-34B",
+        //   enabled: true,
+        //   role: false,
+        // },
         {
           name: "Mistral-7B-Instruct-v0.1",
           label: "Mistral-7B-Instruct",
@@ -170,6 +170,6 @@ export type colorType = OverridableStringUnion<
 export const displayModes = z.enum(["EDIT", "VIEW"]);
 export type DisplayModes = z.infer<typeof displayModes>;
 
-export const promptRole = z.enum(["user", "assistant"]);
+export const promptRole = z.enum(["USER", "ASSISTANT", "SYSTEM"]);
 
 export const providerWithoutRoleType = z.enum([""]);

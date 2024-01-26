@@ -31,8 +31,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
 
     OPENAI_API_KEY: z.string().optional(),
-    Mistral_7B_API_KEY:z.string().optional(),
-    WizardCoder_34B_API_KEY:z.string().optional(),
+    XYLEM_MISTRAL_7B_API_KEY: z.string().optional(),
+    XYLEM_WIZARDCODER_34B_API_KEY: z.string().optional(),
     DEMO_USER_ID: z.string().optional(),
 
     SENTRY_DSN: z.string().optional(),
@@ -76,8 +76,8 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
 
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    Mistral_7B_API_KEY:process.env.Mistral_7B_API_KEY,
-    WizardCoder_34B_API_KEY:process.env.WizardCoder_34B_API_KEY,
+    XYLEM_MISTRAL_7B_API_KEY: process.env.Mistral_7B_API_KEY,
+    XYLEM_WIZARDCODER_34B_API_KEY: process.env.WizardCoder_34B_API_KEY,
 
     NEXT_PUBLIC_API_ENDPOINT: process.env.NEXT_PUBLIC_API_ENDPOINT,
 

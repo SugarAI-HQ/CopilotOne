@@ -6,35 +6,39 @@ import * as stabilityai from "./stabilityai";
 
 import * as openai from "./openai";
 import * as mistral from "./mistral";
+import { PromptDataSchemaType } from "~/validators/prompt_version";
 
 // Export all providers
 // export { llama2Run, run };
 
-const providers: Record<string, Function> = {
-  mistral: mistral.run,
-  llama2: llama2.run,
-  openai: openai.run,
-  prompthero: ph.run,
-  runwayml: runwayml.run,
-  stabilityai: stabilityai.run,
+interface Provider {
+  run: Function;
+  template: PromptDataSchemaType;
+}
+
+const providers: Record<string, Provider> = {
+  mistral: mistral,
+  llama2: llama2,
+  openai: openai,
+  prompthero: ph,
+  runwayml: runwayml,
+  stabilityai: stabilityai,
 };
 
 export function getProvider(providerName: string) {
-  const runMethod = providers[providerName];
-  if (!runMethod) {
+  const provider = providers[providerName];
+  if (!provider) {
     throw new Error(`Provider "${providerName}" not found`);
   }
 
-  return runMethod;
+  return provider.run;
 }
 
-export const ChooseTemplate = (provider: string) => {
-  switch (provider) {
-    case "openai":
-      return openai.template;
-    case "mistral":
-      return mistral.template;
-    default:
-      return { v: "", data: [] };
+export function getTemplate(providerName: string) {
+  const provider = providers[providerName];
+  if (!provider) {
+    throw new Error(`Provider "${providerName}" not found`);
   }
-};
+
+  return provider.template;
+}

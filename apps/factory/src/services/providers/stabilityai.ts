@@ -1,4 +1,7 @@
-import { LlmConfigSchema } from "~/validators/prompt_version";
+import {
+  LlmConfigSchema,
+  PromptDataSchemaType,
+} from "~/validators/prompt_version";
 import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
@@ -51,7 +54,8 @@ async function run_si(
   return generateOutput(response, llmModelType, latency);
 }
 
-export const template = {
-  v: "stabilityai",
+export const template: PromptDataSchemaType = {
+  v: 1,
+  p: "stabilityai",
   data: [],
 };

@@ -247,7 +247,8 @@ export const promptRouter = createTRPCRouter({
         : `A photo of an astronaut riding a horse on {@OBJECT}`;
 
       let promptData: PromptDataSchemaType = {
-        v: "",
+        v: 1,
+        p: "",
         data: [],
       };
       const defaultTemplate = {
