@@ -13,15 +13,13 @@ generator zod {
 // console.log(`database url ${env("DATABASE_URL")}`);
 datasource db {
   // provider = "sqlite"
-  provider = "postgresql"
+  provider   = "postgresql"
   // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
-
-  // extensions = [uuidOssp(map: "uuid-ossp"), timescaleDb(map: "timescaledb")]
-  extensions = [uuidOssp(map: "uuid-ossp"), pgVector(map: "vector"), timescaleDb(map: "timescaledb")]
+  url        = env("DATABASE_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp"), vector]
 }
 
 // LabelledState enum-like values
@@ -37,7 +35,6 @@ enum PackageVisibility {
   PRIVATE
 }
 
-// FinetunedState enum-like values
 enum FinetunedState {
   UNPROCESSED
   PROCESSED
@@ -134,16 +131,16 @@ model PromptTemplate {
   description      String
   previewVersionId String?           @unique
   releaseVersionId String?           @unique
-  runMode          PromptRunModes    @default(LOGGEDIN_ONLY)
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt @map("updated_at")
   modelType        ModelType         @default(TEXT2TEXT)
+  runMode          PromptRunModes    @default(LOGGEDIN_ONLY)
   promptPackage    PromptPackage     @relation(fields: [promptPackageId], references: [id])
+  User             User              @relation(fields: [userId], references: [id])
   previewVersion   PromptVersion?    @relation("previewVersion", fields: [previewVersionId], references: [id], map: "previewVersion")
   releaseVersion   PromptVersion?    @relation("releaseVersion", fields: [releaseVersionId], references: [id], map: "releaseVersion")
   PromptVariables  PromptVariables[]
   versions         PromptVersion[]   @relation("template")
-  User             User              @relation(fields: [userId], references: [id])
 
   @@unique([promptPackageId, name])
 }
@@ -192,9 +189,9 @@ model User {
   updatedAt      DateTime         @updatedAt @map("updated_at")
   accounts       Account[]
   promptPackages PromptPackage[]
+  PromptTemplate PromptTemplate[]
   PromptVersion  PromptVersion[]
   sessions       Session[]
-  PromptTemplate PromptTemplate[]
 }
 
 model VerificationToken {
