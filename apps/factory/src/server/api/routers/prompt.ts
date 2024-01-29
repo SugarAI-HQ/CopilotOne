@@ -41,6 +41,7 @@ import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { Visibility } from "@mui/icons-material";
 import { JSONArray } from "superjson/dist/types";
+import { getTemplate } from "~/services/providers";
 
 export const promptRouter = createTRPCRouter({
   getPackages: protectedProcedure
@@ -246,11 +247,8 @@ export const promptRouter = createTRPCRouter({
         ? `Tell me a joke on topic "{@topic}"`
         : `A photo of an astronaut riding a horse on {@OBJECT}`;
 
-      let promptData: PromptDataSchemaType = {
-        v: 1,
-        p: "",
-        data: [],
-      };
+      let promptData: PromptDataSchemaType = getTemplate("openai");
+
       const defaultTemplate = {
         template: template,
         promptData: promptData,

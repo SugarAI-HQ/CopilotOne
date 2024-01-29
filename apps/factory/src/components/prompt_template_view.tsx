@@ -86,7 +86,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
           `${item?.modelType as keyof typeof providerModels}`
         ]?.models[`${item?.llmProvider}`]?.find(
           (mod) => mod.name === item?.model,
-        )?.role;
+        )?.hasRole;
         if (haveroleUserAssistant) {
           setVariables([
             ...getUniqueJsonArray(
@@ -110,7 +110,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const haveroleUserAssistant = providerModels[
     `${data?.modelType as keyof typeof providerModels}`
   ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
-    ?.role;
+    ?.hasRole;
 
   api.prompt.getPackage.useQuery(
     {

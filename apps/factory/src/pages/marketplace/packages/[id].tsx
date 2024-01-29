@@ -101,7 +101,7 @@ function VersionRow({
   const haveroleUserAssistant = providerModels[
     `${pt?.modelType as keyof typeof providerModels}`
   ]?.models[`${pv?.llmProvider}`]?.find((mod) => mod.name === pv?.llmModel)
-    ?.role;
+    ?.hasRole;
 
   return (
     <React.Fragment>

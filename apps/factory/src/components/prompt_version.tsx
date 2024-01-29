@@ -111,7 +111,7 @@ function PromptVersion({
   const getRole = (providerName: string, modelName: string) => {
     return providerModels[
       `${pt?.modelType as keyof typeof providerModels}`
-    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.role;
+    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.hasRole;
   };
 
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
@@ -151,18 +151,16 @@ function PromptVersion({
     });
   };
 
+  const handleSetVariable = (prompt: string) => {
+    // logic to change the variables array as per the change in provider
+    setVariables([...getUniqueJsonArray(getVariables(prompt || ""), "key")]);
+  };
+
   useEffect(() => {
     if (getRole(provider, model)) {
-      setVariables([
-        ...getUniqueJsonArray(
-          getVariables(JSON.stringify(lpv?.promptData) || ""),
-          "key",
-        ),
-      ]);
+      handleSetVariable(JSON.stringify(lpv?.promptData));
     } else {
-      setVariables([
-        ...getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
-      ]);
+      handleSetVariable(lpv?.template);
     }
   }, []);
 
@@ -214,25 +212,23 @@ function PromptVersion({
     }
   };
 
-  useEffect(() => {
+  const handleChangeProviderModel = () => {
+    // logic to change the value of promptInputs and variables
     let newPrompt, newPromptInputs, newVariables;
     if (getRole(provider, model)) {
       newPrompt = getTemplate(provider);
       newPromptInputs = newPrompt.data;
-      newVariables = getUniqueJsonArray(
-        getVariables(JSON.stringify(newPrompt.data) || ""),
-        "key",
-      );
       setPrompt(newPrompt!);
       setPromptInputs(newPromptInputs!);
+      handleSetVariable(JSON.stringify(newPrompt.data));
     } else {
-      newVariables = getUniqueJsonArray(
-        getVariables(lpv?.template || ""),
-        "key",
-      );
+      handleSetVariable(lpv?.template);
     }
-    setVariables([...newVariables]);
     setIsDirty(true);
+  };
+
+  useEffect(() => {
+    handleChangeProviderModel();
   }, [provider, model]);
 
   useEffect(() => {

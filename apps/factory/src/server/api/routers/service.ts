@@ -48,7 +48,7 @@ export const serviceRouter = createTRPCRouter({
           if (
             providerModels[`${modelType}`].models[`${pv.llmProvider}`]?.find(
               (item) => item.name === pv.llmModel,
-            )?.role
+            )?.hasRole
           ) {
             prompt = generatePrompt(
               JSON.stringify(pv.promptData.data),

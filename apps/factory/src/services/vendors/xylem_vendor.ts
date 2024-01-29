@@ -1,6 +1,7 @@
 import BaseVendor from "~/services/vendors/base_vendor";
 import { fetchWithRetry } from "~/services/vendors/base_vendor";
 import { logLLMResponse } from "~/utils/log";
+import { GPTResponseType } from "~/validators/openaiResponse";
 class XylemVendor extends BaseVendor {
   private provider: string;
   private model: string;
@@ -31,8 +32,8 @@ class XylemVendor extends BaseVendor {
     return myHeaders;
   }
 
-  protected createChatResponse(response: any) {
-    const newResponse = {
+  public createChatResponse(response: any) {
+    const newResponse: GPTResponseType = {
       warning: "",
       id: response.id,
       object: response.object,
@@ -75,32 +76,32 @@ class XylemVendor extends BaseVendor {
     };
   }
 
-  async makeApiCallWithRetry(
-    prompt: string,
-    dryRun: boolean,
-  ): Promise<{ response: any; latency: number }> {
-    const requestOptions = this.createRequestOptions(prompt);
-    const startTime = new Date();
+  // async makeApiCallWithRetry(
+  //   prompt: string,
+  //   dryRun: boolean,
+  // ): Promise<{ response: Response; latency: number }> {
+  //   const requestOptions = this.createRequestOptions(prompt);
+  //   const startTime = new Date();
 
-    let resp;
-    if (!dryRun) {
-      console.log(this.getUrl(), JSON.stringify(requestOptions));
-      resp = await fetchWithRetry(
-        this.getUrl(),
-        requestOptions,
-        this.maxRetriesXylem,
-        this.retryDelayXylem,
-      );
-    } else {
-      resp = this.createFakeResponse();
-    }
+  //   let resp;
+  //   if (!dryRun) {
+  //     console.log(this.getUrl(), JSON.stringify(requestOptions));
+  //     resp = await fetchWithRetry(
+  //       this.getUrl(),
+  //       requestOptions,
+  //       this.maxRetriesXylem,
+  //       this.retryDelayXylem,
+  //     );
+  //   } else {
+  //     resp = this.createFakeResponse();
+  //   }
 
-    const endTime = new Date();
-    const latency: number = endTime.getTime() - startTime.getTime();
-    const response = this.createChatResponse(resp);
-    logLLMResponse(this.constructor.name, response);
-    return { response, latency };
-  }
+  //   const endTime = new Date();
+  //   const latency: number = endTime.getTime() - startTime.getTime();
+  //   const response = this.createChatResponse(resp);
+  //   logLLMResponse(this.constructor.name, response);
+  //   return { response, latency };
+  // }
 }
 
 export default XylemVendor;

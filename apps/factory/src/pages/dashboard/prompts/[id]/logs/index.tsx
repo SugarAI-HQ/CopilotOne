@@ -128,6 +128,13 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
     await fetchNextPage();
   };
 
+  const getRole = (log: LogSchema) => {
+    return providerModels[
+      `${log?.llmModelType as keyof typeof providerModels}`
+    ].models[`${log.llmProvider}`]?.find((mod) => mod.name === log.llmModel)
+      ?.hasRole;
+  };
+
   return (
     <div>
       {/* <TextField
@@ -173,11 +180,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                 {logModeMax && <TableCell>{log.id}</TableCell>}
                 <TableCell>
                   {/* we are checking wether the role is true or false */}
-                  {providerModels[
-                    `${log?.llmModelType as keyof typeof providerModels}`
-                  ].models[`${log.llmProvider}`]?.find(
-                    (mod) => mod.name === log.llmModel,
-                  )?.role ? (
+                  {getRole(log) ? (
                     <>
                       <PromptView
                         promptInputs={JSON.parse(log.prompt)}
