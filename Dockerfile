@@ -40,6 +40,8 @@ ENV NODE_ENV=production
 ENV PORT 80
 ENV HOSTNAME 0.0.0.0
 ENV NEXT_TELEMETRY_DISABLED 1
+ENV PROJECT_NAME ${PROJECT_NAME}
+ENV PROJECT_PATH /app/apps/${PROJECT_NAME}
 
 
 WORKDIR /app
@@ -52,9 +54,11 @@ COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/next.config.mj
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/package.json ./apps/${PROJECT_NAME}/
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./apps/${PROJECT_NAME}/public
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./apps/${PROJECT_NAME}/.next/static
+COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/prisma ./apps/${PROJECT_NAME}/prisma
 COPY --chown=nextjs:nodejs ./docker/entrypoint.sh /app/entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
+RUN npm install -g prisma@latest
 
 USER root
 

@@ -17,7 +17,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "pre-commit": "lint-staged",
-    "db": "npx prisma studio"
+    "db": "npx prisma studio",
+    "db:migrate": "npx prisma migrate deploy"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
