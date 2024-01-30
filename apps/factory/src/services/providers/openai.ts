@@ -1,12 +1,13 @@
 import {
   LlmConfigSchema,
+  PromptDataSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
 import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import OpenAIVendor from "~/services/vendors/openai_vendors";
 import { v4 as uuidv4 } from "uuid";
-import { promptRole } from "~/validators/base";
+import { PromptRoleEnum } from "~/validators/base";
 export interface LLMConfig {
   max_tokens: number;
   temperature: number;
@@ -46,19 +47,31 @@ export async function run(
   }
 }
 
-export const template: PromptDataSchemaType = {
+const gpt: PromptDataSchemaType = {
   v: 1,
   p: "openai",
   data: [
     {
       id: uuidv4(),
-      role: (promptRole.enum.SYSTEM as string).toLowerCase(),
+      role: PromptRoleEnum.enum.SYSTEM,
       content: "you are a smart mathematician",
     },
     {
       id: uuidv4(),
-      role: (promptRole.enum.USER as string).toLowerCase(),
+      role: PromptRoleEnum.enum.USER,
       content: `help me with {@Question}`,
     },
   ],
+};
+
+const dalle: PromptDataSchemaType = {
+  v: 1,
+  p: "openai",
+  data: [],
+};
+
+export const template = {
+  "gpt-3.5-turbo": gpt,
+  "gpt-4": gpt,
+  "dalle-3": dalle,
 };

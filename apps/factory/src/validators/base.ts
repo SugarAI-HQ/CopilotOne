@@ -175,6 +175,12 @@ export type colorType = OverridableStringUnion<
 export const displayModes = z.enum(["EDIT", "VIEW"]);
 export type DisplayModes = z.infer<typeof displayModes>;
 
-export const promptRole = z.enum(["USER", "ASSISTANT", "SYSTEM"]);
+enum PromptRole {
+  USER = "user",
+  ASSISTANT = "assistant",
+  SYSTEM = "system",
+}
+
+export const PromptRoleEnum = z.nativeEnum(PromptRole);
 
 export const providerWithoutRoleType = z.enum([""]);

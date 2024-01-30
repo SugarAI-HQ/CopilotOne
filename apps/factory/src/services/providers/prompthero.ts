@@ -26,8 +26,12 @@ export async function run(
   return generateOutput(response, llmModelType, latency);
 }
 
-export const template: PromptDataSchemaType = {
+const open_Journey: PromptDataSchemaType = {
   v: 1,
   p: "prompthero",
   data: [],
+};
+
+export const template = {
+  openjourney: open_Journey,
 };

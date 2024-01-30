@@ -54,8 +54,12 @@ async function run_si(
   return generateOutput(response, llmModelType, latency);
 }
 
-export const template: PromptDataSchemaType = {
+const sdxl: PromptDataSchemaType = {
   v: 1,
   p: "stabilityai",
   data: [],
+};
+
+export const template = {
+  sdxl: sdxl,
 };

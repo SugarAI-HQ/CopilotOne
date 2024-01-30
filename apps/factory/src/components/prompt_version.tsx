@@ -51,7 +51,7 @@ import DownloadButtonImg from "./download_button_img";
 import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import Counter from "./counter_responsetime";
 import CopyToClipboardButton from "./copy_button";
-import { promptRole } from "~/validators/base";
+import { PromptRoleEnum } from "~/validators/base";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 import {
@@ -214,9 +214,9 @@ function PromptVersion({
 
   const handleChangeProviderModel = () => {
     // logic to change the value of promptInputs and variables
-    let newPrompt, newPromptInputs, newVariables;
+    let newPrompt, newPromptInputs;
     if (getRole(provider, model)) {
-      newPrompt = getTemplate(provider);
+      newPrompt = getTemplate(provider, model);
       newPromptInputs = newPrompt.data;
       setPrompt(newPrompt!);
       setPromptInputs(newPromptInputs!);
@@ -272,15 +272,14 @@ function PromptVersion({
     const length = promptInputs.length;
     const newObj = {
       id: uuidv4(),
-      role: (promptRole.Enum.USER as string).toLowerCase(),
+      role: PromptRoleEnum.enum.USER,
       content: "",
     };
     if (
       length > 0 &&
-      promptInputs[length - 1]!.role ===
-        (promptRole.Enum.USER as string).toLowerCase()
+      promptInputs[length - 1]!.role === (PromptRoleEnum.enum.USER as string)
     ) {
-      newObj.role = (promptRole.Enum.ASSISTANT as string).toLowerCase();
+      newObj.role = PromptRoleEnum.enum.ASSISTANT;
     }
     const tempArray = [...promptInputs, newObj];
     setPromptInputs(tempArray);
@@ -293,9 +292,9 @@ function PromptVersion({
         ...prompt,
         role:
           index === idx
-            ? prompt.role === (promptRole.enum.USER as string).toLowerCase()
-              ? (promptRole.Enum.ASSISTANT as string).toLowerCase()
-              : (promptRole.Enum.USER as string).toLowerCase()
+            ? prompt.role === (PromptRoleEnum.enum.USER as string)
+              ? PromptRoleEnum.enum.ASSISTANT
+              : PromptRoleEnum.enum.USER
             : prompt.role,
       }),
     );
@@ -392,9 +391,7 @@ function PromptVersion({
                                 <Button
                                   onClick={() => {
                                     prompts.role !==
-                                    (
-                                      promptRole.enum.SYSTEM as string
-                                    ).toLowerCase()
+                                    (PromptRoleEnum.enum.SYSTEM as string)
                                       ? changePromptInputRole(ind)
                                       : "";
                                   }}
@@ -421,9 +418,7 @@ function PromptVersion({
                                       display: `${
                                         promptInputs.length === 1 ||
                                         prompts.role ===
-                                          (
-                                            promptRole.enum.SYSTEM as string
-                                          ).toLowerCase()
+                                          (PromptRoleEnum.enum.SYSTEM as string)
                                           ? "none"
                                           : "block"
                                       }`,

@@ -7,7 +7,7 @@ import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 import XylemVendor from "../vendors/xylem_vendor";
 import { v4 as uuidv4 } from "uuid";
-import { promptRole } from "~/validators/base";
+import { PromptRoleEnum } from "~/validators/base";
 export interface LLMConfig {
   max_tokens: number;
   temperature: number;
@@ -59,14 +59,25 @@ async function run_xy(
   );
 }
 
-export const template: PromptDataSchemaType = {
+const mistral_7B: PromptDataSchemaType = {
   v: 1,
   p: "mistral",
   data: [
     {
       id: uuidv4(),
-      role: (promptRole.enum.USER as string).toLowerCase(),
+      role: PromptRoleEnum.enum.USER,
       content: `help me with {@OBJECT}`,
     },
   ],
+};
+
+const mistral_7B_Instruct: PromptDataSchemaType = {
+  v: 1,
+  p: "mistral",
+  data: [],
+};
+
+export const template = {
+  "Mistral-7B": mistral_7B,
+  "Mistral-7B-Instruct-v0.1": mistral_7B_Instruct,
 };

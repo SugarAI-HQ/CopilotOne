@@ -13,7 +13,7 @@ import { PromptDataSchemaType } from "~/validators/prompt_version";
 
 interface Provider {
   run: Function;
-  template: PromptDataSchemaType;
+  template: any;
 }
 
 const providers: Record<string, Provider> = {
@@ -40,5 +40,5 @@ export function getTemplate(providerName: string) {
     throw new Error(`Provider "${providerName}" not found`);
   }
 
-  return provider.template;
+  return provider.template[model];
 }

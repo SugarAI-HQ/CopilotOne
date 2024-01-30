@@ -243,18 +243,20 @@ export const promptRouter = createTRPCRouter({
 
       let modelType = input.moduleType === ModelTypeSchema.Enum.TEXT2TEXT;
 
+      let provider = modelType ? "llama2" : "runwayml";
+      let model = modelType ? "7b" : "stable-diffusion-v1-5";
+      let promptData: PromptDataSchemaType = getTemplate(provider, model);
+
       let template = modelType
         ? `Tell me a joke on topic "{@topic}"`
         : `A photo of an astronaut riding a horse on {@OBJECT}`;
-
-      let promptData: PromptDataSchemaType = getTemplate("openai");
 
       const defaultTemplate = {
         template: template,
         promptData: promptData,
         llmModelType: input.moduleType,
-        llmProvider: modelType ? "llama2" : "runwayml",
-        llmModel: modelType ? "7b" : "stable-diffusion-v1-5",
+        llmProvider: provider,
+        llmModel: model,
         llmConfig: {},
         // forkedFromId: null
       };

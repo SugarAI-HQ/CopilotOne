@@ -27,8 +27,12 @@ export async function run(
   return generateOutput(response, llmModelType, latency);
 }
 
-export const template: PromptDataSchemaType = {
+const stable_Diffusion_V1_5: PromptDataSchemaType = {
   v: 1,
   p: "runwayml",
   data: [],
+};
+
+export const template = {
+  "stable-diffusion-v1-5": stable_Diffusion_V1_5,
 };

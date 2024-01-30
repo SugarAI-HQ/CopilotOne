@@ -27,8 +27,14 @@ export async function run(
   return generateOutput(response, llmModelType, latency);
 }
 
-export const template: PromptDataSchemaType = {
+const b_7_13_70: PromptDataSchemaType = {
   v: 1,
   p: "llama2",
   data: [],
+};
+
+export const template = {
+  "7b": b_7_13_70,
+  "13b": b_7_13_70,
+  "70b": b_7_13_70,
 };
