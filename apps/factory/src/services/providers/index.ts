@@ -34,7 +34,7 @@ export function getProvider(providerName: string) {
   return provider.run;
 }
 
-export function getTemplate(providerName: string) {
+export function getTemplate(providerName: string, model: string) {
   const provider = providers[providerName];
   if (!provider) {
     throw new Error(`Provider "${providerName}" not found`);
