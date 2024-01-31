@@ -229,3 +229,32 @@ model PromptLog {
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 }
+
+enum EntityTypes {
+  PromptPackage
+  PromptTemplate
+  PromptVersion
+}
+
+model Like {
+  id         String     @id @default(uuid())
+  likes      LikeUser[]
+  likesCount Int        @default(0)
+  EntityId   String
+  EntityType String // This field can store the type of the liked model (e.g., "PromptPackage", "PromptTemplate", "PromptVersion", etc.)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+
+  @@unique([EntityId, EntityType])
+}
+
+model LikeUser {
+  id        String   @id @default(uuid())
+  userId    String
+  likeId    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @map("updated_at")
+  Like      Like?    @relation(fields: [likeId], references: [id])
+
+  @@unique([userId, likeId])
+}

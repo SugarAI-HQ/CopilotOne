@@ -58,7 +58,7 @@ export const PromptVariablesScalarFieldEnumSchema = z.enum(['id','userId','promp
 
 export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt']);
 
-export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','runMode','createdAt','updatedAt','modelType']);
+export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType','runMode']);
 
 export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','promptData','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
 
@@ -67,6 +67,10 @@ export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerif
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires','createdAt','updatedAt']);
 
 export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
+
+export const LikeScalarFieldEnumSchema = z.enum(['id','likesCount','EntityId','EntityType','createdAt','updatedAt']);
+
+export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -101,6 +105,10 @@ export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
 export const PromptRunModesSchema = z.enum(['AUTHORISED_ONLY','LOGGEDIN_ONLY','ALL']);
 
 export type PromptRunModesType = `${z.infer<typeof PromptRunModesSchema>}`
+
+export const EntityTypesSchema = z.enum(['PromptPackage','PromptTemplate','PromptVersion']);
+
+export type EntityTypesType = `${z.infer<typeof EntityTypesSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -185,8 +193,8 @@ export type PromptPackage = z.infer<typeof PromptPackageSchema>
 /////////////////////////////////////////
 
 export const PromptTemplateSchema = z.object({
-  runMode: PromptRunModesSchema,
   modelType: ModelTypeSchema,
+  runMode: PromptRunModesSchema,
   id: z.string().uuid(),
   userId: z.string(),
   promptPackageId: z.string(),
@@ -293,3 +301,32 @@ export const PromptLogSchema = z.object({
 })
 
 export type PromptLog = z.infer<typeof PromptLogSchema>
+
+/////////////////////////////////////////
+// LIKE SCHEMA
+/////////////////////////////////////////
+
+export const LikeSchema = z.object({
+  id: z.string().uuid(),
+  likesCount: z.number().int(),
+  EntityId: z.string(),
+  EntityType: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Like = z.infer<typeof LikeSchema>
+
+/////////////////////////////////////////
+// LIKE USER SCHEMA
+/////////////////////////////////////////
+
+export const LikeUserSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  likeId: z.string().nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type LikeUser = z.infer<typeof LikeUserSchema>

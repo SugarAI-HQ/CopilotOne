@@ -6,9 +6,11 @@ import {
   Container,
   Box,
   Stack,
+  Button,
   Checkbox,
   Grid,
   Typography,
+  Dialog,
   IconButton,
   Tooltip,
   CircularProgress,
@@ -20,6 +22,7 @@ import { GenerateInput, GenerateOutput } from "~/validators/service";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import PromptOutput from "./prompt_output";
 import {
+  EntityTypesSchema,
   ModelTypeSchema,
   ModelTypeType,
   PromptRunModesSchema,
@@ -39,12 +42,19 @@ import { useRouter } from "next/router";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
 import { NextSeo } from "next-seo";
+import DownloadButtonImg from "./download_button_img";
+import { prisma } from "~/server/db";
+import { env } from "~/env.mjs";
 import { providerModels } from "~/validators/base";
-import { PromptDataSchemaType } from "~/validators/prompt_version";
+import {
+  PromptDataSchemaType,
+  PromptDataType,
+} from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
 import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadButtonBase64 from "./download_button_base64";
+import LikeButton from "./marketplace/like_button";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -264,6 +274,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
               ) : data || !versionOrEnvironment ? (
                 <>
                   <Box sx={{ display: "flex", justifyContent: "end" }}>
+                    {isLoading ? (
+                      <CircularProgress />
+                    ) : (
+                      data?.templateId && (
+                        <LikeButton
+                          EntityId={data?.templateId ?? ""}
+                          EntityType={EntityTypesSchema.enum.PromptTemplate}
+                        />
+                      )
+                    )}
                     <Tooltip title="Share Cube" placement="top">
                       <IconButton
                         onClick={() => setOpenShareModal(!openShareModal)}
@@ -323,7 +343,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   <Box sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
                     {pvrs && (
                       <>
-                        {data && (
+                        {data?.template && (
                           <PromptViewArrow
                             promptTemplate={data?.template}
                             promptInputs={

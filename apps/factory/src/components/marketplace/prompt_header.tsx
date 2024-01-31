@@ -8,11 +8,13 @@ import {
   Paper,
   Grid,
   Stack,
+  CircularProgress,
 } from "@mui/material";
 import LikeButton from "./like_button";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { PackagePublicOutput as pp } from "~/validators/marketplace";
 import PromptTags from "./prompt_tags";
+import { EntityTypesSchema } from "~/generated/prisma-client-zod.ts";
 
 const PromptHeader = ({ pp }: { pp: pp }) => {
   return (
@@ -59,7 +61,14 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
               ></Button>
             </Grid> */}
             <Grid item xs={12} sm={6} md={4}>
-              {/* <LikeButton count={likes}></LikeButton> */}
+              {pp?.id === undefined ? (
+                <CircularProgress />
+              ) : (
+                <LikeButton
+                  EntityId={pp?.id}
+                  EntityType={EntityTypesSchema.Enum.PromptPackage}
+                />
+              )}
             </Grid>
           </Grid>
         </Stack>
