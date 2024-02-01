@@ -6,13 +6,13 @@ export const getLikeInput = z.object({
   entityType: EntityTypesSchema,
 });
 
-export const LikeInput = z
+export const likeInput = z
   .object({
     likeId: z.string(),
   })
   .strict();
 
-export const UnlikeInput = z
+export const unLikeInput = z
   .object({
     likeId: z.string(),
   })
@@ -26,12 +26,15 @@ export const getUserLikeInput = z
 
 export const getLikeOutput = z.object({ hasLiked: z.boolean() }).strict();
 
-export const LikePublicOutput = z
+export const likePublicOutput = z
   .object({
     likesCount: z.number(),
     id: z.string(),
   })
   .strict();
 
-export type GetLikeOutput = z.infer<typeof getLikeOutput>;
-export type LikePublicOutputType = z.infer<typeof LikePublicOutput>;
+export type unLikeInputType = z.infer<typeof unLikeInput>;
+export type likeInputType = z.infer<typeof likeInput>;
+export type getLikeInputType = z.infer<typeof getLikeInput>;
+export type getLikeOutputType = z.infer<typeof getLikeOutput>;
+export type likePublicOutputType = z.infer<typeof likePublicOutput>;

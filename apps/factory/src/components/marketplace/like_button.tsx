@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { EntityTypesType } from "~/generated/prisma-client-zod.ts";
 import { CircularProgress } from "@mui/material";
-import { LikePublicOutputType } from "~/validators/like";
+import { likePublicOutputType } from "~/validators/like";
 
 interface LikeButtonProps {
   entityId: string;
@@ -26,7 +26,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
       entityType,
     },
     {
-      onSuccess(like: LikePublicOutputType) {
+      onSuccess(like: likePublicOutputType) {
         setCounter(like.likesCount);
       },
     },
@@ -40,7 +40,8 @@ const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
       onSuccess(liked) {
         setHasLiked(liked.hasLiked);
       },
-      enabled: like !== undefined,
+      enabled: like !== (undefined || null),
+      retry: false,
     },
   );
 
@@ -92,7 +93,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
 
   return (
     <div>
-      {isLoading ? (
+      {isLoading || like === undefined ? (
         <CircularProgress />
       ) : (
         <ButtonGroup

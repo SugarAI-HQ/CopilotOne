@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import {
-  LikeInput,
-  LikePublicOutput,
-  UnlikeInput,
+  likeInput,
+  likePublicOutput,
+  unLikeInput,
   getLikeInput,
   getLikeOutput,
   getUserLikeInput,
@@ -11,7 +11,7 @@ import {
 
 export const likeRouter = createTRPCRouter({
   likeEntity: protectedProcedure
-    .input(LikeInput)
+    .input(likeInput)
     .mutation(async ({ input, ctx }) => {
       const { likeId } = input;
       const userId = ctx.jwt?.id as string;
@@ -46,7 +46,7 @@ export const likeRouter = createTRPCRouter({
     }),
 
   unlikeEntity: protectedProcedure
-    .input(UnlikeInput)
+    .input(unLikeInput)
     .mutation(async ({ input, ctx }) => {
       const { likeId } = input;
       const userId = ctx.jwt?.id as string;
@@ -87,7 +87,7 @@ export const likeRouter = createTRPCRouter({
 
   getLikes: publicProcedure
     .input(getLikeInput)
-    .output(LikePublicOutput)
+    .output(likePublicOutput)
     .query(async ({ input, ctx }) => {
       const { entityId, entityType } = input;
 
