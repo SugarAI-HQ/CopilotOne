@@ -91,7 +91,7 @@ export const likeRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const { entityId, entityType } = input;
 
-      const entityLike = await prisma.like.upsert({
+      const entityLike = await ctx.prisma.like.upsert({
         where: {
           entityId_entityType: {
             entityId,
@@ -129,7 +129,7 @@ export const likeRouter = createTRPCRouter({
 
       return ctx.prisma
         .$transaction(async (prisma) => {
-          const userLike = prisma.likeUser.findFirst({
+          const userLike = await prisma.likeUser.findFirst({
             where: {
               userId: userId,
               likeId: likeId,

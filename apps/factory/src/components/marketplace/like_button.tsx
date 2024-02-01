@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -6,7 +6,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { api } from "~/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { EntityTypesType } from "~/generated/prisma-client-zod.ts";
-import { GetLikeOutput } from "~/validators/like";
+import { CircularProgress } from "@mui/material";
+import { LikePublicOutputType } from "~/validators/like";
 
 interface LikeButtonProps {
   entityId: string;
@@ -17,7 +18,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
   const [counter, setCounter] = useState<number>(0);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [hasLiked, setHasLiked] = useState<boolean>();
-  const [likedId, setLikeId] = useState<string>();
   const { data: sessionData } = useSession();
 
   const { data: like, isLoading } = api.like.getLikes.useQuery(
@@ -26,8 +26,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
       entityType,
     },
     {
-      onSuccess(like) {
-        setLikeId(like.id);
+      onSuccess(like: LikePublicOutputType) {
         setCounter(like.likesCount);
       },
     },
@@ -41,68 +40,60 @@ const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
       onSuccess(liked) {
         setHasLiked(liked.hasLiked);
       },
+      enabled: like !== undefined,
     },
   );
 
   const UnlikeMutation = api.like.unlikeEntity.useMutation();
   const LikeMutation = api.like.likeEntity.useMutation();
 
-  // useEffect(() => {
-  //   if (like?.likesCount != null) {
-  //     setCounter(like.likesCount);
-  //     if (sessionData?.user) {
-  //       // setHasLiked(liked.hasLiked);
-  //       // setLikeId(liked.likeId);
-  //     }
-  //   }
-  // }, [like?.likesCount, sessionData?.user]);
-
   const handleLikeClick = () => {
     setButtonLoading(true);
-    if (hasLiked) {
-      UnlikeMutation.mutate(
-        {
-          likeId: like?.id,
-        },
-        {
-          onSuccess() {
-            console.log("Likes Updated");
-            setCounter(counter! - 1);
-            setHasLiked((prevHasLiked) => !prevHasLiked);
-            setButtonLoading(false);
+    if (like) {
+      if (hasLiked) {
+        UnlikeMutation.mutate(
+          {
+            likeId: like.id,
           },
-          onError(error) {
-            const errorData = JSON.parse(error.message);
-            console.log("error: ", errorData);
+          {
+            onSuccess() {
+              console.log("Likes Updated");
+              setCounter(counter! - 1);
+              setHasLiked((prevHasLiked) => !prevHasLiked);
+              setButtonLoading(false);
+            },
+            onError(error) {
+              const errorData = JSON.parse(error.message);
+              console.log("error: ", errorData);
+            },
           },
-        },
-      );
-    } else {
-      LikeMutation.mutate(
-        {
-          likeId: like?.id,
-        },
-        {
-          onSuccess(fetchedLikeId) {
-            console.log("Likes Updated");
-            setCounter(counter! + 1);
-            setLikeId(fetchedLikeId);
-            setHasLiked((prevHasLiked) => !prevHasLiked);
-            setButtonLoading(false);
+        );
+      } else {
+        LikeMutation.mutate(
+          {
+            likeId: like.id,
           },
-          onError(error) {
-            const errorData = JSON.parse(error.message);
-            console.log("error: ", errorData);
+          {
+            onSuccess(fetchedLikeId) {
+              console.log("Likes Updated");
+              setCounter(counter! + 1);
+              setHasLiked((prevHasLiked) => !prevHasLiked);
+              setButtonLoading(false);
+            },
+            onError(error) {
+              const errorData = JSON.parse(error.message);
+              console.log("error: ", errorData);
+            },
           },
-        },
-      );
+        );
+      }
     }
   };
 
   return (
     <div>
       {isLoading ? (
-        <span></span>
+        <CircularProgress />
       ) : (
         <ButtonGroup
           variant="outlined"
