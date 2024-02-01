@@ -240,12 +240,12 @@ model Like {
   id         String     @id @default(uuid())
   likes      LikeUser[]
   likesCount Int        @default(0)
-  EntityId   String
-  EntityType String // This field can store the type of the liked model (e.g., "PromptPackage", "PromptTemplate", "PromptVersion", etc.)
+  entityId   String
+  entityType String // This field can store the type of the liked model (e.g., "PromptPackage", "PromptTemplate", "PromptVersion", etc.)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt @map("updated_at")
 
-  @@unique([EntityId, EntityType])
+  @@unique([entityId, entityType])
 }
 
 model LikeUser {

@@ -6,13 +6,14 @@ import {
   UnlikeInput,
   getLikeInput,
   getLikeOutput,
+  getUserLikeInput,
 } from "~/validators/like";
 
 export const likeRouter = createTRPCRouter({
   likeEntity: protectedProcedure
     .input(LikeInput)
     .mutation(async ({ input, ctx }) => {
-      const { EntityId, EntityType } = input;
+      const { likeId } = input;
       const userId = ctx.jwt?.id as string;
 
       try {
@@ -20,32 +21,15 @@ export const likeRouter = createTRPCRouter({
           const newLike = await prisma.likeUser.create({
             data: {
               userId: userId,
+              likeId: likeId,
             },
           });
 
-          const entityLike = await prisma.like.upsert({
+          const entityLike = await prisma.like.update({
             where: {
-              EntityId_EntityType: {
-                EntityId,
-                EntityType,
-              },
+              id: likeId,
             },
-            create: {
-              likes: {
-                connect: {
-                  id: newLike.id,
-                },
-              },
-              EntityId,
-              EntityType,
-              likesCount: 1,
-            },
-            update: {
-              likes: {
-                connect: {
-                  id: newLike.id,
-                },
-              },
+            data: {
               likesCount: {
                 increment: 1,
               },
@@ -64,7 +48,7 @@ export const likeRouter = createTRPCRouter({
   unlikeEntity: protectedProcedure
     .input(UnlikeInput)
     .mutation(async ({ input, ctx }) => {
-      const { EntityId, EntityType, LikeId } = input;
+      const { likeId } = input;
       const userId = ctx.jwt?.id as string;
 
       try {
@@ -74,7 +58,7 @@ export const likeRouter = createTRPCRouter({
             where: {
               userId_likeId: {
                 userId: userId,
-                likeId: LikeId,
+                likeId: likeId,
               },
             },
           });
@@ -82,10 +66,7 @@ export const likeRouter = createTRPCRouter({
           // Decrease likesCount in EntityLike by 1
           const updatedEntity = await prisma.like.update({
             where: {
-              EntityId_EntityType: {
-                EntityId,
-                EntityType,
-              },
+              id: likeId,
             },
             data: {
               likesCount: {
@@ -108,64 +89,55 @@ export const likeRouter = createTRPCRouter({
     .input(getLikeInput)
     .output(LikePublicOutput)
     .query(async ({ input, ctx }) => {
-      const { EntityId, EntityType } = input;
+      const { entityId, entityType } = input;
 
-      return ctx.prisma
-        .$transaction(async (prisma) => {
-          const entityLike = await prisma.like.findUnique({
-            where: {
-              EntityId_EntityType: {
-                EntityId,
-                EntityType,
-              },
-            },
-          });
+      const entityLike = await prisma.like.upsert({
+        where: {
+          entityId_entityType: {
+            entityId,
+            entityType,
+          },
+        },
+        create: {
+          entityId,
+          entityType,
+        },
+        update: {},
+      });
 
-          const result = {
-            likesCount: entityLike?.likesCount || 0,
-          };
-          return result;
-        })
-        .catch((error) => {
-          console.error("Error fetching Likes:", error);
-          throw Error("Failed to fetch Likes");
-        });
+      const result = {
+        likesCount: entityLike?.likesCount || 0,
+        id: entityLike.id,
+      };
+      return result;
     }),
 
-  UserLikeCheck: protectedProcedure
-    .input(getLikeInput)
+  getUserLike: protectedProcedure
+    .input(getUserLikeInput)
     .output(getLikeOutput)
     .query(async ({ input, ctx }) => {
-      const { EntityId, EntityType } = input;
+      const { likeId } = input;
       const userId = ctx.jwt?.id as string;
+
+      let resp = {
+        hasLiked: false,
+      };
+
+      if (!likeId) {
+        return resp;
+      }
 
       return ctx.prisma
         .$transaction(async (prisma) => {
-          const entityLike = await prisma.like.findUnique({
+          const userLike = prisma.likeUser.findFirst({
             where: {
-              EntityId_EntityType: {
-                EntityId,
-                EntityType,
-              },
+              userId: userId,
+              likeId: likeId,
             },
-            include: { likes: true },
           });
 
-          if (entityLike) {
-            const userLike = entityLike.likes.find(
-              (like) => like.userId === userId,
-            );
-            if (userLike) {
-              return {
-                likeId: entityLike.id,
-                hasLiked: true,
-              };
-            }
-          }
-          return {
-            likeId: entityLike!.id,
-            hasLiked: false,
-          };
+          resp.hasLiked = !!userLike;
+          return resp;
         })
         .catch((error) => {
           console.error("Error fetching Likes:", error);

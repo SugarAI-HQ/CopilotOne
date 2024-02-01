@@ -1,33 +1,31 @@
 import { z } from "zod";
 import { EntityTypesSchema } from "~/generated/prisma-client-zod.ts";
 
-export const LikeInput = z
-  .object({
-    EntityId: z.string(),
-    EntityType: EntityTypesSchema,
-  })
-  .strict();
-export const UnlikeInput = z
-  .object({
-    EntityId: z.string(),
-    EntityType: EntityTypesSchema,
-    LikeId: z.string(),
-  })
-  .strict();
+export const getLikeInput = z.object({
+  entityId: z.string(),
+  entityType: EntityTypesSchema,
+});
 
-export const getLikeInput = z
-  .object({
-    EntityId: z.string(),
-    EntityType: EntityTypesSchema,
-  })
-  .strict();
+export const LikeInput = z.object({
+  likeId: z.string(),
+});
+// .strict();
+export const UnlikeInput = z.object({
+  likeId: z.string(),
+});
+// .strict();
 
-export const getLikeOutput = z
-  .object({ likeId: z.string(), hasLiked: z.boolean() })
-  .strict();
+export const getUserLikeInput = z.object({
+  likeId: z.string(),
+});
+// .strict();
+
+export const getLikeOutput = z.object({ hasLiked: z.boolean() }).strict();
+export type GetLikeOutput = z.infer<typeof getLikeOutput>;
 
 export const LikePublicOutput = z
   .object({
     likesCount: z.number(),
+    id: z.string(),
   })
   .strict();

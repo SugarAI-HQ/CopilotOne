@@ -68,7 +68,7 @@ export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','toke
 
 export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
 
-export const LikeScalarFieldEnumSchema = z.enum(['id','likesCount','EntityId','EntityType','createdAt','updatedAt']);
+export const LikeScalarFieldEnumSchema = z.enum(['id','likesCount','entityId','entityType','createdAt','updatedAt']);
 
 export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','createdAt','updatedAt']);
 
@@ -309,8 +309,8 @@ export type PromptLog = z.infer<typeof PromptLogSchema>
 export const LikeSchema = z.object({
   id: z.string().uuid(),
   likesCount: z.number().int(),
-  EntityId: z.string(),
-  EntityType: z.string(),
+  entityId: z.string(),
+  entityType: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

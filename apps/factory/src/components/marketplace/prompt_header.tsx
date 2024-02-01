@@ -65,8 +65,8 @@ const PromptHeader = ({ pp }: { pp: pp }) => {
                 <CircularProgress />
               ) : (
                 <LikeButton
-                  EntityId={pp?.id}
-                  EntityType={EntityTypesSchema.Enum.PromptPackage}
+                  entityId={pp?.id}
+                  entityType={EntityTypesSchema.Enum.PromptPackage}
                 />
               )}
             </Grid>

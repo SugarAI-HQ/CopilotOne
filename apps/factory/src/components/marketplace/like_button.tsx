@@ -6,51 +6,63 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import { api } from "~/utils/api";
 import { signIn, useSession } from "next-auth/react";
 import { EntityTypesType } from "~/generated/prisma-client-zod.ts";
+import { GetLikeOutput } from "~/validators/like";
 
 interface LikeButtonProps {
-  EntityId: string;
-  EntityType: EntityTypesType;
+  entityId: string;
+  entityType: EntityTypesType;
 }
 
-const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
-  const likesCount = api.like.getLikes.useQuery({
-    EntityId,
-    EntityType,
-  });
-
-  const liked = api.like.UserLikeCheck.useQuery({
-    EntityId,
-    EntityType,
-  });
-
-  const UnlikeMutation = api.like.unlikeEntity.useMutation();
-  const LikeMutation = api.like.likeEntity.useMutation();
-
+const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
   const [counter, setCounter] = useState<number>(0);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [hasLiked, setHasLiked] = useState<boolean>();
   const [likedId, setLikeId] = useState<string>();
   const { data: sessionData } = useSession();
 
-  useEffect(() => {
-    if (likesCount.data?.likesCount != null) {
-      setCounter(likesCount.data.likesCount);
-      if (sessionData?.user) {
-        setHasLiked(liked.data?.hasLiked);
-        setLikeId(liked.data?.likeId);
-      }
-    }
-  }, [likesCount.data, sessionData?.user]);
+  const { data: like, isLoading } = api.like.getLikes.useQuery(
+    {
+      entityId,
+      entityType,
+    },
+    {
+      onSuccess(like) {
+        setLikeId(like.id);
+        setCounter(like.likesCount);
+      },
+    },
+  );
+
+  const { data: liked } = api.like.getUserLike.useQuery(
+    {
+      likeId: like?.id,
+    },
+    {
+      onSuccess(liked) {
+        setHasLiked(liked.hasLiked);
+      },
+    },
+  );
+
+  const UnlikeMutation = api.like.unlikeEntity.useMutation();
+  const LikeMutation = api.like.likeEntity.useMutation();
+
+  // useEffect(() => {
+  //   if (like?.likesCount != null) {
+  //     setCounter(like.likesCount);
+  //     if (sessionData?.user) {
+  //       // setHasLiked(liked.hasLiked);
+  //       // setLikeId(liked.likeId);
+  //     }
+  //   }
+  // }, [like?.likesCount, sessionData?.user]);
 
   const handleLikeClick = () => {
     setButtonLoading(true);
-    console.log(liked.data?.likeId);
     if (hasLiked) {
       UnlikeMutation.mutate(
         {
-          EntityId,
-          EntityType,
-          LikeId: likedId!,
+          likeId: like?.id,
         },
         {
           onSuccess() {
@@ -68,8 +80,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
     } else {
       LikeMutation.mutate(
         {
-          EntityId,
-          EntityType,
+          likeId: like?.id,
         },
         {
           onSuccess(fetchedLikeId) {
@@ -90,28 +101,32 @@ const LikeButton: React.FC<LikeButtonProps> = ({ EntityId, EntityType }) => {
 
   return (
     <div>
-      <ButtonGroup
-        variant="outlined"
-        color="inherit"
-        size="small"
-        sx={{ color: "#FFFFFF", padding: "20px" }}
-      >
-        <Button
-          disabled={buttonLoading}
+      {isLoading ? (
+        <span></span>
+      ) : (
+        <ButtonGroup
+          variant="outlined"
+          color="inherit"
           size="small"
-          startIcon={
-            <FavoriteIcon
-              sx={hasLiked ? { color: "red" } : { color: "white" }}
-            />
-          }
-          onClick={() => (sessionData != null ? handleLikeClick() : signIn())}
+          sx={{ color: "#FFFFFF", padding: "20px" }}
         >
-          {hasLiked ? "Liked" : "Like"}
-        </Button>
-        <Button sx={{ cursor: "default", pointerEvents: "none" }}>
-          {counter} Likes
-        </Button>
-      </ButtonGroup>
+          <Button
+            disabled={buttonLoading}
+            size="small"
+            startIcon={
+              <FavoriteIcon
+                sx={hasLiked ? { color: "red" } : { color: "white" }}
+              />
+            }
+            onClick={() => (sessionData != null ? handleLikeClick() : signIn())}
+          >
+            {hasLiked ? "Liked" : "Like"}
+          </Button>
+          <Button sx={{ cursor: "default", pointerEvents: "none" }}>
+            {counter} Likes
+          </Button>
+        </ButtonGroup>
+      )}
     </div>
   );
 };
