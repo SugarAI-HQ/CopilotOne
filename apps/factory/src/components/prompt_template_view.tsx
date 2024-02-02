@@ -279,7 +279,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     ) : (
                       data?.templateId && (
                         <LikeButton
-                          entityId={data?.templateId ?? ""}
+                          entityId={data?.templateId}
                           entityType={EntityTypesSchema.enum.PromptTemplate}
                         />
                       )
