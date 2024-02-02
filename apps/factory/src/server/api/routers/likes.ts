@@ -105,9 +105,11 @@ export const likeRouter = createTRPCRouter({
         update: {},
       });
 
+      console.log(`entityLike ${JSON.stringify(entityLike)}`);
+
       const result = {
         likesCount: entityLike?.likesCount || 0,
-        id: entityLike.id,
+        id: entityLike?.id,
       };
       return result;
     }),

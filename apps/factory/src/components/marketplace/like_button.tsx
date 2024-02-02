@@ -40,7 +40,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ entityId, entityType }) => {
       onSuccess(liked) {
         setHasLiked(liked.hasLiked);
       },
-      enabled: like !== (undefined || null),
+      enabled: !!like?.id,
       retry: false,
     },
   );
