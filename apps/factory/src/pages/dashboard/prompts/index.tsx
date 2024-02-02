@@ -79,7 +79,7 @@ function Packages({
       {/* {packages && packages.length > 0 ? ( */}
       {packages.map((pkg, index) => (
         <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-          <Card>
+          <Card title={`${pkg?.description}`}>
             <CardActionArea href={`/dashboard/prompts/${pkg?.id}`}>
               <CardHeader
                 title={pkg?.name}
@@ -102,11 +102,6 @@ function Packages({
                     display: "-webkit-box",
                     WebkitLineClamp: "2",
                     WebkitBoxOrient: "vertical",
-                    "&:hover": {
-                      height: "10rem",
-                      overflow: "auto",
-                      WebkitLineClamp: "unset",
-                    },
                   }}
                 >
                   {pkg?.description}

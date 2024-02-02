@@ -16,6 +16,7 @@ import {
   Radio,
   Box,
   Tooltip,
+  IconButton,
 } from "@mui/material";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import { PackageOutput as pp } from "~/validators/prompt_package";
@@ -30,6 +31,10 @@ import { PromptIntegration } from "./integration/prompt_integration";
 import { VersionSchema } from "~/validators/prompt_version";
 import PublicUrl from "~/components/integration/public_url";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
+import { LoadingButton } from "@mui/lab";
+import Divider from "@mui/material/Divider";
+import CopyToClipboardButton from "./copy_button";
+import InputBase from "@mui/material/InputBase";
 
 function PromptDeploy({
   ns,
@@ -118,24 +123,35 @@ function PromptDeploy({
     }, 1000);
   };
 
+  const domain = window.location.host;
+  const link = `${domain}/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`;
   return (
     <span>
       {version.publishedAt ? (
         <Tooltip title={`Published Version`} placement="top-start">
-          <Button color="success" variant="text" onClick={handleOpenModal}>
-            <PublishedWithChangesIcon />
-          </Button>
-        </Tooltip>
-      ) : (
-        <Tooltip title={`Publish Cube`} placement="top-start">
-          <Button
+          <LoadingButton
             color="success"
             variant="outlined"
             onClick={handleOpenModal}
-            sx={{ width: "12rem", height: "100%" }}
+            loadingPosition="start"
+            startIcon={<PublishedWithChangesIcon />}
+            sx={{ width: "9rem", height: "100%" }}
           >
-            <RocketLaunchIcon></RocketLaunchIcon> Publish Cube
-          </Button>
+            <>Published</>
+          </LoadingButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title={`Publish Cube`} placement="top-start">
+          <LoadingButton
+            color="success"
+            variant="outlined"
+            onClick={handleOpenModal}
+            loadingPosition="start"
+            startIcon={<RocketLaunchIcon />}
+            sx={{ width: "11rem", height: "100%" }}
+          >
+            <>Publish Cube</>
+          </LoadingButton>
         </Tooltip>
       )}
       <Dialog
@@ -144,21 +160,14 @@ function PromptDeploy({
         onClose={handleCloseModal}
         maxWidth={"md"}
       >
-        <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
-          <DialogTitle style={{ flex: 1, margin: 0 }}>
-            Deploy Prompt via API
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <DialogTitle style={{ flex: 1 }}>
+            {deploymentSuccess ? (
+              <p className="pt-2">Published Successfully</p>
+            ) : (
+              <p className="ml-3">Publish App</p>
+            )}
           </DialogTitle>
-          {deploymentSuccess && (
-            <>
-              <Typography className="pr-2">
-                Share your Sugar Cubes link
-              </Typography>
-              <PublicUrl
-                title={"Public URL"}
-                url={`/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`}
-              />
-            </>
-          )}
         </Box>
         <DialogContent>
           {/* <Typography></Typography>
@@ -171,17 +180,40 @@ function PromptDeploy({
             </div>
           ) : deploymentSuccess ? (
             <div>
-              <Typography
-                variant="h6"
-                component="div"
-                alignItems="center"
-                alignContent={"center"}
-                textAlign={"center"}
-                sx={{ mb: 3 }}
+              <Typography className="pr-2">
+                Link for Sugar Cube Application
+              </Typography>
+              <Box
+                sx={{
+                  p: "2px 4px",
+                  display: "flex",
+                  alignItems: "center",
+                  width: "100%",
+                  margin: "1rem 0",
+                  backgroundColor: "var(--modal-bg-color)",
+                  borderColor: "var(--sugarhub-ternary-bg-color)",
+                  borderWidth: "1px",
+                }}
               >
-                Deployment successful!
-                <br />
-                You can access it over the API
+                <InputBase
+                  sx={{ ml: 1, flex: 1 }}
+                  disabled={true}
+                  value={link}
+                />
+                <CopyToClipboardButton
+                  textToCopy={link}
+                  textToDisplay={"Copy to Clipboard"}
+                />
+                <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+                <IconButton sx={{ p: "10px" }} aria-label="directions">
+                  <PublicUrl
+                    title={"Public URL"}
+                    url={`/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`}
+                  />
+                </IconButton>
+              </Box>
+              <Typography variant="h6" sx={{ margin: "2rem 0 1rem 0" }}>
+                API Endpoints
               </Typography>
               <PromptIntegration
                 ns={ns}
@@ -195,7 +227,9 @@ function PromptDeploy({
             </div>
           ) : (
             <div>
-              <Typography sx={{ ml: 3 }}>For Version: {pv.version}</Typography>
+              <Typography sx={{ ml: 3 }}>
+                Publish Version: {pv.version}
+              </Typography>
 
               <form onSubmit={handleDeployCode}>
                 <FormControl sx={{ m: 3 }} error={error} variant="standard">
@@ -209,21 +243,21 @@ function PromptDeploy({
                     <FormControlLabel
                       value="preview"
                       control={<Radio />}
-                      label="Preview"
+                      label="Preview - For Internal Use"
                     />
                     <FormControlLabel
                       value="release"
                       control={<Radio />}
-                      label="Release"
+                      label="Release - For Public Use"
                     />
                   </RadioGroup>
                   <FormHelperText>{helperText}</FormHelperText>
 
                   <TextField
-                    sx={{ mt: 4 }}
+                    sx={{ mt: 2 }}
                     minRows={5}
                     maxRows={10}
-                    label="Changelog"
+                    label="Add Publish Comment"
                     variant="outlined"
                     value={changelog}
                     onChange={(e) => handleChangelog(e.target.value)}
@@ -231,7 +265,7 @@ function PromptDeploy({
                   />
 
                   <Typography
-                    sx={{ mt: 4 }}
+                    sx={{ mt: 2 }}
                     variant="body2"
                     color="text.secondary"
                   >
@@ -248,6 +282,7 @@ function PromptDeploy({
             </div>
           )}
         </DialogContent>
+        <Divider />
         <DialogActions>
           {isDeploying ? null : deploymentSuccess ? null : (
             <Button onClick={handleCloseModal} color="primary">
@@ -256,7 +291,7 @@ function PromptDeploy({
           )}
           {isDeploying ? null : deploymentSuccess ? null : (
             <Button onClick={handleDeployCode} color="primary">
-              Deploy
+              Publish
             </Button>
           )}
         </DialogActions>

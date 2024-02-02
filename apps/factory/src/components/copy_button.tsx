@@ -19,7 +19,7 @@ const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
   };
 
   return (
-    <Tooltip title={textToDisplay}>
+    <Tooltip title={textToDisplay} placement="top">
       <IconButton
         onClick={handleCopy}
         sx={{

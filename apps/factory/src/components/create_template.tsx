@@ -84,6 +84,8 @@ export function CreateTemplate({
       promptPackageId: pp?.id,
     },
     resolver: zodResolver(createTemplateInput),
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   useEffect(() => {

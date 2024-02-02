@@ -511,6 +511,9 @@ function PromptVersion({
               variant="outlined"
               onClick={handleTest}
               disabled={true}
+              sx={{
+                width: "9rem",
+              }}
             >
               Backtest
             </Button>
@@ -520,6 +523,9 @@ function PromptVersion({
               variant="outlined"
               onClick={handleTest}
               disabled={true}
+              sx={{
+                width: "9rem",
+              }}
             >
               Finetune
             </Button>
