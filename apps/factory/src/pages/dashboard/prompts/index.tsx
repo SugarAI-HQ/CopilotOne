@@ -102,6 +102,11 @@ function Packages({
                     display: "-webkit-box",
                     WebkitLineClamp: "2",
                     WebkitBoxOrient: "vertical",
+                    "&:hover": {
+                      height: "10rem",
+                      overflow: "auto",
+                      WebkitLineClamp: "unset",
+                    },
                   }}
                 >
                   {pkg?.description}

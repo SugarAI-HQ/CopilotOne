@@ -64,6 +64,9 @@ export const promptRouter = createTRPCRouter({
 
       const packages = await ctx.prisma.promptPackage.findMany({
         where: query,
+        orderBy: {
+          createdAt: "desc",
+        },
       });
       // console.log(`packages out -------------- ${JSON.stringify(packages)}`);
       return packages;

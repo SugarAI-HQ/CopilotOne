@@ -127,9 +127,14 @@ function PromptDeploy({
           </Button>
         </Tooltip>
       ) : (
-        <Tooltip title={`Deploy Version`} placement="top-start">
-          <Button color="success" variant="text" onClick={handleOpenModal}>
-            <RocketLaunchIcon></RocketLaunchIcon>
+        <Tooltip title={`Publish Cube`} placement="top-start">
+          <Button
+            color="success"
+            variant="outlined"
+            onClick={handleOpenModal}
+            sx={{ width: "12rem", height: "100%" }}
+          >
+            <RocketLaunchIcon></RocketLaunchIcon> Publish Cube
           </Button>
         </Tooltip>
       )}

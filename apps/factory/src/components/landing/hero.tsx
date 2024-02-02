@@ -19,7 +19,7 @@ const Hero = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#040306] to-[#494952]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+        <div className="container flex flex-col items-center justify-center gap-2 px-4 py-16 ">
           {/* <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Sugarcane <span className="text-[hsl(280,100%,70%)]">AI</span>
           </h1> */}
@@ -29,11 +29,21 @@ const Hero = () => {
             height={600}
             alt="Logo"
           />
+          <p className="text-center text-2xl font-bold text-white">
+            Build and Launch Your First GenAI Application
+          </p>
+
+          <Link
+            href="https://youtu.be/5oeRkHOqW28"
+            className="m-2 flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
+          >
+            <h3 className="w-48 text-center text-2xl font-bold">View Demo</h3>
+          </Link>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               href={sessionData ? "/dashboard/prompts" : "/api/auth/signin"}
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
             >
               <h3 className="text-2xl font-bold">Sugar Factory →</h3>
               <div className="text-lg">
@@ -41,7 +51,7 @@ const Hero = () => {
               </div>
             </Link>
             <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               href="/marketplace/packages"
               target="_blank"
             >
@@ -51,7 +61,7 @@ const Hero = () => {
               </div>
             </Link>
             <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://sugarcaneai.dev/docs"
               target="_blank"
             >
@@ -62,8 +72,8 @@ const Hero = () => {
                </div> */}
             </Link>
             <Link
-              className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
-              href="https://github.com/sugarcane-ai"
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
+              href="https://github.com/sugarcane-ai/sugarcane-ai"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Contribute →</h3>
@@ -73,7 +83,7 @@ const Hero = () => {
             </Link>
           </div>
 
-          <div className="flex flex-col items-center gap-2">
+          <div className="m-2 flex flex-col items-center gap-2">
             <AuthShowcase />
           </div>
         </div>
@@ -91,10 +101,12 @@ function AuthShowcase() {
         {sessionData && <span>Logged in as {sessionData.user?.username}</span>}
       </p>
       <button
-        className="text-xlg rounded-full bg-white/10 px-10 py-6 font-semibold text-white no-underline transition hover:bg-white/20"
+        className="rounded-md bg-white/10 px-10 py-4 text-2xl font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
-        {sessionData ? "Sign out" : "Sign in / Sign up"}
+        <h3 className="w-48">
+          {sessionData ? "Sign out" : "Sign in / Sign up"}
+        </h3>
       </button>
     </div>
   );

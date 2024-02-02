@@ -344,13 +344,6 @@ function PromptVersion({
               onCreate={handleVersionCreate}
             ></CreateVersion>
 
-            <PromptDeploy
-              ns={ns}
-              pp={pp}
-              pt={pt}
-              pv={lpv}
-              onUpdate={onDeployUpdate}
-            ></PromptDeploy>
             {/* {isDev &&
               `published: ${lpv.publishedAt?.toDateString()} id: ${
                 lpv.id
@@ -504,6 +497,14 @@ function PromptVersion({
               Length: {template.length}
               Vars: {pvrs.some((v) => v.value === "") ? true : false}
             </Typography> */}
+
+            <PromptDeploy
+              ns={ns}
+              pp={pp}
+              pt={pt}
+              pv={lpv}
+              onUpdate={onDeployUpdate}
+            ></PromptDeploy>
 
             <Button
               color="success"

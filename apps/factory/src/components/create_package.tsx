@@ -47,6 +47,8 @@ export function CreatePackage({
       visibility: packageVisibility.enum.PUBLIC,
     },
     resolver: zodResolver(createPackageInput),
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export function CreatePackage({
 
       <Dialog open={isOpen} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>
-          <Typography variant="h6">New Prompt Package</Typography>
+          <Typography variant="h6">Create New Prompt Package</Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
@@ -95,32 +97,35 @@ export function CreatePackage({
             <FormTextInput
               name="name"
               control={control}
-              label="Name"
+              label="Package Name"
               error={!!errors.name}
-              helperText={errors.name?.message}
+              helperText={
+                errors.name?.message
+                  ? errors.name?.message
+                  : "(allowed: a-z, 0-9, - )"
+              }
               readonly={false}
             />
 
             <FormTextInput
               name="description"
               control={control}
-              label="Description"
+              label="Description of Package"
               error={!!errors.description}
-              helperText={errors.description?.message}
+              helperText={
+                errors.description?.message ? errors.description?.message : ""
+              }
               readonly={false}
             />
 
             <FormRadioInput
               name={"visibility"}
               control={control}
-              label="Visibility"
+              label="Package Visibility"
             />
             <div>
               {watch("visibility") === packageVisibility.Enum.PUBLIC ? (
-                <span>
-                  Anyone on the internet can use this package. You choose who
-                  can edit.
-                </span>
+                <span>Share the package with anyone on internet</span>
               ) : (
                 <span>You choose who can see and commit to this package.</span>
               )}

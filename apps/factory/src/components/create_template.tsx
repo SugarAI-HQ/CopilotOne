@@ -36,9 +36,10 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { FormSelectInput } from "./form_components/formSelectInput";
-
+import { TemplateListOutput } from "~/validators/prompt_template";
 export function CreateTemplate({
   pp,
+  pts,
   onCreate,
   sx,
   status,
@@ -46,13 +47,14 @@ export function CreateTemplate({
   ptId,
 }: {
   pp: pp;
+  pts: TemplateListOutput;
   onCreate: Function;
   sx?: any;
   status: string;
   customError: any;
   ptId: string | boolean | undefined;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(pts.length > 0 ? false : true);
   // const router = useRouter();
   const searchParams = useSearchParams();
   const edit = searchParams?.get("edit");

@@ -48,6 +48,8 @@ const UpdatePackage = ({ open, setOpen, packageId, updateArray }: Props) => {
     watch,
   } = useForm<CreatePackageInput>({
     resolver: zodResolver(createPackageInput),
+    mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   const input = {
@@ -83,8 +85,12 @@ const UpdatePackage = ({ open, setOpen, packageId, updateArray }: Props) => {
           <DialogContentText></DialogContentText>
           <Stack spacing={2} mt={2}>
             <FormControl fullWidth>
-              <FormLabel>Name</FormLabel>
-              <TextField variant="outlined" value={name} />
+              <FormLabel>Description of Package</FormLabel>
+              <TextField
+                variant="outlined"
+                value={name}
+                helperText="(allowed: a-z, 0-9, - )"
+              />
             </FormControl>
             {errors.name && (
               <p style={{ color: "red" }}>{errors.name.message}</p>
@@ -119,10 +125,7 @@ const UpdatePackage = ({ open, setOpen, packageId, updateArray }: Props) => {
               </RadioGroup>
               <div>
                 {watch("visibility") === packageVisibility.Enum.PUBLIC ? (
-                  <span>
-                    Anyone on the internet can use this package. You choose who
-                    can edit.
-                  </span>
+                  <span>Share the package with anyone on internet</span>
                 ) : (
                   <span>
                     You choose who can see and commit to this package.

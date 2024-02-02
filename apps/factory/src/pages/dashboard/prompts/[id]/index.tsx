@@ -160,34 +160,40 @@ const PackageShow: NextPageWithLayout = () => {
             ) : (
               <span></span>
             )}
-            <Grid component="span">
-              <Grid container>
-                <Grid item xs={6} md={6} lg={6}>
-                  <CreateTemplate
-                    pp={pp as pp}
-                    onCreate={ptCreateMutation.mutate}
-                    status={status}
-                    customError={customError}
-                    ptId={false}
-                  ></CreateTemplate>
-                </Grid>
-                <Grid item xs={6} md={6} lg={6}>
-                  {ptId ? (
-                    <>
+            {pts && (
+              <>
+                <Grid component="span">
+                  <Grid container>
+                    <Grid item xs={6} md={6} lg={6}>
                       <CreateTemplate
                         pp={pp as pp}
+                        pts={pts}
                         onCreate={ptCreateMutation.mutate}
                         status={status}
                         customError={customError}
-                        ptId={ptId}
+                        ptId={false}
                       ></CreateTemplate>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                    </Grid>
+                    <Grid item xs={6} md={6} lg={6}>
+                      {ptId ? (
+                        <>
+                          <CreateTemplate
+                            pp={pp as pp}
+                            pts={pts}
+                            onCreate={ptCreateMutation.mutate}
+                            status={status}
+                            customError={customError}
+                            ptId={ptId}
+                          ></CreateTemplate>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </Grid>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Grid>
+              </>
+            )}
 
             {pt && <Box sx={{ flexGrow: 1 }}></Box>}
             {pt && (
