@@ -329,13 +329,16 @@ function PromptVersion({
       <Box>
         <Box display="inline" id={"prompt-version-" + pt?.id}>
           <Box display="inline" id={"prompt-version-actions" + pt?.id}>
-            {!lpv.publishedAt && (
-              <Tooltip title="Save Version" placement="top-start">
-                <Button color="success" variant="text" onClick={handleSave}>
-                  <SaveIcon />
-                </Button>
-              </Tooltip>
-            )}
+            <Tooltip title="Save Version" placement="top-start">
+              <Button
+                color="success"
+                variant="text"
+                onClick={handleSave}
+                disabled={lpv.publishedAt ? true : false}
+              >
+                <SaveIcon />
+              </Button>
+            </Tooltip>
             <CreateVersion
               pp={pp}
               pt={pt}
