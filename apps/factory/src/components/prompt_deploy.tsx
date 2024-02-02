@@ -122,9 +122,7 @@ function PromptDeploy({
       setDeploymentSuccess(!!version.publishedAt);
     }, 1000);
   };
-
-  const domain = window.location.host;
-  const link = `${domain}/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`;
+  const link = `${process.env.NEXT_PUBLIC_APP_URL}/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`;
   return (
     <span>
       {version.publishedAt ? (
@@ -206,10 +204,7 @@ function PromptDeploy({
                 />
                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
                 <IconButton sx={{ p: "10px" }} aria-label="directions">
-                  <PublicUrl
-                    title={"Public URL"}
-                    url={`/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`}
-                  />
+                  <PublicUrl title={"Public URL"} url={`${link}`} />
                 </IconButton>
               </Box>
               <Typography variant="h6" sx={{ margin: "2rem 0 1rem 0" }}>
@@ -221,7 +216,7 @@ function PromptDeploy({
                 pt={pt}
                 pv={pv as pv}
               ></PromptIntegration>
-              <Button color="primary" autoFocus onClick={handleCloseModal}>
+              <Button color="primary" onClick={handleCloseModal}>
                 Close
               </Button>
             </div>
@@ -282,7 +277,8 @@ function PromptDeploy({
             </div>
           )}
         </DialogContent>
-        <Divider />
+        {!deploymentSuccess && <Divider />}
+
         <DialogActions>
           {isDeploying ? null : deploymentSuccess ? null : (
             <Button onClick={handleCloseModal} color="primary">
