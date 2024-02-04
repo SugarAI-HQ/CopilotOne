@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -29,8 +29,13 @@ import ForkRightIcon from "@mui/icons-material/ForkRight";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormTextInput } from "./form_components/formTextInput";
-import type { CreateVersionInput } from "~/validators/prompt_version";
+import type {
+  CreateVersionInput,
+  InputCreateVersion,
+} from "~/validators/prompt_version";
 import { createVersionInput } from "~/validators/prompt_version";
+import LLMSelector from "./llm_selector";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 
 CreateVersion.defaultProps = {
   icon: <AddCircleIcon />,
@@ -53,6 +58,8 @@ export function CreateVersion({
   forkedFromId: string | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [provider, setProvider] = useState("");
+  const [model, setModel] = useState("");
   // const [version, setVersion] = useState(v);
 
   const {
@@ -76,7 +83,7 @@ export function CreateVersion({
     reset();
     setIsOpen(false);
   };
-
+  // pvCreateMutation.mutate()
   const pvCreateMutation = api.prompt.createVersion.useMutation({
     onError: (error) => {
       const errorData = JSON.parse(error.message);
@@ -94,6 +101,16 @@ export function CreateVersion({
     },
   });
 
+  useEffect(() => {
+    if (pt?.modelType === ModelTypeSchema.enum.TEXT2TEXT) {
+      handleProviderChange("llama2");
+      handleModelChange("7b");
+    } else {
+      handleProviderChange("openai");
+      handleModelChange("dall-e");
+    }
+  }, [pt?.modelType]);
+
   const onFormSubmit = (data: CreateVersionInput) => {
     const response = {
       promptPackageId: pp?.id,
@@ -101,9 +118,20 @@ export function CreateVersion({
       version: data.version,
       forkedFromId: forkedFromId,
       moduleType: pt?.modelType,
+      provider: provider,
+      model: model,
     };
-    // console.log(response);
-    pvCreateMutation.mutate(response as CreateVersionInput);
+    console.log(response);
+    pvCreateMutation.mutate(response as InputCreateVersion);
+  };
+
+  const handleProviderChange = (provider: string) => {
+    console.log("Inside create Template -> provider", provider);
+    setProvider(provider);
+  };
+  const handleModelChange = (model: string) => {
+    console.log("Inside create Template -> model", model);
+    setModel(model);
   };
 
   return (
@@ -147,6 +175,14 @@ export function CreateVersion({
               error={!!errors.version}
               helperText={errors.version?.message}
               readonly={false}
+            />
+            <LLMSelector
+              initialProvider={provider}
+              initialModel={model}
+              onProviderChange={handleProviderChange}
+              onModelChange={handleModelChange}
+              modelType={pt?.modelType}
+              flag={true}
             />
           </Stack>
         </DialogContent>

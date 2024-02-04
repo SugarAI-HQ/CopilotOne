@@ -6,11 +6,13 @@ import PromptVersion from "~/components/prompt_version";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
 import {
-  GetVersionInput,
   GetVersionsInput,
+  InputCreateVersion,
   VersionOutput as pv,
 } from "~/validators/prompt_version";
 import { CreateVersion } from "./create_version";
+import CircularProgress from "@mui/material/CircularProgress";
+
 const Item = styled(Paper)(({ theme }) => ({
   width: "100%",
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -25,12 +27,17 @@ const PromptTemplate = ({
   pp,
   pt,
   onTemplateUpdate,
+  options,
 }: {
   ns: any;
   pp: pp;
   pt: pt;
   onTemplateUpdate: Function;
+  options: any;
 }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const pvCreateMutation = api.prompt.createVersion.useMutation();
+
   const { data: pvs, refetch: refectVersions } =
     api.prompt.getVersions.useQuery(
       {
@@ -39,10 +46,44 @@ const PromptTemplate = ({
       } as GetVersionsInput,
       {
         onSuccess: (rpvs) => {
+          // check length of rpvs if zero call api of create first Version
+          if (rpvs.length === 0) {
+            createFirstVersion();
+          } else {
+            setIsLoading(false);
+          }
           console.log("refetched pvs versions");
+        },
+        onError(error) {
+          setIsLoading(false);
         },
       },
     );
+
+  const createFirstVersion = () => {
+    const firstVersion = {
+      promptPackageId: pt?.promptPackageId,
+      promptTemplateId: pt?.id,
+      version: "0.0.1",
+      forkedFromId: null,
+      moduleType: pt?.modelType,
+      provider: options.provider,
+      model: options.model,
+    };
+    pvCreateMutation.mutate(firstVersion as InputCreateVersion, {
+      onSuccess(pv) {
+        handleVersionCreate(pv);
+        setIsLoading(false);
+      },
+      onSettled() {
+        setIsLoading(false);
+      },
+      onError(error) {
+        console.log(error);
+        setIsLoading(false);
+      },
+    });
+  };
 
   // console.log(`pvs <<<<>>>> ${JSON.stringify(pvs)}`);
 
@@ -54,6 +95,9 @@ const PromptTemplate = ({
   };
 
   const handleVersionCreate = (pv: any) => {
+    console.log(
+      "inside handleVersionCreate--------------------------------------------------",
+    );
     refectVersions().then((res) => {
       setActiveTab(0);
     });
@@ -63,7 +107,19 @@ const PromptTemplate = ({
     <>
       <Box sx={{ flexGrow: 1 }}>
         {/* <Chip label={pvs?.length || 'NA'} color={'primary'} variant="outlined" />  */}
-        {pt && (
+        {isLoading ? (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          </>
+        ) : (
           <Grid id="pts-container" container spacing={2}>
             <Tabs
               value={activeTab}
@@ -90,16 +146,16 @@ const PromptTemplate = ({
                 ></CreateVersion>
               </Box>
               {/* <Tab
-                iconPosition="start"
-                key={-1}
-                icon={
-                  <CreateVersion
-                    pp={pp}
-                    pt={pt}
-                    onCreate={handleVersionCreate}
-                  ></CreateVersion>
-                }
-              /> */}
+                      iconPosition="start"
+                      key={-1}
+                      icon={
+                        <CreateVersion
+                          pp={pp}
+                          pt={pt}
+                          onCreate={handleVersionCreate}
+                        ></CreateVersion>
+                      }
+                    /> */}
             </Tabs>
             {pvs &&
               pvs.length > 0 &&

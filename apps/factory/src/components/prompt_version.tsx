@@ -119,6 +119,7 @@ function PromptVersion({
       if (v !== null) {
         setPv(v);
         toast.success("Saved");
+        console.log(v);
       } else {
         toast.error("Failed to save");
       }
@@ -558,8 +559,9 @@ function PromptVersion({
               initialModel={model}
               onProviderChange={setProvider}
               onModelChange={setModel}
-              pv={lpv}
-              pt={pt}
+              publishedAt={lpv.publishedAt}
+              modelType={pt?.modelType}
+              flag={false}
             ></LLMSelector>
             <LLMConfig
               config={llmConfig}

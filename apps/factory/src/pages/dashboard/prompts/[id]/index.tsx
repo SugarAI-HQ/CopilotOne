@@ -59,6 +59,10 @@ const PackageShow: NextPageWithLayout = () => {
   const [ptId, setPtId] = useState<string>("");
   const [ptName, setPtName] = useState<string>("");
   const [pt, setPt] = useState<pt>();
+  const [options, setOptions] = useState({
+    provider: "llama2",
+    model: "7b",
+  });
 
   const { data: pts, refetch: rpts } = api.prompt.getTemplates.useQuery(
     {
@@ -91,24 +95,29 @@ const PackageShow: NextPageWithLayout = () => {
     setPt(selectedTemplate);
   };
 
-  const ptCreateMutation = api.prompt.createTemplate.useMutation({
-    onError: (error) => {
-      const errorData = JSON.parse(error.message);
-      setCustomError(errorData);
-    },
-    onSuccess: (uPt) => {
-      if (uPt !== null) {
-        toast.success("Template Created Successfully");
-        setStatus("success");
-        pts?.push(uPt);
-        rpts();
-        setPt(uPt);
-        setPtId(uPt?.id);
-      } else {
-        toast.error("Something went wrong, Please try again");
-      }
-    },
-  });
+  const ptCreateMutation = api.prompt.createTemplate.useMutation();
+
+  const handleCreateTemplate = (data: any) => {
+    ptCreateMutation.mutate(data.template, {
+      onError: (error) => {
+        const errorData = JSON.parse(error.message);
+        setCustomError(errorData);
+      },
+      onSuccess: (uPt) => {
+        if (uPt !== null) {
+          toast.success("Template Created Successfully");
+          setStatus("success");
+          pts?.push(uPt);
+          rpts();
+          setPt(uPt);
+          setPtId(uPt?.id);
+          setOptions(data.options);
+        } else {
+          toast.error("Something went wrong, Please try again");
+        }
+      },
+    });
+  };
 
   const getColor = (version: string | null | undefined): colorType => {
     let color: colorType = "error";
@@ -168,7 +177,7 @@ const PackageShow: NextPageWithLayout = () => {
                       <CreateTemplate
                         pp={pp as pp}
                         pts={pts}
-                        onCreate={ptCreateMutation.mutate}
+                        onCreate={handleCreateTemplate}
                         status={status}
                         customError={customError}
                         ptId={false}
@@ -180,7 +189,7 @@ const PackageShow: NextPageWithLayout = () => {
                           <CreateTemplate
                             pp={pp as pp}
                             pts={pts}
-                            onCreate={ptCreateMutation.mutate}
+                            onCreate={handleCreateTemplate}
                             status={status}
                             customError={customError}
                             ptId={ptId}
@@ -283,6 +292,7 @@ const PackageShow: NextPageWithLayout = () => {
             pt={pt}
             pp={pp as pp}
             onTemplateUpdate={handleTemplateUpdate}
+            options={options}
           ></PromptTemplate>
         )}
       </Box>

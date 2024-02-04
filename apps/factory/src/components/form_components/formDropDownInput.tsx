@@ -31,6 +31,7 @@ export function FormDropDownInput({
             inputProps={{
               readOnly: readonly,
             }}
+            disabled={readonly}
           >
             {Object.entries(providerModels).map(([modelType, modelConfig]) => (
               <MenuItem

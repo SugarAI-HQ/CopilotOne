@@ -120,12 +120,6 @@ export const providerModels: ProviderModels = {
           enabled: true,
           hasRole: false,
         },
-        // {
-        //   name: "dall-e-2",
-        //   label: "Dall-E-2",
-        //   enabled: true,
-        //   hasRole: false,
-        // },
       ],
       runwayml: [
         {

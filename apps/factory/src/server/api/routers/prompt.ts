@@ -27,7 +27,7 @@ import {
 } from "~/validators/prompt_template";
 import {
   getVersionsInput,
-  createVersionInput,
+  inputCreateVersion,
   updateVersionInput,
   versionOutput,
   versionListOutput,
@@ -36,6 +36,7 @@ import {
   imageDownloadInput,
   ImageDownloadInput,
   imageDownloadOutput,
+  createVersionInput,
 } from "~/validators/prompt_version";
 import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
@@ -236,7 +237,7 @@ export const promptRouter = createTRPCRouter({
     }),
 
   createVersion: protectedProcedure
-    .input(createVersionInput)
+    .input(inputCreateVersion)
     .output(versionOutput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
@@ -246,8 +247,9 @@ export const promptRouter = createTRPCRouter({
 
       let modelType = input.moduleType === ModelTypeSchema.Enum.TEXT2TEXT;
 
-      let provider = modelType ? "llama2" : "runwayml";
-      let model = modelType ? "7b" : "stable-diffusion-v1-5";
+      // points -> take modelType, model, provider from input
+      let provider = input.provider;
+      let model = input.model;
       let promptData: PromptDataSchemaType = getTemplate(provider, model);
 
       let template = modelType

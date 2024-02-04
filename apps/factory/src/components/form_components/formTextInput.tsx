@@ -32,6 +32,7 @@ export function FormTextInput({
               readOnly: readonly,
             }}
             autoComplete="off"
+            disabled={readonly}
           />
         )}
       />

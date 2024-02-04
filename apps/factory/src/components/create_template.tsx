@@ -37,6 +37,8 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { FormSelectInput } from "./form_components/formSelectInput";
 import { TemplateListOutput } from "~/validators/prompt_template";
+import { LLM } from "./llm_selector";
+import LLMSelector from "./llm_selector";
 export function CreateTemplate({
   pp,
   pts,
@@ -62,12 +64,12 @@ export function CreateTemplate({
     ModelTypeType | undefined
   >(ModelTypeSchema.enum.TEXT2TEXT);
 
-  const [runMode, setRunMode] = useState<PromptRunModesType | undefined>(
-    PromptRunModesSchema.enum.LOGGEDIN_ONLY,
-  );
   const [datatoUpdate, setDataToUpdate] = useState<CreateTemplateInput>(
     {} as CreateTemplateInput,
   );
+
+  const [provider, setProvider] = useState("");
+  const [model, setModel] = useState("");
 
   const {
     control,
@@ -76,6 +78,7 @@ export function CreateTemplate({
     clearErrors,
     formState: { errors },
     reset,
+    watch,
   } = useForm<CreateTemplateInput>({
     defaultValues: {
       name: "",
@@ -87,6 +90,8 @@ export function CreateTemplate({
     mode: "onChange",
     reValidateMode: "onChange",
   });
+
+  const modelType = watch("modelType");
 
   useEffect(() => {
     if (customError && customError.error) {
@@ -102,6 +107,21 @@ export function CreateTemplate({
     }
   }, [status]);
 
+  useEffect(() => {
+    setDefaultModelType(modelType);
+    if (watch("modelType") === ModelTypeSchema.enum.TEXT2TEXT) {
+      handleProviderChange("llama2");
+      handleModelChange("7b");
+    } else if (watch("modelType") === ModelTypeSchema.enum.TEXT2IMAGE) {
+      handleProviderChange("openai");
+      handleModelChange("dall-e");
+    }
+  }, [watch("modelType")]);
+
+  useEffect(() => {
+    console.log(provider, model);
+  }, [provider, model]);
+
   const handleClose = () => {
     setIsOpen(false);
     reset({
@@ -114,7 +134,14 @@ export function CreateTemplate({
 
   const onFormSubmit = (data: CreateTemplateInput) => {
     try {
-      onCreate?.(data);
+      const newObj = {
+        options: {
+          provider: provider,
+          model: model,
+        },
+        template: data,
+      };
+      onCreate?.(newObj);
       handleClose();
     } catch (err) {
       console.error(err);
@@ -129,7 +156,6 @@ export function CreateTemplate({
       onSuccess(items) {
         setDataToUpdate(items!);
         setDefaultModelType(items?.modelType);
-        setRunMode(items?.runMode);
         if (edit === "true" && ptId) {
           reset({
             name: items?.name,
@@ -171,7 +197,6 @@ export function CreateTemplate({
           description: data.description,
           promptPackageId: datatoUpdate.promptPackageId,
           modelType: datatoUpdate.modelType,
-          runMode: datatoUpdate.runMode,
         };
         setDataToUpdate(updatedInput);
       },
@@ -179,6 +204,13 @@ export function CreateTemplate({
         console.log(error);
       },
     });
+  };
+
+  const handleProviderChange = (provider: string) => {
+    setProvider(provider);
+  };
+  const handleModelChange = (model: string) => {
+    setModel(model);
   };
 
   return (
@@ -194,7 +226,7 @@ export function CreateTemplate({
             !ptId
               ? () => {
                   setIsOpen(true);
-                  setDefaultModelType("TEXT2TEXT");
+                  setDefaultModelType(ModelTypeSchema.enum.TEXT2TEXT);
                 }
               : () => {
                   fetchTemplateData();
@@ -224,6 +256,16 @@ export function CreateTemplate({
               readonly={!ptId ? false : true}
             />
 
+            <LLMSelector
+              initialProvider={provider}
+              initialModel={model}
+              onProviderChange={handleProviderChange}
+              onModelChange={handleModelChange}
+              modelType={watch("modelType")}
+              flag={true}
+              readonly={!ptId ? false : true}
+            />
+
             <FormTextInput
               name="name"
               control={control}
@@ -236,19 +278,10 @@ export function CreateTemplate({
             <FormTextInput
               name="description"
               control={control}
-              label="description"
+              label="Description"
               error={!!errors.description}
               helperText={errors.description?.message}
               readonly={false}
-            />
-
-            <FormSelectInput
-              name="runMode"
-              control={control}
-              label="Who can run this template"
-              defaultValue={runMode}
-              readonly={false}
-              enumValues={PromptRunModesSchema.enum}
             />
           </Stack>
         </DialogContent>

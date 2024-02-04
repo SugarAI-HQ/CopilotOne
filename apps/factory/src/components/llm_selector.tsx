@@ -18,26 +18,30 @@ import {
 
 import CloseIcon from "@mui/icons-material/Close";
 import { LlmConfigSchema } from "~/validators/prompt_version";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { providerModels, Provider, Model } from "~/validators/base";
 import { api } from "~/utils/api";
 import { VersionSchema } from "~/validators/prompt_version";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
-
+import z from "zod";
 function LLMSelector({
   initialProvider,
   initialModel,
   onProviderChange,
   onModelChange,
-  pv,
-  pt,
+  publishedAt,
+  modelType,
+  flag,
+  readonly,
 }: {
   initialProvider: string;
   initialModel: string;
   onProviderChange: Function;
   onModelChange: Function;
-  pv: VersionSchema;
-  pt: pt;
+  publishedAt?: any;
+  modelType: string | undefined;
+  flag: boolean;
+  readonly?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -46,8 +50,6 @@ function LLMSelector({
   const [nextProvider, setNextProvider] = useState("");
 
   const [model, setModel] = useState(initialModel);
-
-  const [openWarningModal, setOpenWarningModal] = useState(false);
 
   const handleClose = () => setIsOpen(false);
 
@@ -58,103 +60,165 @@ function LLMSelector({
     setModel(selectedModel);
     onModelChange(selectedModel);
   };
+  const handleNextProviderChange = (provider: string) => {
+    setNextProvider(provider);
+  };
 
-  const onSuccess = () => {
-    const selectedProvider: string = nextProvider;
-    setProvider(selectedProvider);
+  const handleChange = (provider: string) => {
+    setProvider(provider);
     const modelValue: string | undefined =
-      providerModels[pt?.modelType as keyof typeof providerModels]?.models[
-        selectedProvider
+      providerModels[modelType as keyof typeof providerModels]?.models[
+        provider
       ]?.[0]?.name;
-    onProviderChange(selectedProvider);
+    onProviderChange(provider);
 
     // Update default value for model
     setModel(modelValue as string);
 
     onModelChange(modelValue);
+  };
+
+  const onSuccess = () => {
+    handleChange(nextProvider);
     setNextProvider("");
   };
 
-  return (
-    <>
-      <ConsentProvider
-        nextProvider={nextProvider}
-        setNextProvider={setNextProvider}
-        onSuccess={onSuccess}
-      />
-      <Button variant="text" onClick={handleOpen} disabled={!!pv.publishedAt}>
-        {provider} - {model}
-      </Button>
+  useEffect(() => {
+    setProvider(initialProvider);
+    setModel(initialModel);
+  }, [initialProvider, initialModel]);
 
-      <Dialog open={isOpen} onClose={handleClose}>
-        <Box
-          sx={{
-            p: 2,
-          }}
-        >
-          <Typography variant="h6" component="h2">
-            Model
-          </Typography>
-          {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
+  if (!flag) {
+    return (
+      <>
+        <ConsentProvider
+          nextProvider={nextProvider}
+          setNextProvider={setNextProvider}
+          onSuccess={onSuccess}
+        />
+        <Button variant="text" onClick={handleOpen} disabled={!!publishedAt}>
+          {provider} - {model}
+        </Button>
 
-          <Typography mt={2}>
-            The LLM provider and model that'll be used to power this prompt.
-          </Typography>
+        <Dialog open={isOpen} onClose={handleClose}>
+          <Box
+            sx={{
+              p: 2,
+            }}
+          >
+            <Typography variant="h6" component="h2">
+              Model
+            </Typography>
+            {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
 
-          <Stack spacing={2} mt={2}>
-            <FormControl fullWidth>
-              <FormLabel>Provider</FormLabel>
-              <Select
-                value={provider}
-                onChange={(event) => setNextProvider(event.target.value)}
-              >
-                {providerModels[
-                  pt?.modelType as keyof typeof providerModels
-                ].providers.map((provider: Provider) => (
-                  <MenuItem
-                    key={provider.name}
-                    value={provider.name}
-                    disabled={!provider.enabled}
-                  >
-                    {provider.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Typography mt={2}>
+              The LLM provider and model that'll be used to power this prompt.
+            </Typography>
+            <LLM
+              provider={provider}
+              model={model}
+              handleModelChange={handleModelChange}
+              handleProviderChange={
+                !flag ? handleNextProviderChange : handleChange
+              }
+              modelType={modelType}
+              readonly={readonly}
+            />
+            <Divider />
 
-            <FormControl fullWidth>
-              <FormLabel>Model</FormLabel>
-              <Select value={model} onChange={handleModelChange}>
-                {providerModels[
-                  pt?.modelType as keyof typeof providerModels
-                ].models?.[provider]?.map((model: Model) => (
-                  <MenuItem
-                    key={model.name}
-                    value={model.name}
-                    disabled={!model.enabled}
-                  >
-                    {model.label}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-
-          <Divider />
-
-          <Stack direction="row" spacing={2} mt={2}>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button variant="outlined" onClick={handleClose}>
-              Close
-            </Button>
-          </Stack>
-        </Box>
-      </Dialog>
-    </>
-  );
+            <Stack direction="row" spacing={2} mt={2}>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button variant="outlined" onClick={handleClose}>
+                Close
+              </Button>
+            </Stack>
+          </Box>
+        </Dialog>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <LLM
+          provider={provider}
+          model={model}
+          handleModelChange={handleModelChange}
+          handleProviderChange={!flag ? handleNextProviderChange : handleChange}
+          modelType={modelType}
+          readonly={readonly}
+        />
+      </>
+    );
+  }
 }
 
 export default LLMSelector;
+
+export const LLM = ({
+  provider,
+  model,
+  handleModelChange,
+  handleProviderChange,
+  modelType,
+  readonly,
+}: {
+  provider: string;
+  model: string;
+  handleModelChange: (e: any) => void;
+  handleProviderChange: (provider: string) => void;
+  modelType: string | undefined;
+  readonly: boolean | undefined;
+}) => {
+  return (
+    <>
+      <Stack spacing={2} mt={2}>
+        <FormControl fullWidth>
+          <FormLabel>Provider</FormLabel>
+          <Select
+            value={provider}
+            onChange={(e) => {
+              handleProviderChange(e.target.value);
+            }}
+            disabled={readonly}
+          >
+            {providerModels[
+              modelType as keyof typeof providerModels
+            ].providers.map((provider: Provider) => (
+              <MenuItem
+                key={provider.name}
+                value={provider.name}
+                disabled={!provider.enabled}
+              >
+                {provider.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth>
+          <FormLabel>Model</FormLabel>
+          <Select
+            value={model}
+            onChange={handleModelChange}
+            disabled={readonly}
+          >
+            {providerModels[modelType as keyof typeof providerModels].models?.[
+              provider
+            ]?.map((model: Model) => (
+              <MenuItem
+                key={model.name}
+                value={model.name}
+                disabled={!model.enabled}
+              >
+                {model.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
+    </>
+  );
+};
 
 const ConsentProvider = ({
   nextProvider,
