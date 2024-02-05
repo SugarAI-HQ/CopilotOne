@@ -8,6 +8,7 @@ import {
   getPackagesInput,
   packageOutput,
   packageListOutput,
+  getMarketPlacePackagesInput,
 } from "~/validators/prompt_package";
 
 export const marketplaceRouter = createTRPCRouter({
@@ -16,7 +17,6 @@ export const marketplaceRouter = createTRPCRouter({
     .output(publicPackageListOutput)
     .query(async ({ ctx, input }) => {
       console.log(`packages input -------------- ${JSON.stringify(input)}`);
-
       const packages = await ctx.prisma.promptPackage.findMany({
         where: {
           // userId: ctx.session?.user.id,
@@ -32,13 +32,41 @@ export const marketplaceRouter = createTRPCRouter({
       // console.log(`packages out -------------- ${JSON.stringify(packages)}`);
 
       // sort according to date when packages were created
-
       // packages.sort((packageA, packageB) => {
       //   return (
       //     new Date(packageB.updatedAt).valueOf() -
       //     new Date(packageA.updatedAt).valueOf()
       //   );
       // });
+      return packages;
+    }),
+
+  getMarketPlacePackages: publicProcedure
+    .input(getMarketPlacePackagesInput)
+    .output(publicPackageListOutput)
+    .query(async ({ ctx, input }) => {
+      console.log(
+        `MarketPlace packages input -------------- ${JSON.stringify(input)}`,
+      );
+      const perPage = 10;
+
+      const packages = await ctx.prisma.promptPackage.findMany({
+        where: {
+          visibility: input?.visibility,
+        },
+        orderBy: {
+          updatedAt: "desc",
+        },
+        include: {
+          User: true,
+        },
+        ...(input?.pageNo
+          ? {
+              skip: (input.pageNo - 1) * perPage,
+              take: perPage,
+            }
+          : {}),
+      });
       return packages;
     }),
 

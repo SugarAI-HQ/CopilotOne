@@ -12,6 +12,16 @@ export const getPackagesInput = z
 // .strict()
 export type GetPackagesInput = z.infer<typeof getPackagesInput>;
 
+export const getMarketPlacePackagesInput = z
+  .object({
+    pageNo: z.number().default(1),
+    visibility: packageVisibility.optional(),
+  })
+  .optional();
+export type GetMarketPlacePackagesInput = z.infer<
+  typeof getMarketPlacePackagesInput
+>;
+
 export const getPackageInput = z
   .object({
     id: z.string().uuid(),
