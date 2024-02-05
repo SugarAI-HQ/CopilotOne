@@ -4,7 +4,6 @@ import {
   Divider,
   FormControl,
   FormLabel,
-  Modal,
   Stack,
   Select,
   Typography,
@@ -15,92 +14,82 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-
-import CloseIcon from "@mui/icons-material/Close";
-import { LlmConfigSchema } from "~/validators/prompt_version";
 import React, { useEffect, useState } from "react";
-import { providerModels, Provider, Model } from "~/validators/base";
-import { api } from "~/utils/api";
-import { VersionSchema } from "~/validators/prompt_version";
-import { TemplateOutput as pt } from "~/validators/prompt_template";
-import z from "zod";
+import { providerModels, Provider, Model, LLM } from "~/validators/base";
 function LLMSelector({
-  initialProvider,
-  initialModel,
-  onProviderChange,
-  onModelChange,
+  initialLLM,
+  onLLMChange,
   publishedAt,
-  modelType,
-  flag,
+  needConsent,
   readonly,
 }: {
-  initialProvider: string;
-  initialModel: string;
-  onProviderChange: Function;
-  onModelChange: Function;
+  initialLLM: LLM;
+  onLLMChange: Function;
   publishedAt?: any;
-  modelType: string | undefined;
-  flag: boolean;
+  needConsent: boolean;
   readonly?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [pLLm, setLLM] = useState<LLM>(initialLLM);
 
-  const [provider, setProvider] = useState(initialProvider);
+  //
+  const [openConsent, setOpenConsent] = useState("");
 
-  const [nextProvider, setNextProvider] = useState("");
+  const onConsent = (haveConsent: boolean) => {
+    if (haveConsent) {
+      handleLLMChange(pLLm, true);
+    }
 
-  const [model, setModel] = useState(initialModel);
-
-  const handleClose = () => setIsOpen(false);
-
-  const handleOpen = () => setIsOpen(true);
-
-  const handleModelChange = (event: any) => {
-    const selectedModel: string = event.target.value;
-    setModel(selectedModel);
-    onModelChange(selectedModel);
-  };
-  const handleNextProviderChange = (provider: string) => {
-    setNextProvider(provider);
+    // Close the consent popup
+    setOpenConsent("");
   };
 
-  const handleChange = (provider: string) => {
-    setProvider(provider);
-    const modelValue: string | undefined =
-      providerModels[modelType as keyof typeof providerModels]?.models[
-        provider
-      ]?.[0]?.name;
-    onProviderChange(provider);
-
-    // Update default value for model
-    setModel(modelValue as string);
-
-    onModelChange(modelValue);
+  // TODO: Add check for hasRole so it wont always ask for consent.
+  const isEditorChanged = function () {
+    return true;
   };
 
-  const onSuccess = () => {
-    handleChange(nextProvider);
-    setNextProvider("");
+  const handleLLMChange = (llm: LLM, haveConsent: boolean = false) => {
+    console.log(
+      `<<<<<<<<<>>>>>>>>> LLM Selector - Parent callback ${JSON.stringify(
+        llm,
+      )}`,
+    );
+
+    setLLM(llm);
+
+    if (needConsent && isEditorChanged() && !haveConsent) {
+      // checking for consent, before makign further changes
+      setOpenConsent(llm.provider);
+      console.log("asking for consent");
+    }
+    if (needConsent && isEditorChanged() && haveConsent) {
+      onLLMChange(llm);
+      console.log("Sending to parent 1");
+    } else if (!needConsent) {
+      onLLMChange(llm);
+      console.log("Sending to parent 2");
+    } else {
+      console.log("Ignoring changes");
+    }
   };
 
-  useEffect(() => {
-    setProvider(initialProvider);
-    setModel(initialModel);
-  }, [initialProvider, initialModel]);
+  // return <></>;
 
-  if (!flag) {
+  // Got Agree from user to let go off old template
+  if (needConsent) {
     return (
       <>
-        <ConsentProvider
-          nextProvider={nextProvider}
-          setNextProvider={setNextProvider}
-          onSuccess={onSuccess}
-        />
-        <Button variant="text" onClick={handleOpen} disabled={!!publishedAt}>
-          {provider} - {model}
+        <ConsentProvider nextProvider={openConsent} onResult={onConsent} />
+        <Button
+          variant="text"
+          onClick={(e) => setIsOpen(true)}
+          disabled={!!publishedAt}
+        >
+          {pLLm.provider} - {pLLm.model}
         </Button>
 
-        <Dialog open={isOpen} onClose={handleClose}>
+        <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
           <DialogContent>
             <Box>
               <Typography variant="h6" component="h2">
@@ -111,21 +100,19 @@ function LLMSelector({
               <Typography mt={2}>
                 The LLM provider and model that'll be used to power this prompt.
               </Typography>
-              <LLM
-                provider={provider}
-                model={model}
-                handleModelChange={handleModelChange}
-                handleProviderChange={
-                  !flag ? handleNextProviderChange : handleChange
-                }
-                modelType={modelType}
+              <LLMForm
+                llm={pLLm}
+                onLLMChange={handleLLMChange}
+                // handleProviderChange={
+                //   !flag ? handleNextProviderChange : handleChange
+                // }
                 readonly={readonly}
               />
             </Box>
           </DialogContent>
           <Divider />
           <DialogActions>
-            <Button variant="outlined" onClick={handleClose}>
+            <Button variant="outlined" onClick={() => setIsOpen(false)}>
               Close
             </Button>
           </DialogActions>
@@ -135,14 +122,7 @@ function LLMSelector({
   } else {
     return (
       <>
-        <LLM
-          provider={provider}
-          model={model}
-          handleModelChange={handleModelChange}
-          handleProviderChange={!flag ? handleNextProviderChange : handleChange}
-          modelType={modelType}
-          readonly={readonly}
-        />
+        <LLMForm llm={pLLm} onLLMChange={handleLLMChange} readonly={readonly} />
       </>
     );
   }
@@ -150,65 +130,65 @@ function LLMSelector({
 
 export default LLMSelector;
 
-export const LLM = ({
-  provider,
-  model,
-  handleModelChange,
-  handleProviderChange,
-  modelType,
+export const LLMForm = ({
+  llm,
+  onLLMChange,
   readonly,
 }: {
-  provider: string;
-  model: string;
-  handleModelChange: (e: any) => void;
-  handleProviderChange: (provider: string) => void;
-  modelType: string | undefined;
+  llm: LLM;
+  onLLMChange: (e: any) => void;
   readonly: boolean | undefined;
 }) => {
+  const [pLLM, setLLM] = useState<LLM>(llm);
+
   return (
     <>
       <Stack spacing={2} mt={2}>
         <FormControl fullWidth>
           <FormLabel>Provider</FormLabel>
           <Select
-            value={provider}
+            value={pLLM.provider}
             onChange={(e) => {
-              handleProviderChange(e.target.value);
+              setLLM((prev) => ({ ...prev, provider: e.target.value }));
             }}
             disabled={readonly}
           >
-            {providerModels[
-              modelType as keyof typeof providerModels
-            ].providers.map((provider: Provider) => (
-              <MenuItem
-                key={provider.name}
-                value={provider.name}
-                disabled={!provider.enabled}
-              >
-                {provider.label}
-              </MenuItem>
-            ))}
+            {providerModels[pLLM.modelType].providers.map(
+              (provider: Provider) => (
+                <MenuItem
+                  key={provider.name}
+                  value={provider.name}
+                  disabled={!provider.enabled}
+                >
+                  {provider.label}
+                </MenuItem>
+              ),
+            )}
           </Select>
         </FormControl>
 
         <FormControl fullWidth>
           <FormLabel>Model</FormLabel>
           <Select
-            value={model}
-            onChange={handleModelChange}
+            value={pLLM.model}
+            // onChange={handleModelChange}
+            onChange={(e) => {
+              setLLM((prev) => ({ ...prev, model: e.target.value }));
+              onLLMChange({ ...pLLM, model: e.target.value });
+            }}
             disabled={readonly}
           >
-            {providerModels[modelType as keyof typeof providerModels].models?.[
-              provider
-            ]?.map((model: Model) => (
-              <MenuItem
-                key={model.name}
-                value={model.name}
-                disabled={!model.enabled}
-              >
-                {model.label}
-              </MenuItem>
-            ))}
+            {providerModels[pLLM.modelType].models?.[pLLM.provider]?.map(
+              (model: Model) => (
+                <MenuItem
+                  key={model.name}
+                  value={model.name}
+                  disabled={!model.enabled}
+                >
+                  {model.label}
+                </MenuItem>
+              ),
+            )}
           </Select>
         </FormControl>
       </Stack>
@@ -218,18 +198,15 @@ export const LLM = ({
 
 const ConsentProvider = ({
   nextProvider,
-  setNextProvider,
-  onSuccess,
+  onResult,
 }: {
   nextProvider: string;
-  setNextProvider: React.Dispatch<React.SetStateAction<string>>;
-  onSuccess: (nextProvider: string) => void;
+  onResult: (nextProvider: boolean) => void;
 }) => {
   return (
     <div>
       <Dialog
         open={nextProvider.length > 0 ? true : false}
-        onClose={() => setNextProvider("")}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -249,8 +226,8 @@ const ConsentProvider = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setNextProvider("")}>Disagree</Button>
-          <Button onClick={() => onSuccess(nextProvider)} autoFocus>
+          <Button onClick={() => onResult(false)}>Disagree</Button>
+          <Button onClick={() => onResult(true)} autoFocus>
             Agree
           </Button>
         </DialogActions>

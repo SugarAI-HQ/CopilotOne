@@ -31,7 +31,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import { CreateVersion } from "./create_version";
 import { inc } from "semver";
 import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
-import { promptEnvironment } from "~/validators/base";
+import { LLM, promptEnvironment } from "~/validators/base";
 import { GenerateInput, GenerateOutput } from "~/validators/service";
 import LoadingButton from "@mui/lab/LoadingButton";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -81,8 +81,17 @@ function PromptVersion({
   const [lpv, setPv] = useState<VersionSchema>(pv);
   const [version, setVersion] = useState<string>(lpv?.version);
   const [template, setTemplate] = useState(lpv?.template || "");
-  const [provider, setProvider] = useState(lpv?.llmProvider || "");
-  const [model, setModel] = useState(lpv?.llmModel);
+
+  const [llm, setLLM] = useState<LLM>({
+    modelType: pt?.modelType as ModelTypeType,
+    provider:
+      lpv?.llmProvider ||
+      providerModels[pt?.modelType as ModelTypeType].defaultProvider,
+    model:
+      lpv?.llmModel ||
+      providerModels[pt?.modelType as ModelTypeType].defaultModel,
+  });
+
   const [llmConfig, setLLMConfig] = useState<LlmConfigSchema>({
     temperature: 0,
     maxLength: 2000,
@@ -126,6 +135,8 @@ function PromptVersion({
     onSuccess: (v) => {
       if (v !== null) {
         setPv(v);
+        // console.log(`pv: Updated ${JSON.stringify(v)}`);
+        // console.log(`pv: Updated ${JSON.stringify(lpv)}`);
         onUpdateSuccess(v);
         toast.success("Saved");
       } else {
@@ -179,7 +190,7 @@ function PromptVersion({
   };
 
   useEffect(() => {
-    if (getRole(provider, model)) {
+    if (getRole(llm.provider, llm.model)) {
       handleSetVariable(JSON.stringify(lpv?.promptData));
     } else {
       handleSetVariable(lpv?.template);
@@ -240,14 +251,9 @@ function PromptVersion({
     setIsLLMChanged(true);
   };
 
-  const handleChangeProvider = (provider: string) => {
-    console.log(provider);
-    setProvider(provider);
-    onLLMChange();
-  };
-  const handleChangeModel = (model: string) => {
-    console.log(model);
-    setModel(model);
+  const handleLLMChange = (llm: LLM) => {
+    console.log(`pv: llm >>>>>>>: ${JSON.stringify(llm)}`);
+    setLLM(llm);
     onLLMChange();
   };
 
@@ -268,7 +274,7 @@ function PromptVersion({
   const handleSave = () => {
     let currentTemplate = { v: prompt.v, p: prompt.p, data: promptInputs };
     if (isLLMChanged) {
-      currentTemplate = getTemplate(provider, model);
+      currentTemplate = getTemplate(llm.provider, llm.model);
     }
     pvUpdateMutation.mutate({
       promptPackageId: lpv.promptPackageId,
@@ -276,8 +282,8 @@ function PromptVersion({
       id: lpv.id,
       template: template,
       promptData: currentTemplate,
-      llmProvider: provider,
-      llmModel: model,
+      llmProvider: llm.provider,
+      llmModel: llm.model,
       llmConfig: llmConfig,
     });
     setIsLLMChanged(false);
@@ -367,9 +373,10 @@ function PromptVersion({
               </Button>
             </Tooltip>
             <CreateVersion
+              key={lpv.id}
               pp={pp}
               pt={pt}
-              forkedFromId={lpv.id}
+              forkedFrom={lpv}
               v={inc(version, "patch") as string}
               onCreate={handleVersionCreate}
             ></CreateVersion>
@@ -398,7 +405,7 @@ function PromptVersion({
               {/* add all the code from promptEditor here */}
               <Grid item xs={12} md={6}>
                 <Box>
-                  {!getRole(provider, model) ? (
+                  {!getRole(llm.provider, llm.model) ? (
                     <>
                       <TextField
                         label="Template"
@@ -524,7 +531,7 @@ function PromptVersion({
             variant="outlined"
             onClick={handleRun}
             disabled={
-              getRole(provider, model)
+              getRole(llm.provider, llm.model)
                 ? promptInputs.length > 0 &&
                   !promptInputs.some(
                     (input: { id: string; role: string; content: string }) =>
@@ -594,13 +601,11 @@ function PromptVersion({
               }
             />
             <LLMSelector
-              initialProvider={provider}
-              initialModel={model}
-              onProviderChange={handleChangeProvider}
-              onModelChange={handleChangeModel}
+              key={lpv.updatedAt}
+              initialLLM={llm}
+              onLLMChange={handleLLMChange}
               publishedAt={lpv.publishedAt}
-              modelType={pt?.modelType}
-              flag={false}
+              needConsent={true}
             ></LLMSelector>
             <LLMConfig
               config={llmConfig}

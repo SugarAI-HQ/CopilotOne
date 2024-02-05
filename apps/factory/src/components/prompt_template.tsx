@@ -142,17 +142,6 @@ const PromptTemplate = ({
                   onCreate={handleVersionCreate}
                 ></CreateVersion>
               </Box>
-              {/* <Tab
-                      iconPosition="start"
-                      key={-1}
-                      icon={
-                        <CreateVersion
-                          pp={pp}
-                          pt={pt}
-                          onCreate={handleVersionCreate}
-                        ></CreateVersion>
-                      }
-                    /> */}
             </Tabs>
             {pvs &&
               pvs.length > 0 &&

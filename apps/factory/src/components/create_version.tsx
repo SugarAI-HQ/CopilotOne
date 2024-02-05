@@ -36,11 +36,15 @@ import type {
 } from "~/validators/prompt_version";
 import { createVersionInput } from "~/validators/prompt_version";
 import LLMSelector from "./llm_selector";
-import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
+import { LLM, providerModels } from "~/validators/base";
 
 CreateVersion.defaultProps = {
   icon: <AddCircleIcon />,
-  forkedFromId: null,
+  forkedFrom: null,
   v: "0.0.1",
 };
 export function CreateVersion({
@@ -48,7 +52,7 @@ export function CreateVersion({
   pt,
   onCreate,
   icon,
-  forkedFromId,
+  forkedFrom,
   v,
 }: {
   pp: pp;
@@ -56,12 +60,19 @@ export function CreateVersion({
   icon?: React.JSX.Element;
   v: string;
   onCreate: Function;
-  forkedFromId: string | null;
+  forkedFrom: pv;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [provider, setProvider] = useState<string>("");
-  const [model, setModel] = useState<string>("");
-  // const [version, setVersion] = useState(v);
+
+  const [llm, setLLM] = useState<LLM>({
+    modelType: pt?.modelType as ModelTypeType,
+    provider:
+      forkedFrom?.llmProvider ||
+      providerModels[pt?.modelType as ModelTypeType].defaultProvider,
+    model:
+      forkedFrom?.llmModel ||
+      providerModels[pt?.modelType as ModelTypeType].defaultModel,
+  });
 
   const {
     control,
@@ -74,7 +85,7 @@ export function CreateVersion({
       version: v,
       promptPackageId: pp?.id,
       promptTemplateId: pt?.id,
-      forkedFromId: forkedFromId,
+      forkedFromId: forkedFrom?.id,
       moduleType: pt?.modelType,
     },
     resolver: zodResolver(createVersionInput),
@@ -102,55 +113,23 @@ export function CreateVersion({
     },
   });
 
-  api.prompt.getVersions.useQuery(
-    {
-      promptPackageId: pt?.promptPackageId,
-      promptTemplateId: pt?.id,
-    } as GetVersionsInput,
-    {
-      onSuccess(pvs) {
-        const pv = pvs.filter((item) => item.id === forkedFromId);
-        if (pv[0]) {
-          setProvider(pv[0]?.llmProvider);
-          setModel(pv[0]?.llmModel);
-        }
-      },
-    },
-  );
-
-  useEffect(() => {
-    if (!forkedFromId) {
-      if (pt?.modelType === ModelTypeSchema.enum.TEXT2TEXT) {
-        handleProviderChange("llama2");
-        handleModelChange("7b");
-      } else {
-        handleProviderChange("openai");
-        handleModelChange("dall-e");
-      }
-    }
-  }, [pt?.modelType]);
-
   const onFormSubmit = (data: CreateVersionInput) => {
     const response = {
       promptPackageId: pp?.id,
       promptTemplateId: pt?.id,
       version: data.version,
-      forkedFromId: forkedFromId,
+      forkedFromId: forkedFrom?.id,
       moduleType: pt?.modelType,
-      provider: provider,
-      model: model,
+      provider: llm.provider,
+      model: llm.model,
     };
     console.log(response);
     pvCreateMutation.mutate(response as InputCreateVersion);
   };
 
-  const handleProviderChange = (provider: string) => {
-    console.log("Inside create Template -> provider", provider);
-    setProvider(provider);
-  };
-  const handleModelChange = (model: string) => {
-    console.log("Inside create Template -> model", model);
-    setModel(model);
+  const handleLLMChange = (llm: LLM) => {
+    console.log(`create version: llm >>>>>>>: ${JSON.stringify(llm)}`);
+    setLLM(llm);
   };
 
   return (
@@ -167,7 +146,7 @@ export function CreateVersion({
           New Version
         </Button> */}
         <Tooltip
-          title={forkedFromId ? "Fork" : "Create Version"}
+          title={forkedFrom?.id ? "Fork" : "Create Version"}
           placement="top-start"
         >
           <IconButton
@@ -176,7 +155,7 @@ export function CreateVersion({
             onClick={() => setIsOpen(true)}
             color="primary"
           >
-            {forkedFromId ? <ForkRightIcon /> : <AddCircleIcon />}
+            {forkedFrom?.id ? <ForkRightIcon /> : <AddCircleIcon />}
           </IconButton>
         </Tooltip>
       </Grid>
@@ -196,12 +175,9 @@ export function CreateVersion({
               readonly={false}
             />
             <LLMSelector
-              initialProvider={provider}
-              initialModel={model}
-              onProviderChange={handleProviderChange}
-              onModelChange={handleModelChange}
-              modelType={pt?.modelType}
-              flag={true}
+              initialLLM={llm}
+              onLLMChange={handleLLMChange}
+              needConsent={false}
             />
           </Stack>
         </DialogContent>

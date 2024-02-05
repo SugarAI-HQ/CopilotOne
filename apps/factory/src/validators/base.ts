@@ -1,6 +1,7 @@
 import { string, z } from "zod";
 import { OverridableStringUnion } from "@mui/types";
 import { ChipPropsColorOverrides } from "@mui/material/Chip";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 
 export const promptEnvironment = z.enum(["DEV", "PREVIEW", "RELEASE"]);
 export type PromptEnvironment = z.infer<typeof promptEnvironment>;
@@ -17,6 +18,8 @@ export type Provider = Model;
 type ModelType = {
   label: string;
   enabled: boolean;
+  defaultProvider: string;
+  defaultModel: string;
   providers: Provider[];
   models: Record<string, Model[]>;
 };
@@ -30,6 +33,8 @@ export const providerModels: ProviderModels = {
   TEXT2TEXT: {
     label: "Text-to-Text",
     enabled: true,
+    defaultProvider: "llama2",
+    defaultModel: "7b",
     providers: [
       { name: "llama2", label: "Llama2", enabled: true, hasRole: false },
       { name: "mistral", label: "Mistral", enabled: true, hasRole: false },
@@ -88,6 +93,8 @@ export const providerModels: ProviderModels = {
   TEXT2IMAGE: {
     label: "Text-to-Image",
     enabled: true,
+    defaultProvider: "stabilityai",
+    defaultModel: "sdxl",
     providers: [
       { name: "openai", label: "Open AI", enabled: true, hasRole: false },
       { name: "runwayml", label: "Runway ML", enabled: true, hasRole: false },
@@ -178,3 +185,10 @@ enum PromptRole {
 export const PromptRoleEnum = z.nativeEnum(PromptRole);
 
 export const providerWithoutRoleType = z.enum([""]);
+
+export const llm = z.object({
+  modelType: ModelTypeSchema.default(ModelTypeSchema.Enum.TEXT2TEXT),
+  model: z.string(),
+  provider: z.string(),
+});
+export type LLM = z.infer<typeof llm>;

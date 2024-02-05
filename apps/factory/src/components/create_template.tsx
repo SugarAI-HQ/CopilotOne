@@ -37,8 +37,8 @@ import toast from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import { FormSelectInput } from "./form_components/formSelectInput";
 import { TemplateListOutput } from "~/validators/prompt_template";
-import { LLM } from "./llm_selector";
 import LLMSelector from "./llm_selector";
+import { LLM } from "~/validators/base";
 export function CreateTemplate({
   pp,
   pts,
@@ -60,16 +60,22 @@ export function CreateTemplate({
   // const router = useRouter();
   const searchParams = useSearchParams();
   const edit = searchParams?.get("edit");
-  const [defaultModelType, setDefaultModelType] = useState<
-    ModelTypeType | undefined
-  >(ModelTypeSchema.enum.TEXT2TEXT);
+  // const [defaultModelType, setDefaultModelType] = useState<
+  //   ModelTypeType | undefined
+  // >(ModelTypeSchema.enum.TEXT2TEXT);
 
   const [datatoUpdate, setDataToUpdate] = useState<CreateTemplateInput>(
     {} as CreateTemplateInput,
   );
 
-  const [provider, setProvider] = useState("");
-  const [model, setModel] = useState("");
+  // const [provider, setProvider] = useState("");
+  // const [model, setModel] = useState("");
+
+  const [llm, setLLM] = useState<LLM>({
+    modelType: ModelTypeSchema.enum.TEXT2TEXT,
+    provider: "",
+    model: "",
+  });
 
   const {
     control,
@@ -107,21 +113,6 @@ export function CreateTemplate({
     }
   }, [status]);
 
-  useEffect(() => {
-    setDefaultModelType(modelType);
-    if (watch("modelType") === ModelTypeSchema.enum.TEXT2TEXT) {
-      handleProviderChange("llama2");
-      handleModelChange("7b");
-    } else if (watch("modelType") === ModelTypeSchema.enum.TEXT2IMAGE) {
-      handleProviderChange("openai");
-      handleModelChange("dall-e");
-    }
-  }, [watch("modelType")]);
-
-  useEffect(() => {
-    console.log(provider, model);
-  }, [provider, model]);
-
   const handleClose = () => {
     setIsOpen(false);
     reset({
@@ -136,8 +127,8 @@ export function CreateTemplate({
     try {
       const newObj = {
         options: {
-          provider: provider,
-          model: model,
+          provider: llm.provider,
+          model: llm.model,
         },
         template: data,
       };
@@ -155,7 +146,7 @@ export function CreateTemplate({
     {
       onSuccess(items) {
         setDataToUpdate(items!);
-        setDefaultModelType(items?.modelType);
+        setLLM((prev) => ({ ...prev, modelType: items?.modelType }) as LLM);
         if (edit === "true" && ptId) {
           reset({
             name: items?.name,
@@ -206,11 +197,8 @@ export function CreateTemplate({
     });
   };
 
-  const handleProviderChange = (provider: string) => {
-    setProvider(provider);
-  };
-  const handleModelChange = (model: string) => {
-    setModel(model);
+  const handleLLMChange = (llm: LLM) => {
+    setLLM(llm);
   };
 
   return (
@@ -224,11 +212,11 @@ export function CreateTemplate({
           aria-label="add template"
           onClick={
             !ptId
-              ? () => {
+              ? (e) => {
                   setIsOpen(true);
-                  setDefaultModelType(ModelTypeSchema.enum.TEXT2TEXT);
+                  setLLM((prev) => ({ ...prev, modelType: e.target.value }));
                 }
-              : () => {
+              : (e) => {
                   fetchTemplateData();
                 }
           }
@@ -252,17 +240,14 @@ export function CreateTemplate({
               name="modelType"
               control={control}
               label="Model Type"
-              defaultValue={defaultModelType}
+              defaultValue={llm.modelType}
               readonly={!ptId ? false : true}
             />
 
             <LLMSelector
-              initialProvider={provider}
-              initialModel={model}
-              onProviderChange={handleProviderChange}
-              onModelChange={handleModelChange}
-              modelType={watch("modelType")}
-              flag={true}
+              initialLLM={llm}
+              onLLMChange={handleLLMChange}
+              needConsent={false}
               readonly={!ptId ? false : true}
             />
 
