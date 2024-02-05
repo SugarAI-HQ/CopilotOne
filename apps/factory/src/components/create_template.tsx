@@ -210,16 +210,17 @@ export function CreateTemplate({
         <IconButton
           size="small"
           aria-label="add template"
-          onClick={
-            !ptId
-              ? (e) => {
-                  setIsOpen(true);
-                  setLLM((prev) => ({ ...prev, modelType: e.target.value }));
-                }
-              : (e) => {
-                  fetchTemplateData();
-                }
-          }
+          onClick={(e: any) => {
+            if (!ptId) {
+              setIsOpen(true);
+              setLLM((prev) => ({
+                ...prev,
+                modelType: e.target.value,
+              }));
+            } else {
+              fetchTemplateData();
+            }
+          }}
           color="primary"
         >
           {!ptId ? <AddCircleIcon /> : <EditIcon />}
