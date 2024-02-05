@@ -95,9 +95,6 @@ const PromptTemplate = ({
   };
 
   const handleVersionCreate = (pv: any) => {
-    console.log(
-      "inside handleVersionCreate--------------------------------------------------",
-    );
     refectVersions().then((res) => {
       setActiveTab(0);
     });

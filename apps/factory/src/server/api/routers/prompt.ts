@@ -315,7 +315,6 @@ export const promptRouter = createTRPCRouter({
       const userId = ctx.jwt?.id as string;
       let pv = null;
       console.log(`update version -------------- ${JSON.stringify(input)}`);
-
       if (userId) {
         pv = await ctx.prisma.promptVersion.update({
           where: {

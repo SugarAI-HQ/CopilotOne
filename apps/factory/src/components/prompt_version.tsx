@@ -61,6 +61,7 @@ import {
 } from "~/validators/prompt_version";
 import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate } from "~/services/providers";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function PromptVersion({
   ns,
@@ -99,13 +100,20 @@ function PromptVersion({
     getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
   );
   const [isDirty, setIsDirty] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+
+  // isLLMChanged is used to detect change in Provider and Model using LLM selector,
+  //  if true we will change the template otherwise template remains same
+  const [isLLMChanged, setIsLLMChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [outputLog, setOutputLog] = useState<GenerateOutput>(null);
   const [prompt, setPrompt] = useState<PromptDataSchemaType>(
     lpv.promptData as PromptDataSchemaType,
   );
 
-  const [promptInputs, setPromptInputs] = useState<PromptDataType>([]);
+  const [promptInputs, setPromptInputs] = useState<PromptDataType>(
+    prompt.data as PromptDataType,
+  );
 
   // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
   const getRole = (providerName: string, modelName: string) => {
@@ -118,13 +126,26 @@ function PromptVersion({
     onSuccess: (v) => {
       if (v !== null) {
         setPv(v);
+        onUpdateSuccess(v);
         toast.success("Saved");
-        console.log(v);
       } else {
         toast.error("Failed to save");
       }
     },
   });
+
+  const onUpdateSuccess = (lpv: VersionSchema) => {
+    const prompt = lpv.promptData as PromptDataSchemaType;
+    const promptinput = prompt.data;
+    setPrompt(prompt);
+    setPromptInputs(promptinput);
+    if (getRole(lpv.llmProvider, lpv.llmModel)) {
+      handleSetVariable(JSON.stringify(promptinput));
+    } else {
+      handleSetVariable(JSON.stringify(lpv.template));
+    }
+    setIsLoading(false);
+  };
 
   const generateMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
 
@@ -172,7 +193,7 @@ function PromptVersion({
   const handleRun = async (e: any) => {
     console.log(`running template version ${version}`);
     // loading
-    setIsLoading(true);
+    setIsRunning(true);
     let data: { [key: string]: any } = {};
     for (const item of pvrs) {
       data[`${item.type}${item.key}`] = item.value;
@@ -191,10 +212,10 @@ function PromptVersion({
       } as GenerateInput,
       {
         onSuccess() {
-          setIsLoading(false);
+          setIsRunning(false);
         },
         onError() {
-          setIsLoading(false);
+          setIsRunning(false);
         },
       },
     );
@@ -213,24 +234,22 @@ function PromptVersion({
     }
   };
 
-  const handleChangeProviderModel = () => {
-    // logic to change the value of promptInputs and variables
-    let newPrompt, newPromptInputs;
-    if (getRole(provider, model)) {
-      newPrompt = getTemplate(provider, model);
-      newPromptInputs = newPrompt.data;
-      setPrompt(newPrompt!);
-      setPromptInputs(newPromptInputs!);
-      handleSetVariable(JSON.stringify(newPrompt.data));
-    } else {
-      handleSetVariable(lpv?.template);
-    }
+  const onLLMChange = () => {
     setIsDirty(true);
+    setIsLoading(true);
+    setIsLLMChanged(true);
   };
 
-  useEffect(() => {
-    handleChangeProviderModel();
-  }, [provider, model]);
+  const handleChangeProvider = (provider: string) => {
+    console.log(provider);
+    setProvider(provider);
+    onLLMChange();
+  };
+  const handleChangeModel = (model: string) => {
+    console.log(model);
+    setModel(model);
+    onLLMChange();
+  };
 
   useEffect(() => {
     let saveTimer: NodeJS.Timeout;
@@ -242,19 +261,26 @@ function PromptVersion({
     return () => {
       clearTimeout(saveTimer);
     };
-  }, [template, provider, model, isDirty]);
+  }, [template, isDirty]);
+
+  // if current and nextProvide will be same i will not do anything other wise i will call getTemplate fumction
 
   const handleSave = () => {
+    let currentTemplate = { v: prompt.v, p: prompt.p, data: promptInputs };
+    if (isLLMChanged) {
+      currentTemplate = getTemplate(provider, model);
+    }
     pvUpdateMutation.mutate({
       promptPackageId: lpv.promptPackageId,
       promptTemplateId: lpv.promptTemplateId,
       id: lpv.id,
       template: template,
-      promptData: { v: prompt.v, p: prompt.p, data: promptInputs },
+      promptData: currentTemplate,
       llmProvider: provider,
       llmModel: model,
       llmConfig: llmConfig,
     });
+    setIsLLMChanged(false);
     setIsDirty(false);
   };
 
@@ -354,116 +380,129 @@ function PromptVersion({
               } version: ${lpv.version}`} */}
           </Box>
         </Box>
-
-        <Grid container spacing={2}>
-          {/* add all the code from promptEditor here */}
-          <Grid item xs={12} md={6}>
-            <Box>
-              {!getRole(provider, model) ? (
-                <>
-                  <TextField
-                    label="Template"
-                    disabled={!!lpv.publishedAt}
-                    multiline
-                    fullWidth
-                    style={{ width: "100%" }}
-                    minRows={9}
-                    // maxRows={10}
-                    defaultValue={template}
-                    onChange={(e) => {
-                      setTemplate(e.target.value);
-                      handleTemplateChange(e.target.value);
-                    }}
-                    variant="outlined"
-                  />
-                </>
-              ) : (
-                <>
-                  <Box sx={{ maxHeight: "400px", overflowY: "auto" }}>
-                    {promptInputs.map(
-                      (prompts: PromptJsonDataType, ind: number) => {
-                        return (
-                          <>
-                            <Box sx={{ margin: "1rem" }} key={prompts.id}>
-                              <Grid container spacing={2}>
-                                <Grid item xs={2} sm={2} md={2} lg={2}>
-                                  <Button
-                                    onClick={() => {
-                                      prompts.role !==
-                                      (PromptRoleEnum.enum.SYSTEM as string)
-                                        ? changePromptInputRole(ind)
-                                        : "";
-                                    }}
-                                    sx={{ padding: "1rem" }}
-                                  >
-                                    {prompts.role}
-                                  </Button>
-                                </Grid>
-                                <Grid item xs={8} sm={8} md={8} lg={8}>
-                                  <TextField
-                                    fullWidth
-                                    multiline
-                                    defaultValue={prompts.content}
-                                    onChange={(e) =>
-                                      changePromptInputContent(e, ind)
-                                    }
-                                  />
-                                </Grid>
-                                <Grid item xs={2} sm={2} md={2} lg={2}>
-                                  <Box sx={{ display: "flex" }}>
-                                    <Button
-                                      sx={{
-                                        padding: "1rem",
-                                        display: `${
-                                          promptInputs.length === 1 ||
-                                          prompts.role ===
-                                            (PromptRoleEnum.enum
-                                              .SYSTEM as string)
-                                            ? "none"
-                                            : "block"
-                                        }`,
-                                      }}
-                                      onClick={() => deletePrompt(ind)}
-                                    >
-                                      <RemoveCircleIcon />
-                                    </Button>
-                                    {ind === promptInputs.length - 1 ? (
-                                      <>
+        {isLoading ? (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CircularProgress />
+            </Box>
+          </>
+        ) : (
+          <>
+            <Grid container spacing={2}>
+              {/* add all the code from promptEditor here */}
+              <Grid item xs={12} md={6}>
+                <Box>
+                  {!getRole(provider, model) ? (
+                    <>
+                      <TextField
+                        label="Template"
+                        disabled={!!lpv.publishedAt}
+                        multiline
+                        fullWidth
+                        style={{ width: "100%" }}
+                        minRows={9}
+                        // maxRows={10}
+                        defaultValue={template}
+                        onChange={(e) => {
+                          setTemplate(e.target.value);
+                          handleTemplateChange(e.target.value);
+                        }}
+                        variant="outlined"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Box sx={{ maxHeight: "400px", overflowY: "auto" }}>
+                        {promptInputs.map(
+                          (prompts: PromptJsonDataType, ind: number) => {
+                            return (
+                              <>
+                                <Box sx={{ margin: "1rem" }} key={prompts.id}>
+                                  <Grid container spacing={2}>
+                                    <Grid item xs={2} sm={2} md={2} lg={2}>
+                                      <Button
+                                        onClick={() => {
+                                          prompts.role !==
+                                          (PromptRoleEnum.enum.SYSTEM as string)
+                                            ? changePromptInputRole(ind)
+                                            : "";
+                                        }}
+                                        sx={{ padding: "1rem" }}
+                                      >
+                                        {prompts.role}
+                                      </Button>
+                                    </Grid>
+                                    <Grid item xs={8} sm={8} md={8} lg={8}>
+                                      <TextField
+                                        fullWidth
+                                        multiline
+                                        defaultValue={prompts.content}
+                                        onChange={(e) =>
+                                          changePromptInputContent(e, ind)
+                                        }
+                                      />
+                                    </Grid>
+                                    <Grid item xs={2} sm={2} md={2} lg={2}>
+                                      <Box sx={{ display: "flex" }}>
                                         <Button
-                                          onClick={addNewPropmtInput}
                                           sx={{
                                             padding: "1rem",
+                                            display: `${
+                                              promptInputs.length === 1 ||
+                                              prompts.role ===
+                                                (PromptRoleEnum.enum
+                                                  .SYSTEM as string)
+                                                ? "none"
+                                                : "block"
+                                            }`,
                                           }}
+                                          onClick={() => deletePrompt(ind)}
                                         >
-                                          <AddIcon />
+                                          <RemoveCircleIcon />
                                         </Button>
-                                      </>
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </Box>
-                                </Grid>
-                              </Grid>
-                            </Box>
-                          </>
-                        );
-                      },
-                    )}
-                  </Box>
-                </>
-              )}
-            </Box>
-
-            {/*  */}
-          </Grid>
-          <Grid item xs={12} md={6} sx={{ p: 1 }}>
-            <PromptVariables
-              vars={pvrs}
-              onChange={handleVariablesChange}
-              mode={displayModes.Enum.VIEW}
-            />
-          </Grid>
-        </Grid>
+                                        {ind === promptInputs.length - 1 ? (
+                                          <>
+                                            <Button
+                                              onClick={addNewPropmtInput}
+                                              sx={{
+                                                padding: "1rem",
+                                              }}
+                                            >
+                                              <AddIcon />
+                                            </Button>
+                                          </>
+                                        ) : (
+                                          <></>
+                                        )}
+                                      </Box>
+                                    </Grid>
+                                  </Grid>
+                                </Box>
+                              </>
+                            );
+                          },
+                        )}
+                      </Box>
+                    </>
+                  )}
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6} sx={{ p: 1 }}>
+                <PromptVariables
+                  vars={pvrs}
+                  onChange={handleVariablesChange}
+                  mode={displayModes.Enum.VIEW}
+                />
+              </Grid>
+            </Grid>
+          </>
+        )}
         <Divider sx={{ mt: 1 }} textAlign="right"></Divider>
 
         <Stack direction="row" spacing={1} sx={{ p: 1 }}>
@@ -498,10 +537,10 @@ function PromptVersion({
             }
             loadingPosition="start"
             startIcon={<PlayArrowIcon />}
-            loading={isLoading}
+            loading={isRunning}
             sx={{ width: "8rem" }}
           >
-            {isLoading ? (
+            {isRunning ? (
               <>
                 <Counter />s
               </>
@@ -557,8 +596,8 @@ function PromptVersion({
             <LLMSelector
               initialProvider={provider}
               initialModel={model}
-              onProviderChange={setProvider}
-              onModelChange={setModel}
+              onProviderChange={handleChangeProvider}
+              onModelChange={handleChangeModel}
               publishedAt={lpv.publishedAt}
               modelType={pt?.modelType}
               flag={false}

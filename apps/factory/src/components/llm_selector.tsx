@@ -101,38 +101,34 @@ function LLMSelector({
         </Button>
 
         <Dialog open={isOpen} onClose={handleClose}>
-          <Box
-            sx={{
-              p: 2,
-            }}
-          >
-            <Typography variant="h6" component="h2">
-              Model
-            </Typography>
-            {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
+          <DialogContent>
+            <Box>
+              <Typography variant="h6" component="h2">
+                Model
+              </Typography>
+              {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
 
-            <Typography mt={2}>
-              The LLM provider and model that'll be used to power this prompt.
-            </Typography>
-            <LLM
-              provider={provider}
-              model={model}
-              handleModelChange={handleModelChange}
-              handleProviderChange={
-                !flag ? handleNextProviderChange : handleChange
-              }
-              modelType={modelType}
-              readonly={readonly}
-            />
-            <Divider />
-
-            <Stack direction="row" spacing={2} mt={2}>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button variant="outlined" onClick={handleClose}>
-                Close
-              </Button>
-            </Stack>
-          </Box>
+              <Typography mt={2}>
+                The LLM provider and model that'll be used to power this prompt.
+              </Typography>
+              <LLM
+                provider={provider}
+                model={model}
+                handleModelChange={handleModelChange}
+                handleProviderChange={
+                  !flag ? handleNextProviderChange : handleChange
+                }
+                modelType={modelType}
+                readonly={readonly}
+              />
+            </Box>
+          </DialogContent>
+          <Divider />
+          <DialogActions>
+            <Button variant="outlined" onClick={handleClose}>
+              Close
+            </Button>
+          </DialogActions>
         </Dialog>
       </>
     );

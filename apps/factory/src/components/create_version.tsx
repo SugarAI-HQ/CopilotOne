@@ -31,6 +31,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormTextInput } from "./form_components/formTextInput";
 import type {
   CreateVersionInput,
+  GetVersionsInput,
   InputCreateVersion,
 } from "~/validators/prompt_version";
 import { createVersionInput } from "~/validators/prompt_version";
@@ -58,8 +59,8 @@ export function CreateVersion({
   forkedFromId: string | null;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [provider, setProvider] = useState("");
-  const [model, setModel] = useState("");
+  const [provider, setProvider] = useState<string>("");
+  const [model, setModel] = useState<string>("");
   // const [version, setVersion] = useState(v);
 
   const {
@@ -101,13 +102,31 @@ export function CreateVersion({
     },
   });
 
+  api.prompt.getVersions.useQuery(
+    {
+      promptPackageId: pt?.promptPackageId,
+      promptTemplateId: pt?.id,
+    } as GetVersionsInput,
+    {
+      onSuccess(pvs) {
+        const pv = pvs.filter((item) => item.id === forkedFromId);
+        if (pv[0]) {
+          setProvider(pv[0]?.llmProvider);
+          setModel(pv[0]?.llmModel);
+        }
+      },
+    },
+  );
+
   useEffect(() => {
-    if (pt?.modelType === ModelTypeSchema.enum.TEXT2TEXT) {
-      handleProviderChange("llama2");
-      handleModelChange("7b");
-    } else {
-      handleProviderChange("openai");
-      handleModelChange("dall-e");
+    if (!forkedFromId) {
+      if (pt?.modelType === ModelTypeSchema.enum.TEXT2TEXT) {
+        handleProviderChange("llama2");
+        handleModelChange("7b");
+      } else {
+        handleProviderChange("openai");
+        handleModelChange("dall-e");
+      }
     }
   }, [pt?.modelType]);
 
