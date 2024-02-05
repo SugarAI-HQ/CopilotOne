@@ -24,10 +24,8 @@ import { useRouter } from "next/router";
 
 function PublicPackages() {
   const router = useRouter();
-
-  // Retrieve the query parameters from the URL
-  const { page } = router.query;
-  const pages = parseInt(`${page}`, 10);
+  const page: number | undefined =
+    parseInt(router.query.page as string, 10) || undefined;
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -42,10 +40,11 @@ function PublicPackages() {
     data: packages,
     isLoading,
     refetch: refectchPackages,
-  } = api.marketplace.getPackages.useQuery({
+  } = api.marketplace.getMarketPlacePackages.useQuery({
     visibility: packageVisibility.Enum.PUBLIC,
-    pageNo: page != null || pages > 0 ? pages : 1,
+    pageNo: page,
   });
+
   return (
     <Grid container spacing={1}>
       {isLoading ? (
@@ -139,37 +138,12 @@ function PublicPackages() {
               </Card>
             </Grid>
           ))}
-          <Grid
-            item
-            sx={{
-              width: "100vw",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Pagination
-              onChange={handlePageChange}
-              count={50}
-              variant="outlined"
-              shape="rounded"
-              sx={{
-                "& .MuiPaginationItem-root": {
-                  color: "white",
-                },
-                "& .Mui-selected": {
-                  backgroundColor: "GrayText",
-                },
-                padding: 2,
-              }}
-            />
-          </Grid>
         </>
       ) : (
         <Box
           sx={{
             width: "100vw",
-            height: "100vh",
+            height: "60vh",
             padding: "0",
             margin: "0",
             display: "flex",
@@ -180,10 +154,36 @@ function PublicPackages() {
           <Typography
             sx={{ color: "var(--sugarhub-text-color)", fontSize: "1.4rem" }}
           >
-            No cards created
+            No cards found
           </Typography>
         </Box>
       )}
+      <Grid
+        item
+        sx={{
+          width: "100vw",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Pagination
+          onChange={handlePageChange}
+          count={20}
+          variant="outlined"
+          shape="rounded"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "white",
+            },
+            "& .MuiPaginationItem-root.Mui-selected": {
+              backgroundColor: "Highlight",
+              color: "white",
+            },
+            padding: 2,
+          }}
+        />
+      </Grid>
     </Grid>
   );
 }

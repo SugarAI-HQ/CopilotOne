@@ -6,12 +6,21 @@ import { RESERVED_NAMES } from "./reserved_names";
 export const getPackagesInput = z
   .object({
     userId: z.string().optional(),
-    pageNo: z.number().optional(),
     visibility: packageVisibility.optional(),
   })
   .optional();
 // .strict()
 export type GetPackagesInput = z.infer<typeof getPackagesInput>;
+
+export const getMarketPlacePackagesInput = z
+  .object({
+    pageNo: z.number().default(1),
+    visibility: packageVisibility.optional(),
+  })
+  .optional();
+export type GetMarketPlacePackagesInput = z.infer<
+  typeof getMarketPlacePackagesInput
+>;
 
 export const getPackageInput = z
   .object({
