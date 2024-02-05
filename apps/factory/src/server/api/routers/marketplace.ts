@@ -28,8 +28,12 @@ export const marketplaceRouter = createTRPCRouter({
         include: {
           User: true,
         },
-        skip: (input!.pageNo - 1) * 10,
-        take: 10,
+        ...(input?.pageNo
+          ? {
+              skip: (input.pageNo - 1) * 10,
+              take: 10,
+            }
+          : {}),
       });
       // console.log(`packages out -------------- ${JSON.stringify(packages)}`);
 
