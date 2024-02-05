@@ -6,6 +6,7 @@ import { RESERVED_NAMES } from "./reserved_names";
 export const getPackagesInput = z
   .object({
     userId: z.string().optional(),
+    pageNo: z.number(),
     visibility: packageVisibility.optional(),
   })
   .optional();
