@@ -43,6 +43,8 @@ export const createTemplateInput = z
     description: z.string(),
     promptPackageId: z.string(),
     modelType: ModelTypeSchema,
+    provider: z.string(),
+    model: z.string(),
   })
   .strict()
   .required();

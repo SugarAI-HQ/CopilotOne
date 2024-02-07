@@ -22,6 +22,15 @@ export const api = createTRPCNext<AppRouter>({
   config(opts) {
     const { ctx } = opts;
     return {
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+          },
+        },
+      },
+
       /**
        * Transformer used for data de-serialization from the server.
        *

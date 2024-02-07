@@ -373,7 +373,7 @@ function PromptVersion({
               </Button>
             </Tooltip>
             <CreateVersion
-              key={lpv.updatedAt?.toDateString()}
+              key={lpv.id + "2"}
               pp={pp}
               pt={pt}
               forkedFrom={lpv}
@@ -601,7 +601,7 @@ function PromptVersion({
               }
             />
             <LLMSelector
-              key={lpv.id}
+              key={lpv.id + llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
               publishedAt={lpv.publishedAt}

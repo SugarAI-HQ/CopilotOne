@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ChangeEventHandler, ReactNode } from "react";
 import { Controller } from "react-hook-form";
-import { FormControl, FormLabel, Select, MenuItem } from "@mui/material";
+import { FormControl, FormLabel, MenuItem, TextField } from "@mui/material";
 import type { FormInputProps } from "./formInputProps";
 
 interface Props<T extends string | number> extends FormInputProps {
@@ -10,6 +10,8 @@ interface Props<T extends string | number> extends FormInputProps {
   defaultValue: T | undefined;
   readonly: boolean;
   enumValues: Record<string, T>;
+  // onChange: (event: any) => void;
+  onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
 export function FormSelectInput<T extends string | number>({
@@ -17,6 +19,7 @@ export function FormSelectInput<T extends string | number>({
   control,
   label,
   defaultValue,
+  onChange,
   readonly,
   enumValues,
 }: Props<T>) {
@@ -27,24 +30,23 @@ export function FormSelectInput<T extends string | number>({
         name={name}
         control={control}
         defaultValue={defaultValue}
-        render={({ field }) => (
-          <Select
+        // onChange={onChange}
+        render={({ ...field }) => (
+          <TextField
+            select
+            required
+            variant="outlined"
+            // inputRef={ref}
+            disabled={readonly}
             {...field}
-            aria-label={name}
-            inputProps={{
-              readOnly: readonly,
-            }}
+            onChange={onChange}
           >
-            {Object.entries(enumValues).map(([value, label]) => (
-              <MenuItem
-                key={value}
-                value={value}
-                selected={defaultValue === value ? true : false}
-              >
-                {label}
+            {Object.entries(enumValues).map(([key, value]) => (
+              <MenuItem key={key} value={value}>
+                {value}
               </MenuItem>
             ))}
-          </Select>
+          </TextField>
         )}
       />
     </FormControl>

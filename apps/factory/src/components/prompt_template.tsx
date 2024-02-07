@@ -67,8 +67,8 @@ const PromptTemplate = ({
       version: "0.0.1",
       forkedFromId: null,
       moduleType: pt?.modelType,
-      provider: options.provider,
-      model: options.model,
+      provider: options?.llm?.provider,
+      model: options?.llm?.model,
     };
     pvCreateMutation.mutate(firstVersion as InputCreateVersion, {
       onSuccess(pv) {
@@ -137,6 +137,7 @@ const PromptTemplate = ({
                 ))}
               <Box sx={{ flexGrow: 1, p: 2 }}>
                 <CreateVersion
+                  // key={pt?.updatedAt?.toDateString()}
                   pp={pp}
                   pt={pt}
                   onCreate={handleVersionCreate}

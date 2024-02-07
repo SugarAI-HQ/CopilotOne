@@ -12,6 +12,8 @@ import {
   Grid,
   IconButton,
   Input,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Tooltip,
@@ -19,14 +21,17 @@ import {
 } from "@mui/material";
 import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
-import { VersionOutput as pv } from "~/validators/prompt_version";
+import {
+  inputCreateVersion,
+  VersionOutput as pv,
+} from "~/validators/prompt_version";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { parse, valid } from "semver";
 import toast from "react-hot-toast";
 import { api } from "~/utils/api";
 import ForkRightIcon from "@mui/icons-material/ForkRight";
 
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormTextInput } from "./form_components/formTextInput";
 import type {
@@ -35,12 +40,15 @@ import type {
   InputCreateVersion,
 } from "~/validators/prompt_version";
 import { createVersionInput } from "~/validators/prompt_version";
-import LLMSelector from "./llm_selector";
+import LLMSelector, { LLMForm, LLMForm2 } from "./llm_selector";
 import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
-import { LLM, providerModels } from "~/validators/base";
+import { LLM, Model, Provider, providerModels } from "~/validators/base";
+import { FormSelectInput } from "./form_components/formSelectInput";
+import { FormProviderSelectInput } from "./form_components/formProviderSelect";
+import { FormModelSelectInput } from "./form_components/formModelSelect";
 
 CreateVersion.defaultProps = {
   icon: <AddCircleIcon />,
@@ -74,21 +82,26 @@ export function CreateVersion({
       providerModels[pt?.modelType as ModelTypeType].defaultModel,
   });
 
+  const forkedFromId = forkedFrom?.id || null;
+  console.log(`LLM ||| 6 >>>>>>>>> ${JSON.stringify(llm)} ${forkedFromId}`);
+
   const {
     control,
     handleSubmit,
     setError,
     formState: { errors },
     reset,
-  } = useForm<CreateVersionInput>({
+  } = useForm<InputCreateVersion>({
     defaultValues: {
       version: v,
       promptPackageId: pp?.id,
       promptTemplateId: pt?.id,
-      forkedFromId: forkedFrom?.id,
+      forkedFromId: forkedFromId,
       moduleType: pt?.modelType,
+      provider: llm.provider,
+      model: llm.model,
     },
-    resolver: zodResolver(createVersionInput),
+    resolver: zodResolver(inputCreateVersion),
   });
 
   const handleClose = () => {
@@ -118,7 +131,7 @@ export function CreateVersion({
       promptPackageId: pp?.id,
       promptTemplateId: pt?.id,
       version: data.version,
-      forkedFromId: forkedFrom?.id,
+      forkedFromId: forkedFromId,
       moduleType: pt?.modelType,
       provider: llm.provider,
       model: llm.model,
@@ -174,10 +187,49 @@ export function CreateVersion({
               helperText={errors.version?.message}
               readonly={false}
             />
-            <LLMSelector
+
+            {/* <FormProviderSelectInput
+              name="provider"
+              control={control}
+              label="Provider"
+              modelType={llm.modelType}
+              defaultValue={llm.provider}
+              // error={!!errors.version}
+              // helperText={errors.version?.message}
+              readonly={false}
+              onChange={(e) => {
+                setLLM((prev) => ({ ...prev, provider: e.target.value }));
+              }}
+            />
+
+            <FormModelSelectInput
+              name="provider"
+              control={control}
+              label="Provider"
+              provider={llm.provider}
+              modelType={llm.modelType}
+              defaultValue={llm.model}
+              // error={!!errors.version}
+              // helperText={errors.version?.message}
+              readonly={false}
+              onChange={(e) => {
+                setLLM((prev) => ({ ...prev, model: e.target.value }));
+              }}
+            /> */}
+
+            {/* <LLMForm2
+              key={llm.modelType + llm.model + llm.provider}
+              initialLLM={llm}
+              control={control}
+              onLLMChange={handleLLMChange}
+              readonly={false}
+            /> */}
+
+            <LLMForm
+              key={llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
-              needConsent={false}
+              readonly={false}
             />
           </Stack>
         </DialogContent>
@@ -188,6 +240,7 @@ export function CreateVersion({
           <Button size="small" onClick={handleClose} variant="outlined">
             Cancel
           </Button>
+
           <Button
             size="small"
             onClick={handleSubmit(onFormSubmit)}

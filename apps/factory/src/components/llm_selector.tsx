@@ -13,9 +13,24 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { providerModels, Provider, Model, LLM } from "~/validators/base";
+import {
+  providerModels,
+  Provider,
+  Model,
+  LLM,
+  getDefaultLLM,
+} from "~/validators/base";
+import { FormProviderSelectInput } from "./form_components/formProviderSelect";
+import { FormModelSelectInput } from "./form_components/formModelSelect";
+import { Controller } from "react-hook-form";
+import { FormSelectInput } from "./form_components/formSelectInput";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
 function LLMSelector({
   initialLLM,
   onLLMChange,
@@ -30,14 +45,16 @@ function LLMSelector({
   readonly?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [pLLm, setLLM] = useState<LLM>(initialLLM);
+  const [llm, setLLM] = useState<LLM>(initialLLM);
+
+  console.log(`LLM ||| 2 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   //
   const [openConsent, setOpenConsent] = useState("");
 
   const onConsent = (haveConsent: boolean) => {
     if (haveConsent) {
-      handleLLMChange(pLLm, true);
+      handleLLMChange(llm, true);
     }
 
     // Close the consent popup
@@ -83,10 +100,10 @@ function LLMSelector({
         <ConsentProvider nextProvider={openConsent} onResult={onConsent} />
         <Button
           variant="text"
-          onClick={(e) => setIsOpen(true)}
+          onClick={(e: any) => setIsOpen(true)}
           disabled={!!publishedAt}
         >
-          {pLLm.provider} - {pLLm.model}
+          {llm.provider} - {llm.model}
         </Button>
 
         <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
@@ -101,7 +118,7 @@ function LLMSelector({
                 The LLM provider and model that'll be used to power this prompt.
               </Typography>
               <LLMForm
-                llm={pLLm}
+                initialLLM={llm}
                 onLLMChange={handleLLMChange}
                 // handleProviderChange={
                 //   !flag ? handleNextProviderChange : handleChange
@@ -122,7 +139,11 @@ function LLMSelector({
   } else {
     return (
       <>
-        <LLMForm llm={pLLm} onLLMChange={handleLLMChange} readonly={readonly} />
+        <LLMForm
+          initialLLM={llm}
+          onLLMChange={handleLLMChange}
+          readonly={readonly}
+        />
       </>
     );
   }
@@ -131,15 +152,17 @@ function LLMSelector({
 export default LLMSelector;
 
 export const LLMForm = ({
-  llm,
+  initialLLM,
   onLLMChange,
   readonly,
 }: {
-  llm: LLM;
+  initialLLM: LLM;
   onLLMChange: (e: any) => void;
   readonly: boolean | undefined;
 }) => {
-  const [pLLM, setLLM] = useState<LLM>(llm);
+  const [llm, setLLM] = useState<LLM>(initialLLM);
+
+  console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   return (
     <>
@@ -147,13 +170,13 @@ export const LLMForm = ({
         <FormControl fullWidth>
           <FormLabel>Provider</FormLabel>
           <Select
-            value={pLLM.provider}
-            onChange={(e) => {
+            value={llm.provider}
+            onChange={(e: any) => {
               setLLM((prev) => ({ ...prev, provider: e.target.value }));
             }}
             disabled={readonly}
           >
-            {providerModels[pLLM.modelType].providers.map(
+            {providerModels[llm.modelType as ModelTypeType].providers.map(
               (provider: Provider) => (
                 <MenuItem
                   key={provider.name}
@@ -170,25 +193,25 @@ export const LLMForm = ({
         <FormControl fullWidth>
           <FormLabel>Model</FormLabel>
           <Select
-            value={pLLM.model}
+            value={llm.model}
             // onChange={handleModelChange}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setLLM((prev) => ({ ...prev, model: e.target.value }));
-              onLLMChange({ ...pLLM, model: e.target.value });
+              onLLMChange({ ...llm, model: e.target.value });
             }}
             disabled={readonly}
           >
-            {providerModels[pLLM.modelType].models?.[pLLM.provider]?.map(
-              (model: Model) => (
-                <MenuItem
-                  key={model.name}
-                  value={model.name}
-                  disabled={!model.enabled}
-                >
-                  {model.label}
-                </MenuItem>
-              ),
-            )}
+            {providerModels[llm.modelType as ModelTypeType].models?.[
+              llm.provider
+            ]?.map((model: Model) => (
+              <MenuItem
+                key={model.name}
+                value={model.name}
+                disabled={!model.enabled}
+              >
+                {model.label}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Stack>
@@ -233,5 +256,56 @@ const ConsentProvider = ({
         </DialogActions>
       </Dialog>
     </div>
+  );
+};
+
+export const LLMForm2 = ({
+  initialLLM,
+  control,
+  onLLMChange,
+  readonly,
+}: {
+  initialLLM: LLM;
+  onLLMChange: (e: any) => void;
+  control: any;
+  readonly: boolean | undefined;
+}) => {
+  const [llm, setLLM] = useState<LLM>(initialLLM);
+
+  console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
+
+  return (
+    <>
+      <Stack spacing={2} mt={2}>
+        <FormProviderSelectInput
+          name="provider"
+          control={control}
+          label="Provider"
+          modelType={llm.modelType}
+          defaultValue={llm.provider}
+          // error={!!errors.version}
+          // helperText={errors.version?.message}
+          readonly={false}
+          onChange={(e) => {
+            setLLM((prev) => ({ ...prev, provider: e.target.value }));
+          }}
+        />
+
+        <FormModelSelectInput
+          name="model"
+          control={control}
+          label="Model"
+          provider={llm.provider}
+          modelType={llm.modelType}
+          defaultValue={llm.model}
+          // error={!!errors.version}
+          // helperText={errors.version?.message}
+          readonly={false}
+          onChange={(e) => {
+            setLLM((prev) => ({ ...prev, model: e.target.value }));
+          }}
+        />
+      </Stack>
+    </>
   );
 };

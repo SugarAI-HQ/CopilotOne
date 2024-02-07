@@ -4,4 +4,5 @@ export interface FormInputProps {
   label: string;
   error?: boolean;
   helperText?: string | undefined;
+  required?: boolean;
 }

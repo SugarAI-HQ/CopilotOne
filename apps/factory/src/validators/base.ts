@@ -1,7 +1,10 @@
 import { string, z } from "zod";
 import { OverridableStringUnion } from "@mui/types";
 import { ChipPropsColorOverrides } from "@mui/material/Chip";
-import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
 
 export const promptEnvironment = z.enum(["DEV", "PREVIEW", "RELEASE"]);
 export type PromptEnvironment = z.infer<typeof promptEnvironment>;
@@ -192,3 +195,11 @@ export const llm = z.object({
   provider: z.string(),
 });
 export type LLM = z.infer<typeof llm>;
+
+export const getDefaultLLM = (modelType: ModelTypeType): LLM => {
+  return {
+    modelType: modelType,
+    provider: providerModels[modelType].defaultProvider,
+    model: providerModels[modelType].defaultModel,
+  };
+};

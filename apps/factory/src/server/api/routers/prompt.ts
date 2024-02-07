@@ -276,8 +276,8 @@ export const promptRouter = createTRPCRouter({
           defaultTemplate.template = forkedFrom.template;
           defaultTemplate.promptData =
             forkedFrom.promptData as PromptDataSchemaType;
-          defaultTemplate.llmProvider = forkedFrom.llmProvider;
-          defaultTemplate.llmModel = forkedFrom.llmModel;
+          defaultTemplate.llmProvider = provider || forkedFrom.llmProvider;
+          defaultTemplate.llmModel = model || forkedFrom.llmModel;
           defaultTemplate.llmConfig = forkedFrom.llmConfig as JsonObject;
         }
       }

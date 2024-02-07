@@ -175,6 +175,7 @@ const PackageShow: NextPageWithLayout = () => {
                   <Grid container>
                     <Grid item xs={6} md={6} lg={6}>
                       <CreateTemplate
+                        key={"create-template-" + pts.length}
                         pp={pp as pp}
                         pts={pts}
                         onCreate={handleCreateTemplate}
@@ -187,6 +188,7 @@ const PackageShow: NextPageWithLayout = () => {
                       {ptId ? (
                         <>
                           <CreateTemplate
+                            key={"edit-template-" + ptId}
                             pp={pp as pp}
                             pts={pts}
                             onCreate={handleCreateTemplate}
