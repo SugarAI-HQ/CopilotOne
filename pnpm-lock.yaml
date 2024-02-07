@@ -98,6 +98,9 @@ importers:
       nextjs-cors:
         specifier: ^2.1.2
         version: 2.1.2(next@13.4.13)
+      nextjs-google-analytics:
+        specifier: ^2.3.3
+        version: 2.3.3(next@13.4.13)(react@18.2.0)
       openai:
         specifier: ^4.24.7
         version: 4.24.7
@@ -11087,6 +11090,18 @@ packages:
     dependencies:
       cors: 2.8.5
       next: 13.4.13(@babel/core@7.23.0)(react-dom@18.2.0)(react@18.2.0)
+    dev: false
+
+  /nextjs-google-analytics@2.3.3(next@13.4.13)(react@18.2.0):
+    resolution: {integrity: sha512-Y6sI6A7wt5dji8hYBnVkOh9LTyImSLFZXx3FpyQgVW7W4b4qEFHjH2u3fhDJsrRZeLlUGM8/RuHD/mhHc2Axfg==}
+    peerDependencies:
+      next: '>=11.0.0'
+      react: '>=17.0.0'
+    dependencies:
+      next: 13.4.13(@babel/core@7.23.0)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+    optionalDependencies:
+      fsevents: 2.3.3
     dev: false
 
   /no-case@3.0.4:
