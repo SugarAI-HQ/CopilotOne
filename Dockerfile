@@ -1,5 +1,5 @@
 # Builder image
-FROM node:18-alpine AS build
+FROM node:18.18-alpine AS build
 
 RUN apk add --update --no-cache curl bash git python3 make g++
 
