@@ -180,11 +180,11 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                 {logModeMax && <TableCell>{log.id}</TableCell>}
                 <TableCell>
                   {/* we are checking wether the role is true or false */}
-                  {getRole(log) ? (
+                  {getRole(log) !== 0 ? (
                     <>
                       <PromptView
                         promptInputs={JSON.parse(log.prompt)}
-                        haveroleUserAssistant={true}
+                        haveroleUserAssistant={1}
                         promptTemplate={""}
                       />
                     </>
@@ -192,7 +192,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     <>
                       <PromptView
                         promptInputs={[]}
-                        haveroleUserAssistant={false}
+                        haveroleUserAssistant={0}
                         promptTemplate={log.prompt}
                       />
                     </>

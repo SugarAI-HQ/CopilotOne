@@ -13,7 +13,7 @@ export type Model = {
   name: string;
   label: string;
   enabled: boolean;
-  hasRole: boolean;
+  hasRole: number;
 };
 
 export type Provider = Model;
@@ -39,11 +39,11 @@ export const providerModels: ProviderModels = {
     defaultProvider: "llama2",
     defaultModel: "7b",
     providers: [
-      { name: "llama2", label: "Llama2", enabled: true, hasRole: false },
-      { name: "mistral", label: "Mistral", enabled: true, hasRole: false },
-      { name: "openai", label: "OpenAI", enabled: true, hasRole: false },
-      { name: "falcon", label: "Falcon", enabled: false, hasRole: false },
-      { name: "mpt", label: "MPT", enabled: false, hasRole: false },
+      { name: "llama2", label: "Llama2", enabled: true, hasRole: 0 },
+      { name: "mistral", label: "Mistral", enabled: true, hasRole: 0 },
+      { name: "openai", label: "OpenAI", enabled: true, hasRole: 0 },
+      { name: "falcon", label: "Falcon", enabled: false, hasRole: 0 },
+      { name: "mpt", label: "MPT", enabled: false, hasRole: 0 },
     ],
     models: {
       openai: [
@@ -52,30 +52,30 @@ export const providerModels: ProviderModels = {
           name: "gpt-3.5-turbo",
           label: "Gpt 3.5 Turbo",
           enabled: true,
-          hasRole: true,
+          hasRole: 1,
         },
-        { name: "gpt-4", label: "Gpt 4", enabled: true, hasRole: true },
+        { name: "gpt-4", label: "Gpt 4", enabled: true, hasRole: 1 },
       ],
       llama2: [
-        { name: "7b", label: "7B", enabled: true, hasRole: false },
-        { name: "13b", label: "13B", enabled: true, hasRole: false },
-        { name: "70b", label: "70B", enabled: true, hasRole: false },
+        { name: "7b", label: "7B", enabled: true, hasRole: 0 },
+        { name: "13b", label: "13B", enabled: true, hasRole: 0 },
+        { name: "70b", label: "70B", enabled: true, hasRole: 0 },
       ],
       falcon: [
-        { name: "7b", label: "7B", enabled: false, hasRole: false },
-        { name: "40b", label: "40B", enabled: false, hasRole: false },
-        { name: "180b", label: "180B", enabled: false, hasRole: false },
+        { name: "7b", label: "7B", enabled: false, hasRole: 0 },
+        { name: "40b", label: "40B", enabled: false, hasRole: 0 },
+        { name: "180b", label: "180B", enabled: false, hasRole: 0 },
       ],
       mpt: [
-        { name: "7b", label: "7B", enabled: false, hasRole: false },
-        { name: "30b", label: "30B", enabled: false, hasRole: false },
+        { name: "7b", label: "7B", enabled: false, hasRole: 0 },
+        { name: "30b", label: "30B", enabled: false, hasRole: 0 },
       ],
       mistral: [
         {
           name: "Mistral-7B",
           label: "Mistral-7B",
           enabled: true,
-          hasRole: true,
+          hasRole: 2,
         },
         // {
         //   name: "WizardCoder-34B",
@@ -87,7 +87,7 @@ export const providerModels: ProviderModels = {
           name: "Mistral-7B-Instruct-v0.1",
           label: "Mistral-7B-Instruct",
           enabled: true,
-          hasRole: false,
+          hasRole: 0,
         },
       ],
     },
@@ -99,19 +99,19 @@ export const providerModels: ProviderModels = {
     defaultProvider: "stabilityai",
     defaultModel: "sdxl",
     providers: [
-      { name: "openai", label: "Open AI", enabled: true, hasRole: false },
-      { name: "runwayml", label: "Runway ML", enabled: true, hasRole: false },
+      { name: "openai", label: "Open AI", enabled: true, hasRole: 0 },
+      { name: "runwayml", label: "Runway ML", enabled: true, hasRole: 0 },
       {
         name: "prompthero",
         label: "Prompt Hero",
         enabled: true,
-        hasRole: false,
+        hasRole: 0,
       },
       {
         name: "stabilityai",
         label: "Stability AI",
         enabled: true,
-        hasRole: false,
+        hasRole: 0,
       },
     ],
     models: {
@@ -120,7 +120,7 @@ export const providerModels: ProviderModels = {
           name: "sdxl",
           label: "stable-diffusion-xl-1024-v1-0",
           enabled: true,
-          hasRole: false,
+          hasRole: 0,
         },
       ],
       openai: [
@@ -128,7 +128,7 @@ export const providerModels: ProviderModels = {
           name: "dall-e",
           label: "Dall-E-3",
           enabled: true,
-          hasRole: false,
+          hasRole: 0,
         },
       ],
       runwayml: [
@@ -136,7 +136,7 @@ export const providerModels: ProviderModels = {
           name: "stable-diffusion-v1-5",
           label: "Stable Diffusion V1-5",
           enabled: true,
-          hasRole: false,
+          hasRole: 0,
         },
       ],
       prompthero: [
@@ -144,7 +144,7 @@ export const providerModels: ProviderModels = {
           name: "openjourney",
           label: "Open Journey",
           enabled: true,
-          hasRole: false,
+          hasRole: 0,
         },
       ],
     },

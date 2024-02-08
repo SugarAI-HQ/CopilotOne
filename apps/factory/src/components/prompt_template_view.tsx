@@ -97,7 +97,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         ]?.models[`${item?.llmProvider}`]?.find(
           (mod) => mod.name === item?.model,
         )?.hasRole;
-        if (haveroleUserAssistant) {
+        if (haveroleUserAssistant !== 0) {
           setVariables([
             ...getUniqueJsonArray(
               getVariables(

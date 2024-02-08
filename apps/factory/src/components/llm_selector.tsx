@@ -35,18 +35,16 @@ function LLMSelector({
   initialLLM,
   onLLMChange,
   publishedAt,
-  needConsent,
   readonly,
 }: {
   initialLLM: LLM;
   onLLMChange: Function;
   publishedAt?: any;
-  needConsent: boolean;
   readonly?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [llm, setLLM] = useState<LLM>(initialLLM);
-
+  const [tllm, setTllm] = useState<LLM>(initialLLM);
   console.log(`LLM ||| 2 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   //
@@ -54,17 +52,35 @@ function LLMSelector({
 
   const onConsent = (haveConsent: boolean) => {
     if (haveConsent) {
-      handleLLMChange(llm, true);
+      onLLMChange(tllm);
+      setLLM(tllm);
+    } else {
+      console.debug("user disagreed");
     }
-
     // Close the consent popup
     setOpenConsent("");
   };
 
-  // TODO: Add check for hasRole so it wont always ask for consent.
-  const isEditorChanged = function () {
-    return true;
+  const getRole = (providerName: string, modelName: string) => {
+    return providerModels[
+      `${llm?.modelType as keyof typeof providerModels}`
+    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.hasRole;
   };
+
+  // TODO: Add check for hasRole so it wont always ask for consent.
+  const isEditorChanged = function (llm: LLM) {
+    console.log("initial LLM", initialLLM);
+    console.log("next LLM", llm);
+    return (
+      getRole(llm.provider, llm.model) !==
+      getRole(initialLLM.provider, initialLLM.model)
+    );
+  };
+
+  // const handleLLMChange2 = (llm: LLM, haveConsent: boolean = false)=>{
+  //   setLLM(llm);
+  //   setOpenConsent(llm.provider);
+  // }
 
   const handleLLMChange = (llm: LLM, haveConsent: boolean = false) => {
     console.log(
@@ -73,80 +89,60 @@ function LLMSelector({
       )}`,
     );
 
-    setLLM(llm);
+    // console.log(llm)
 
-    if (needConsent && isEditorChanged() && !haveConsent) {
-      // checking for consent, before makign further changes
+    setTllm(llm);
+    if (isEditorChanged(llm)) {
       setOpenConsent(llm.provider);
-      console.log("asking for consent");
-    }
-    if (needConsent && isEditorChanged() && haveConsent) {
-      onLLMChange(llm);
-      console.log("Sending to parent 1");
-    } else if (!needConsent) {
-      onLLMChange(llm);
-      console.log("Sending to parent 2");
     } else {
-      console.log("Ignoring changes");
+      onLLMChange(llm);
     }
   };
 
   // return <></>;
 
   // Got Agree from user to let go off old template
-  if (needConsent) {
-    return (
-      <>
-        <ConsentProvider nextProvider={openConsent} onResult={onConsent} />
-        <Button
-          variant="text"
-          onClick={(e: any) => setIsOpen(true)}
-          disabled={!!publishedAt}
-        >
-          {llm.provider} - {llm.model}
-        </Button>
+  return (
+    <>
+      <ConsentProvider nextProvider={openConsent} onResult={onConsent} />
+      <Button
+        variant="text"
+        onClick={(e: any) => setIsOpen(true)}
+        disabled={!!publishedAt}
+      >
+        {llm.provider} - {llm.model}
+      </Button>
 
-        <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-          <DialogContent>
-            <Box>
-              <Typography variant="h6" component="h2">
-                Model
-              </Typography>
-              {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+        <DialogContent>
+          <Box>
+            <Typography variant="h6" component="h2">
+              Model
+            </Typography>
+            {/* <CloseIcon sx={{ flex: 1, cursor: 'pointer' }} onClick={handleClose}/> */}
 
-              <Typography mt={2}>
-                The LLM provider and model that'll be used to power this prompt.
-              </Typography>
-              <LLMForm
-                initialLLM={llm}
-                onLLMChange={handleLLMChange}
-                // handleProviderChange={
-                //   !flag ? handleNextProviderChange : handleChange
-                // }
-                readonly={readonly}
-              />
-            </Box>
-          </DialogContent>
-          <Divider />
-          <DialogActions>
-            <Button variant="outlined" onClick={() => setIsOpen(false)}>
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    );
-  } else {
-    return (
-      <>
-        <LLMForm
-          initialLLM={llm}
-          onLLMChange={handleLLMChange}
-          readonly={readonly}
-        />
-      </>
-    );
-  }
+            <Typography mt={2}>
+              The LLM provider and model that'll be used to power this prompt.
+            </Typography>
+            <LLMForm
+              initialLLM={llm}
+              onLLMChange={handleLLMChange}
+              // handleProviderChange={
+              //   !flag ? handleNextProviderChange : handleChange
+              // }
+              readonly={readonly}
+            />
+          </Box>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Button variant="outlined" onClick={() => setIsOpen(false)}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
 }
 
 export default LLMSelector;

@@ -13,7 +13,7 @@ import Paper from "@mui/material/Paper";
 
 interface PromptViewArrowProps {
   promptInputs: PromptDataType | undefined;
-  haveroleUserAssistant: boolean | undefined;
+  haveroleUserAssistant: number | undefined;
   promptTemplate: string;
 }
 
@@ -76,7 +76,7 @@ export const PromptView = ({
 }: PromptViewArrowProps) => {
   return (
     <>
-      {haveroleUserAssistant ? (
+      {haveroleUserAssistant !== 0 ? (
         <>
           <TableContainer sx={{ maxHeight: "200px", overflowY: "auto" }}>
             <Table aria-label="simple table">
