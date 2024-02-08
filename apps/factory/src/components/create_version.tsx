@@ -229,7 +229,7 @@ export function CreateVersion({
               key={llm.modelType + llm.model + llm.provider}
               initialLLM={llm}
               onLLMChange={handleLLMChange}
-              readonly={false}
+              readonly={forkedFrom ? true : false}
             />
           </Stack>
         </DialogContent>
