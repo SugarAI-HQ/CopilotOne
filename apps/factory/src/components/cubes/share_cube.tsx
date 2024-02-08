@@ -62,7 +62,7 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
               >
                 Share Cube
               </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              <Box id="modal-modal-description" sx={{ mt: 2 }}>
                 <Box
                   sx={{
                     display: "flex",
@@ -110,7 +110,7 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
                     </LinkedinShareButton>
                   </Box>
                 </Box>
-              </Typography>
+              </Box>
             </DialogContent>
             <Divider sx={{ borderColor: "var(--divider-color)" }} />
             <DialogActions>

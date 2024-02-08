@@ -28,7 +28,10 @@ function PromptVariables({
 
   return (
     <Box sx={{ p: 2 }}>
-      <Typography variant="h6" sx={{ color: "var(--sugarhub-text-color)" }}>
+      <Typography
+        variant="h6"
+        sx={{ color: "var(--sugarhub-text-color)", mb: 2 }}
+      >
         {cube ? "Enter Input" : "Variables"}
       </Typography>
       <Stack spacing={2}>
