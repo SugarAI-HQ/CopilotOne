@@ -23,7 +23,10 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
       }
     };
 
-    if (modelType === ModelTypeSchema.Enum.TEXT2TEXT) {
+    if (
+      modelType === ModelTypeSchema.Enum.TEXT2TEXT ||
+      modelType === ModelTypeSchema.Enum.TEXT2CODE
+    ) {
       let currentIndex = 0;
 
       const intervalId = setInterval(() => {

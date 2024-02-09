@@ -6,6 +6,7 @@ import * as stabilityai from "./stabilityai";
 
 import * as openai from "./openai";
 import * as mistral from "./mistral";
+import * as WizardCoder from "./wizardcoder";
 import { PromptDataSchemaType } from "~/validators/prompt_version";
 
 // Export all providers
@@ -23,6 +24,7 @@ const providers: Record<string, Provider> = {
   prompthero: ph,
   runwayml: runwayml,
   stabilityai: stabilityai,
+  WizardCoder: WizardCoder,
 };
 
 export function getProvider(providerName: string) {

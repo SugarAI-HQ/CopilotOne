@@ -30,6 +30,7 @@ type ModelType = {
 type ProviderModels = {
   TEXT2TEXT: ModelType;
   TEXT2IMAGE: ModelType;
+  TEXT2CODE: ModelType;
 };
 
 export const providerModels: ProviderModels = {
@@ -149,6 +150,26 @@ export const providerModels: ProviderModels = {
       ],
     },
   },
+
+  TEXT2CODE: {
+    label: "Text-to-Code",
+    enabled: true,
+    defaultProvider: "WizardCoder",
+    defaultModel: "WizardCoder-34B",
+    providers: [
+      { name: "WizardCoder", label: "Wizard Coder", enabled: true, hasRole: 0 },
+    ],
+    models: {
+      WizardCoder: [
+        {
+          name: "WizardCoder-34B",
+          label: "WizardCoder-34B",
+          enabled: true,
+          hasRole: 0,
+        },
+      ],
+    },
+  },
 };
 
 export const packageVisibility = z.enum(["PUBLIC", "PRIVATE"]);
@@ -202,4 +223,14 @@ export const getDefaultLLM = (modelType: ModelTypeType): LLM => {
     provider: providerModels[modelType].defaultProvider,
     model: providerModels[modelType].defaultModel,
   };
+};
+
+export const getDefaultTemplate = (modelType: ModelTypeType) => {
+  if (modelType === ModelTypeSchema.Enum.TEXT2CODE) {
+    return `Solve Coding Question {@question}`;
+  } else if (modelType === ModelTypeSchema.Enum.TEXT2TEXT) {
+    return `Tell me a joke on topic "{@topic}"`;
+  } else {
+    return `A photo of an astronaut riding a horse on {@OBJECT}`;
+  }
 };
