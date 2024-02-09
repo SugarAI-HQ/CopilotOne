@@ -195,7 +195,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   };
 
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
-  const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`;
+  const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`;
 
   const loadingButtonClass = {
     "&:hover ": {
