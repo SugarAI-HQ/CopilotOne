@@ -8,10 +8,7 @@ export function generateOutput(
   llmModelType: ModelTypeType,
   latency: number,
 ) {
-  if (
-    llmModelType === ModelTypeSchema.Enum.TEXT2TEXT ||
-    llmModelType === ModelTypeSchema.Enum.TEXT2CODE
-  ) {
+  if (llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
     if (response?.choices?.length > 0) {
       return {
         completion: response.choices[0]?.text || "",
