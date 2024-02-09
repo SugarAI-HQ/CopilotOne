@@ -135,6 +135,7 @@ export function PromptVariable({
           }
           variant="outlined"
           value={val}
+          autoComplete="off"
           // defaultValue={pv.value}
           onChange={handleValueChange}
         />

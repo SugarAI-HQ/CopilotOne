@@ -684,7 +684,7 @@ function PromptVersion({
                     </Box>
                   )}
                 </Grid>
-                {pt?.modelType === ModelTypeSchema.Enum.TEXT2TEXT && (
+                {pt?.modelType !== ModelTypeSchema.Enum.TEXT2IMAGE && (
                   <Grid item lg={3} md={3} sm={12} xs={12}>
                     <PromptPerformance
                       data={promptPerformance}

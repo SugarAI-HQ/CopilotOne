@@ -30,6 +30,7 @@ type ModelType = {
 type ProviderModels = {
   TEXT2TEXT: ModelType;
   TEXT2IMAGE: ModelType;
+  TEXT2CODE: ModelType;
 };
 
 export const providerModels: ProviderModels = {
@@ -143,6 +144,26 @@ export const providerModels: ProviderModels = {
         {
           name: "openjourney",
           label: "Open Journey",
+          enabled: true,
+          hasRole: 0,
+        },
+      ],
+    },
+  },
+
+  TEXT2CODE: {
+    label: "Text-to-Code",
+    enabled: true,
+    defaultProvider: "WizardCoder",
+    defaultModel: "WizardCoder-34B",
+    providers: [
+      { name: "WizardCoder", label: "Wizard Coder", enabled: true, hasRole: 0 },
+    ],
+    models: {
+      WizardCoder: [
+        {
+          name: "WizardCoder-34B",
+          label: "WizardCoder-34B",
           enabled: true,
           hasRole: 0,
         },

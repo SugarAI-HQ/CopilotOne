@@ -49,6 +49,7 @@ enum PromptEnvironment {
 enum ModelType {
   TEXT2TEXT
   TEXT2IMAGE
+  TEXT2CODE
 }
 
 enum PromptRunModes {

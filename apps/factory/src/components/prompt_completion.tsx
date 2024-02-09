@@ -24,7 +24,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   textAnimation,
   cube,
 }) => {
-  if (modelType === ModelTypeSchema.Enum.TEXT2TEXT) {
+  if (modelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
     return (
       <>
         {textAnimation === false ? (

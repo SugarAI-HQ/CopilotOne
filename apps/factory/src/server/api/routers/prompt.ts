@@ -167,8 +167,6 @@ export const promptRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
 
-      // console.log(`template input -------------- ${JSON.stringify(input)}`);
-
       try {
         const pt = await ctx.prisma.promptTemplate.create({
           data: {
@@ -247,14 +245,19 @@ export const promptRouter = createTRPCRouter({
 
       let modelType = input.moduleType === ModelTypeSchema.Enum.TEXT2TEXT;
 
-      // points -> take modelType, model, provider from input
-      let provider = input.provider;
-      let model = input.model;
-      let promptData: PromptDataSchemaType = getTemplate(provider, model);
-
       let template = modelType
         ? `Tell me a joke on topic "{@topic}"`
         : `A photo of an astronaut riding a horse on {@OBJECT}`;
+
+      // points -> take modelType, model, provider from input
+      const provider = input.provider;
+      const model = input.model;
+
+      const promptData: PromptDataSchemaType = getTemplate(provider, model);
+
+      if (input.moduleType === ModelTypeSchema.Enum.TEXT2CODE) {
+        template = getTemplate(input.provider, input.model).data[0].content;
+      }
 
       const defaultTemplate = {
         template: template,

@@ -5,30 +5,34 @@ import { GPTResponseType } from "~/validators/openaiResponse";
 class XylemVendor extends BaseVendor {
   private provider: string;
   private model: string;
-  private maxRetriesXylem = 3;
-  private retryDelayXylem = 1000;
+
   constructor(
     provider: string,
     model: string,
     maxRetries: number = 3,
     retryDelay: number = 1000,
   ) {
+    const xylemEndPoint = "https://api.xylem.ai/api/v0";
     super(
-      `https://api.xylem.ai/api/v0/chat/completions`,
+      provider === "WizardCoder"
+        ? `${xylemEndPoint}/completions`
+        : `${xylemEndPoint}/chat/completions`,
       maxRetries,
       retryDelay,
     );
+
     this.provider = provider;
     this.model = model;
   }
 
   protected createHeaders(): Headers {
+    const token =
+      this.provider === "WizardCoder"
+        ? process.env.XYLEM_WIZARDCODER_34B_API_KEY
+        : process.env.XYLEM_MISTRAL_7B_API_KEY;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append(
-      "Authorization",
-      `Bearer ${process.env.XYLEM_MISTRAL_7B_API_KEY}`,
-    );
+    myHeaders.append("Authorization", `Bearer ${token}`);
     return myHeaders;
   }
 
@@ -64,10 +68,19 @@ class XylemVendor extends BaseVendor {
   }
 
   protected createRequestOptions(prompt: string): RequestInit {
-    const requestBody = {
-      model: `${this.model}`,
-      messages: [...this.parsePromptChat(prompt)],
-    };
+    let requestBody;
+
+    if (this.provider === "WizardCoder") {
+      requestBody = {
+        model: `${this.model}`,
+        prompt: prompt,
+      };
+    } else {
+      requestBody = {
+        model: `${this.model}`,
+        messages: [...this.parsePromptChat(prompt)],
+      };
+    }
 
     return {
       method: "POST",
@@ -75,33 +88,6 @@ class XylemVendor extends BaseVendor {
       body: JSON.stringify(requestBody),
     };
   }
-
-  // async makeApiCallWithRetry(
-  //   prompt: string,
-  //   dryRun: boolean,
-  // ): Promise<{ response: Response; latency: number }> {
-  //   const requestOptions = this.createRequestOptions(prompt);
-  //   const startTime = new Date();
-
-  //   let resp;
-  //   if (!dryRun) {
-  //     console.log(this.getUrl(), JSON.stringify(requestOptions));
-  //     resp = await fetchWithRetry(
-  //       this.getUrl(),
-  //       requestOptions,
-  //       this.maxRetriesXylem,
-  //       this.retryDelayXylem,
-  //     );
-  //   } else {
-  //     resp = this.createFakeResponse();
-  //   }
-
-  //   const endTime = new Date();
-  //   const latency: number = endTime.getTime() - startTime.getTime();
-  //   const response = this.createChatResponse(resp);
-  //   logLLMResponse(this.constructor.name, response);
-  //   return { response, latency };
-  // }
 }
 
 export default XylemVendor;
