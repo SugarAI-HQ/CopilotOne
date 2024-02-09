@@ -43,7 +43,6 @@ import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { Visibility } from "@mui/icons-material";
 import { JSONArray } from "superjson/dist/types";
 import { getTemplate } from "~/services/providers";
-import { getDefaultTemplate } from "~/validators/base";
 
 export const promptRouter = createTRPCRouter({
   getPackages: protectedProcedure
@@ -244,13 +243,21 @@ export const promptRouter = createTRPCRouter({
 
       console.log(`create version -------------- ${JSON.stringify(input)}`);
 
+      let modelType = input.moduleType === ModelTypeSchema.Enum.TEXT2TEXT;
+
+      let template = modelType
+        ? `Tell me a joke on topic "{@topic}"`
+        : `A photo of an astronaut riding a horse on {@OBJECT}`;
+
       // points -> take modelType, model, provider from input
-      let provider = input.provider;
-      let model = input.model;
+      const provider = input.provider;
+      const model = input.model;
 
-      let promptData: PromptDataSchemaType = getTemplate(provider, model);
+      const promptData: PromptDataSchemaType = getTemplate(provider, model);
 
-      const template = getDefaultTemplate(input.moduleType);
+      if (input.moduleType === ModelTypeSchema.Enum.TEXT2CODE) {
+        template = getTemplate(input.provider, input.model).data[0].content;
+      }
 
       const defaultTemplate = {
         template: template,

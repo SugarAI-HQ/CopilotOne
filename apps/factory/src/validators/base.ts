@@ -224,13 +224,3 @@ export const getDefaultLLM = (modelType: ModelTypeType): LLM => {
     model: providerModels[modelType].defaultModel,
   };
 };
-
-export const getDefaultTemplate = (modelType: ModelTypeType) => {
-  if (modelType === ModelTypeSchema.Enum.TEXT2CODE) {
-    return `Solve Coding Question {@question}`;
-  } else if (modelType === ModelTypeSchema.Enum.TEXT2TEXT) {
-    return `Tell me a joke on topic "{@topic}"`;
-  } else {
-    return `A photo of an astronaut riding a horse on {@OBJECT}`;
-  }
-};
