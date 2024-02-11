@@ -19,6 +19,8 @@ const BlogPage: NextPage = () => {
     slug: slug,
   });
 
+  console.log(data);
+
   return (
     <>
       {data?.title}

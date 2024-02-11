@@ -7,6 +7,7 @@
   "license": "",
   "main": "index.js",
   "keywords": [],
+  "type": "module",
   "scripts": {
     "build": "next build",
     "cibuild": "cp .env.example .env && SKIP_ENV_VALIDATION=1 next build",
@@ -18,7 +19,8 @@
     "build-storybook": "storybook build",
     "pre-commit": "lint-staged",
     "db": "npx prisma studio",
-    "db:migrate": "npx prisma migrate deploy"
+    "db:migrate": "npx prisma migrate deploy",
+    "db:seed": "node prisma/seed.js"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
