@@ -21,6 +21,9 @@ export const blogRouter = createTRPCRouter({
             not: undefined,
           },
         },
+        orderBy: {
+          publishedAt: "desc",
+        },
       });
 
       return blogs;
@@ -39,9 +42,6 @@ export const blogRouter = createTRPCRouter({
 
       const blog = await ctx.prisma.blog.findFirst({
         where: query,
-        orderBy: {
-          createdAt: "desc",
-        },
       });
 
       return blog;
