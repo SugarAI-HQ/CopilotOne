@@ -3,7 +3,13 @@ const prisma = new PrismaClient();
 
 async function seed() {
   try {
-    // Insert data into Blog table
+    const existingBlogs = await prisma.blog.findMany();
+
+    if (existingBlogs.length > 0) {
+      console.log("Data already exists. Exiting seed script.");
+      return;
+    }
+
     await prisma.blog.createMany({
       data: [
         {
@@ -82,7 +88,6 @@ async function seed() {
           mediaType: "VIDEO",
           previewImage: "https://i.ytimg.com/vi/n9tYg541kWE/hqdefault.jpg",
         },
-        // Add more entries as needed
       ],
     });
 

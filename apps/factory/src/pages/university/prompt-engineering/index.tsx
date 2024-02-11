@@ -30,6 +30,8 @@ const BlogsPage: NextPage = () => {
     );
   }
 
+  console.log(data);
+
   if (isError) {
     return (
       <Typography component="span" sx={{ mt: 1, mb: 4, flex: 1, p: 2 }}>
@@ -47,6 +49,7 @@ const BlogsPage: NextPage = () => {
               <h2>{blog.title}</h2>
               <p>{blog.description}</p>
               <p>{blog.slug}</p>
+              <p>{blog.tags}</p>
               {/* Add other fields you want to display */}
             </div>
           ))}
