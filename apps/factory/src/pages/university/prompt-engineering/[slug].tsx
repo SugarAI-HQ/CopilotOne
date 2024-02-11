@@ -9,9 +9,22 @@ import {
   Box,
 } from "@mui/material";
 import { NextPage } from "next";
+import { api } from "~/utils/api";
 
 const BlogPage: NextPage = () => {
-  return <>Hello slug</>;
+  const router = useRouter();
+  const { slug } = router.query as { slug: string };
+
+  const { data } = api.blog.getBlog.useQuery({
+    slug: slug,
+  });
+
+  return (
+    <>
+      {data?.title}
+      {data?.description}
+    </>
+  );
 };
 
 export default BlogPage;

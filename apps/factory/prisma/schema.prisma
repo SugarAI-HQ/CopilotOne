@@ -271,7 +271,7 @@ model Blog {
   description  String
   slug         String    @unique
   tags         Json      @default("[]")
-  publishedAt  DateTime
+  publishedAt  DateTime?
   mediaUrl     String
   mediaType    MediaType @default(IMAGE)
   previewImage String

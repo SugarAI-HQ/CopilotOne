@@ -20,6 +20,19 @@ export const getBlogSchema = z
   })
   .strict();
 
+export const createBlogInput = z.object({
+  title: z.string(),
+  description: z.string(),
+  slug: z.string(),
+  mediaUrl: z.string(),
+  mediaType: MediaTypeSchema,
+  tags: z.array(z.string()),
+  previewImage: z.string(),
+  publishedAt: z.date().nullable(),
+});
+
+export type CreateBlogInput = z.infer<typeof createBlogInput>;
+
 export const getBlogInput = z
   .object({
     slug: z.string(),

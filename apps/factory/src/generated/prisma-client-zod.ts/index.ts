@@ -348,7 +348,7 @@ export const BlogSchema = z.object({
   description: z.string(),
   slug: z.string(),
   tags: InputJsonValue,
-  publishedAt: z.coerce.date(),
+  publishedAt: z.coerce.date().nullable(),
   mediaUrl: z.string(),
   previewImage: z.string(),
   createdAt: z.coerce.date(),

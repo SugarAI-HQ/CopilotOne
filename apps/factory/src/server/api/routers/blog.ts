@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -7,9 +8,26 @@ import {
   getBlogOutput,
   getBlogInput,
   publicBlogListOutput,
+  createBlogInput,
 } from "~/validators/blog";
 
 export const blogRouter = createTRPCRouter({
+  createBlog: publicProcedure
+    .input(createBlogInput)
+    .output(getBlogOutput)
+    .mutation(async ({ ctx, input }) => {
+      console.log(`create blog input -------------- ${JSON.stringify(input)}`);
+
+      const createdBlog = await ctx.prisma.blog.create({
+        data: {
+          ...input,
+          publishedAt: input.publishedAt ?? (null as unknown as Date),
+        },
+      });
+
+      return createdBlog;
+    }),
+
   getBlogs: publicProcedure
     .output(publicBlogListOutput)
     .query(async ({ ctx, input }) => {
