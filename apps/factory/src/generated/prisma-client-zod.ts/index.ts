@@ -72,6 +72,8 @@ export const LikeScalarFieldEnumSchema = z.enum(['id','likesCount','entityId','e
 
 export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','createdAt','updatedAt']);
 
+export const BlogScalarFieldEnumSchema = z.enum(['id','title','description','slug','tags','publishedAt','mediaUrl','mediaType','previewImage','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -105,6 +107,10 @@ export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
 export const PromptRunModesSchema = z.enum(['AUTHORISED_ONLY','LOGGEDIN_ONLY','ALL']);
 
 export type PromptRunModesType = `${z.infer<typeof PromptRunModesSchema>}`
+
+export const MediaTypeSchema = z.enum(['IMAGE','VIDEO']);
+
+export type MediaTypeType = `${z.infer<typeof MediaTypeSchema>}`
 
 export const EntityTypesSchema = z.enum(['PromptPackage','PromptTemplate','PromptVersion']);
 
@@ -330,3 +336,23 @@ export const LikeUserSchema = z.object({
 })
 
 export type LikeUser = z.infer<typeof LikeUserSchema>
+
+/////////////////////////////////////////
+// BLOG SCHEMA
+/////////////////////////////////////////
+
+export const BlogSchema = z.object({
+  mediaType: MediaTypeSchema,
+  id: z.string().uuid(),
+  title: z.string(),
+  description: z.string(),
+  slug: z.string(),
+  tags: InputJsonValue,
+  publishedAt: z.coerce.date().nullable(),
+  mediaUrl: z.string(),
+  previewImage: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Blog = z.infer<typeof BlogSchema>
