@@ -57,6 +57,11 @@ enum PromptRunModes {
   ALL
 }
 
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
 // Necessary for Next auth
 model Account {
   id                String   @id @default(uuid())
@@ -257,4 +262,18 @@ model LikeUser {
   Like      Like?    @relation(fields: [likeId], references: [id])
 
   @@unique([userId, likeId])
+}
+
+model Blog {
+  id           String    @id @default(uuid())
+  title        String
+  description  String
+  slug         String    @unique
+  tags         Json      @default("[]")
+  publishedAt  DateTime
+  mediaUrl     String
+  mediaType    MediaType @default(IMAGE)
+  previewImage String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt @map("updated_at")
 }
