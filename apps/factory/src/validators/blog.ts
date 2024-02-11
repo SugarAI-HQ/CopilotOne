@@ -1,5 +1,8 @@
 import { z } from "zod";
-import { MediaTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  MediaTypeSchema,
+  InputJsonValue,
+} from "~/generated/prisma-client-zod.ts";
 
 export const getBlogSchema = z
   .object({
@@ -9,7 +12,7 @@ export const getBlogSchema = z
     slug: z.string(),
     mediaUrl: z.string(),
     mediaType: MediaTypeSchema,
-    tags: z.array(z.string()).optional(),
+    tags: InputJsonValue.nullable(),
     previewImage: z.string(),
     publishedAt: z.coerce.date().nullable(),
     createdAt: z.coerce.date(),
