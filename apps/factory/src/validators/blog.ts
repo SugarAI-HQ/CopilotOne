@@ -39,6 +39,11 @@ export const getBlogInput = z
   })
   .strict();
 
+export const publicBlogListInput = z.object({
+  pageNo: z.number().default(1),
+});
+export type PublicBlogListInput = z.infer<typeof publicBlogListInput>;
+
 export type GetBlogInput = z.infer<typeof getBlogInput>;
 
 export const getBlogOutput = getBlogSchema.or(z.null());
