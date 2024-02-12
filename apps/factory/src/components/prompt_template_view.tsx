@@ -309,6 +309,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     setOpenShareModal={setOpenShareModal}
                     open={openShareModal}
                     shareUrl={shareUrl}
+                    shareTitle={"Share Cube"}
                   />
                   <Typography
                     sx={{
