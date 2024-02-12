@@ -7,11 +7,13 @@ import { Tooltip } from "@mui/material";
 interface CopyToClipboardButtonProps {
   textToCopy: string;
   textToDisplay: string;
+  cube?: boolean;
 }
 
 const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
   textToCopy,
   textToDisplay,
+  cube,
 }) => {
   const handleCopy = () => {
     navigator.clipboard.writeText(textToCopy);
@@ -27,8 +29,10 @@ const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
         }}
       >
         <FileCopyIcon
-          fontSize="small"
-          sx={{ color: "var(--sugarhub-text-color)" }}
+          sx={{
+            color: "var(--sugarhub-text-color)",
+            fontSize: cube ? "1rem" : "1.4rem",
+          }}
         />
       </IconButton>
     </Tooltip>

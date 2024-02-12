@@ -78,8 +78,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
-  const [openShareModal, setOpenShareModal] = useState<boolean>(false);
-
+  const [openShareModal, setOpenShareModal] = useState<string>("");
+  const { query } = useRouter();
   const router = useRouter();
 
   const { data, isLoading } = api.cube.getPrompt.useQuery(
@@ -115,6 +115,23 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       },
     },
   );
+
+  if (query.logId) {
+    console.log(query.logId);
+    const logId = query.logId as string;
+    api.log.getLog.useQuery(
+      {
+        id: logId,
+      },
+      {
+        onSuccess(item) {
+          if (item !== null) {
+            setPromptOutput(item.completion);
+          }
+        },
+      },
+    );
+  }
 
   const haveroleUserAssistant = providerModels[
     `${data?.modelType as keyof typeof providerModels}`
@@ -194,7 +211,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     return;
   };
 
-  const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
+  const shareUrl =
+    `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}` +
+    (openShareModal === "imageshare" ? `?logId=${pl?.id}` : "");
   const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`;
 
   const loadingButtonClass = {
@@ -275,7 +294,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     )}
                     <Tooltip title="Share Cube" placement="top">
                       <IconButton
-                        onClick={() => setOpenShareModal(!openShareModal)}
+                        onClick={() => setOpenShareModal("cubeshare")}
                       >
                         <ShareIcon
                           sx={{
@@ -442,15 +461,32 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                                 sx={{
                                   color: "var(--sugarhub-text-color)",
                                   fontWeight: "2rem",
+                                  marginRight: "2rem",
                                 }}
                               >
                                 Result
                               </Typography>
                               {data?.modelType ===
                                 ModelTypeSchema.Enum.TEXT2IMAGE && (
-                                <DownloadButtonBase64
-                                  base64image={promptOutput}
-                                />
+                                <>
+                                  <Tooltip title="Share Cube" placement="top">
+                                    <IconButton
+                                      onClick={() =>
+                                        setOpenShareModal("imageshare")
+                                      }
+                                    >
+                                      <ShareIcon
+                                        sx={{
+                                          color: "var(--sugarhub-text-color)",
+                                          fontSize: "1.5rem",
+                                        }}
+                                      />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <DownloadButtonBase64
+                                    base64image={promptOutput}
+                                  />
+                                </>
                               )}
                               {data?.modelType ===
                                 ModelTypeSchema.Enum.TEXT2TEXT && (
