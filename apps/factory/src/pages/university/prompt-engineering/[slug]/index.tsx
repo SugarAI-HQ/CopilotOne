@@ -24,8 +24,6 @@ const BlogPage: NextPage = () => {
     slug: slug,
   });
 
-  console.log(blogData);
-
   return (
     <>
       {blogData === undefined || isLoading ? (
@@ -39,7 +37,10 @@ const BlogPage: NextPage = () => {
             overflowY: "scroll",
           }}
         >
-          <Header headerName={`Sugar University`}></Header>
+          <Header
+            headerName={`Sugar University`}
+            headerUrl={`/university`}
+          ></Header>
           <Container>
             <VideoPlayer videoLink={blogData!.mediaUrl} />
             <VideoDetails blogData={blogData} />

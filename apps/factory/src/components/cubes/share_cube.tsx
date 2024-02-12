@@ -32,9 +32,15 @@ interface Props {
   setOpenShareModal: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
   shareUrl: string;
+  shareTitle: string;
 }
 
-const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
+const ShareCube = ({
+  setOpenShareModal,
+  open,
+  shareUrl,
+  shareTitle,
+}: Props) => {
   const handleClose = () => {
     setOpenShareModal(false);
   };
@@ -60,7 +66,7 @@ const ShareCube = ({ setOpenShareModal, open, shareUrl }: Props) => {
                 component="h2"
                 sx={{ textAlign: "center" }}
               >
-                Share Cube
+                {shareTitle}
               </Typography>
               <Box id="modal-modal-description" sx={{ mt: 2 }}>
                 <Box

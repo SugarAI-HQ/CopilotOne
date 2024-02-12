@@ -39,7 +39,11 @@ const Header = (props: any) => {
               component="div"
               sx={{ fontWeight: "1000" }}
             >
-              <Link href="/" color="inherit" underline="none">
+              <Link
+                href={props.headerUrl ?? "/"}
+                color="inherit"
+                underline="none"
+              >
                 <IconButton sx={{ p: 0 }}>
                   <Image src={Logo1.src} alt="logo" width="40" height="40" />
                 </IconButton>
