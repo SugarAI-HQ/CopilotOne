@@ -58,22 +58,31 @@ const BlogsPage: NextPage = () => {
           <Box
             sx={{
               backgroundColor: "var(--sugarhub-tab-color)",
-              padding: 10,
-              fontSize: isSmallScreen ? 25 : 35,
+              padding: 5,
+              // fontSize: isSmallScreen ? 25 : 35,
               textAlign: "center",
               fontWeight: "bold",
-              height: "35vh",
+              // height: "35vh",
               borderRadius: 5,
               color: "var(--sugarhub-text-color)",
               display: "flex",
+              flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               overflow: "hidden",
               wordWrap: "break-word",
             }}
           >
-            Sugarcane AI - Open Source Prompt Engineering Framework using AI
-            Playground
+            <Typography
+              // variant="h2"
+              component="h1"
+              sx={{ fontSize: isSmallScreen ? 25 : 35 }}
+            >
+              Sugar University
+            </Typography>
+            <Typography component="h2" sx={{ pt: 1 }}>
+              Welcome to GenAI World !!
+            </Typography>
           </Box>
           <Grid container sx={{ paddingLeft: "15px" }}>
             {isLoading || getPosts === undefined ? (
