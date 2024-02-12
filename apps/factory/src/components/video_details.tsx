@@ -1,18 +1,24 @@
-import { Box, Grid, Typography } from "@mui/material";
-import React from "react";
+import { Box, Grid, Typography, Tooltip, IconButton } from "@mui/material";
+import React, { useState } from "react";
 import { FaFolder } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
 import { GetBlogOutput } from "~/validators/blog";
+import { useRouter } from "next/router";
 // import remarkGfm from "remark-gfm";
 // import remarkAutolinkHeadings from "remark-autolink-headings";
 // import rehypeConcatCssStyle from "rehype-concat-css-style";
 import { MuiMarkdown } from "mui-markdown";
+import ShareIcon from "@mui/icons-material/Share";
+import ShareCube from "./cubes/share_cube";
 
 type VideoDetailsProps = {
   blogData: GetBlogOutput;
 };
 
 const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
+  const [openShareModal, setOpenShareModal] = useState<boolean>(false);
+  const router = useRouter();
+
   return (
     <>
       <Box
@@ -23,9 +29,6 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
           color: "var(--sugarhub-text-color)",
         }}
       >
-        <Typography sx={{ fontSize: 28, fontWeight: "bold", paddingTop: 3 }}>
-          {blogData?.title}
-        </Typography>
         <Grid
           container
           sx={{
@@ -55,7 +58,12 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
             item
             sm={12}
             md={6}
-            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}
           >
             <FaRegClock />
             <Typography sx={{ paddingLeft: 2, paddingRight: 2 }}>
@@ -63,8 +71,28 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
                 ? blogData?.publishedAt.toDateString()
                 : "Publish Date"}
             </Typography>
+            <Tooltip title="Share Video" placement="top">
+              <IconButton onClick={() => setOpenShareModal(!openShareModal)}>
+                <ShareIcon
+                  sx={{
+                    color: "var(--sugarhub-ternary-bg-color)",
+                    fontSize: "1.5rem",
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
+            <ShareCube
+              setOpenShareModal={setOpenShareModal}
+              open={openShareModal}
+              shareUrl={`${process.env.NEXT_PUBLIC_APP_URL}${router.asPath}`}
+              shareTitle={"Share Video"}
+            />
           </Grid>
         </Grid>
+        <Typography sx={{ fontSize: 28, fontWeight: "bold", paddingTop: 3 }}>
+          {blogData?.title}
+        </Typography>
+
         <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
           {/* <MuiMarkdown>{blogData?.description}</MuiMarkdown>; */}
           {/* <MuiMarkdown skipHtml={false}>{blogData?.description}</MuiMarkdown> */}

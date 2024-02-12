@@ -53,7 +53,10 @@ const BlogsPage: NextPage = () => {
           overflowY: "scroll",
         }}
       >
-        <Header headerName={`Sugar University`}></Header>
+        <Header
+          headerName={`Sugar University`}
+          headerUrl={`/university`}
+        ></Header>
         <Container>
           <Box
             sx={{
@@ -103,7 +106,7 @@ const BlogsPage: NextPage = () => {
                 >
                   <Card
                     sx={{
-                      backgroundColor: "var(--sugarhub-main-color)",
+                      backgroundColor: "var(--sugarhub-bg-color)",
                       width: "350px",
                       maxHeight: "480px",
                       // border: 0,
