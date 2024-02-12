@@ -9,6 +9,7 @@ import {
   getBlogInput,
   publicBlogListOutput,
   createBlogInput,
+  publicBlogListInput,
 } from "~/validators/blog";
 
 export const blogRouter = createTRPCRouter({
@@ -29,10 +30,11 @@ export const blogRouter = createTRPCRouter({
     }),
 
   getBlogs: publicProcedure
+    .input(publicBlogListInput)
     .output(publicBlogListOutput)
     .query(async ({ ctx, input }) => {
       console.log(`blog input -------------- ${JSON.stringify(input)}`);
-
+      const perPage = 6;
       const blogs = await ctx.prisma.blog.findMany({
         where: {
           publishedAt: {
@@ -42,12 +44,18 @@ export const blogRouter = createTRPCRouter({
         orderBy: {
           publishedAt: "desc",
         },
+        ...(input?.pageNo
+          ? {
+              skip: (input.pageNo - 1) * perPage,
+              take: perPage,
+            }
+          : {}),
       });
 
       return blogs;
     }),
 
-  getBlog: protectedProcedure
+  getBlog: publicProcedure
     .input(getBlogInput)
     .output(getBlogOutput)
     .query(async ({ ctx, input }) => {
