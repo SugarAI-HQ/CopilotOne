@@ -16,7 +16,7 @@ type VideoDetailsProps = {
 };
 
 const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
-  const [openShareModal, setOpenShareModal] = useState<boolean>(false);
+  const [openShareModal, setOpenShareModal] = useState<string>("");
   const router = useRouter();
 
   return (
@@ -72,7 +72,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
                 : "Publish Date"}
             </Typography>
             <Tooltip title="Share Video" placement="top">
-              <IconButton onClick={() => setOpenShareModal(!openShareModal)}>
+              <IconButton onClick={() => setOpenShareModal("sharevideo")}>
                 <ShareIcon
                   sx={{
                     color: "var(--sugarhub-ternary-bg-color)",
