@@ -280,6 +280,8 @@ function PromptVersion({
       getRole(tllm.provider, tllm.model) !== getRole(llm.provider, llm.model)
     ) {
       currentTemplate = getTemplate(llm.provider, llm.model);
+    } else {
+      currentTemplate.p = llm.provider;
     }
     setTllm(llm);
     pvUpdateMutation.mutate({

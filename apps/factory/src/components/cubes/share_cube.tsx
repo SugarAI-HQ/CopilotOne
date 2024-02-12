@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogContent,
   Divider,
+  Tooltip,
 } from "@mui/material";
 import {
   FacebookIcon,
@@ -27,10 +28,11 @@ import {
   TelegramShareButton,
   TelegramIcon,
 } from "react-share";
+import CopyToClipboardButton from "../copy_button";
 
 interface Props {
-  setOpenShareModal: React.Dispatch<React.SetStateAction<boolean>>;
-  open: boolean;
+  setOpenShareModal: React.Dispatch<React.SetStateAction<string>>;
+  open: string;
   shareUrl: string;
   shareTitle: string;
 }
@@ -42,13 +44,13 @@ const ShareCube = ({
   shareTitle,
 }: Props) => {
   const handleClose = () => {
-    setOpenShareModal(false);
+    setOpenShareModal("");
   };
   return (
     <>
       <Box>
         <Dialog
-          open={open}
+          open={open.length > 0 ? true : false}
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
@@ -78,42 +80,74 @@ const ShareCube = ({
                   }}
                 >
                   <Box style={{ margin: "5px 5px" }}>
-                    <FacebookShareButton
-                      url={shareUrl}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <FacebookIcon size={32} round />
-                    </FacebookShareButton>
+                    <Tooltip title="Facebook" placement="top">
+                      <FacebookShareButton
+                        url={shareUrl}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <FacebookIcon size={32} round />
+                      </FacebookShareButton>
+                    </Tooltip>
                   </Box>
                   <Box style={{ margin: "5px 5px" }}>
-                    <WhatsappShareButton url={shareUrl}>
-                      <WhatsappIcon size={32} round />
-                    </WhatsappShareButton>
+                    <Tooltip title="WhatsApp" placement="top">
+                      <WhatsappShareButton url={shareUrl}>
+                        <WhatsappIcon size={32} round />
+                      </WhatsappShareButton>
+                    </Tooltip>
                   </Box>
                   <Box style={{ margin: "5px 5px" }}>
-                    <TwitterShareButton url={shareUrl}>
-                      <XIcon size={32} round />
-                    </TwitterShareButton>
+                    <Tooltip title="X" placement="top">
+                      <TwitterShareButton url={shareUrl}>
+                        <XIcon size={32} round />
+                      </TwitterShareButton>
+                    </Tooltip>
                   </Box>
                   <Box style={{ margin: "5px 5px" }}>
-                    <EmailShareButton url={shareUrl}>
-                      <EmailIcon size={32} round />
-                    </EmailShareButton>
+                    <Tooltip title="Email" placement="top">
+                      <EmailShareButton url={shareUrl}>
+                        <EmailIcon size={32} round />
+                      </EmailShareButton>
+                    </Tooltip>
                   </Box>
                   <Box style={{ margin: "5px 5px" }}>
-                    <RedditShareButton url={shareUrl}>
-                      <RedditIcon size={32} round />
-                    </RedditShareButton>
+                    <Tooltip title="Reddit" placement="top">
+                      <RedditShareButton url={shareUrl}>
+                        <RedditIcon size={32} round />
+                      </RedditShareButton>
+                    </Tooltip>
                   </Box>
                   <Box style={{ margin: "5px 5px" }}>
-                    <TelegramShareButton url={shareUrl}>
-                      <TelegramIcon size={32} round />
-                    </TelegramShareButton>
+                    <Tooltip title="Telegram" placement="top">
+                      <TelegramShareButton url={shareUrl}>
+                        <TelegramIcon size={32} round />
+                      </TelegramShareButton>
+                    </Tooltip>
                   </Box>
                   <Box style={{ margin: "5px 5px" }}>
-                    <LinkedinShareButton url={shareUrl}>
-                      <LinkedinIcon size={32} round />
-                    </LinkedinShareButton>
+                    <Tooltip title="Linkedin" placement="top">
+                      <LinkedinShareButton url={shareUrl}>
+                        <LinkedinIcon size={32} round />
+                      </LinkedinShareButton>
+                    </Tooltip>
+                  </Box>
+                  <Box
+                    sx={{
+                      margin: "5px 5px",
+                      backgroundColor: "black",
+                      borderRadius: "50%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "36px",
+                      height: "36px",
+                    }}
+                  >
+                    <CopyToClipboardButton
+                      textToCopy={shareUrl}
+                      textToDisplay={"Copy Url"}
+                      cube={true}
+                    />
                   </Box>
                 </Box>
               </Box>

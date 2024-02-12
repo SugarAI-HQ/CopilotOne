@@ -32,11 +32,13 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
     <div style={{ paddingLeft: 15, paddingRight: 15 }}>
       <Stack
         className="dark:border-gray-60 w-full rounded-lg border p-3 shadow"
-        onClick={() => setIsTextOpen(!isTextOpen)}
         flexDirection={"row"}
         sx={{ backgroundColor: "var(--sugarcube-component-bg-color)" }}
       >
-        <Box>
+        <Box
+          onClick={() => setIsTextOpen(!isTextOpen)}
+          sx={{ cursor: "pointer" }}
+        >
           {isTextOpen ? (
             <FaCaretDown
               size={20}
