@@ -34,7 +34,7 @@ const BlogsPage: NextPage = () => {
   };
 
   const handleClick = (postSlug: string) => {
-    router.push(`prompt-engineering/${postSlug}`);
+    router.push(`/university/prompt-engineering/${postSlug}`);
   };
 
   // const { data, isLoading, isError, error } = api.blog.getBlogs.useQuery();
