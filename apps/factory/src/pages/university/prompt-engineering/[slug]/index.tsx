@@ -29,7 +29,16 @@ const BlogPage: NextPage = () => {
   return (
     <>
       {blogData === undefined || isLoading ? (
-        <CircularProgress />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
       ) : (
         <>
           <NextSeo
