@@ -4,12 +4,11 @@ import { FaFolder } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
 import { GetBlogOutput } from "~/validators/blog";
 import { useRouter } from "next/router";
-// import remarkGfm from "remark-gfm";
-// import remarkAutolinkHeadings from "remark-autolink-headings";
-// import rehypeConcatCssStyle from "rehype-concat-css-style";
-import { MuiMarkdown } from "mui-markdown";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
+import styles from "../styles/CustomMarkdown.module.css";
 
 type VideoDetailsProps = {
   blogData: GetBlogOutput;
@@ -93,10 +92,15 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
           {blogData?.title}
         </Typography>
 
-        <Box sx={{ paddingTop: 2, paddingBottom: 2 }}>
-          {/* <MuiMarkdown>{blogData?.description}</MuiMarkdown>; */}
-          {/* <MuiMarkdown skipHtml={false}>{blogData?.description}</MuiMarkdown> */}
-          {blogData?.description}
+        <Box
+          sx={{ paddingTop: 2, paddingBottom: 2 }}
+          className={styles.customMarkdown}
+        >
+          {
+            <Markdown remarkPlugins={[remarkGfm]}>
+              {blogData?.description}
+            </Markdown>
+          }
         </Box>
       </Box>
     </>

@@ -1,0 +1,23 @@
+.customMarkdown {
+  /* Your specific styles for the Markdown content go here */
+}
+
+.customMarkdown h1,
+.customMarkdown h2,
+.customMarkdown p,
+.customMarkdown pre,
+.customMarkdown code,
+.customMarkdown ul {
+  /* Common styles for h1, h2, p, ul tags within the Markdown content go here */
+  font-size: revert;
+  font-weight: revert;
+  margin: revert;
+  list-style: revert;
+  padding: revert;
+  text-decoration: revert;
+  text-indent: revert;
+  border-color: revert;
+  border-collapse: revert;
+  font-family: revert;
+  line-height: 1.625;
+}
