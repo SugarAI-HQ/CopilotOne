@@ -95,9 +95,7 @@ const LogShow: NextPageWithLayout = () => {
                 <TableCell>
                   {pl?.completion && (
                     <PromptCompletion
-                      modelType={pl?.llmModelType}
-                      output={pl?.completion}
-                      tokens={pl?.completion_tokens}
+                      pl={pl}
                       imgClassName={"h-48 w-96 object-contain"}
                       textAnimation={false}
                     />

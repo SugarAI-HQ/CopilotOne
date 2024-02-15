@@ -10,9 +10,10 @@ import { GenerateOutput } from "~/validators/service";
 import { Button } from "@mui/material";
 import toast from "react-hot-toast";
 import CopyToClipboardButton from "./copy_button";
+import { LogSchema } from "~/validators/prompt_log";
 
 interface PromotOutputLogProps {
-  pl: GenerateOutput;
+  pl: LogSchema;
 }
 
 const PromotOutputLog: React.FC<PromotOutputLogProps> = ({ pl }) => {

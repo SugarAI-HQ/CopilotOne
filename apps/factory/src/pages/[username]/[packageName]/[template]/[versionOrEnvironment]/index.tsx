@@ -1,16 +1,6 @@
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import PromptTemplateView from "~/components/prompt_template_view";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-
-import { appRouter } from "~/server/api/root";
-import superjson from "superjson";
-import {
-  GetStaticPaths,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
-} from "next";
-import { prisma } from "~/server/db";
 
 const TemplateWithVersion = () => {
   // const router = useRouter();

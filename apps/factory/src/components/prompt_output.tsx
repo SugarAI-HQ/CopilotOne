@@ -8,16 +8,9 @@ import {
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "./prompt_completion";
+import { LogSchema } from "~/validators/prompt_log";
 
-const PromptOutput = ({
-  output,
-  modelType,
-  cube,
-}: {
-  output: string;
-  modelType: ModelTypeType;
-  cube?: boolean;
-}) => {
+const PromptOutput = ({ pl, cube }: { pl: LogSchema; cube?: boolean }) => {
   return (
     <Box
       sx={{
@@ -31,8 +24,7 @@ const PromptOutput = ({
       }}
     >
       <PromptCompletion
-        modelType={modelType}
-        output={output}
+        pl={pl}
         imgClassName={"h-48 w-48"}
         textAnimation={true}
         cube={cube}

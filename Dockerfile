@@ -1,7 +1,7 @@
 # Builder image
 FROM node:18.18-alpine AS build
 
-RUN apk add --update --no-cache curl bash git python3 make g++
+RUN apk add --update --no-cache curl bash git python3 make g++ vips-dev build-base
 
 ARG PROJECT_NAME
 
@@ -25,6 +25,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 # Build
 COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --offline --workspace-root --filter ${PROJECT_NAME}
+
 # RUN pnpm run build --filter=${PROJECT_NAME}...
 RUN pnpm --filter ${PROJECT_NAME} postinstall
 RUN pnpm --filter ${PROJECT_NAME} cibuild

@@ -1,21 +1,14 @@
 import { ImageResponse } from "next/server";
 import { env } from "~/env.mjs";
 
-export const runtime = "edge";
-// export const contentType = "image/png";
-// export const size = {
-//   width: 1200,
-//   height: 630,
-// };
+export function GET(req: Request) {
+  return ogImageResponse();
+}
 
-export function GET() {
+function ogImageResponse() {
   const options = {
     width: 1200,
     height: 630,
-
-    // Options that will be passed to the HTTP response
-    // status?: number = 200
-    // statusText?: string
   };
   return new ImageResponse(
     (

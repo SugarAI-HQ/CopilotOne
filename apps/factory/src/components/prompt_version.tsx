@@ -61,6 +61,7 @@ import {
 } from "~/validators/prompt_version";
 import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate } from "~/services/providers";
+import { LogSchema } from "~/validators/prompt_log";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   LlmResponse,
@@ -112,7 +113,8 @@ function PromptVersion({
   });
   const [checked, setChecked] = useState(isDev);
   const [pl, setPl] = useState<GenerateOutput>(null);
-  const [promptOutput, setPromptOutput] = useState("");
+  // const [promptOutput, setPromptOutput] = useState("");
+
   const [promptPerformance, setPromptPerformacne] = useState({});
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(
     getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
@@ -124,7 +126,7 @@ function PromptVersion({
   //  if true we will change the template otherwise template remains same
   const [isLLMChanged, setIsLLMChanged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [outputLog, setOutputLog] = useState<GenerateOutput>(null);
+  // const [outputLog, setOutputLog] = useState<GenerateOutput>(null);
   const [prompt, setPrompt] = useState<PromptDataSchemaType>(
     lpv.promptData as PromptDataSchemaType,
   );
@@ -243,16 +245,15 @@ function PromptVersion({
 
     if (pl) {
       setPl(pl);
-      setPromptOutput(
-        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
-      );
+      // setPromptOutput(
+      //   processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+      // );
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl?.prompt_tokens,
         completion_tokens: pl?.completion_tokens,
         total_tokens: pl?.total_tokens,
       });
-      setOutputLog(pl);
     }
   };
 
@@ -640,7 +641,7 @@ function PromptVersion({
         </Stack>
 
         <Box sx={{ m: 1 }}>
-          {promptOutput && (
+          {pl && (
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
               <Grid
                 container
@@ -649,10 +650,7 @@ function PromptVersion({
                 flexDirection={"row"}
               >
                 <Grid item lg={8} md={8} sm={12} xs={12}>
-                  <PromptOutput
-                    output={promptOutput}
-                    modelType={pt?.modelType as ModelTypeType}
-                  ></PromptOutput>
+                  <PromptOutput pl={pl as LogSchema}></PromptOutput>
                   {pl && (
                     <Box
                       sx={{
@@ -674,7 +672,10 @@ function PromptVersion({
                             display: "flex",
                           }}
                         >
-                          <DownloadButtonBase64 base64image={promptOutput} />|
+                          <DownloadButtonBase64
+                            base64image={pl.completion as string}
+                          />
+                          |
                         </div>
                       ) : (
                         <div
@@ -685,13 +686,13 @@ function PromptVersion({
                           }}
                         >
                           <CopyToClipboardButton
-                            textToCopy={promptOutput}
+                            textToCopy={pl.completion as string}
                             textToDisplay={"Copy"}
                           />
                           |
                         </div>
                       )}
-                      <PromotOutputLog pl={pl} />
+                      <PromotOutputLog pl={pl as LogSchema} />
                     </Box>
                   )}
                 </Grid>
@@ -714,7 +715,7 @@ function PromptVersion({
             promptTemplateId={pt?.id}
             promptVersionId={pv?.version}
             itemsPerPage={5}
-            outputLog={outputLog}
+            outputLog={pl as GenerateOutput}
           />
         </Box>
       </Box>

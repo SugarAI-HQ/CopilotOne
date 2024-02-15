@@ -53,6 +53,7 @@ import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadButtonBase64 from "./download_button_base64";
 import LikeButton from "./marketplace/like_button";
+import { LogSchema } from "~/validators/prompt_log";
 import toast from "react-hot-toast";
 import {
   ImageResponseV1,
@@ -511,11 +512,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                               )}
                             </Box>
                             <div>
-                              <PromptOutput
-                                output={promptOutput}
-                                modelType={data?.modelType as ModelTypeType}
-                                cube={true}
-                              />
+                              <PromptOutput pl={pl as LogSchema} cube={true} />
                             </div>
                           </Box>
                         </Grid>

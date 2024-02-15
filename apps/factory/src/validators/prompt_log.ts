@@ -36,7 +36,7 @@ export const getLogInput = z
 
 export type GetLogInput = z.infer<typeof getLogInput>;
 
-const logSchema = z.object({
+export const logSchema = z.object({
   id: z.string(),
   // inputId: z.string().optional(),
   promptPackageId: z.string(),
@@ -65,6 +65,7 @@ const logSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });
+export type LogSchema = z.infer<typeof logSchema>;
 
 export const updateLabel = z.object({
   id: z.string(),

@@ -6,25 +6,22 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
+import { LogSchema } from "~/validators/prompt_log";
 
 interface PromptCompletionProps {
-  modelType: ModelTypeType;
-  output: string;
-  tokens?: number;
+  pl: LogSchema;
   imgClassName?: string;
   textAnimation: boolean;
   cube?: boolean;
 }
 
 const PromptCompletion: React.FC<PromptCompletionProps> = ({
-  modelType,
-  output,
-  tokens,
+  pl,
   imgClassName,
   textAnimation,
   cube,
 }) => {
-  if (modelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
+  if (pl?.llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
     return (
       <>
         {textAnimation === false ? (
@@ -43,10 +40,10 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
               },
             }}
           >
-            {tokens ? (
+            {pl.completion_tokens ? (
               <>
-                {output}
-                <p>tokens: {tokens}</p>
+                {pl.completion}
+                <p>tokens: {pl.completion_tokens}</p>
               </>
             ) : (
               <Typography variant="body2" textAlign={"left"}>
@@ -57,24 +54,29 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                       wordWrap: "break-word",
                     }}
                   >
-                    {output}
+                    {pl.completion}
                   </code>
                 </pre>
               </Typography>
             )}
           </Box>
         ) : (
-          <OutputTextAnimation output={output} modelType={modelType} />
+          <OutputTextAnimation
+            output={pl.completion as string}
+            modelType={pl.llmModelType}
+          />
         )}
       </>
     );
-  } else {
+  } else if (pl?.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE) {
+    const w = cube ? 1024 : 128;
+    const h = cube ? 1024 : 128;
     return (
       <img
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
-        src={output}
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}?w=${w}&h=${h}`}
         alt="Image"
       />
     );

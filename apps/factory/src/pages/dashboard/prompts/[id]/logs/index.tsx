@@ -27,11 +27,12 @@ import {
 import PromptCompletion from "~/components/prompt_completion";
 import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
-import { LogSchema, GenerateOutput } from "~/validators/service";
 import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
 import DownloadButtonBase64 from "~/components/download_button_base64";
+import { LogSchema } from "~/validators/prompt_log";
+import { GenerateOutput } from "~/validators/service";
 import PromptLlmResponse, {
   LlmResponseAction,
 } from "~/components/prompt_llm_response";
@@ -42,7 +43,7 @@ interface PromptLogTableProps {
   promptTemplateId: string | undefined;
   promptVersionId: string | undefined;
   itemsPerPage: number;
-  outputLog: LogSchema | null;
+  outputLog: GenerateOutput;
 }
 
 export interface FilterOptions {
@@ -230,17 +231,15 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                   >
                     {log?.completion && (
                       <PromptCompletion
-                        modelType={log?.llmModelType}
-                        output={log?.completion}
-                        tokens={log?.completion_tokens}
-                        imgClassName={"h-48 w-96 object-contain"}
+                        pl={log}
+                        imgClassName={"h-32 w-32 object-contain"}
                         textAnimation={false}
                       />
                     )}
                     {log?.llmResponse && (
                       <PromptLlmResponse
                         pl={log as LogOutput}
-                        imgClassName={"h-48 w-96 object-contain"}
+                        imgClassName={"h-32 w-32 object-contain"}
                         textAnimation={false}
                       />
                     )}
