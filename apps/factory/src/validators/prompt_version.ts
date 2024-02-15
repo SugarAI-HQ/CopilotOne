@@ -4,9 +4,6 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 import semver from "semver";
-
-const versionNameInput = z.string();
-
 export const llmConfigSchema = z.object({
   temperature: z.number().optional(),
   maxLength: z.number().optional(),

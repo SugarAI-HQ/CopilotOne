@@ -32,6 +32,10 @@ import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
 import DownloadButtonBase64 from "~/components/download_button_base64";
+import PromptLlmResponse, {
+  LlmResponseAction,
+} from "~/components/prompt_llm_response";
+import { LogOutput } from "~/validators/prompt_log";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -160,7 +164,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
             <TableRow>
               {logModeMax && <TableCell>ID</TableCell>}
               <TableCell>Prompt</TableCell>
-              <TableCell>Completion</TableCell>
+              <TableCell>LLM Response</TableCell>
               {logModeMax && <TableCell>Version</TableCell>}
               <TableCell>LLM Provider</TableCell>
               <TableCell>LLM Model</TableCell>
@@ -224,21 +228,23 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       maxHeight: 150,
                     }}
                   >
-                    <PromptCompletion
-                      modelType={log.llmModelType}
-                      output={log.completion}
-                      tokens={log.completion_tokens}
-                      imgClassName={"h-42 w-96 object-contain"}
-                      textAnimation={false}
-                    />
-                    {log.llmModelType !== ModelTypeSchema.Enum.TEXT2TEXT ? (
-                      <DownloadButtonBase64 base64image={log.completion} />
-                    ) : (
-                      <CopyToClipboardButton
-                        textToCopy={log.completion}
-                        textToDisplay={"Copy"}
+                    {log?.completion && (
+                      <PromptCompletion
+                        modelType={log?.llmModelType}
+                        output={log?.completion}
+                        tokens={log?.completion_tokens}
+                        imgClassName={"h-48 w-96 object-contain"}
+                        textAnimation={false}
                       />
                     )}
+                    {log?.llmResponse && (
+                      <PromptLlmResponse
+                        pl={log as LogOutput}
+                        imgClassName={"h-48 w-96 object-contain"}
+                        textAnimation={false}
+                      />
+                    )}
+                    <LlmResponseAction pl={log as LogOutput} />
                   </div>
                 </TableCell>
                 {logModeMax && <TableCell>{log.version}</TableCell>}

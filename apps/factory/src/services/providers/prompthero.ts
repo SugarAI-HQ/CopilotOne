@@ -2,7 +2,6 @@ import {
   LlmConfigSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
-import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 
@@ -19,11 +18,8 @@ export async function run(
   dryRun: boolean = false,
 ) {
   let client = new DeepInfraVendor("prompthero", "openjourney");
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(response, llmModelType, latency);
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
+  return lr;
 }
 
 const open_Journey: PromptDataSchemaType = {

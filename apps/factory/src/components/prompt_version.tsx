@@ -62,6 +62,13 @@ import {
 import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate } from "~/services/providers";
 import CircularProgress from "@mui/material/CircularProgress";
+import {
+  LlmResponse,
+  getCompletionResponse,
+  ImageResponseV1,
+  TextResponseV1,
+  processLlmResponse,
+} from "~/validators/llm_respose";
 
 function PromptVersion({
   ns,
@@ -211,7 +218,6 @@ function PromptVersion({
     for (const item of pvrs) {
       data[`${item.type}${item.key}`] = item.value;
     }
-
     const pl = await generateMutation.mutateAsync(
       {
         username: ns.username,
@@ -224,24 +230,27 @@ function PromptVersion({
         data: data,
       } as GenerateInput,
       {
-        onSuccess() {
+        onSettled(lPl, error) {
+          let lr = lPl?.llmResponse as LlmResponse;
           setIsRunning(false);
-        },
-        onError() {
-          setIsRunning(false);
+          if (lr?.error) {
+            toast.error(lr.error?.message as string);
+          }
         },
       },
     );
-
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
+
     if (pl) {
       setPl(pl);
-      setPromptOutput(pl.completion);
+      setPromptOutput(
+        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+      );
       setPromptPerformacne({
         latency: pl.latency,
-        prompt_tokens: pl.prompt_tokens,
-        completion_tokens: pl.completion_tokens,
-        total_tokens: pl.total_tokens,
+        prompt_tokens: pl?.prompt_tokens,
+        completion_tokens: pl?.completion_tokens,
+        total_tokens: pl?.total_tokens,
       });
       setOutputLog(pl);
     }
@@ -545,18 +554,18 @@ function PromptVersion({
             color="success"
             variant="outlined"
             onClick={handleRun}
-            disabled={
-              getRole(llm.provider, llm.model) !== 0
-                ? promptInputs.length > 0 &&
-                  !promptInputs.some(
-                    (input: { id: string; role: string; content: string }) =>
-                      input.content.length === 0,
-                  )
-                  ? pvrs.some((v) => v.value.length === 0)
-                  : true
-                : template.length <= 10 ||
-                  pvrs.some((v) => v.value.length === 0)
-            }
+            // disabled={
+            //   getRole(llm.provider, llm.model) !== 0
+            //     ? promptInputs.length > 0 &&
+            //       !promptInputs.some(
+            //         (input: { id: string; role: string; content: string }) =>
+            //           input.content.length === 0,
+            //       )
+            //       ? pvrs.some((v) => v.value.length === 0)
+            //       : true
+            //     : template.length <= 10 ||
+            //       pvrs.some((v) => v.value.length === 0)
+            // }
             loadingPosition="start"
             startIcon={<PlayArrowIcon />}
             loading={isRunning}

@@ -2,9 +2,8 @@ import {
   LlmConfigSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
-import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
-import XylemVendor from "../vendors/xylem_vendor";
+import XylemVendor from "~/services/vendors/xylem_vendor";
 import { v4 as uuidv4 } from "uuid";
 import { PromptRoleEnum } from "~/validators/base";
 export interface LLMConfig {
@@ -29,11 +28,9 @@ async function runXylem(
   dryRun: boolean,
 ) {
   const client = new XylemVendor("WizardCoder", llmModel);
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(response, llmModelType, latency);
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
+
+  return lr;
 }
 
 const WizardCoder_34B: PromptDataSchemaType = {

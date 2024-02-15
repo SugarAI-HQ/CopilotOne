@@ -24,12 +24,15 @@ import {
 import DownloadButtonImg from "~/components/download_button_img";
 import CopyToClipboardButton from "~/components/copy_button";
 import DownloadButtonBase64 from "~/components/download_button_base64";
+import PromptLlmResponse, {
+  LlmResponseAction,
+} from "~/components/prompt_llm_response";
 
 const LogShow: NextPageWithLayout = () => {
   const router = useRouter();
   const logId = router.query.logId as string;
 
-  const { data } = api.log.getLog.useQuery({ id: logId });
+  const { data: pl } = api.log.getLog.useQuery({ id: logId });
 
   return (
     <>
@@ -44,88 +47,88 @@ const LogShow: NextPageWithLayout = () => {
         >
           Prompt Output
         </Typography>
-        {data && (
-          <LabelIcons logId={data?.id} labelledState={data?.labelledState} />
-        )}
+        {pl && <LabelIcons logId={pl?.id} labelledState={pl?.labelledState} />}
       </Box>
-      {data ? (
+      {pl ? (
         <TableContainer component={Paper}>
           <Table>
             <TableBody>
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>{data.id}</TableCell>
+                <TableCell>{pl.id}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Version</TableCell>
-                <TableCell>{data.version}</TableCell>
+                <TableCell>{pl.version}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Environment</TableCell>
-                <TableCell>{data.environment}</TableCell>
+                <TableCell>{pl.environment}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Labelled State</TableCell>
-                <TableCell>{data.labelledState}</TableCell>
+                <TableCell>{pl.labelledState}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Finetuned State</TableCell>
-                <TableCell>{data.finetunedState}</TableCell>
+                <TableCell>{pl.finetunedState}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>LLM Provider</TableCell>
-                <TableCell>{data.llmProvider}</TableCell>
+                <TableCell>{pl.llmProvider}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>LLM Model</TableCell>
-                <TableCell>{data.llmModel}</TableCell>
+                <TableCell>{pl.llmModel}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Prompt</TableCell>
-                <TableCell>{data.prompt}</TableCell>
+                <TableCell>{pl.prompt}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>
                   <Box>
-                    <Typography>Completion</Typography>
-                    {data.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
-                      <DownloadButtonBase64 base64image={data?.completion} />
-                    ) : (
-                      <CopyToClipboardButton
-                        textToCopy={data?.completion}
-                        textToDisplay={"Copy"}
-                      />
-                    )}
+                    <Typography>LLM Response</Typography>
+                    <LlmResponseAction pl={pl} />
                   </Box>
                 </TableCell>
                 <TableCell>
-                  <PromptCompletion
-                    modelType={data?.llmModelType}
-                    output={data?.completion}
-                    tokens={data?.completion_tokens}
-                    imgClassName={"h-48 w-96 object-contain"}
-                    textAnimation={false}
-                  />
+                  {pl?.completion && (
+                    <PromptCompletion
+                      modelType={pl?.llmModelType}
+                      output={pl?.completion}
+                      tokens={pl?.completion_tokens}
+                      imgClassName={"h-48 w-96 object-contain"}
+                      textAnimation={false}
+                    />
+                  )}
+                  {pl?.llmResponse && (
+                    <PromptLlmResponse
+                      pl={pl}
+                      imgClassName={"h-48 w-96 object-contain"}
+                      textAnimation={false}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Total Tokens</TableCell>
-                <TableCell>{data?.total_tokens}</TableCell>
+                <TableCell>{pl?.total_tokens}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Latency(in ms)</TableCell>
-                <TableCell>{data?.latency}</TableCell>
+                <TableCell>{pl?.latency}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Created At</TableCell>
                 <TableCell>
-                  <TimeAgo date={data?.createdAt} />
+                  <TimeAgo date={pl?.createdAt} />
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell>Updated At</TableCell>
                 <TableCell>
-                  <TimeAgo date={data?.updatedAt} />
+                  <TimeAgo date={pl?.updatedAt} />
                 </TableCell>
               </TableRow>
             </TableBody>

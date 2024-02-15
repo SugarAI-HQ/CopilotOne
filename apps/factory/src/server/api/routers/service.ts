@@ -14,6 +14,8 @@ import {
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
+import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
+
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
     .meta({
@@ -26,7 +28,8 @@ export const serviceRouter = createTRPCRouter({
     })
     .input(generateInput)
     .use(promptMiddleware)
-    .output(generateOutput)
+    // FIXME:
+    // .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
@@ -35,6 +38,8 @@ export const serviceRouter = createTRPCRouter({
         pt.runMode === PromptRunModesSchema.Enum.ALL
           ? (env.DEMO_USER_ID as string)
           : (ctx.jwt?.id as string);
+      let pl;
+      let errorResponse: LlmErrorResponse | null = null;
 
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
@@ -62,7 +67,7 @@ export const serviceRouter = createTRPCRouter({
         console.log(`prompt >>>> ${prompt}`);
 
         const llmConfig = generateLLmConfig(pv.llmConfig);
-        const output = await LlmProvider(
+        const rr = await LlmProvider(
           prompt,
           pv.llmModel,
           pv.llmProvider,
@@ -70,42 +75,48 @@ export const serviceRouter = createTRPCRouter({
           pv.llmModelType,
           input.isDevelopment,
         );
-        if (output?.completion) {
-          const pl = await ctx.prisma.promptLog.create({
+
+        console.log(
+          `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
+        );
+        console.log(
+          `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
+        );
+        try {
+          pl = await ctx.prisma.promptLog.create({
             data: {
               userId: userId,
               promptPackageId: pv.promptPackageId,
               promptTemplateId: pv.promptTemplateId,
               promptVersionId: pv.id,
+              // error:
 
               environment: input.environment,
 
               version: pv.version,
               prompt: prompt,
-              completion: output?.completion as string,
+              // completion: rr.data?.completion as string,
+              llmResponse: rr.response,
 
               llmModelType: pv.llmModelType,
               llmProvider: pv.llmProvider,
               llmModel: pv.llmModel,
               llmConfig: llmConfig,
-              latency: output?.performance?.latency as number,
-              prompt_tokens: output?.performance?.prompt_tokens as number,
+              latency: (rr.performance?.latency as number) || 0,
+              prompt_tokens: (rr?.performance?.prompt_tokens as number) || 0,
               completion_tokens:
-                (output?.performance?.completion_tokens as number) || 0,
-              total_tokens: output?.performance?.total_tokens as number,
-              extras: output?.performance?.extra
-                ? output?.performance?.extra
-                : {},
+                (rr?.performance?.completion_tokens as number) || 0,
+              total_tokens: (rr?.performance?.total_tokens as number) || 0,
+              extras: rr?.performance?.extra ? rr?.performance?.extra : {},
             },
           });
-
-          return pl;
-        } else {
-          console.log("Error: output.completion is missing");
+        } catch (error) {
+          // Log the error for debugging
+          console.error("Error creating promptLog:", error);
         }
       }
 
-      return null;
+      return pl;
     }),
 });
 

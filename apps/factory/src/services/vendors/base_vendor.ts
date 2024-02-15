@@ -1,6 +1,7 @@
 import { GPTResponseType } from "~/validators/openaiResponse";
 import { fakeResponse } from "../llm_response/fake_response";
 import { logLLMResponse, truncateObj } from "~/utils/log";
+import { RunResponse } from "~/validators/llm_respose";
 
 class BaseVendor {
   private endpoint: string;
@@ -28,6 +29,10 @@ class BaseVendor {
     return myHeaders;
   }
 
+  protected parseResponse(response: any, latency: number): RunResponse {
+    throw "To be implemented";
+  }
+
   protected createRequestOptions(prompt: string): RequestInit {
     const formdata = new FormData();
     formdata.append("prompt", `${prompt}`);
@@ -47,19 +52,20 @@ class BaseVendor {
   async makeApiCallWithRetry(
     prompt: string,
     dryRun: boolean,
-  ): Promise<{ response: Response; latency: number }> {
+  ): Promise<RunResponse> {
     const requestOptions = this.createRequestOptions(prompt);
     const startTime = new Date();
-
     let response;
     if (!dryRun) {
       console.log(this.getUrl(), JSON.stringify(requestOptions));
-      response = await fetchWithRetry(
+      const fetchResult = await fetchWithRetry(
         this.getUrl(),
         requestOptions,
         this.maxRetries,
         this.retryDelay,
       );
+
+      response = fetchResult;
     } else {
       response = this.createFakeResponse();
     }
@@ -67,9 +73,10 @@ class BaseVendor {
     const endTime = new Date();
     const latency: number = endTime.getTime() - startTime.getTime();
 
-    logLLMResponse(this.constructor.name, response);
+    const rr = this.parseResponse(response, latency);
+    logLLMResponse(this.constructor.name, rr.response);
 
-    return { response, latency };
+    return rr;
   }
 }
 
@@ -92,7 +99,7 @@ export async function fetchWithRetry(
             await truncateObj(response.text()),
           )}`,
         );
-        throw new Error(`Non-200 response: ${JSON.stringify(response.text())}`);
+        return response;
       }
     } catch (error) {
       console.error(`Request failed: ${url}`, error);

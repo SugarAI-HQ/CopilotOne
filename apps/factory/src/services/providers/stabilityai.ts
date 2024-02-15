@@ -2,7 +2,6 @@ import {
   LlmConfigSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
-import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 import StabilityAIVendor from "../vendors/stabilityai_vendor";
@@ -29,11 +28,8 @@ async function run_di(
   dryRun: boolean = false,
 ) {
   let client = new DeepInfraVendor("stability-ai", "sdxl");
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(response, llmModelType, latency);
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
+  return lr;
 }
 
 async function run_si(
@@ -46,12 +42,9 @@ async function run_si(
     "text-to-image",
   );
   // let client = new StabilityAIVendor("stable-diffusion-v1-6", "text-to-image");
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
 
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(response, llmModelType, latency);
+  return lr;
 }
 
 const sdxl: PromptDataSchemaType = {

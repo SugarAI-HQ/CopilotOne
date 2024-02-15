@@ -10,6 +10,7 @@ import {
 export const logRouter = createTRPCRouter({
   getLogs: protectedProcedure
     .input(getLogsInput)
+    // TODO:fix this
     .output(logListOutput)
     .query(async ({ ctx, input }) => {
       const {
@@ -83,6 +84,7 @@ export const logRouter = createTRPCRouter({
 
   getLog: protectedProcedure
     .input(getLogInput)
+    // TODO:fix this
     .output(logOutput)
     .query(async ({ ctx, input }) => {
       const { id } = input;
@@ -125,3 +127,5 @@ export const logRouter = createTRPCRouter({
       return pL;
     }),
 });
+
+// {"data":{"completion":"This is fake respoonse generated for testing purposes", "v": "1"},"error":null}

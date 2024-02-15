@@ -2,7 +2,6 @@ import {
   LlmConfigSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
-import { generateOutput } from "../llm_response/response";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 import XylemVendor from "../vendors/xylem_vendor";
@@ -20,43 +19,14 @@ export async function run(
   llmModelType: ModelTypeType,
   dryRun: boolean = false,
 ) {
-  // const client =(llmModel==="Mistral-7B-Instruct-v0.1")?:;
+  let client;
   if (llmModel === "Mistral-7B-Instruct-v0.1") {
-    return run_di(prompt, llmModelType, dryRun);
+    client = new DeepInfraVendor("mistralai", "Mistral-7B-Instruct-v0.1");
   } else {
-    return run_xy(prompt, llmModelType, llmModel, dryRun);
+    client = new XylemVendor("mistral", llmModel);
   }
-}
-
-async function run_di(
-  prompt: string,
-  llmModelType: ModelTypeType,
-  dryRun: boolean,
-) {
-  const client = new DeepInfraVendor("mistralai", "Mistral-7B-Instruct-v0.1");
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(response, llmModelType, latency);
-}
-
-async function run_xy(
-  prompt: string,
-  llmModelType: ModelTypeType,
-  llmModel: string,
-  dryRun: boolean,
-) {
-  const client = new XylemVendor("mistral", llmModel);
-  const { response, latency } = await client.makeApiCallWithRetry(
-    prompt,
-    dryRun,
-  );
-  return generateOutput(
-    client.createChatResponse(response),
-    llmModelType,
-    latency,
-  );
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
+  return lr;
 }
 
 const mistral_7B: PromptDataSchemaType = {

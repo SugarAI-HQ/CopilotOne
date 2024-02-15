@@ -1,7 +1,16 @@
 import BaseVendor from "~/services/vendors/base_vendor";
 import { fetchWithRetry } from "~/services/vendors/base_vendor";
 import { logLLMResponse } from "~/utils/log";
+import {
+  LlmErrorResponse,
+  LlmResponse,
+  PerformanceMetrics,
+  RunResponse,
+  getCodeResponseV1,
+  getTextResponseV1,
+} from "~/validators/llm_respose";
 import { GPTResponseType } from "~/validators/openaiResponse";
+import { errorCodes } from "./error_handling";
 class XylemVendor extends BaseVendor {
   private provider: string;
   private model: string;
@@ -87,6 +96,39 @@ class XylemVendor extends BaseVendor {
       headers: this.createHeaders(),
       body: JSON.stringify(requestBody),
     };
+  }
+
+  protected parseResponse(response: any, latency: number): RunResponse {
+    let lr: LlmResponse | null = null;
+    let performance: PerformanceMetrics;
+    if (response?.choices?.length > 0) {
+      let responseMessage = response?.choices[0];
+      lr = getCodeResponseV1(
+        responseMessage.text
+          ? responseMessage.text
+          : responseMessage.message.content,
+      );
+      performance = {
+        latency: latency || 0,
+        total_tokens: response.usage.total_tokens,
+        prompt_tokens: response.usage.completion_tokens,
+        completion_tokens: response.usage.total_tokens,
+      };
+    } else {
+      const responseCode = response.status;
+      const errorDetails = errorCodes[responseCode];
+      const errorResponse: LlmErrorResponse = {
+        code: responseCode,
+        message: errorDetails?.message || `Unknown Error: ${responseCode}`,
+        vendorCode: response.status,
+        vendorMessage: response.statusText || `Unknown Error: ${responseCode}`,
+      };
+
+      lr = { data: null, error: errorResponse };
+      performance = {};
+    }
+
+    return { response: lr, performance: performance };
   }
 }
 

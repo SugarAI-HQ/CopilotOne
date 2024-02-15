@@ -218,7 +218,8 @@ model PromptLog {
   environment       PromptEnvironment @default(DEV)
   version           String
   prompt            String
-  completion        String
+  completion        String?
+  llmResponse       Json              @default("{}")
   llmModelType      ModelType         @default(TEXT2TEXT)
   llmProvider       String
   llmModel          String

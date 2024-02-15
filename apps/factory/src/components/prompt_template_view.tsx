@@ -6,11 +6,9 @@ import {
   Container,
   Box,
   Stack,
-  Button,
   Checkbox,
   Grid,
   Typography,
-  Dialog,
   IconButton,
   Tooltip,
   CircularProgress,
@@ -55,6 +53,15 @@ import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadButtonBase64 from "./download_button_base64";
 import LikeButton from "./marketplace/like_button";
+import toast from "react-hot-toast";
+import {
+  ImageResponseV1,
+  LlmResponse,
+  TextResponseV1,
+  getCompletionResponse,
+  processLlmResponse,
+} from "~/validators/llm_respose";
+import { LogOutput } from "~/validators/prompt_log";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -124,9 +131,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         id: logId,
       },
       {
-        onSuccess(item) {
+        onSuccess(item: LogOutput) {
           if (item !== null) {
-            setPromptOutput(item.completion);
+            setPromptOutput(
+              processLlmResponse(item?.llmResponse as LlmResponse) as string,
+            );
           }
         },
       },
@@ -176,11 +185,12 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         data: data,
       } as GenerateInput,
       {
-        onSuccess() {
+        onSettled(lPl: any, error) {
+          let lr = lPl?.llmResponse as LlmResponse;
           setIsLoading(false);
-        },
-        onError() {
-          setIsLoading(false);
+          if (lr?.error) {
+            toast.error(lr.error?.message as string, { duration: 10000 });
+          }
         },
       },
     );
@@ -188,7 +198,10 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
       setPl(pl);
-      setPromptOutput(pl.completion);
+      setPromptOutput(
+        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+      );
+
       setPromptPerformacne({
         latency: pl.latency,
         prompt_tokens: pl.prompt_tokens,
