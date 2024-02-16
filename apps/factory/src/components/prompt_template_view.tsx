@@ -228,7 +228,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const shareUrl =
     `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}` +
     (openShareModal === "imageshare" ? `?logId=${pl?.id}` : "");
-  const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`;
+  const imageUrl =
+    `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/` +
+    (openShareModal === "imageshare"
+      ? `logs/${pl?.id}?w=${1200}&h=${630}`
+      : "og.png");
 
   const loadingButtonClass = {
     "&:hover ": {
@@ -499,7 +503,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                                     </IconButton>
                                   </Tooltip>
                                   <DownloadButtonBase64
-                                    base64image={promptOutput}
+                                    logId={pl?.id as string}
                                   />
                                 </>
                               )}

@@ -5,14 +5,17 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 
 type DownloadButtonBase64Props = {
-  base64image: string;
+  logId: string;
 };
 
 const DownloadButtonBase64: React.FC<DownloadButtonBase64Props> = ({
-  base64image,
+  logId,
 }) => {
   const handleDownload = () => {
-    const dataUrl = base64image;
+    const dataUrl = `${
+      process.env.NEXT_PUBLIC_APP_URL
+    }/generated/assets/logs/${logId}?w=${1024}&h=${1024}`;
+    console.log(dataUrl);
     const link = document.createElement("a");
     link.href = dataUrl;
     link.download = "sugarcane-ai-image.png";
