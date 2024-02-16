@@ -64,6 +64,7 @@ import {
 } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
 import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
+import { ImageGallery } from "./image_gallery";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -227,9 +228,10 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     return;
   };
 
+  const url = `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
+
   const shareUrl =
-    `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}` +
-    (openShareModal === "imageshare" ? `?logId=${pl?.id}` : "");
+    url + (openShareModal === "imageshare" ? `?logId=${pl?.id}` : "");
   const imageUrl =
     `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/` +
     (openShareModal === "imageshare"
@@ -345,7 +347,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   setOpenShareModal={setOpenShareModal}
                   open={openShareModal}
                   shareUrl={shareUrl}
-                  shareTitle={"Share Cube"}
+                  shareTitle={
+                    openShareModal === "imageshare"
+                      ? "Share Image"
+                      : "Share Cube"
+                  }
                 />
                 <Typography
                   sx={{
@@ -524,13 +530,12 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                 </Box>
               </div>
               {data?.modelType === ModelTypeSchema.enum.TEXT2IMAGE && (
-                <PromptLogTable
+                <ImageGallery
+                  data={data}
                   logModeMax={false}
-                  promptTemplateId={data?.templateId}
-                  promptVersionId={data?.version}
                   itemsPerPage={10}
                   outputLog={pl as GenerateOutput}
-                  flag={true}
+                  url={url}
                 />
               )}
             </Container>

@@ -27,6 +27,14 @@ export const getLogsInput = z
 
 export type GetLogsInput = z.infer<typeof getLogsInput>;
 
+export const logIdsListOutput = z.object({
+  data: z.array(z.string()).default([]),
+  totalPages: z.number(),
+  hasNextPage: z.boolean(),
+  nextCursor: z.string().optional(),
+});
+export type LogIdsListOutput = z.infer<typeof logIdsListOutput>;
+
 export const getLogInput = z
   .object({
     userId: z.string().optional(),
