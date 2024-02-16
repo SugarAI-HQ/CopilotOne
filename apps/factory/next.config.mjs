@@ -27,7 +27,7 @@ const config = {
     //     hostname: "**",
     //   },
     // ],
-    domains: ["localhost", "*.sugarcaneai.dev"], // add sugarcane host
+    domains: ["localhost", "*.sugarcaneai.dev", "sugarcaneai.dev"], // add sugarcane host
   },
 };
 
