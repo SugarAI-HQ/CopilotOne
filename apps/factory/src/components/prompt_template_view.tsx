@@ -92,7 +92,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const { query } = useRouter();
   const router = useRouter();
 
-  const { data, isLoading } = api.cube.getPrompt.useQuery(
+  const { data: pv, isLoading } = api.cube.getPrompt.useQuery(
     {
       username: username,
       package: packageName,
@@ -119,7 +119,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
           ]);
         } else {
           setVariables([
-            ...getUniqueJsonArray(getVariables(data?.template || ""), "key"),
+            ...getUniqueJsonArray(getVariables(pv?.template || ""), "key"),
           ]);
         }
       },
@@ -147,8 +147,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   }
 
   const haveroleUserAssistant = providerModels[
-    `${data?.modelType as keyof typeof providerModels}`
-  ]?.models[`${data?.llmProvider}`]?.find((mod) => mod.name === data?.model)
+    `${pv?.modelType as keyof typeof providerModels}`
+  ]?.models[`${pv?.llmProvider}`]?.find((mod) => mod.name === pv?.model)
     ?.hasRole;
 
   const handleVariablesChange = (k: string, v: string) => {
@@ -220,7 +220,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   };
 
   const handleSubmit = (e: any) => {
-    if (session || data?.runMode === PromptRunModesSchema.Enum.ALL) {
+    if (session || pv?.runMode === PromptRunModesSchema.Enum.ALL) {
       handleRun(e);
     } else {
       signIn();
@@ -252,12 +252,12 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     <>
       <NextSeo
         title={humanizeString(template)}
-        description={data?.description}
+        description={pv?.description}
         // canonical={shareUrl}
         openGraph={{
           url: `${shareUrl}`,
           title: `${template}`,
-          description: `${data?.description}`,
+          description: `${pv?.description}`,
           type: "website",
           images: [
             {
@@ -296,7 +296,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
             >
               <CircularProgress size={50} />
             </Box>
-          ) : data || !versionOrEnvironment ? (
+          ) : pv || !versionOrEnvironment ? (
             <Container>
               <div
                 className="dark:border-gray-70  w-full rounded-lg border pb-2 pt-1 shadow"
@@ -306,9 +306,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   {isLoading ? (
                     <CircularProgress />
                   ) : (
-                    data?.templateId && (
+                    pv?.templateId && (
                       <LikeButton
-                        entityId={data?.templateId}
+                        entityId={pv?.templateId}
                         entityType={EntityTypesSchema.enum.PromptTemplate}
                       />
                     )
@@ -329,7 +329,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                         color="primary"
                         onClick={() =>
                           router.push(
-                            `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                            `/dashboard/prompts/${pv?.promptPackageId}?ptid=${pv?.templateId}&edit=${true}`,
                           )
                         }
                       >
@@ -372,16 +372,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     wordBreak: "break-word",
                   }}
                 >
-                  {data?.description}
+                  {pv?.description}
                 </Typography>
                 <Box sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
                   {pvrs && (
                     <>
-                      {data?.template && (
+                      {pv?.template && (
                         <PromptViewArrow
-                          promptTemplate={data?.template}
+                          promptTemplate={pv?.template}
                           promptInputs={
-                            (data?.promptData as PromptDataSchemaType).data
+                            (pv?.promptData as PromptDataSchemaType).data
                           }
                           haveroleUserAssistant={haveroleUserAssistant}
                         />
@@ -461,7 +461,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     <Typography
                       sx={{ color: "var(--sugarhub-text-color)", pt: "10px" }}
                     >
-                      Mode: {data?.runMode}
+                      Mode: {pv?.runMode}
                     </Typography>
                   </Box>
                 )}
@@ -490,7 +490,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                             >
                               Result
                             </Typography>
-                            {data?.modelType ===
+                            {pv?.modelType ===
                               ModelTypeSchema.Enum.TEXT2IMAGE && (
                               <>
                                 <Tooltip title="Share Cube" placement="top">
@@ -512,7 +512,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                                 />
                               </>
                             )}
-                            {data?.modelType ===
+                            {pv?.modelType ===
                               ModelTypeSchema.Enum.TEXT2TEXT && (
                               <CopyToClipboardButton
                                 textToCopy={promptOutput}
@@ -529,10 +529,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   )}
                 </Box>
               </div>
-              {data?.modelType === ModelTypeSchema.enum.TEXT2IMAGE && (
+              {pv?.modelType === ModelTypeSchema.enum.TEXT2IMAGE && (
                 <ImageGallery
-                  data={data}
-                  logModeMax={false}
+                  pv={pv}
                   itemsPerPage={10}
                   outputLog={pl as GenerateOutput}
                   url={url}

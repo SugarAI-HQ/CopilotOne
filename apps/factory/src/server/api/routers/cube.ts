@@ -57,19 +57,13 @@ export const cubeRouter = createTRPCRouter({
         promptTemplateId,
         cursor,
         perPage,
-        version,
         environment,
-        llmModel,
-        llmProvider,
       } = input;
 
       const baseWhere = {
         promptPackageId,
         promptTemplateId,
-        version,
         environment,
-        llmModel,
-        llmProvider,
       };
 
       const filteredWhere = Object.fromEntries(
@@ -92,6 +86,7 @@ export const cubeRouter = createTRPCRouter({
           createdAt: "desc",
         },
         take: perPage + 1,
+        select: { id: true },
       });
 
       console.log(`logs 3 -------------- ${JSON.stringify(logs)}`);
@@ -107,7 +102,8 @@ export const cubeRouter = createTRPCRouter({
 
       console.log(`logs 4 -------------- ${JSON.stringify(logs.length)}`);
       const response = {
-        data: slicedLogs.map((log) => log.id),
+        // data: slicedLogs.map((log) => log.id),
+        data: logs,
         totalPages: totalPages,
         hasNextPage: hasMore,
         nextCursor: nextPageCursor,

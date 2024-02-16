@@ -8,31 +8,28 @@ import Image from "next/image";
 import { GetPromptOutput } from "~/validators/service";
 import { api } from "~/utils/api";
 import { NextPageWithLayout } from "~/pages/_app";
+import { LogIdsArray } from "~/validators/prompt_log";
 
 interface PromptLogTableProps {
-  data: GetPromptOutput;
-  logModeMax: boolean;
+  pv: GetPromptOutput;
   itemsPerPage: number;
   outputLog: GenerateOutput;
   url: string;
 }
 
 export const ImageGallery: NextPageWithLayout<PromptLogTableProps> = ({
-  data,
-  logModeMax = true,
+  pv,
   itemsPerPage,
   outputLog,
   url,
 }) => {
-  const [logIds, setLogIds] = useState<string[]>([]);
+  const [logIds, setLogIds] = useState<LogIdsArray>([]);
   const [openShareModal, setOpenShareModal] = useState("");
+
   const shareUrl = url + `?logId=${openShareModal}`;
 
   const extraOptions = {
-    environment: undefined,
-    llmModel: undefined,
-    llmProvider: undefined,
-    version: data?.version,
+    environment: pv?.versionOrEnvironment,
   };
 
   const {
@@ -42,8 +39,8 @@ export const ImageGallery: NextPageWithLayout<PromptLogTableProps> = ({
     refetch,
   } = api.cube.getLogIds.useInfiniteQuery(
     {
-      promptPackageId: data?.promptPackageId,
-      promptTemplateId: data?.templateId,
+      promptPackageId: pv?.promptPackageId,
+      promptTemplateId: pv?.templateId,
       perPage: itemsPerPage,
       ...extraOptions,
     },
@@ -64,8 +61,8 @@ export const ImageGallery: NextPageWithLayout<PromptLogTableProps> = ({
 
   useEffect(() => {
     if (outputLog) {
-      if (!logIds.includes(outputLog.id)) {
-        setLogIds([outputLog.id, ...logIds]);
+      if (!logIds.includes({ id: outputLog.id })) {
+        setLogIds([{ id: outputLog.id }, ...logIds]);
       }
     }
   }, [outputLog]);
@@ -89,7 +86,7 @@ export const ImageGallery: NextPageWithLayout<PromptLogTableProps> = ({
           {logIds?.slice(0, 10).map((logId: any) => {
             return (
               <Box
-                key={logId}
+                key={logId.id}
                 sx={{
                   position: "relative",
                   width: "128px",
@@ -116,7 +113,7 @@ export const ImageGallery: NextPageWithLayout<PromptLogTableProps> = ({
                 <Image
                   src={`${
                     process.env.NEXT_PUBLIC_APP_URL
-                  }/generated/assets/logs/${logId}?w=${128}&h=${128}`}
+                  }/generated/assets/logs/${logId.id}?w=${128}&h=${128}`}
                   blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`}
                   alt=""
                   style={{
@@ -146,9 +143,9 @@ export const ImageGallery: NextPageWithLayout<PromptLogTableProps> = ({
                     alignItems: "center",
                   }}
                 >
-                  <DownloadButtonBase64 logId={logId} />
+                  <DownloadButtonBase64 logId={logId.id} />
                   <Tooltip title="Share Cube" placement="bottom">
-                    <IconButton onClick={() => setOpenShareModal(logId)}>
+                    <IconButton onClick={() => setOpenShareModal(logId.id)}>
                       <ShareIcon
                         sx={{
                           color: "var(--sugarhub-text-color)",
