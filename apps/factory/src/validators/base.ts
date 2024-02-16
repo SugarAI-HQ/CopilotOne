@@ -55,7 +55,7 @@ export const providerModels: ProviderModels = {
           enabled: true,
           hasRole: 1,
         },
-        { name: "gpt-4", label: "Gpt 4", enabled: true, hasRole: 1 },
+        { name: "gpt-4", label: "Gpt 4", enabled: false, hasRole: 1 },
       ],
       llama2: [
         { name: "7b", label: "7B", enabled: true, hasRole: 0 },
@@ -128,7 +128,7 @@ export const providerModels: ProviderModels = {
         {
           name: "dall-e",
           label: "Dall-E-3",
-          enabled: true,
+          enabled: false,
           hasRole: 0,
         },
       ],
