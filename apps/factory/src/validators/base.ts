@@ -119,7 +119,7 @@ export const providerModels: ProviderModels = {
       stabilityai: [
         {
           name: "sdxl",
-          label: "stable-diffusion-xl-1024-v1-0",
+          label: "Stable Diffusion XL 1.0",
           enabled: true,
           hasRole: 0,
         },

@@ -641,7 +641,7 @@ function PromptVersion({
         </Stack>
 
         <Box sx={{ m: 1 }}>
-          {pl && (
+          {(pl?.llmResponse as LlmResponse)?.data && (
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
               <Grid
                 container

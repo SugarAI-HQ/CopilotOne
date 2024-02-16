@@ -4,6 +4,8 @@ import { env } from "~/env.mjs";
 import { resizeBase64Image } from "~/utils/images";
 import { ResponseType } from "openai/_shims/auto/types";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
+import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import { response404 } from "~/services/api_helpers";
 
 export async function GET(
   req: NextRequest,
@@ -13,14 +15,13 @@ export async function GET(
   const pl = await prisma.promptLog.findFirst({
     where: {
       id: params.logId,
+      llmModelType: ModelTypeSchema.Enum.TEXT2IMAGE,
     },
   });
 
   // If log not found
   if (!pl) {
-    return new Response(`Not Found`, {
-      status: 404,
-    });
+    return response404();
   }
 
   // Generate the image response
@@ -33,7 +34,12 @@ export async function GET(
     pl?.completion ||
     (processLlmResponse(pl?.llmResponse as LlmResponse) as string);
 
-  const b64resized = await resizeBase64Image(base64Image, w, h, 50);
+  let b64resized;
+  if (base64Image) {
+    b64resized = await resizeBase64Image(base64Image, w, h, 50);
+  } else {
+    return response404();
+  }
   return ogImageResponse(b64resized);
 }
 
