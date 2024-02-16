@@ -63,6 +63,7 @@ import {
   processLlmResponse,
 } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
+import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -109,7 +110,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
             ...getUniqueJsonArray(
               getVariables(
                 JSON.stringify(
-                  (item?.promptData as PromptDataSchemaType).data,
+                  (item?.promptData as PromptDataSchemaType)?.data,
                 ) || "",
               ),
               "key",
@@ -137,6 +138,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
             setPromptOutput(
               processLlmResponse(item?.llmResponse as LlmResponse) as string,
             );
+            setPl(item as GenerateOutput);
           }
         },
       },
@@ -282,262 +284,268 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
             padding: "1rem 0rem",
           }}
         >
-          <Container sx={{ paddingLeft: "6px", paddingRight: "6px" }}>
-            <div
-              className="dark:border-gray-70  w-full rounded-lg border pb-2 pt-1 shadow"
-              style={{ backgroundColor: "var(--sugarhub-tab-color)" }}
+          {isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              {isLoading ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <CircularProgress size={50} />
-                </Box>
-              ) : data || !versionOrEnvironment ? (
-                <>
-                  <Box sx={{ display: "flex", justifyContent: "end" }}>
-                    {isLoading ? (
-                      <CircularProgress />
-                    ) : (
-                      data?.templateId && (
-                        <LikeButton
-                          entityId={data?.templateId}
-                          entityType={EntityTypesSchema.enum.PromptTemplate}
-                        />
-                      )
-                    )}
-                    <Tooltip title="Share Cube" placement="top">
+              <CircularProgress size={50} />
+            </Box>
+          ) : data || !versionOrEnvironment ? (
+            <Container>
+              <div
+                className="dark:border-gray-70  w-full rounded-lg border pb-2 pt-1 shadow"
+                style={{ backgroundColor: "var(--sugarhub-tab-color)" }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "end" }}>
+                  {isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    data?.templateId && (
+                      <LikeButton
+                        entityId={data?.templateId}
+                        entityType={EntityTypesSchema.enum.PromptTemplate}
+                      />
+                    )
+                  )}
+                  <Tooltip title="Share Cube" placement="top">
+                    <IconButton onClick={() => setOpenShareModal("cubeshare")}>
+                      <ShareIcon
+                        sx={{
+                          color: "var(--sugarhub-text-color)",
+                          fontSize: "2rem",
+                        }}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                  {session?.user.username == username && (
+                    <Tooltip title="Edit Template" placement="top">
                       <IconButton
-                        onClick={() => setOpenShareModal("cubeshare")}
+                        color="primary"
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
+                          )
+                        }
                       >
-                        <ShareIcon
+                        <EditIcon
                           sx={{
                             color: "var(--sugarhub-text-color)",
                             fontSize: "2rem",
                           }}
-                        />
+                        ></EditIcon>
                       </IconButton>
                     </Tooltip>
-                    {session?.user.username == username && (
-                      <Tooltip title="Edit Template" placement="top">
-                        <IconButton
-                          color="primary"
-                          onClick={() =>
-                            router.push(
-                              `/dashboard/prompts/${data?.promptPackageId}?ptid=${data?.templateId}&edit=${true}`,
-                            )
-                          }
-                        >
-                          <EditIcon
-                            sx={{
-                              color: "var(--sugarhub-text-color)",
-                              fontSize: "2rem",
-                            }}
-                          ></EditIcon>
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                  </Box>
-                  <ShareCube
-                    setOpenShareModal={setOpenShareModal}
-                    open={openShareModal}
-                    shareUrl={shareUrl}
-                    shareTitle={"Share Cube"}
-                  />
-                  <Typography
-                    sx={{
-                      padding: { xs: "0 15px" },
-                      color: "var(--sugarhub-text-color)",
-                      fontSize: { xs: "3rem", sm: "3rem", lg: "3rem" },
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {!template ? "" : humanizeString(template)}
-                  </Typography>
-                  <Typography
-                    variant="h6"
-                    component="h6"
-                    sx={{
-                      padding: { xs: "0 15px" },
-                      color: "var(--sugarhub-text-color)",
-                      wordBreak: "break-word",
-                    }}
-                  >
-                    {data?.description}
-                  </Typography>
-                  <Box sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
-                    {pvrs && (
-                      <>
-                        {data?.template && (
-                          <PromptViewArrow
-                            promptTemplate={data?.template}
-                            promptInputs={
-                              (data?.promptData as PromptDataSchemaType).data
-                            }
-                            haveroleUserAssistant={haveroleUserAssistant}
-                          />
-                        )}
-                        <PromptVariables
-                          vars={pvrs}
-                          onChange={handleVariablesChange}
-                          mode={displayModes.Enum.EDIT}
-                          cube={true}
-                        />
-                      </>
-                    )}
-                  </Box>
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    sx={{ padding: { xs: "0 15px" } }}
-                  >
-                    <LoadingButton
-                      onClick={handleSubmit}
-                      sx={{
-                        ...loadingButtonClass,
-                        width: "8rem",
-                        "&.Mui-disabled": {
-                          borderColor: "var(--button-color-disable)",
-                          color: "var(--button-color-disable)",
-                          cursor: "not-allowed",
-                          width: "8rem",
-                        },
-                      }}
-                      loadingPosition="start"
-                      startIcon={<PlayArrowIcon />}
-                      loading={isLoadingState}
-                    >
-                      {isLoadingState ? (
-                        <>
-                          <Counter />s
-                        </>
-                      ) : (
-                        <>Submit</>
-                      )}
-                    </LoadingButton>
-
-                    <LoadingButton
-                      variant="contained"
-                      sx={{ ...loadingButtonClass }}
-                      startIcon={<AddIcon />}
-                    >
-                      <Link
-                        href="https://www.youtube.com/watch?v=5oeRkHOqW28"
-                        sx={{ textDecoration: "none", color: "white" }}
-                        target="_blank"
-                      >
-                        Create your Cube
-                      </Link>
-                    </LoadingButton>
-                  </Stack>
-
-                  {isDev && (
-                    <Box sx={{ display: "flex", mt: "1em", ml: "1em" }}>
-                      <FormControlLabel
-                        sx={{ color: "var(--sugarhub-text-color)" }}
-                        control={
-                          <Checkbox
-                            checked={checked}
-                            onChange={handleChange}
-                            sx={{
-                              color: "var(--button-color-disable)",
-                              "&.Mui-checked": {
-                                color: "var(--sugarcube-component-bg-color)",
-                              },
-                            }}
-                          />
-                        }
-                        label="Dry Run"
-                      />
-                      <Typography
-                        sx={{ color: "var(--sugarhub-text-color)", pt: "10px" }}
-                      >
-                        Mode: {data?.runMode}
-                      </Typography>
-                    </Box>
                   )}
-
-                  <Box>
-                    {promptOutput && (
-                      <Stack direction="row" spacing={2}>
-                        <Grid>
-                          <Box
-                            sx={{
-                              padding: {
-                                xs: "0 16px",
-                                sm: "0 16px",
-                                md: "16px",
-                              },
-                            }}
-                          >
-                            <Box sx={{ display: "flex", alignItems: "center" }}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  color: "var(--sugarhub-text-color)",
-                                  fontWeight: "2rem",
-                                  marginRight: "2rem",
-                                }}
-                              >
-                                Result
-                              </Typography>
-                              {data?.modelType ===
-                                ModelTypeSchema.Enum.TEXT2IMAGE && (
-                                <>
-                                  <Tooltip title="Share Cube" placement="top">
-                                    <IconButton
-                                      onClick={() =>
-                                        setOpenShareModal("imageshare")
-                                      }
-                                    >
-                                      <ShareIcon
-                                        sx={{
-                                          color: "var(--sugarhub-text-color)",
-                                          fontSize: "1.5rem",
-                                        }}
-                                      />
-                                    </IconButton>
-                                  </Tooltip>
-                                  <DownloadButtonBase64
-                                    logId={pl?.id as string}
-                                  />
-                                </>
-                              )}
-                              {data?.modelType ===
-                                ModelTypeSchema.Enum.TEXT2TEXT && (
-                                <CopyToClipboardButton
-                                  textToCopy={promptOutput}
-                                  textToDisplay={"Copy"}
-                                />
-                              )}
-                            </Box>
-                            <div>
-                              <PromptOutput pl={pl as LogSchema} cube={true} />
-                            </div>
-                          </Box>
-                        </Grid>
-                      </Stack>
-                    )}
-                  </Box>
-                </>
-              ) : (
-                <>
-                  <Typography
+                </Box>
+                <ShareCube
+                  setOpenShareModal={setOpenShareModal}
+                  open={openShareModal}
+                  shareUrl={shareUrl}
+                  shareTitle={"Share Cube"}
+                />
+                <Typography
+                  sx={{
+                    padding: { xs: "0 15px" },
+                    color: "var(--sugarhub-text-color)",
+                    fontSize: { xs: "3rem", sm: "3rem", lg: "3rem" },
+                    fontWeight: "bold",
+                  }}
+                >
+                  {!template ? "" : humanizeString(template)}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  component="h6"
+                  sx={{
+                    padding: { xs: "0 15px" },
+                    color: "var(--sugarhub-text-color)",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {data?.description}
+                </Typography>
+                <Box sx={{ marginTop: "1rem", marginBottom: "1rem" }}>
+                  {pvrs && (
+                    <>
+                      {data?.template && (
+                        <PromptViewArrow
+                          promptTemplate={data?.template}
+                          promptInputs={
+                            (data?.promptData as PromptDataSchemaType).data
+                          }
+                          haveroleUserAssistant={haveroleUserAssistant}
+                        />
+                      )}
+                      <PromptVariables
+                        vars={pvrs}
+                        onChange={handleVariablesChange}
+                        mode={displayModes.Enum.EDIT}
+                        cube={true}
+                      />
+                    </>
+                  )}
+                </Box>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{ padding: { xs: "0 15px" } }}
+                >
+                  <LoadingButton
+                    onClick={handleSubmit}
                     sx={{
-                      color: "var(--sugarhub-text-color)",
-                      textAlign: "center",
+                      ...loadingButtonClass,
+                      width: "8rem",
+                      "&.Mui-disabled": {
+                        borderColor: "var(--button-color-disable)",
+                        color: "var(--button-color-disable)",
+                        cursor: "not-allowed",
+                        width: "8rem",
+                      },
                     }}
+                    loadingPosition="start"
+                    startIcon={<PlayArrowIcon />}
+                    loading={isLoadingState}
                   >
-                    No template found
-                  </Typography>
-                </>
+                    {isLoadingState ? (
+                      <>
+                        <Counter />s
+                      </>
+                    ) : (
+                      <>Submit</>
+                    )}
+                  </LoadingButton>
+
+                  <LoadingButton
+                    variant="contained"
+                    sx={{ ...loadingButtonClass }}
+                    startIcon={<AddIcon />}
+                  >
+                    <Link
+                      href="https://www.youtube.com/watch?v=5oeRkHOqW28"
+                      sx={{ textDecoration: "none", color: "white" }}
+                      target="_blank"
+                    >
+                      Create your Cube
+                    </Link>
+                  </LoadingButton>
+                </Stack>
+
+                {isDev && (
+                  <Box sx={{ display: "flex", mt: "1em", ml: "1em" }}>
+                    <FormControlLabel
+                      sx={{ color: "var(--sugarhub-text-color)" }}
+                      control={
+                        <Checkbox
+                          checked={checked}
+                          onChange={handleChange}
+                          sx={{
+                            color: "var(--button-color-disable)",
+                            "&.Mui-checked": {
+                              color: "var(--sugarcube-component-bg-color)",
+                            },
+                          }}
+                        />
+                      }
+                      label="Dry Run"
+                    />
+                    <Typography
+                      sx={{ color: "var(--sugarhub-text-color)", pt: "10px" }}
+                    >
+                      Mode: {data?.runMode}
+                    </Typography>
+                  </Box>
+                )}
+
+                <Box>
+                  {promptOutput && (
+                    <Stack direction="row" spacing={2}>
+                      <Grid>
+                        <Box
+                          sx={{
+                            padding: {
+                              xs: "0 16px",
+                              sm: "0 16px",
+                              md: "16px",
+                            },
+                          }}
+                        >
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Typography
+                              variant="h6"
+                              sx={{
+                                color: "var(--sugarhub-text-color)",
+                                fontWeight: "2rem",
+                                marginRight: "2rem",
+                              }}
+                            >
+                              Result
+                            </Typography>
+                            {data?.modelType ===
+                              ModelTypeSchema.Enum.TEXT2IMAGE && (
+                              <>
+                                <Tooltip title="Share Cube" placement="top">
+                                  <IconButton
+                                    onClick={() =>
+                                      setOpenShareModal("imageshare")
+                                    }
+                                  >
+                                    <ShareIcon
+                                      sx={{
+                                        color: "var(--sugarhub-text-color)",
+                                        fontSize: "1.5rem",
+                                      }}
+                                    />
+                                  </IconButton>
+                                </Tooltip>
+                                <DownloadButtonBase64
+                                  logId={pl?.id as string}
+                                />
+                              </>
+                            )}
+                            {data?.modelType ===
+                              ModelTypeSchema.Enum.TEXT2TEXT && (
+                              <CopyToClipboardButton
+                                textToCopy={promptOutput}
+                                textToDisplay={"Copy"}
+                              />
+                            )}
+                          </Box>
+                          <div>
+                            <PromptOutput pl={pl as LogSchema} cube={true} />
+                          </div>
+                        </Box>
+                      </Grid>
+                    </Stack>
+                  )}
+                </Box>
+              </div>
+              {data?.modelType === ModelTypeSchema.enum.TEXT2IMAGE && (
+                <PromptLogTable
+                  logModeMax={false}
+                  promptTemplateId={data?.templateId}
+                  promptVersionId={data?.version}
+                  itemsPerPage={10}
+                  outputLog={pl as GenerateOutput}
+                  flag={true}
+                />
               )}
-            </div>
-          </Container>
+            </Container>
+          ) : (
+            <>
+              <Typography
+                sx={{
+                  color: "var(--sugarhub-text-color)",
+                  textAlign: "center",
+                }}
+              >
+                No template found
+              </Typography>
+            </>
+          )}
         </Box>
         <Footer />
       </Box>

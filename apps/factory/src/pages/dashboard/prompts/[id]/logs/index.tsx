@@ -9,6 +9,8 @@ import {
   TableRow,
   Paper,
   Button,
+  Box,
+  Typography,
 } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -44,6 +46,7 @@ interface PromptLogTableProps {
   promptVersionId: string | undefined;
   itemsPerPage: number;
   outputLog: GenerateOutput;
+  flag?: boolean;
 }
 
 export interface FilterOptions {
@@ -62,6 +65,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
   promptVersionId = undefined,
   itemsPerPage = 10,
   outputLog = undefined,
+  flag,
 }) => {
   const router = useRouter();
   const packageId = router.query.id as string;
@@ -139,6 +143,14 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
     ].models[`${log.llmProvider}`]?.find((mod) => mod.name === log.llmModel)
       ?.hasRole;
   };
+
+  if (flag) {
+    return (
+      <>
+        <Gallery promptLogs={promptLogs} />
+      </>
+    );
+  }
 
   return (
     <div>
@@ -294,3 +306,101 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
 PromptLogTable.getLayout = getLayout;
 
 export default PromptLogTable;
+
+export const Gallery = ({ promptLogs }: { promptLogs: LogSchema[] }) => {
+  return (
+    <>
+      <Typography
+        sx={{
+          color: "var(--sugarhub-text-color)",
+          fontSize: { xs: "2rem", sm: "2rem", lg: "2rem" },
+          margin: "1rem",
+          textAlign: "center",
+        }}
+      >
+        Gallery
+      </Typography>
+      {promptLogs.length > 0 ? (
+        <>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-evenly",
+            }}
+          >
+            {promptLogs?.slice(0, 10).map((imageData: any) => {
+              return (
+                <Box
+                  key={imageData.id}
+                  sx={{
+                    position: "relative",
+                    width: "200px",
+                    height: "200px",
+                    margin: "1rem",
+                    borderRadius: "10px",
+                    overflow: "hidden",
+                    "&:hover": {
+                      "&:before": {
+                        content: "''",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        zIndex: 1,
+                      },
+                      "& > div": {
+                        opacity: 1,
+                      },
+                    },
+                  }}
+                >
+                  <img
+                    src={`${
+                      process.env.NEXT_PUBLIC_APP_URL
+                    }/generated/assets/logs/${imageData.id}?w=${200}&h=${200}`}
+                    alt=""
+                    style={{
+                      objectFit: "cover",
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "10px",
+                      transition: "opacity 0.3s ease",
+                      zIndex: 2,
+                    }}
+                  />
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      zIndex: 3,
+                      opacity: 0,
+                      transition: "opacity 0.3s ease",
+                    }}
+                  >
+                    <DownloadButtonBase64 logId={imageData.id} />
+                  </Box>
+                </Box>
+              );
+            })}
+          </Box>
+        </>
+      ) : (
+        <>
+          <Typography
+            sx={{
+              color: "var(--sugarhub-text-color)",
+              textAlign: "center",
+            }}
+          >
+            no images to view
+          </Typography>
+        </>
+      )}
+    </>
+  );
+};
