@@ -7,7 +7,7 @@ import {
 import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
 import { LogSchema } from "~/validators/prompt_log";
-import { LlmResponse } from "~/validators/llm_respose";
+import { LlmResponse, TextResponseV1 } from "~/validators/llm_respose";
 
 interface PromptCompletionProps {
   pl: LogSchema;
@@ -44,7 +44,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           >
             {pl.completion_tokens ? (
               <>
-                {lr.data.completion}
+                {(lr.data as TextResponseV1).completion}
                 <p>tokens: {pl.completion_tokens}</p>
               </>
             ) : (
@@ -56,7 +56,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                       wordWrap: "break-word",
                     }}
                   >
-                    {lr.data.completion}
+                    {(lr.data as TextResponseV1).completion}
                   </code>
                 </pre>
               </Typography>
@@ -64,7 +64,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           </Box>
         ) : (
           <OutputTextAnimation
-            output={lr.data.completion as string}
+            output={(lr.data as TextResponseV1).completion as string}
             modelType={pl.llmModelType}
           />
         )}
