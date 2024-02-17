@@ -235,7 +235,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const imageUrl =
     `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/` +
     (openShareModal === "imageshare"
-      ? `logs/${pl?.id}?w=${1200}&h=${630}`
+      ? `logs/${pl?.id}/image.png?w=${1200}&h=${630}`
       : "og.png");
 
   const loadingButtonClass = {

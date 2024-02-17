@@ -14,7 +14,7 @@ const DownloadButtonBase64: React.FC<DownloadButtonBase64Props> = ({
   const handleDownload = () => {
     const dataUrl = `${
       process.env.NEXT_PUBLIC_APP_URL
-    }/generated/assets/logs/${logId}?w=${1024}&h=${1024}`;
+    }/generated/assets/logs/${logId}/image.png?w=${1024}&h=${1024}`;
     console.log(dataUrl);
     const link = document.createElement("a");
     link.href = dataUrl;

@@ -113,8 +113,10 @@ export const ImageGallery = ({
                 <Image
                   src={`${
                     process.env.NEXT_PUBLIC_APP_URL
-                  }/generated/assets/logs/${logId.id}?w=${128}&h=${128}`}
-                  blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og`}
+                  }/generated/assets/logs/${
+                    logId.id
+                  }/image.png?w=${128}&h=${128}`}
+                  blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
                   alt=""
                   style={{
                     objectFit: "cover",

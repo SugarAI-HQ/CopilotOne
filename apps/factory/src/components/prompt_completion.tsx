@@ -78,7 +78,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
-        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}?w=${w}&h=${h}`}
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
         alt="Image"
       />
     );
