@@ -10,19 +10,19 @@ import { api } from "~/utils/api";
 import { NextPageWithLayout } from "~/pages/_app";
 import { LogIdsArray } from "~/validators/prompt_log";
 
-interface PromptLogTableProps {
+interface ImageGalleryProps {
   pv: GetPromptOutput;
   itemsPerPage: number;
   outputLog: GenerateOutput;
   url: string;
 }
 
-export const ImageGallery: NextPageWithLayout<PromptLogTableProps> = ({
+export const ImageGallery = ({
   pv,
   itemsPerPage,
   outputLog,
   url,
-}) => {
+}: ImageGalleryProps) => {
   const [logIds, setLogIds] = useState<LogIdsArray>([]);
   const [openShareModal, setOpenShareModal] = useState("");
 
