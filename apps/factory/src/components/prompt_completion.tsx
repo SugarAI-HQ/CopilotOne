@@ -7,6 +7,7 @@ import {
 import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
 import { LogSchema } from "~/validators/prompt_log";
+import { LlmResponse } from "~/validators/llm_respose";
 
 interface PromptCompletionProps {
   pl: LogSchema;
@@ -21,6 +22,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   textAnimation,
   cube,
 }) => {
+  let lr = pl?.llmResponse as LlmResponse;
   if (pl?.llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
     return (
       <>
@@ -42,7 +44,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           >
             {pl.completion_tokens ? (
               <>
-                {pl.completion}
+                {lr.data.completion}
                 <p>tokens: {pl.completion_tokens}</p>
               </>
             ) : (
@@ -54,7 +56,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                       wordWrap: "break-word",
                     }}
                   >
-                    {pl.completion}
+                    {lr.data.completion}
                   </code>
                 </pre>
               </Typography>
@@ -62,7 +64,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           </Box>
         ) : (
           <OutputTextAnimation
-            output={pl.completion as string}
+            output={lr.data.completion as string}
             modelType={pl.llmModelType}
           />
         )}
@@ -76,7 +78,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
-        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}?w=${w}&h=${h}`}
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
         alt="Image"
       />
     );

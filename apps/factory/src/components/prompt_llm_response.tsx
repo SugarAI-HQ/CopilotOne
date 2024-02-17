@@ -137,7 +137,7 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
     <>
       {pl?.completion &&
         (pl.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
-          <DownloadButtonBase64 base64image={pl?.completion} />
+          <DownloadButtonBase64 logId={pl?.id} />
         ) : (
           <CopyToClipboardButton
             textToCopy={pl?.completion}
@@ -146,7 +146,7 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
         ))}
       {lr?.data &&
         (pl?.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
-          <DownloadButtonBase64 base64image={llrImage?.base64} />
+          <DownloadButtonBase64 logId={pl?.id} />
         ) : (
           <CopyToClipboardButton
             textToCopy={llrText?.completion}

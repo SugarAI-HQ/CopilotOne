@@ -6,6 +6,7 @@ import {
 import { getPromptInput, getPromptOutput } from "~/validators/service";
 import { getPv } from "./service";
 import { PromptDataSchemaType } from "~/validators/prompt_version";
+import { getLogsInput, logIdsListOutput } from "~/validators/prompt_log";
 
 export const cubeRouter = createTRPCRouter({
   getPrompt: publicProcedure
@@ -45,5 +46,73 @@ export const cubeRouter = createTRPCRouter({
         };
       }
       return null;
+    }),
+
+  getLogIds: publicProcedure
+    .input(getLogsInput)
+    .output(logIdsListOutput)
+    .query(async ({ ctx, input }) => {
+      const {
+        promptPackageId,
+        promptTemplateId,
+        cursor,
+        perPage,
+        environment,
+      } = input;
+
+      const baseWhere = {
+        promptPackageId,
+        promptTemplateId,
+        environment,
+      };
+
+      const filteredWhere = Object.fromEntries(
+        Object.entries(baseWhere).filter(([_, value]) => value !== undefined),
+      );
+
+      console.log(`logs 1 -------------- ${JSON.stringify(filteredWhere)}`);
+
+      const totalRecords = await ctx.prisma.promptLog.count({
+        where: filteredWhere,
+      });
+      const totalPages = Math.ceil(totalRecords / perPage);
+
+      console.log(`logs 2 -------------- ${JSON.stringify(totalPages)}`);
+
+      const logs = await ctx.prisma.promptLog.findMany({
+        cursor: cursor ? { id: cursor } : undefined,
+        where: filteredWhere,
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: perPage + 1,
+        select: { id: true },
+      });
+
+      console.log(`logs 3 -------------- ${JSON.stringify(logs)}`);
+
+      const hasMore = logs.length >= perPage;
+      const slicedLogs = hasMore ? logs.slice(0, perPage) : logs;
+      let nextPageCursor: typeof cursor | undefined = undefined;
+
+      if (logs.length > perPage) {
+        const nextItem = logs.pop();
+        nextPageCursor = nextItem!.id;
+      }
+
+      console.log(`logs 4 -------------- ${JSON.stringify(logs.length)}`);
+      const response = {
+        // data: slicedLogs.map((log) => log.id),
+        data: logs,
+        totalPages: totalPages,
+        hasNextPage: hasMore,
+        nextCursor: nextPageCursor,
+      };
+
+      console.log(`logs 5 -------------- ${JSON.stringify(response)}`);
+
+      // console.log(`updated label -------------- ${JSON.stringify(response)}`);
+      // return a array containing only array of stirngs
+      return response;
     }),
 });

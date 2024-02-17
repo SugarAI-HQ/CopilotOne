@@ -9,6 +9,10 @@ import {
   TableRow,
   Paper,
   Button,
+  Box,
+  Typography,
+  Tooltip,
+  IconButton,
 } from "@mui/material";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -37,6 +41,9 @@ import PromptLlmResponse, {
   LlmResponseAction,
 } from "~/components/prompt_llm_response";
 import { LogOutput } from "~/validators/prompt_log";
+import Image from "next/image";
+import ShareCube from "~/components/cubes/share_cube";
+import ShareIcon from "@mui/icons-material/Share";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
