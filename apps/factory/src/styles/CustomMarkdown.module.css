@@ -7,6 +7,7 @@
 .customMarkdown p,
 .customMarkdown pre,
 .customMarkdown code,
+.customMarkdown a,
 .customMarkdown ul {
   /* Common styles for h1, h2, p, ul tags within the Markdown content go here */
   font-size: revert;
@@ -20,4 +21,8 @@
   border-collapse: revert;
   font-family: revert;
   line-height: 1.625;
+}
+
+.customMarkdown a {
+  color: #f9e8d4;
 }
