@@ -5,6 +5,7 @@ import {
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 import StabilityAIVendor from "../vendors/stabilityai_vendor";
+import SegmindVendor from "../vendors/segmind_vendor";
 
 export interface LLMConfig {
   max_tokens: number;
@@ -18,8 +19,11 @@ export async function run(
   llmModelType: ModelTypeType,
   dryRun: boolean = false,
 ) {
-  // return run_di(prompt, llmModelType, dryRun);
-  return run_si(prompt, llmModelType, dryRun);
+  if (process.env.SDXL_VENDOR === "sdxl") {
+    return run_segmind(prompt, llmModelType, dryRun);
+  } else {
+    return run_si(prompt, llmModelType, dryRun);
+  }
 }
 
 async function run_di(
@@ -42,6 +46,17 @@ async function run_si(
     "text-to-image",
   );
   // let client = new StabilityAIVendor("stable-diffusion-v1-6", "text-to-image");
+  const lr = await client.makeApiCallWithRetry(prompt, dryRun);
+
+  return lr;
+}
+
+async function run_segmind(
+  prompt: string,
+  llmModelType: ModelTypeType,
+  dryRun: boolean = false,
+) {
+  let client = new SegmindVendor("sdxl1.0", "sdxl1.0");
   const lr = await client.makeApiCallWithRetry(prompt, dryRun);
 
   return lr;
