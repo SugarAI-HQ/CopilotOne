@@ -52,7 +52,6 @@ export const env = createEnv({
     NEXT_PUBLIC_API_ENDPOINT: z.string().min(10),
 
     NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_SENTRY_DSN: z.string().url(),
   },
 
   /**
@@ -62,7 +61,6 @@ export const env = createEnv({
   runtimeEnv: {
     NEXT_PUBLIC_APP_LOGO: process.env.NEXT_PUBLIC_APP_LOGO,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-    NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
