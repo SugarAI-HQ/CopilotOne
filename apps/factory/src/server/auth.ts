@@ -12,6 +12,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
+import * as Sentry from "@sentry/nextjs";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -138,6 +139,14 @@ function getAuthOptions(): NextAuthOptions {
 
       //   return session;
       // },
+    },
+    events: {
+      signIn({ user }) {
+        Sentry.setUser({ id: user.id });
+      },
+      signOut() {
+        Sentry.setUser(null);
+      },
     },
     adapter: PrismaAdapter(prisma),
     session: {
