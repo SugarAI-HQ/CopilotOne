@@ -50,7 +50,7 @@ export const cubeRouter = createTRPCRouter({
 
   getLogIds: publicProcedure
     .input(getLogsInput)
-    // .output(logIdsListOutput)
+    .output(logIdsListOutput)
     .query(async ({ ctx, input }) => {
       const {
         promptPackageId,
@@ -86,7 +86,7 @@ export const cubeRouter = createTRPCRouter({
           createdAt: "desc",
         },
         take: perPage + 1,
-        select: { id: true, llmResponse: true },
+        select: { id: true },
       });
 
       console.log(`logs 3 -------------- ${JSON.stringify(logs)}`);
