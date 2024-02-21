@@ -21,12 +21,12 @@ const config = {
   },
 
   images: {
-    // remotePatterns: [
-    //   {
-    //     protocol: "https",
-    //     hostname: "**",
-    //   },
-    // ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
     domains: ["localhost", "*.sugarcaneai.dev", "sugarcaneai.dev"], // add sugarcane host
   },
 };
