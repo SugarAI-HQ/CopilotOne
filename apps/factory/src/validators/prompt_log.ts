@@ -29,6 +29,7 @@ export type GetLogsInput = z.infer<typeof getLogsInput>;
 
 const logIds = z.object({
   id: z.string(),
+  llmResponse: InputJsonValue.nullable(),
 });
 
 const logIdsArray = z.array(logIds).default([]);
