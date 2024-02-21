@@ -60,6 +60,7 @@ COPY --chown=nextjs:nodejs ./docker/entrypoint.sh /app/entrypoint.sh
 
 RUN chmod +x /app/entrypoint.sh
 RUN npm install -g prisma@latest
+RUN npm install sharp
 
 USER root
 
