@@ -85,79 +85,101 @@ export const ImageGallery = ({
         >
           {logIds?.slice(0, 10).map((logId: any) => {
             return (
-              <Box
-                key={logId.id}
-                sx={{
-                  position: "relative",
-                  width: "128px",
-                  height: "128px",
-                  margin: "0.5rem",
-                  overflow: "hidden",
-                  "&:hover": {
-                    "&:before": {
-                      content: "''",
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      backgroundColor: "rgba(0,0,0,0.5)",
-                      zIndex: 1,
-                    },
-                    "& > div": {
-                      opacity: 1,
-                    },
-                  },
-                }}
-              >
-                <Image
-                  src={`${
-                    process.env.NEXT_PUBLIC_APP_URL
-                  }/generated/assets/logs/${
-                    logId.id
-                  }/image.png?w=${128}&h=${128}`}
-                  blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
-                  alt=""
-                  style={{
-                    objectFit: "cover",
-                    width: "100%",
-                    height: "100%",
-                    // borderRadius: "10px",
-                    transition: "opacity 0.3s ease",
-                    zIndex: 2,
-                  }}
-                  width={128}
-                  height={128}
-                  placeholder="blur"
-                  loading="lazy"
-                />
+              <>
                 <Box
+                  key={logId.id}
                   sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    zIndex: 3,
-                    opacity: 0,
-                    transition: "opacity 0.3s ease",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    position: "relative",
+                    width: "128px",
+                    height: "128px",
+                    margin: "0.5rem",
+                    overflow: "hidden",
+                    "&:hover": {
+                      "&:before": {
+                        content: "''",
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        zIndex: 1,
+                      },
+                      "& > div": {
+                        opacity: 1,
+                      },
+                    },
                   }}
                 >
-                  <DownloadButtonBase64 logId={logId.id} />
-                  <Tooltip title="Share Cube" placement="bottom">
-                    <IconButton onClick={() => setOpenShareModal(logId.id)}>
-                      <ShareIcon
-                        sx={{
-                          color: "var(--sugarhub-text-color)",
-                          fontSize: "1.5rem",
-                        }}
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  <img
+                    src={`${
+                      process.env.NEXT_PUBLIC_APP_URL
+                    }/generated/assets/logs/${
+                      logId.id
+                    }/image.png?w=${128}&h=${128}`}
+                    style={{
+                      objectFit: "cover",
+                      width: "100%",
+                      height: "100%",
+                      // borderRadius: "10px",
+                      transition: "opacity 0.3s ease",
+                      zIndex: 2,
+                    }}
+                    width={128}
+                    height={128}
+                    placeholder="blur"
+                    loading="lazy"
+                    alt=""
+                  />
+                  {/* <Image
+                      src={`${
+                        process.env.NEXT_PUBLIC_APP_URL
+                      }/generated/assets/logs/${
+                        logId.id
+                      }/image.png?w=${128}&h=${128}`}
+                      blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
+                      alt=""
+                      style={{
+                        objectFit: "cover",
+                        width: "100%",
+                        height: "100%",
+                        // borderRadius: "10px",
+                        transition: "opacity 0.3s ease",
+                        zIndex: 2,
+                      }}
+                      width={128}
+                      height={128}
+                      placeholder="blur"
+                      loading="lazy"
+                    /> */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      zIndex: 3,
+                      opacity: 0,
+                      transition: "opacity 0.3s ease",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <DownloadButtonBase64 logId={logId.id} />
+                    <Tooltip title="Share Cube" placement="bottom">
+                      <IconButton onClick={() => setOpenShareModal(logId.id)}>
+                        <ShareIcon
+                          sx={{
+                            color: "var(--sugarhub-text-color)",
+                            fontSize: "1.5rem",
+                          }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </Box>
-              </Box>
+              </>
             );
           })}
         </Box>

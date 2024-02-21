@@ -37,14 +37,14 @@ export const logRouter = createTRPCRouter({
         Object.entries(baseWhere).filter(([_, value]) => value !== undefined),
       );
 
-      console.log(`logs 1 -------------- ${JSON.stringify(filteredWhere)}`);
+      // console.log(`logs 1 -------------- ${JSON.stringify(filteredWhere)}`);
 
       const totalRecords = await ctx.prisma.promptLog.count({
         where: filteredWhere,
       });
       const totalPages = Math.ceil(totalRecords / perPage);
 
-      console.log(`logs 2 -------------- ${JSON.stringify(totalPages)}`);
+      // console.log(`logs 2 -------------- ${JSON.stringify(totalPages)}`);
 
       const logs = await ctx.prisma.promptLog.findMany({
         cursor: cursor ? { id: cursor } : undefined,
@@ -55,7 +55,7 @@ export const logRouter = createTRPCRouter({
         take: perPage + 1,
       });
 
-      console.log(`logs 3 -------------- ${JSON.stringify(logs)}`);
+      // console.log(`logs 3 -------------- ${JSON.stringify(logs)}`);
 
       const hasMore = logs.length >= perPage;
       const slicedLogs = hasMore ? logs.slice(0, perPage) : logs;
@@ -66,7 +66,7 @@ export const logRouter = createTRPCRouter({
         nextPageCursor = nextItem!.id;
       }
 
-      console.log(`logs 4 -------------- ${JSON.stringify(logs.length)}`);
+      // console.log(`logs 4 -------------- ${JSON.stringify(logs.length)}`);
 
       const response = {
         data: slicedLogs,
@@ -75,7 +75,7 @@ export const logRouter = createTRPCRouter({
         nextCursor: nextPageCursor,
       };
 
-      console.log(`logs 5 -------------- ${JSON.stringify(response)}`);
+      // console.log(`logs 5 -------------- ${JSON.stringify(response)}`);
 
       // console.log(`updated label -------------- ${JSON.stringify(response)}`);
 

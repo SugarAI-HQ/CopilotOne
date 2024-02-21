@@ -35,6 +35,7 @@ import {
   PromptRunModesSchema,
   PromptRunModesType,
 } from "~/generated/prisma-client-zod.ts";
+import * as Sentry from "@sentry/nextjs";
 
 /**
  * 1. CONTEXT
@@ -349,6 +350,14 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   return opts.next();
 });
 
+const sentryMiddleware = t.middleware(
+  Sentry.Handlers.trpcMiddleware({
+    attachRpcInput: true,
+  }),
+);
+
+const finalMiddleware = sentryMiddleware.unstable_pipe(enforceUserIsAuthed);
+
 /**
  * Protected (authenticated) procedure
  *
@@ -357,6 +366,6 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(enforceUserIsAuthed);
+export const protectedProcedure = t.procedure.use(finalMiddleware);
 
 // export const conditionalProtectedProcedure = t.procedure.use(conditionalUserIsAuthed);

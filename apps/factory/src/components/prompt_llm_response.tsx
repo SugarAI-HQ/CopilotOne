@@ -113,7 +113,10 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
-        src={llr?.base64}
+        // src={llr?.base64}
+        src={`${
+          process.env.NEXT_PUBLIC_APP_URL
+        }/generated/assets/logs/${pl?.id}/image.png?w=${128}&h=${128}`}
         alt="Image"
       />
     );
