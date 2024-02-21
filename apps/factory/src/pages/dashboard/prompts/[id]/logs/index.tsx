@@ -44,6 +44,7 @@ import { LogOutput } from "~/validators/prompt_log";
 import Image from "next/image";
 import ShareCube from "~/components/cubes/share_cube";
 import ShareIcon from "@mui/icons-material/Share";
+import { LlmResponse } from "~/validators/llm_respose";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -243,7 +244,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                         textAnimation={false}
                       />
                     )}
-                    {log?.llmResponse && (
+                    {(log?.llmResponse as LlmResponse).data && (
                       <PromptLlmResponse
                         pl={log as LogOutput}
                         imgClassName={"h-32 w-32 object-contain"}

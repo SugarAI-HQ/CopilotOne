@@ -27,6 +27,7 @@ import DownloadButtonBase64 from "~/components/download_button_base64";
 import PromptLlmResponse, {
   LlmResponseAction,
 } from "~/components/prompt_llm_response";
+import { LlmResponse } from "~/validators/llm_respose";
 
 const LogShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -100,7 +101,7 @@ const LogShow: NextPageWithLayout = () => {
                       textAnimation={false}
                     />
                   )}
-                  {pl?.llmResponse && (
+                  {(pl?.llmResponse as LlmResponse).data && (
                     <PromptLlmResponse
                       pl={pl}
                       imgClassName={"h-48 w-96 object-contain"}

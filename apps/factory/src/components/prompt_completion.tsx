@@ -44,7 +44,9 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           >
             {pl.completion_tokens ? (
               <>
-                {(lr.data as TextResponseV1).completion}
+                {pl.completion
+                  ? pl.completion
+                  : (lr.data as TextResponseV1).completion}
                 <p>tokens: {pl.completion_tokens}</p>
               </>
             ) : (
@@ -56,7 +58,9 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                       wordWrap: "break-word",
                     }}
                   >
-                    {(lr.data as TextResponseV1).completion}
+                    {pl.completion
+                      ? pl.completion
+                      : (lr.data as TextResponseV1).completion}
                   </code>
                 </pre>
               </Typography>
