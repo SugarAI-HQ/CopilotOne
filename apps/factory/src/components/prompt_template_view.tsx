@@ -137,7 +137,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         onSuccess(item: LogOutput) {
           if (item !== null) {
             setPromptOutput(
-              processLlmResponse(item?.llmResponse as LlmResponse) as string,
+              (processLlmResponse(
+                item?.llmResponse as LlmResponse,
+              ) as string) || (item?.completion as string as string),
             );
             setPl(item as GenerateOutput);
           }
@@ -203,7 +205,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     if (pl) {
       setPl(pl);
       setPromptOutput(
-        processLlmResponse(pl?.llmResponse as LlmResponse) as string,
+        (processLlmResponse(pl?.llmResponse as LlmResponse) as string) ||
+          (pl?.completion as string as string),
       );
 
       setPromptPerformacne({
@@ -230,13 +233,16 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
   const url = `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
 
-  const shareUrl =
-    url + (openShareModal === "imageshare" ? `?logId=${pl?.id}` : "");
-  const imageUrl =
-    `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/` +
-    (openShareModal === "imageshare"
-      ? `logs/${pl?.id}/image.png?w=${1200}&h=${630}`
-      : "og.png");
+  const shareUrl = `${url}${
+    openShareModal === "imageshare" || query.logId
+      ? `?logId=${query.logId || pl?.id}`
+      : ""
+  }`;
+  const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/${
+    openShareModal === "imageshare" || query.logId
+      ? `logs/${query.logId || pl?.id}/image.png?w=${1200}&h=${630}`
+      : "og.png"
+  }`;
 
   const loadingButtonClass = {
     "&:hover ": {

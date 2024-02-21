@@ -58,7 +58,9 @@ function PromptDeploy({
   );
   const [changelog, setChangelog] = useState(version.changelog);
 
-  const [environmentType, setEnvironmentType] = React.useState("preview");
+  const [environmentType, setEnvironmentType] = React.useState(
+    pv.id === pt?.releaseVersionId ? "release" : "preview",
+  );
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("Choose wisely");
 
