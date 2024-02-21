@@ -15,6 +15,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import DownloadButtonBase64 from "./download_button_base64";
 import CopyToClipboardButton from "./copy_button";
+import Image from "next/image";
 
 interface PromptLlmResponseProps {
   pl: LogOutput;
@@ -109,15 +110,27 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
   } else if (lr.data?.t === ResponseType.IMAGE) {
     let llr = lr.data as ImageResponseV1;
     return (
-      <img
-        className={`${
-          cube ? "outputImage h-full w-full" : imgClassName
-        } object-fill`}
-        // src={llr?.base64}
+      <Image
         src={`${
           process.env.NEXT_PUBLIC_APP_URL
         }/generated/assets/logs/${pl?.id}/image.png?w=${128}&h=${128}`}
+        blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
         alt="Image"
+        style={{
+          objectFit: "cover",
+          width: "100%",
+          height: "100%",
+          // borderRadius: "10px",
+          transition: "opacity 0.3s ease",
+          zIndex: 2,
+        }}
+        className={`${
+          cube ? "outputImage h-full w-full" : imgClassName
+        } object-fill`}
+        placeholder="blur"
+        loading="lazy"
+        width={128}
+        height={128}
       />
     );
   }

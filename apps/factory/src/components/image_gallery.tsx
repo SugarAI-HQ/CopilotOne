@@ -111,26 +111,6 @@ export const ImageGallery = ({
                     },
                   }}
                 >
-                  {/* <img
-                    src={`${
-                      process.env.NEXT_PUBLIC_APP_URL
-                    }/generated/assets/logs/${
-                      logId.id
-                    }/image.png?w=${128}&h=${128}`}
-                    style={{
-                      objectFit: "cover",
-                      width: "100%",
-                      height: "100%",
-                      // borderRadius: "10px",
-                      transition: "opacity 0.3s ease",
-                      zIndex: 2,
-                    }}
-                    width={128}
-                    height={128}
-                    placeholder="blur"
-                    loading="lazy"
-                    alt=""
-                  /> */}
                   <Image
                     src={`${
                       process.env.NEXT_PUBLIC_APP_URL

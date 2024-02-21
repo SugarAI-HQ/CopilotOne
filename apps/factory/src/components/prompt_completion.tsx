@@ -8,6 +8,7 @@ import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
 import { LogSchema } from "~/validators/prompt_log";
 import { LlmResponse, TextResponseV1 } from "~/validators/llm_respose";
+import Image from "next/image";
 
 interface PromptCompletionProps {
   pl: LogSchema;
@@ -78,12 +79,25 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
     const w = cube ? 1024 : 128;
     const h = cube ? 1024 : 128;
     return (
-      <img
+      <Image
+        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
+        blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
+        alt="Image"
+        style={{
+          objectFit: "cover",
+          width: "100%",
+          height: "100%",
+          // borderRadius: "10px",
+          transition: "opacity 0.3s ease",
+          zIndex: 2,
+        }}
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
-        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
-        alt="Image"
+        placeholder="blur"
+        loading="lazy"
+        width={128}
+        height={128}
       />
     );
   }
