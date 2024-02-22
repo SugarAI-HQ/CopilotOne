@@ -240,7 +240,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   }`;
   const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/${
     openShareModal === "imageshare" || query.logId
-      ? `logs/${query.logId || pl?.id}/image.png?w=${1200}&h=${630}`
+      ? `logs/${query.logId || pl?.id}/og.png`
       : "og.png"
   }`;
 
