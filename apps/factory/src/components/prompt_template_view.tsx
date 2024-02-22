@@ -175,10 +175,18 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     setIsLoading(true);
     console.log(`running template version ${versionOrEnvironment}`);
 
-    let data: { [key: string]: any } = {};
-    for (const item of pvrs as PromptVariableProps[]) {
-      data[`${item.type}${item.key}`] = item.value;
-    }
+    // let data: { [key: string]: any } = {};
+    // for (const item of pvrs as PromptVariableProps[]) {
+    //   data[`${item.type}${item.key}`] = item.value;
+    // }
+
+    const data = Object.fromEntries(
+      (pvrs ?? []).map((item) => [`${item.type}${item.key}`, item.value]),
+    );
+
+    console.log("data");
+    console.log(data);
+    console.log("data");
 
     const pl = await generateMutation.mutateAsync(
       {
