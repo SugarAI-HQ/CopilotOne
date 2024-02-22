@@ -26,7 +26,11 @@ export const ImageGallery = ({
   const [logIds, setLogIds] = useState<LogIdsArray>([]);
   const [openShareModal, setOpenShareModal] = useState("");
 
-  const shareUrl = url + `?logId=${openShareModal}`;
+  // const shareUrl = url + `?logId=${openShareModal}`;
+
+  const shareUrl = `${url}${
+    openShareModal === "imageshare" ? `?logId=${openShareModal}` : ""
+  }`;
 
   const extraOptions = {
     environment: pv?.versionOrEnvironment,
