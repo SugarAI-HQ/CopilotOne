@@ -7,8 +7,9 @@ import ShareIcon from "@mui/icons-material/Share";
 import Image from "next/image";
 import { GetPromptOutput } from "~/validators/service";
 import { api } from "~/utils/api";
-import { NextPageWithLayout } from "~/pages/_app";
 import { LogIdsArray } from "~/validators/prompt_log";
+import Modal from "@mui/material/Modal";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 interface ImageGalleryProps {
   pv: GetPromptOutput;
@@ -23,6 +24,7 @@ export const ImageGallery = ({
   outputLog,
   url,
 }: ImageGalleryProps) => {
+  const [logId, setLogId] = useState("");
   const [logIds, setLogIds] = useState<LogIdsArray>([]);
   const [openShareModal, setOpenShareModal] = useState("");
 
@@ -60,10 +62,8 @@ export const ImageGallery = ({
   }, [logIdResponse]);
 
   useEffect(() => {
-    if (outputLog) {
-      if (!logIds.includes({ id: outputLog.id })) {
-        setLogIds([{ id: outputLog.id }, ...logIds]);
-      }
+    if (outputLog && !logIds.some((log) => log.id === outputLog.id)) {
+      setLogIds([{ id: outputLog.id }, ...logIds]);
     }
   }, [outputLog]);
 
@@ -145,6 +145,16 @@ export const ImageGallery = ({
                     alignItems: "center",
                   }}
                 >
+                  <Tooltip title="Preview Image" placement="bottom">
+                    <IconButton onClick={() => setLogId(logId.id)}>
+                      <VisibilityIcon
+                        sx={{
+                          color: "var(--sugarhub-text-color)",
+                          fontSize: "1.5rem",
+                        }}
+                      />
+                    </IconButton>
+                  </Tooltip>
                   <DownloadButtonBase64 logId={logId.id} />
                   <Tooltip title="Share Cube" placement="bottom">
                     <IconButton onClick={() => setOpenShareModal(logId.id)}>
@@ -168,6 +178,60 @@ export const ImageGallery = ({
         shareUrl={shareUrl}
         shareTitle={"Share Image"}
       />
+      <ImageFullView open={logId} setOpen={setLogId} />
     </>
   );
 };
+
+export function ImageFullView({
+  open,
+  setOpen,
+}: {
+  open: string;
+  setOpen: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const handleClose = () => setOpen("");
+
+  return (
+    <div>
+      {open && (
+        <Modal
+          open={true}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              width: { lg: "600px", md: "600px", sm: "400px", xs: "300px" },
+              height: { lg: "600px", md: "600px", sm: "400px", xs: "300px" },
+            }}
+          >
+            <Image
+              src={`${
+                process.env.NEXT_PUBLIC_APP_URL
+              }/generated/assets/logs/${open}/image.png?w=${1024}&h=${1024}`}
+              blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
+              alt=""
+              style={{
+                objectFit: "contain",
+                width: "100%",
+                height: "100%",
+                transition: "opacity 0.3s ease",
+                zIndex: 2,
+              }}
+              fill
+              placeholder="blur"
+              loading="lazy"
+            />
+          </Box>
+        </Modal>
+      )}
+    </div>
+  );
+}
