@@ -11,7 +11,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { useState } from "react";
 import { api } from "~/utils/api";
-import { getUniqueJsonArray, getVariables } from "~/utils/template";
+import { getVariables } from "~/utils/template";
 
 export const PromptIntegration = ({
   ns,
@@ -28,10 +28,6 @@ export const PromptIntegration = ({
     pv?.version || "RELEASE"
   }/generate`;
 
-  // let variables = getUniqueJsonArray(
-  //   getVariables(pv?.template as string),
-  //   "key",
-  // );
   let variables = {
     variable1: "value1",
     variable2: "value2",

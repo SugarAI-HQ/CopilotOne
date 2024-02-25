@@ -39,7 +39,7 @@ function PromptVariables({
           vars.length > 0 &&
           vars.map((v, index) => (
             <PromptVariable
-              key={"pv-" + index}
+              key={"pv-" + v.key}
               pv={v}
               onChange={handleValueChange}
               mode={mode}

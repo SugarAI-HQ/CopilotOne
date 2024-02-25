@@ -26,7 +26,10 @@ import {
   VersionOutput as pv,
 } from "~/validators/prompt_version";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
-import { getUniqueJsonArray, getVariables } from "~/utils/template";
+import {
+  getUniqueJsonArrayWithDefaultValues,
+  getVariables,
+} from "~/utils/template";
 import SaveIcon from "@mui/icons-material/Save";
 import { CreateVersion } from "./create_version";
 import { inc } from "semver";
@@ -116,9 +119,41 @@ function PromptVersion({
   // const [promptOutput, setPromptOutput] = useState("");
 
   const [promptPerformance, setPromptPerformacne] = useState({});
+
+  // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
+  const getRole = (providerName: string, modelName: string) => {
+    return providerModels[
+      `${pt?.modelType as keyof typeof providerModels}`
+    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.hasRole;
+  };
+
+  const extractVariables = (
+    txt: string,
+    pvrs: PromptVariableProps[] = [],
+  ): PromptVariableProps[] => {
+    const variables = getUniqueJsonArrayWithDefaultValues(
+      getVariables(txt),
+      "key",
+      pvrs,
+    );
+    // setVariables([...variables]);
+    return variables;
+  };
+
+  const extractTemplate = (lpv: pv): string => {
+    let templateValue: string;
+    if (getRole(lpv?.llmProvider as string, lpv?.llmModel as string) !== 0) {
+      templateValue = JSON.stringify(lpv?.promptData);
+    } else {
+      templateValue = JSON.stringify(lpv?.template);
+    }
+    return templateValue;
+  };
+
   const [pvrs, setVariables] = useState<PromptVariableProps[]>(
-    getUniqueJsonArray(getVariables(lpv?.template || ""), "key"),
+    extractVariables(extractTemplate(lpv), []),
   );
+
   const [isDirty, setIsDirty] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
 
@@ -135,20 +170,19 @@ function PromptVersion({
     prompt.data as PromptDataType,
   );
 
-  // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
-  const getRole = (providerName: string, modelName: string) => {
-    return providerModels[
-      `${pt?.modelType as keyof typeof providerModels}`
-    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.hasRole;
-  };
-
   const pvUpdateMutation = api.prompt.updateVersion.useMutation({
-    onSuccess: (v) => {
-      if (v !== null) {
-        setPv(v);
+    onSuccess: (lpv) => {
+      if (lpv !== null) {
+        setPv(lpv);
         // console.log(`pv: Updated ${JSON.stringify(v)}`);
         // console.log(`pv: Updated ${JSON.stringify(lpv)}`);
-        onUpdateSuccess(v);
+        const prompt = lpv.promptData as PromptDataSchemaType;
+        const promptinput = prompt.data;
+        setPrompt(prompt);
+        setPromptInputs(promptinput);
+        let template = extractTemplate(lpv);
+        debouncedHandleTemplateChange(template, pvrs);
+        setIsLoading(false);
         toast.success("Saved");
       } else {
         toast.error("Failed to save");
@@ -156,32 +190,22 @@ function PromptVersion({
     },
   });
 
-  const onUpdateSuccess = (lpv: VersionSchema) => {
-    const prompt = lpv.promptData as PromptDataSchemaType;
-    const promptinput = prompt.data;
-    setPrompt(prompt);
-    setPromptInputs(promptinput);
-    if (getRole(lpv.llmProvider, lpv.llmModel) !== 0) {
-      handleSetVariable(JSON.stringify(promptinput));
-    } else {
-      handleSetVariable(JSON.stringify(lpv.template));
-    }
-    setIsLoading(false);
-  };
-
   const generateMutation = api.service.generate.useMutation(); // Make sure to import 'api' and set up the service
 
   const handleTemplateChange = (txt: string) => {
     setIsDirty(!isDirty);
-    debouncedHandleTemplateChange(txt);
+    debouncedHandleTemplateChange(txt, pvrs);
   };
 
-  const debouncedHandleTemplateChange = _debounce((txt: string) => {
-    const variables = getUniqueJsonArray(getVariables(txt), "key");
-    setVariables([...variables]);
-  }, 500);
+  const debouncedHandleTemplateChange = _debounce(
+    (template: string, pvrs: PromptVariableProps[]) => {
+      let variables = extractVariables(template, pvrs);
+      setVariables([...variables]);
+    },
+    500,
+  );
 
-  const handleVariablesChange = (k: string, v: string) => {
+  const handleVariableValuesChanged = (k: string, v: string) => {
     setVariables((pvrs) => {
       // Step 2: Update the state
       return pvrs.map((pvr) => {
@@ -194,19 +218,6 @@ function PromptVersion({
       });
     });
   };
-
-  const handleSetVariable = (prompt: string) => {
-    // logic to change the variables array as per the change in provider
-    setVariables([...getUniqueJsonArray(getVariables(prompt || ""), "key")]);
-  };
-
-  useEffect(() => {
-    if (getRole(llm.provider, llm.model) !== 0) {
-      handleSetVariable(JSON.stringify(lpv?.promptData));
-    } else {
-      handleSetVariable(lpv?.template);
-    }
-  }, []);
 
   const handleChange = () => {
     setChecked((prevChecked) => !prevChecked);
@@ -530,7 +541,7 @@ function PromptVersion({
           <Grid item xs={12} md={6} sx={{ p: 1 }}>
             <PromptVariables
               vars={pvrs}
-              onChange={handleVariablesChange}
+              onChange={handleVariableValuesChanged}
               mode={displayModes.Enum.VIEW}
             />
           </Grid>

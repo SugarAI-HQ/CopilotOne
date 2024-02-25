@@ -68,6 +68,33 @@ export function getUniqueJsonArray(
   return uniqueArray;
 }
 
+export function getUniqueJsonArrayWithDefaultValues(
+  jsonArray: PromptVariableProps[],
+  uniqueKey: any,
+  defaultJsonArray: PromptVariableProps[],
+) {
+  const uniqueSet = new Set();
+  const uniqueArray = [];
+  const defaultValues: { [key: string]: string } = {};
+
+  defaultJsonArray.map((obj) => {
+    defaultValues[obj.key as string] = obj.value;
+  });
+
+  for (const obj of jsonArray) {
+    const keyValue = obj[uniqueKey] as string;
+
+    if (!uniqueSet.has(keyValue)) {
+      uniqueSet.add(keyValue);
+      if (keyValue in defaultValues) {
+        obj.value = defaultValues[keyValue] as string;
+      }
+      uniqueArray.push(obj);
+    }
+  }
+  return uniqueArray;
+}
+
 export function generateLLmConfig(c: JsonObject): LlmConfigSchema {
   const config = {
     max_tokens: c?.max_tokens || 100,
