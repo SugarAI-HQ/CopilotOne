@@ -650,7 +650,10 @@ function PromptVersion({
                 flexDirection={"row"}
               >
                 <Grid item lg={8} md={8} sm={12} xs={12}>
-                  <PromptOutput pl={pl as LogSchema}></PromptOutput>
+                  <PromptOutput
+                    pl={pl as LogSchema}
+                    cube={false}
+                  ></PromptOutput>
                   {pl && (
                     <Box
                       sx={{

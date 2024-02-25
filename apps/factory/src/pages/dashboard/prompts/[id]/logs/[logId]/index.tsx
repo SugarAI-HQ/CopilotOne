@@ -99,6 +99,7 @@ const LogShow: NextPageWithLayout = () => {
                       pl={pl}
                       imgClassName={"h-48 w-96 object-contain"}
                       textAnimation={false}
+                      cube={false}
                     />
                   )}
                   {(pl?.llmResponse as LlmResponse).data && (

@@ -78,26 +78,30 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   } else if (pl?.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE) {
     const w = cube ? 1024 : 128;
     const h = cube ? 1024 : 128;
+    console.log(cube);
     return (
       <Image
         src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
         blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
         alt="Image"
-        style={{
-          objectFit: "cover",
-          width: "100%",
-          height: "100%",
-          // borderRadius: "10px",
-          transition: "opacity 0.3s ease",
-          zIndex: 2,
-        }}
+        style={
+          {
+            // objectFit: "cover",
+            // objectFit: "contain",
+            // width: "100%",
+            // height: "100%",
+            // // borderRadius: "10px",
+            // transition: "opacity 0.3s ease",
+            // zIndex: 2,
+          }
+        }
         className={`${
           cube ? "outputImage h-full w-full" : imgClassName
         } object-fill`}
         placeholder="blur"
         loading="lazy"
-        width={128}
-        height={128}
+        width={w}
+        height={h}
       />
     );
   }
