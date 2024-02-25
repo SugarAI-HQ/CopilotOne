@@ -441,7 +441,7 @@ function PromptVersion({
         ></Box>
         <Grid container spacing={2}>
           {/* add all the code from promptEditor here */}
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={7}>
             <Box>
               {getRole(llm.provider, llm.model) === 0 ? (
                 <>
@@ -538,7 +538,7 @@ function PromptVersion({
               )}
             </Box>
           </Grid>
-          <Grid item xs={12} md={6} sx={{ p: 1 }}>
+          <Grid item xs={12} md={5} sx={{ p: 1 }}>
             <PromptVariables
               vars={pvrs}
               onChange={handleVariableValuesChanged}
@@ -566,18 +566,18 @@ function PromptVersion({
             color="success"
             variant="outlined"
             onClick={handleRun}
-            // disabled={
-            //   getRole(llm.provider, llm.model) !== 0
-            //     ? promptInputs.length > 0 &&
-            //       !promptInputs.some(
-            //         (input: { id: string; role: string; content: string }) =>
-            //           input.content.length === 0,
-            //       )
-            //       ? pvrs.some((v) => v.value.length === 0)
-            //       : true
-            //     : template.length <= 10 ||
-            //       pvrs.some((v) => v.value.length === 0)
-            // }
+            disabled={
+              getRole(llm.provider, llm.model) !== 0
+                ? promptInputs.length > 0 &&
+                  !promptInputs.some(
+                    (input: { id: string; role: string; content: string }) =>
+                      input.content.length === 0,
+                  )
+                  ? pvrs.some((v) => v.value.length === 0)
+                  : true
+                : template.length <= 10 ||
+                  pvrs.some((v) => v.value.length === 0)
+            }
             loadingPosition="start"
             startIcon={<PlayArrowIcon />}
             loading={isRunning}
@@ -654,12 +654,7 @@ function PromptVersion({
         <Box sx={{ m: 1 }}>
           {(pl?.llmResponse as LlmResponse)?.data && (
             <Stack direction="row" spacing={2} sx={{ p: 1 }}>
-              <Grid
-                container
-                justifyContent={"center"}
-                alignItems={"center"}
-                flexDirection={"row"}
-              >
+              <Grid container alignItems={"center"} flexDirection={"row"}>
                 <Grid item lg={8} md={8} sm={12} xs={12}>
                   <PromptOutput
                     pl={pl as LogSchema}

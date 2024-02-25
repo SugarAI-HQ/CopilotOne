@@ -87,7 +87,7 @@ export function CreateTemplate({
 
   const [llm, setLLM] = useState<LLM>(getDefaultLLM(defaultModelType));
 
-  console.log(`LLM ||| 1 >>>>>>>>> ${JSON.stringify(llm)}`);
+  // console.log(`LLM ||| 1 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   const {
     control,
@@ -239,7 +239,7 @@ export function CreateTemplate({
           onClick={(e: any) => {
             if (!ptId) {
               setIsOpen(true);
-              console.log(`LLM ||| 5 >>>>>>>>> ${JSON.stringify(llm)}`);
+              // console.log(`LLM ||| 5 >>>>>>>>> ${JSON.stringify(llm)}`);
               // setLLM((prev) => ({
               //   ...prev,
               //   modelType: e.target.value,

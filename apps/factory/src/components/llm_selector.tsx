@@ -45,7 +45,7 @@ function LLMSelector({
   const [isOpen, setIsOpen] = useState(false);
   const [llm, setLLM] = useState<LLM>(initialLLM);
   const [tllm, setTllm] = useState<LLM>(initialLLM);
-  console.log(`LLM ||| 2 >>>>>>>>> ${JSON.stringify(llm)}`);
+  // console.log(`LLM ||| 2 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   //
   const [openConsent, setOpenConsent] = useState("");
@@ -158,7 +158,7 @@ export const LLMForm = ({
 }) => {
   const [llm, setLLM] = useState<LLM>(initialLLM);
 
-  console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
+  // console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   return (
     <>
@@ -268,7 +268,7 @@ export const LLMForm2 = ({
 }) => {
   const [llm, setLLM] = useState<LLM>(initialLLM);
 
-  console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
+  // console.log(`LLM ||| 3 >>>>>>>>> ${JSON.stringify(llm)}`);
 
   return (
     <>
