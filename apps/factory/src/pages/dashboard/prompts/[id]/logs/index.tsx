@@ -233,7 +233,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       justifyContent: "center",
                       flexDirection: "column",
                       alignItems: "center",
-                      display: "flex",
+                      // display: "flex",
                       maxHeight: 150,
                     }}
                   >
