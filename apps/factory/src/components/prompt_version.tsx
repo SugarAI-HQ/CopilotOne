@@ -481,6 +481,7 @@ function PromptVersion({
                   modelDefaultValues={
                     modelDefaultValues as ModelDefaultValueSchemaType
                   }
+                  cube={false}
                 />
               </Grid>
             )}

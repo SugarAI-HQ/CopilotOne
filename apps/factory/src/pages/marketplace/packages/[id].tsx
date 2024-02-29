@@ -39,6 +39,9 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PublicUrl from "~/components/integration/public_url";
 import { PromptView } from "~/components/prompt_view_arrow";
+import { getEditorVersion } from "~/utils/template";
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+
 const MarketplacePage: NextPage = () => {
   const router = useRouter();
   const { id } = router.query as { id: string };
@@ -98,10 +101,6 @@ function VersionRow({
   const [prompt, setPrompt] = useState<PromptDataSchemaType>(
     pv?.promptData as PromptDataSchemaType,
   );
-  const haveroleUserAssistant = providerModels[
-    `${pt?.modelType as keyof typeof providerModels}`
-  ]?.models[`${pv?.llmProvider}`]?.find((mod) => mod.name === pv?.llmModel)
-    ?.hasRole;
 
   return (
     <React.Fragment>
@@ -170,7 +169,11 @@ function VersionRow({
                   </Typography>
                   <PromptView
                     promptInputs={prompt.data}
-                    haveroleUserAssistant={haveroleUserAssistant}
+                    haveroleUserAssistant={getEditorVersion(
+                      pt?.modelType as ModelTypeType,
+                      pv?.llmProvider,
+                      pv?.llmModel,
+                    )}
                     promptTemplate={pv.template}
                   />
                 </Typography>

@@ -167,5 +167,5 @@ export const getEditorVersion = (
 ) => {
   return providerModels[`${modeType as keyof typeof providerModels}`].models[
     `${providerName}`
-  ]?.find((mod) => mod.name === modelName)?.hasRole;
+  ]?.find((mod) => mod.name === modelName)?.editorVersion;
 };

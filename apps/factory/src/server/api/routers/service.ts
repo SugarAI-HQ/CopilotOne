@@ -19,6 +19,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
+import { getEditorVersion } from "~/utils/template";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -50,15 +51,10 @@ export const serviceRouter = createTRPCRouter({
         console.log(`data >>>> ${JSON.stringify(input)}`);
         let prompt = "";
         if (hasImageModels(modelType)) {
-          // get template data
           prompt = generatePrompt(pv.template, input.data || {});
         } else {
           // here decide whether to take template data or promptData
-          if (
-            providerModels[`${modelType}`].models[`${pv.llmProvider}`]?.find(
-              (item) => item.name === pv.llmModel,
-            )?.hasRole
-          ) {
+          if (getEditorVersion(modelType, pv.llmProvider, pv.llmModel)) {
             prompt = generatePrompt(
               JSON.stringify(pv.promptData.data),
               input.data || {},

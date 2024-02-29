@@ -404,12 +404,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                             padding: 2,
                           }}
                         >
-                          <Typography
-                            variant="h6"
-                            sx={{ color: "var(--sugarhub-text-color)", mb: 2 }}
-                          >
-                            Input Images
-                          </Typography>
                           <PromptInputAttachment
                             onFileUpload={onFileUpload}
                             modelDefaultValues={getDefaults(
