@@ -149,7 +149,12 @@ function PromptVersion({
         pt?.modelType as ModelTypeType,
         lpv?.llmProvider as string,
         lpv?.llmModel as string,
-      ) !== (0 || 3)
+      ) !== 0 &&
+      getEditorVersion(
+        pt?.modelType as ModelTypeType,
+        lpv?.llmProvider as string,
+        lpv?.llmModel as string,
+      ) !== 3
     ) {
       templateValue = JSON.stringify(lpv?.promptData);
     } else {
@@ -495,7 +500,12 @@ function PromptVersion({
                 pt?.modelType as ModelTypeType,
                 llm.provider,
                 llm.model,
-              ) === (0 || 3) ? (
+              ) === 0 ||
+              getEditorVersion(
+                pt?.modelType as ModelTypeType,
+                llm.provider,
+                llm.model,
+              ) === 3 ? (
                 <>
                   <TextField
                     label="Template"
@@ -628,7 +638,12 @@ function PromptVersion({
                 pt?.modelType as ModelTypeType,
                 llm.provider,
                 llm.model,
-              ) !== (0 || 3)
+              ) !== 0 &&
+              getEditorVersion(
+                pt?.modelType as ModelTypeType,
+                llm.provider,
+                llm.model,
+              ) !== 3
                 ? promptInputs.length > 0 &&
                   !promptInputs.some(
                     (input: { id: string; role: string; content: string }) =>

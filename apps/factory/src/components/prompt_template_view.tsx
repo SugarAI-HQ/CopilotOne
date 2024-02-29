@@ -102,7 +102,12 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
             item?.modelType as ModelTypeType,
             item?.llmProvider as string,
             item?.model as string,
-          ) !== (0 || 3)
+          ) !== 0 &&
+          getEditorVersion(
+            item?.modelType as ModelTypeType,
+            item?.llmProvider as string,
+            item?.model as string,
+          ) !== 3
         ) {
           setVariables([
             ...getUniqueJsonArray(

@@ -174,7 +174,12 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     log.llmModelType,
                     log.llmProvider,
                     log.llmModel,
-                  ) !== (0 || 3) ? (
+                  ) !== 0 &&
+                  getEditorVersion(
+                    log.llmModelType,
+                    log.llmProvider,
+                    log.llmModel,
+                  ) !== 3 ? (
                     <>
                       <PromptView
                         promptInputs={JSON.parse(log.prompt)}
@@ -186,7 +191,11 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     <>
                       <PromptView
                         promptInputs={[]}
-                        haveroleUserAssistant={0 || 3}
+                        haveroleUserAssistant={getEditorVersion(
+                          log.llmModelType,
+                          log.llmProvider,
+                          log.llmModel,
+                        )}
                         promptTemplate={log.prompt}
                       />
                     </>
