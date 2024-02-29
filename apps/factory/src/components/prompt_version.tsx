@@ -73,6 +73,7 @@ import {
   TextResponseV1,
   processLlmResponse,
 } from "~/validators/llm_respose";
+import { escapeStringRegexp } from "~/utils/template";
 
 function PromptVersion({
   ns,
@@ -229,7 +230,7 @@ function PromptVersion({
     setIsRunning(true);
     let data: { [key: string]: any } = {};
     for (const item of pvrs) {
-      data[`${item.type}${item.key}`] = item.value;
+      data[`${item.type}${item.key}`] = escapeStringRegexp(item.value);
     }
     const pl = await generateMutation.mutateAsync(
       {

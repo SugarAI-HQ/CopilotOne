@@ -127,3 +127,7 @@ export function generatePrompt(
 
   return result;
 }
+
+export function escapeStringRegexp(data: string): string {
+  return data.replace(/[|\\{}()[\]^$+*?"]/g, "\\$&");
+}
