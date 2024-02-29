@@ -45,7 +45,10 @@ export const serviceRouter = createTRPCRouter({
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
         let prompt = "";
-        if (modelType === ModelTypeSchema.Enum.TEXT2IMAGE) {
+        if (
+          modelType === ModelTypeSchema.Enum.TEXT2IMAGE ||
+          modelType === ModelTypeSchema.Enum.IMAGE2IMAGE
+        ) {
           // get template data
           prompt = generatePrompt(pv.template, input.data || {});
         } else {
@@ -74,6 +77,7 @@ export const serviceRouter = createTRPCRouter({
           llmConfig,
           pv.llmModelType,
           input.isDevelopment,
+          input.attachments,
         );
 
         console.log(

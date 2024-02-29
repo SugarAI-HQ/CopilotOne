@@ -1,6 +1,10 @@
 import { Box, Typography } from "@mui/material";
 import React, { useRef, useEffect, useState } from "react";
-import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
+import { imageModels } from "~/services/providers";
 
 type OutputTextAnimationProps = {
   output: string;
@@ -23,7 +27,7 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
       }
     };
 
-    if (modelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
+    if (!imageModels(modelType as ModelTypeType)) {
       let currentIndex = 0;
 
       const intervalId = setInterval(() => {

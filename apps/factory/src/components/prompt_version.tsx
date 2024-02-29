@@ -63,7 +63,7 @@ import {
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
 import DownloadButtonBase64 from "./download_button_base64";
-import { getTemplate } from "~/services/providers";
+import { FileObject, getTemplate, imageModels } from "~/services/providers";
 import { LogSchema } from "~/validators/prompt_log";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
@@ -74,6 +74,7 @@ import {
   processLlmResponse,
 } from "~/validators/llm_respose";
 import { escapeStringRegexp } from "~/utils/template";
+import PromptAttachment from "./prompt_attachment";
 
 function PromptVersion({
   ns,
@@ -93,6 +94,7 @@ function PromptVersion({
   const [lpv, setPv] = useState<VersionSchema>(pv);
   const [version, setVersion] = useState<string>(lpv?.version);
   const [template, setTemplate] = useState(lpv?.template || "");
+  const [attachments, setAttachments] = useState<FileObject>();
 
   const [llm, setLLM] = useState<LLM>({
     modelType: pt?.modelType as ModelTypeType,
@@ -242,6 +244,7 @@ function PromptVersion({
         // llmModelType: pt?.modelType,
         environment: promptEnvironment.Enum.DEV,
         data: data,
+        attachments: attachments,
       } as GenerateInput,
       {
         onSettled(lPl, error) {
@@ -387,6 +390,10 @@ function PromptVersion({
     handleTemplateChange(JSON.stringify(tempArray));
   };
 
+  const onFileUpload = (file: FileObject) => {
+    setAttachments(file);
+  };
+
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -442,7 +449,25 @@ function PromptVersion({
         ></Box>
         <Grid container spacing={2}>
           {/* add all the code from promptEditor here */}
-          <Grid item xs={12} md={7}>
+          {pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE && (
+            <Grid
+              item
+              xs={12}
+              md={3}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <PromptAttachment onFileUpload={onFileUpload} />
+            </Grid>
+          )}
+          <Grid
+            item
+            xs={12}
+            md={pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE ? 5 : 7}
+          >
             <Box>
               {getRole(llm.provider, llm.model) === 0 ? (
                 <>
@@ -539,7 +564,12 @@ function PromptVersion({
               )}
             </Box>
           </Grid>
-          <Grid item xs={12} md={5} sx={{ p: 1 }}>
+          <Grid
+            item
+            xs={12}
+            md={pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE ? 4 : 5}
+            sx={{ p: 1 }}
+          >
             <PromptVariables
               vars={pvrs}
               onChange={handleVariableValuesChanged}
@@ -674,7 +704,7 @@ function PromptVersion({
                         labelledState={pl?.labelledState}
                       />
                       |
-                      {pt?.modelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
+                      {imageModels(pt?.modelType as ModelTypeType) ? (
                         <div
                           style={{
                             justifyContent: "center",
@@ -703,7 +733,7 @@ function PromptVersion({
                     </Box>
                   )}
                 </Grid>
-                {pt?.modelType !== ModelTypeSchema.Enum.TEXT2IMAGE && (
+                {!imageModels(pt?.modelType as ModelTypeType) && (
                   <Grid item lg={3} md={3} sm={12} xs={12}>
                     <PromptPerformance
                       data={promptPerformance}

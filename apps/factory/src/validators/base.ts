@@ -31,6 +31,7 @@ type ProviderModels = {
   TEXT2TEXT: ModelType;
   TEXT2IMAGE: ModelType;
   TEXT2CODE: ModelType;
+  IMAGE2IMAGE: ModelType;
 };
 
 export const providerModels: ProviderModels = {
@@ -164,6 +165,31 @@ export const providerModels: ProviderModels = {
         {
           name: "WizardCoder-34B",
           label: "WizardCoder-34B",
+          enabled: true,
+          hasRole: 0,
+        },
+      ],
+    },
+  },
+
+  IMAGE2IMAGE: {
+    label: "Image-to-Image",
+    enabled: true,
+    defaultProvider: "segmind",
+    defaultModel: "sd1.5-img2img",
+    providers: [
+      {
+        name: "segmind",
+        label: "Segmind",
+        enabled: true,
+        hasRole: 0,
+      },
+    ],
+    models: {
+      segmind: [
+        {
+          name: "sd1.5-img2img",
+          label: "Stable Diffusion img2img",
           enabled: true,
           hasRole: 0,
         },

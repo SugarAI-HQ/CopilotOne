@@ -15,7 +15,9 @@ export async function GET(
   const pl = await prisma.promptLog.findFirst({
     where: {
       id: params.logId,
-      llmModelType: ModelTypeSchema.Enum.TEXT2IMAGE,
+      llmModelType: {
+        in: [ModelTypeSchema.Enum.TEXT2IMAGE, ModelTypeSchema.Enum.IMAGE2IMAGE],
+      },
     },
   });
 

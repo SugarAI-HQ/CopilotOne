@@ -16,7 +16,11 @@ import {
 import { api } from "~/utils/api";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getUniqueJsonArray, getVariables } from "~/utils/template";
-import { GenerateInput, GenerateOutput } from "~/validators/service";
+import {
+  GenerateInput,
+  GenerateOutput,
+  GetPromptOutput,
+} from "~/validators/service";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import PromptOutput from "./prompt_output";
 import {
@@ -65,6 +69,8 @@ import {
 import { LogOutput } from "~/validators/prompt_log";
 import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import { ImageGallery } from "./image_gallery";
+import { FileObject, imageModels } from "~/services/providers";
+import PromptAttachment from "./prompt_attachment";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -89,6 +95,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
   const [openShareModal, setOpenShareModal] = useState<string>("");
+  const [attachments, setAttachments] = useState<FileObject>();
   const { query } = useRouter();
   const router = useRouter();
 
@@ -197,6 +204,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         isDevelopment: checked,
         environment: promptEnvironment.Enum.DEV,
         data: data,
+        attachments: attachments,
       } as GenerateInput,
       {
         onSettled(lPl: any, error) {
@@ -260,6 +268,10 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
     color: "white",
     backgroundColor: "var(--sugarcube-component-bg-color) !important",
+  };
+
+  const onFileUpload = (file: FileObject) => {
+    setAttachments(file);
   };
 
   return (
@@ -399,6 +411,22 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           }
                           haveroleUserAssistant={haveroleUserAssistant}
                         />
+                      )}
+
+                      {pv?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE && (
+                        <Box
+                          sx={{
+                            padding: 2,
+                          }}
+                        >
+                          <Typography
+                            variant="h6"
+                            sx={{ color: "var(--sugarhub-text-color)", mb: 2 }}
+                          >
+                            Upload attachment
+                          </Typography>
+                          <PromptAttachment onFileUpload={onFileUpload} />
+                        </Box>
                       )}
                       <PromptVariables
                         vars={pvrs}
@@ -543,9 +571,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   )}
                 </Box>
               </div>
-              {pv?.modelType === ModelTypeSchema.enum.TEXT2IMAGE && (
+              {imageModels(pv?.modelType as ModelTypeType) && (
                 <ImageGallery
-                  pv={pv}
+                  pv={pv as GetPromptOutput}
                   itemsPerPage={10}
                   outputLog={pl as GenerateOutput}
                   url={url}

@@ -9,6 +9,7 @@ export async function LlmProvider(
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,
   isDevelopment: boolean = false,
+  attachments?: any,
 ) {
   console.log(`provider >>>> ${llmProvider}`);
   const provider = getProvider(llmProvider);
@@ -18,6 +19,7 @@ export async function LlmProvider(
     llmConfig,
     llmModelType,
     isDevelopment,
+    attachments,
   );
   return output;
 }
