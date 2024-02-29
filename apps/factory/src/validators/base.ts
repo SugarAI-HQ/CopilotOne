@@ -191,7 +191,7 @@ export const providerModels: ProviderModels = {
           name: "sd1.5-img2img",
           label: "Stable Diffusion img2img",
           enabled: true,
-          hasRole: 0,
+          hasRole: 3,
         },
       ],
     },

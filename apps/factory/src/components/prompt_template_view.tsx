@@ -44,14 +44,8 @@ import { useRouter } from "next/router";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
 import { NextSeo } from "next-seo";
-import DownloadButtonImg from "./download_button_img";
-import { prisma } from "~/server/db";
-import { env } from "~/env.mjs";
 import { providerModels } from "~/validators/base";
-import {
-  PromptDataSchemaType,
-  PromptDataType,
-} from "~/validators/prompt_version";
+import { PromptDataSchemaType } from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
 import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
@@ -59,18 +53,13 @@ import DownloadButtonBase64 from "./download_button_base64";
 import LikeButton from "./marketplace/like_button";
 import { LogSchema } from "~/validators/prompt_log";
 import toast from "react-hot-toast";
-import {
-  ImageResponseV1,
-  LlmResponse,
-  TextResponseV1,
-  getCompletionResponse,
-  processLlmResponse,
-} from "~/validators/llm_respose";
+import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
-import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import { ImageGallery } from "./image_gallery";
-import { FileObject, imageModels } from "~/services/providers";
-import PromptAttachment from "./prompt_attachment";
+import { FileObject } from "~/utils/common";
+import { getEditorVersion, hasImageModels } from "~/utils/template";
+import PromptInputAttachment from "./prompt_input_attachment";
+import { getDefaults } from "~/services/providers";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -108,12 +97,13 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     },
     {
       onSuccess(item) {
-        const haveroleUserAssistant = providerModels[
-          `${item?.modelType as keyof typeof providerModels}`
-        ]?.models[`${item?.llmProvider}`]?.find(
-          (mod) => mod.name === item?.model,
-        )?.hasRole;
-        if (haveroleUserAssistant !== 0) {
+        if (
+          getEditorVersion(
+            item?.modelType as ModelTypeType,
+            item?.llmProvider as string,
+            item?.model,
+          ) !== (0 || 3)
+        ) {
           setVariables([
             ...getUniqueJsonArray(
               getVariables(
@@ -155,11 +145,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     );
   }
 
-  const haveroleUserAssistant = providerModels[
-    `${pv?.modelType as keyof typeof providerModels}`
-  ]?.models[`${pv?.llmProvider}`]?.find((mod) => mod.name === pv?.model)
-    ?.hasRole;
-
   const handleVariablesChange = (k: string, v: string) => {
     setVariables((pvrs) => {
       // Step 2: Update the state
@@ -190,10 +175,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     const data = Object.fromEntries(
       (pvrs ?? []).map((item) => [`${item.type}${item.key}`, item.value]),
     );
-
-    console.log("data");
-    console.log(data);
-    console.log("data");
 
     const pl = await generateMutation.mutateAsync(
       {
@@ -409,7 +390,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           promptInputs={
                             (pv?.promptData as PromptDataSchemaType).data
                           }
-                          haveroleUserAssistant={haveroleUserAssistant}
+                          haveroleUserAssistant={getEditorVersion(
+                            pv?.modelType,
+                            pv?.llmProvider,
+                            pv?.model,
+                          )}
                         />
                       )}
 
@@ -423,9 +408,15 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                             variant="h6"
                             sx={{ color: "var(--sugarhub-text-color)", mb: 2 }}
                           >
-                            Upload attachment
+                            Input Images
                           </Typography>
-                          <PromptAttachment onFileUpload={onFileUpload} />
+                          <PromptInputAttachment
+                            onFileUpload={onFileUpload}
+                            modelDefaultValues={getDefaults(
+                              pv?.llmProvider,
+                              pv?.model,
+                            )}
+                          />
                         </Box>
                       )}
                       <PromptVariables
@@ -571,7 +562,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   )}
                 </Box>
               </div>
-              {imageModels(pv?.modelType as ModelTypeType) && (
+              {hasImageModels(pv?.modelType as ModelTypeType) && (
                 <ImageGallery
                   pv={pv as GetPromptOutput}
                   itemsPerPage={10}

@@ -4,7 +4,7 @@ import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
-import { imageModels } from "~/services/providers";
+import { hasImageModels } from "~/utils/template";
 
 type OutputTextAnimationProps = {
   output: string;
@@ -27,7 +27,7 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
       }
     };
 
-    if (!imageModels(modelType as ModelTypeType)) {
+    if (!hasImageModels(modelType as ModelTypeType)) {
       let currentIndex = 0;
 
       const intervalId = setInterval(() => {

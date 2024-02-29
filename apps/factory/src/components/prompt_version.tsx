@@ -23,6 +23,7 @@ import { PackageOutput as pp } from "~/validators/prompt_package";
 import { TemplateOutput as pt } from "~/validators/prompt_template";
 import {
   LlmConfigSchema,
+  ModelDefaultValueSchemaType,
   VersionOutput as pv,
 } from "~/validators/prompt_version";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
@@ -63,7 +64,9 @@ import {
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
 import DownloadButtonBase64 from "./download_button_base64";
-import { FileObject, getTemplate, imageModels } from "~/services/providers";
+import { getTemplate, getDefaults } from "~/services/providers";
+import { FileObject } from "~/utils/common";
+import { hasImageModels } from "~/utils/template";
 import { LogSchema } from "~/validators/prompt_log";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
@@ -74,7 +77,8 @@ import {
   processLlmResponse,
 } from "~/validators/llm_respose";
 import { escapeStringRegexp } from "~/utils/template";
-import PromptAttachment from "./prompt_attachment";
+import PromptInputAttachment from "./prompt_input_attachment";
+import { getEditorVersion } from "~/utils/template";
 
 function PromptVersion({
   ns,
@@ -95,6 +99,8 @@ function PromptVersion({
   const [version, setVersion] = useState<string>(lpv?.version);
   const [template, setTemplate] = useState(lpv?.template || "");
   const [attachments, setAttachments] = useState<FileObject>();
+  const [modelDefaultValues, setModelDefaultValues] =
+    useState<ModelDefaultValueSchemaType>();
 
   const [llm, setLLM] = useState<LLM>({
     modelType: pt?.modelType as ModelTypeType,
@@ -123,13 +129,6 @@ function PromptVersion({
 
   const [promptPerformance, setPromptPerformacne] = useState({});
 
-  // this is a boolean value which will help to tell when to provide (role:<user, assistant>) editor
-  const getRole = (providerName: string, modelName: string) => {
-    return providerModels[
-      `${pt?.modelType as keyof typeof providerModels}`
-    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.hasRole;
-  };
-
   const extractVariables = (
     txt: string,
     pvrs: PromptVariableProps[] = [],
@@ -145,7 +144,13 @@ function PromptVersion({
 
   const extractTemplate = (lpv: pv): string => {
     let templateValue: string;
-    if (getRole(lpv?.llmProvider as string, lpv?.llmModel as string) !== 0) {
+    if (
+      getEditorVersion(
+        pt?.modelType as ModelTypeType,
+        lpv?.llmProvider as string,
+        lpv?.llmModel as string,
+      ) !== (0 || 3)
+    ) {
       templateValue = JSON.stringify(lpv?.promptData);
     } else {
       templateValue = JSON.stringify(lpv?.template);
@@ -291,6 +296,7 @@ function PromptVersion({
         handleSave();
       }, 1000);
     }
+    setModelDefaultValues(getDefaults(llm.provider, llm.model));
     return () => {
       clearTimeout(saveTimer);
     };
@@ -302,7 +308,16 @@ function PromptVersion({
     let currentTemplate = { v: prompt.v, p: prompt.p, data: promptInputs };
     if (
       isLLMChanged &&
-      getRole(tllm.provider, tllm.model) !== getRole(llm.provider, llm.model)
+      getEditorVersion(
+        pt?.modelType as ModelTypeType,
+        tllm.provider,
+        tllm.model,
+      ) !==
+        getEditorVersion(
+          pt?.modelType as ModelTypeType,
+          llm.provider,
+          llm.model,
+        )
     ) {
       currentTemplate = getTemplate(llm.provider, llm.model);
     } else {
@@ -449,27 +464,37 @@ function PromptVersion({
         ></Box>
         <Grid container spacing={2}>
           {/* add all the code from promptEditor here */}
-          {pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE && (
-            <Grid
-              item
-              xs={12}
-              md={3}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <PromptAttachment onFileUpload={onFileUpload} />
-            </Grid>
-          )}
+          {pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE &&
+            modelDefaultValues && (
+              <Grid
+                item
+                xs={12}
+                md={2}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <PromptInputAttachment
+                  onFileUpload={onFileUpload}
+                  modelDefaultValues={
+                    modelDefaultValues as ModelDefaultValueSchemaType
+                  }
+                />
+              </Grid>
+            )}
           <Grid
             item
             xs={12}
-            md={pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE ? 5 : 7}
+            md={pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE ? 6 : 7}
           >
             <Box>
-              {getRole(llm.provider, llm.model) === 0 ? (
+              {getEditorVersion(
+                pt?.modelType as ModelTypeType,
+                llm.provider,
+                llm.model,
+              ) === (0 || 3) ? (
                 <>
                   <TextField
                     label="Template"
@@ -598,7 +623,11 @@ function PromptVersion({
             variant="outlined"
             onClick={handleRun}
             disabled={
-              getRole(llm.provider, llm.model) !== 0
+              getEditorVersion(
+                pt?.modelType as ModelTypeType,
+                llm.provider,
+                llm.model,
+              ) !== (0 || 3)
                 ? promptInputs.length > 0 &&
                   !promptInputs.some(
                     (input: { id: string; role: string; content: string }) =>
@@ -704,7 +733,7 @@ function PromptVersion({
                         labelledState={pl?.labelledState}
                       />
                       |
-                      {imageModels(pt?.modelType as ModelTypeType) ? (
+                      {hasImageModels(pt?.modelType as ModelTypeType) ? (
                         <div
                           style={{
                             justifyContent: "center",
@@ -733,7 +762,7 @@ function PromptVersion({
                     </Box>
                   )}
                 </Grid>
-                {!imageModels(pt?.modelType as ModelTypeType) && (
+                {!hasImageModels(pt?.modelType as ModelTypeType) && (
                   <Grid item lg={3} md={3} sm={12} xs={12}>
                     <PromptPerformance
                       data={promptPerformance}

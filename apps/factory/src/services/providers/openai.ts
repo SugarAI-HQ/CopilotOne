@@ -112,3 +112,21 @@ export const template = {
   "gpt-4": gpt,
   "dalle-3": dalle,
 };
+
+export const defaults = {
+  "gpt-3.5-turbo": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+  "gpt-4": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+  "dalle-3": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+};

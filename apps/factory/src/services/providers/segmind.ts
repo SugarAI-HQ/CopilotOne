@@ -33,3 +33,11 @@ const segmind: PromptDataSchemaType = {
 export const template = {
   "sd1.5-img2img": segmind,
 };
+
+export const defaults = {
+  "sd1.5-img2img": {
+    url: `${process.env.NEXT_PUBLIC_APP_URL}/images/segmind/portrait.jpg`,
+    supportFormatType: [".png", ".jpg"],
+    base64: true,
+  },
+};

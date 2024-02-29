@@ -4,7 +4,11 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { generateInput, generateOutput } from "~/validators/service";
-import { generateLLmConfig, generatePrompt } from "~/utils/template";
+import {
+  generateLLmConfig,
+  generatePrompt,
+  hasImageModels,
+} from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
 import { LlmProvider } from "~/services/llm_providers";
 import { providerModels } from "~/validators/base";
@@ -45,10 +49,7 @@ export const serviceRouter = createTRPCRouter({
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
         let prompt = "";
-        if (
-          modelType === ModelTypeSchema.Enum.TEXT2IMAGE ||
-          modelType === ModelTypeSchema.Enum.IMAGE2IMAGE
-        ) {
+        if (hasImageModels(modelType)) {
           // get template data
           prompt = generatePrompt(pv.template, input.data || {});
         } else {

@@ -33,3 +33,21 @@ export const template = {
   "13b": b_7_13_70,
   "70b": b_7_13_70,
 };
+
+export const defaults = {
+  "7b": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+  "13b": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+  "70b": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+};

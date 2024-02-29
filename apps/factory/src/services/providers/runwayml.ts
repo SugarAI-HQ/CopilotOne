@@ -32,3 +32,11 @@ const stable_Diffusion_V1_5: PromptDataSchemaType = {
 export const template = {
   "stable-diffusion-v1-5": stable_Diffusion_V1_5,
 };
+
+export const defaults = {
+  "stable-diffusion-v1-5": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+};

@@ -71,3 +71,11 @@ const sdxl: PromptDataSchemaType = {
 export const template = {
   sdxl: sdxl,
 };
+
+export const defaults = {
+  stabilityai: {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+};

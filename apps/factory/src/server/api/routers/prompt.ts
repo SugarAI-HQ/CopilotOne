@@ -42,7 +42,8 @@ import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { Visibility } from "@mui/icons-material";
 import { JSONArray } from "superjson/dist/types";
-import { getTemplate, setDefaultTemplate } from "~/services/providers";
+import { getTemplate } from "~/services/providers";
+import { setDefaultTemplate } from "~/utils/template";
 
 export const promptRouter = createTRPCRouter({
   getPackages: protectedProcedure

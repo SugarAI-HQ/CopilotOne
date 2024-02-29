@@ -1,4 +1,5 @@
 import {
+  ModelType,
   PromptPackage as pp,
   PromptTemplate as pt,
   PromptVersion as pv,
@@ -7,6 +8,12 @@ import { PromptVariableProps } from "~/components/prompt_variables";
 import { LLMConfig } from "~/services/providers/openai";
 import { JsonObject } from "@prisma/client/runtime/library";
 import { LlmConfigSchema } from "~/validators/prompt_version";
+import {
+  ModelTypeSchema,
+  ModelTypeType,
+} from "~/generated/prisma-client-zod.ts";
+import { LLM, providerModels } from "~/validators/base";
+import { LogSchema } from "~/validators/prompt_log";
 
 export const getVariables = (template: string) => {
   if (!template) {
@@ -131,3 +138,34 @@ export function generatePrompt(
 export function escapeStringRegexp(data: string): string {
   return data.replace(/[|\\{}()[\]^$+*?"]/g, "\\$&");
 }
+
+export function setDefaultTemplate(moduleType: string) {
+  let template;
+  if (moduleType === ModelTypeSchema.Enum.TEXT2TEXT) {
+    template = `Tell me a joke on topic "{@topic}"`;
+  } else if (moduleType === ModelTypeSchema.Enum.TEXT2IMAGE) {
+    template = `A photo of an astronaut riding a horse on {@OBJECT}`;
+  } else if (moduleType === ModelTypeSchema.Enum.IMAGE2IMAGE) {
+    template = `A vibrant, oil-painted handmade portrait featuring a {@OBJECT} scene with a beautiful house nestled next to a meandering river, teeming with lively fish. The idyllic setting is surrounded by lush trees, and the scene is bathed in the warm glow of a bright, sunny day.`;
+  } else {
+    template = `A photo of an astronaut riding a horse on {@OBJECT}`;
+  }
+  return template;
+}
+
+export function hasImageModels(llmModelType: ModelTypeType) {
+  return (
+    llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ||
+    llmModelType === ModelTypeSchema.Enum.IMAGE2IMAGE
+  );
+}
+
+export const getEditorVersion = (
+  modeType: ModelTypeType,
+  providerName: string,
+  modelName: string,
+) => {
+  return providerModels[`${modeType as keyof typeof providerModels}`].models[
+    `${providerName}`
+  ]?.find((mod) => mod.name === modelName)?.hasRole;
+};

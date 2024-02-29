@@ -13,9 +13,6 @@ import {
 import { GPTResponseType } from "~/validators/openaiResponse";
 import { errorCodes } from "./error_handling";
 
-// const engine = "sdxl1.0-txt2img";
-// const engine = "w2imgsd1.5-img2img";
-
 class SegmindVendor extends BaseVendor {
   private provider: string;
   private model: string;

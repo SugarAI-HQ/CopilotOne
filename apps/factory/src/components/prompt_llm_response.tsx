@@ -16,7 +16,7 @@ import {
 import DownloadButtonBase64 from "./download_button_base64";
 import CopyToClipboardButton from "./copy_button";
 import Image from "next/image";
-import { imageModels } from "~/services/providers";
+import { hasImageModels } from "~/utils/template";
 
 interface PromptLlmResponseProps {
   pl: LogOutput;
@@ -153,7 +153,7 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
   return (
     <>
       {pl?.completion &&
-        (imageModels(pl.llmModelType) ? (
+        (hasImageModels(pl.llmModelType) ? (
           <DownloadButtonBase64 logId={pl?.id} />
         ) : (
           <CopyToClipboardButton
@@ -162,7 +162,7 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
           />
         ))}
       {lr?.data &&
-        (imageModels(pl?.llmModelType as ModelTypeType) ? (
+        (hasImageModels(pl?.llmModelType as ModelTypeType) ? (
           <DownloadButtonBase64 logId={pl?.id as string} />
         ) : (
           <CopyToClipboardButton
