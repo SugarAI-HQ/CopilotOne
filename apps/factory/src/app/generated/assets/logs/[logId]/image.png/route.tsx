@@ -1,7 +1,7 @@
 import { prisma } from "~/server/db";
 import { ImageResponse, type NextRequest } from "next/server";
 import { env } from "~/env.mjs";
-import { resizeBase64Image } from "~/utils/images";
+import { resizeBase64Image } from "~/utils/images_backend";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { response404 } from "~/services/api_helpers";
@@ -14,7 +14,9 @@ export async function GET(
   const pl = await prisma.promptLog.findFirst({
     where: {
       id: params.logId,
-      llmModelType: ModelTypeSchema.Enum.TEXT2IMAGE,
+      llmModelType: {
+        in: [ModelTypeSchema.Enum.TEXT2IMAGE, ModelTypeSchema.Enum.IMAGE2IMAGE],
+      },
     },
   });
 

@@ -100,7 +100,7 @@ export const PromptEnvironmentSchema = z.enum(['DEV','PREVIEW','RELEASE']);
 
 export type PromptEnvironmentType = `${z.infer<typeof PromptEnvironmentSchema>}`
 
-export const ModelTypeSchema = z.enum(['TEXT2TEXT','TEXT2IMAGE','TEXT2CODE']);
+export const ModelTypeSchema = z.enum(['TEXT2TEXT','TEXT2IMAGE','TEXT2CODE','IMAGE2IMAGE']);
 
 export type ModelTypeType = `${z.infer<typeof ModelTypeSchema>}`
 

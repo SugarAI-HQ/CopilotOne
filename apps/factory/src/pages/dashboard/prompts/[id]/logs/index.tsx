@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -9,12 +8,7 @@ import {
   TableRow,
   Paper,
   Button,
-  Box,
-  Typography,
-  Tooltip,
-  IconButton,
 } from "@mui/material";
-import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
@@ -23,28 +17,18 @@ import LabelIcons from "~/components/label_icon";
 import { NextPageWithLayout } from "~/pages/_app";
 
 import LogSearchFiltering from "./log_search_filtering";
-import {
-  LabelledStateType,
-  ModelTypeType,
-  ModelTypeSchema,
-} from "~/generated/prisma-client-zod.ts";
 import PromptCompletion from "~/components/prompt_completion";
-import DownloadButtonImg from "~/components/download_button_img";
-import CopyToClipboardButton from "~/components/copy_button";
 import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
-import DownloadButtonBase64 from "~/components/download_button_base64";
 import { LogSchema } from "~/validators/prompt_log";
 import { GenerateOutput } from "~/validators/service";
 import PromptLlmResponse, {
   LlmResponseAction,
 } from "~/components/prompt_llm_response";
 import { LogOutput } from "~/validators/prompt_log";
-import Image from "next/image";
-import ShareCube from "~/components/cubes/share_cube";
-import ShareIcon from "@mui/icons-material/Share";
 import { LlmResponse } from "~/validators/llm_respose";
+import { getEditorVersion } from "~/utils/template";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -141,13 +125,6 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
     await fetchNextPage();
   };
 
-  const getRole = (log: LogSchema) => {
-    return providerModels[
-      `${log?.llmModelType as keyof typeof providerModels}`
-    ].models[`${log.llmProvider}`]?.find((mod) => mod.name === log.llmModel)
-      ?.hasRole;
-  };
-
   return (
     <div>
       {/* <TextField
@@ -193,7 +170,11 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                 {logModeMax && <TableCell>{log.id}</TableCell>}
                 <TableCell>
                   {/* we are checking wether the role is true or false */}
-                  {getRole(log) !== 0 ? (
+                  {getEditorVersion(
+                    log.llmModelType,
+                    log.llmProvider,
+                    log.llmModel,
+                  ) !== (0 || 3) ? (
                     <>
                       <PromptView
                         promptInputs={JSON.parse(log.prompt)}
@@ -205,7 +186,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     <>
                       <PromptView
                         promptInputs={[]}
-                        haveroleUserAssistant={0}
+                        haveroleUserAssistant={0 || 3}
                         promptTemplate={log.prompt}
                       />
                     </>
@@ -233,7 +214,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       justifyContent: "center",
                       flexDirection: "column",
                       alignItems: "center",
-                      // display: "flex",
+                      display: "flex",
                       maxHeight: 150,
                     }}
                   >

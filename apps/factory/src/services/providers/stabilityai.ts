@@ -56,7 +56,7 @@ async function run_segmind(
   llmModelType: ModelTypeType,
   dryRun: boolean = false,
 ) {
-  let client = new SegmindVendor("sdxl1.0", "sdxl1.0");
+  let client = new SegmindVendor("sdxl1.0", "sdxl1.0-txt2img");
   const lr = await client.makeApiCallWithRetry(prompt, dryRun);
 
   return lr;
@@ -70,4 +70,12 @@ const sdxl: PromptDataSchemaType = {
 
 export const template = {
   sdxl: sdxl,
+};
+
+export const defaults = {
+  stabilityai: {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
 };

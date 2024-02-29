@@ -31,3 +31,11 @@ const open_Journey: PromptDataSchemaType = {
 export const template = {
   openjourney: open_Journey,
 };
+
+export const defaults = {
+  prompthero: {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+};

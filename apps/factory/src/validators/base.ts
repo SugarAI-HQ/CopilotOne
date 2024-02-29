@@ -13,7 +13,7 @@ export type Model = {
   name: string;
   label: string;
   enabled: boolean;
-  hasRole: number;
+  editorVersion: number;
 };
 
 export type Provider = Model;
@@ -31,6 +31,7 @@ type ProviderModels = {
   TEXT2TEXT: ModelType;
   TEXT2IMAGE: ModelType;
   TEXT2CODE: ModelType;
+  IMAGE2IMAGE: ModelType;
 };
 
 export const providerModels: ProviderModels = {
@@ -40,55 +41,55 @@ export const providerModels: ProviderModels = {
     defaultProvider: "llama2",
     defaultModel: "7b",
     providers: [
-      { name: "llama2", label: "Llama2", enabled: true, hasRole: 0 },
-      { name: "mistral", label: "Mistral", enabled: true, hasRole: 0 },
-      { name: "openai", label: "OpenAI", enabled: true, hasRole: 0 },
-      { name: "falcon", label: "Falcon", enabled: false, hasRole: 0 },
-      { name: "mpt", label: "MPT", enabled: false, hasRole: 0 },
+      { name: "llama2", label: "Llama2", enabled: true, editorVersion: 0 },
+      { name: "mistral", label: "Mistral", enabled: true, editorVersion: 0 },
+      { name: "openai", label: "OpenAI", enabled: true, editorVersion: 0 },
+      { name: "falcon", label: "Falcon", enabled: false, editorVersion: 0 },
+      { name: "mpt", label: "MPT", enabled: false, editorVersion: 0 },
     ],
     models: {
       openai: [
-        // { name: "davinci", label: "Davinci", enabled: false, hasRole: false },
+        // { name: "davinci", label: "Davinci", enabled: false, editorVersion: false },
         {
           name: "gpt-3.5-turbo",
           label: "Gpt 3.5 Turbo",
           enabled: true,
-          hasRole: 1,
+          editorVersion: 1,
         },
-        { name: "gpt-4", label: "Gpt 4", enabled: true, hasRole: 1 },
+        { name: "gpt-4", label: "Gpt 4", enabled: true, editorVersion: 1 },
       ],
       llama2: [
-        { name: "7b", label: "7B", enabled: true, hasRole: 0 },
-        { name: "13b", label: "13B", enabled: true, hasRole: 0 },
-        { name: "70b", label: "70B", enabled: true, hasRole: 0 },
+        { name: "7b", label: "7B", enabled: true, editorVersion: 0 },
+        { name: "13b", label: "13B", enabled: true, editorVersion: 0 },
+        { name: "70b", label: "70B", enabled: true, editorVersion: 0 },
       ],
       falcon: [
-        { name: "7b", label: "7B", enabled: false, hasRole: 0 },
-        { name: "40b", label: "40B", enabled: false, hasRole: 0 },
-        { name: "180b", label: "180B", enabled: false, hasRole: 0 },
+        { name: "7b", label: "7B", enabled: false, editorVersion: 0 },
+        { name: "40b", label: "40B", enabled: false, editorVersion: 0 },
+        { name: "180b", label: "180B", enabled: false, editorVersion: 0 },
       ],
       mpt: [
-        { name: "7b", label: "7B", enabled: false, hasRole: 0 },
-        { name: "30b", label: "30B", enabled: false, hasRole: 0 },
+        { name: "7b", label: "7B", enabled: false, editorVersion: 0 },
+        { name: "30b", label: "30B", enabled: false, editorVersion: 0 },
       ],
       mistral: [
         {
           name: "Mistral-7B",
           label: "Mistral-7B",
           enabled: true,
-          hasRole: 2,
+          editorVersion: 2,
         },
         // {
         //   name: "WizardCoder-34B",
         //   label: "WizardCoder-34B",
         //   enabled: true,
-        //   hasRole: false,
+        //   editorVersion: false,
         // },
         {
           name: "Mistral-7B-Instruct-v0.1",
           label: "Mistral-7B-Instruct",
           enabled: true,
-          hasRole: 0,
+          editorVersion: 0,
         },
       ],
     },
@@ -100,19 +101,19 @@ export const providerModels: ProviderModels = {
     defaultProvider: "stabilityai",
     defaultModel: "sdxl",
     providers: [
-      { name: "openai", label: "Open AI", enabled: true, hasRole: 0 },
-      { name: "runwayml", label: "Runway ML", enabled: true, hasRole: 0 },
+      { name: "openai", label: "Open AI", enabled: true, editorVersion: 0 },
+      { name: "runwayml", label: "Runway ML", enabled: true, editorVersion: 0 },
       {
         name: "prompthero",
         label: "Prompt Hero",
         enabled: true,
-        hasRole: 0,
+        editorVersion: 0,
       },
       {
         name: "stabilityai",
         label: "Stability AI",
         enabled: true,
-        hasRole: 0,
+        editorVersion: 0,
       },
     ],
     models: {
@@ -121,7 +122,7 @@ export const providerModels: ProviderModels = {
           name: "sdxl",
           label: "Stable Diffusion XL 1.0",
           enabled: true,
-          hasRole: 0,
+          editorVersion: 0,
         },
       ],
       openai: [
@@ -129,7 +130,7 @@ export const providerModels: ProviderModels = {
           name: "dall-e",
           label: "Dall-E-3",
           enabled: true,
-          hasRole: 0,
+          editorVersion: 0,
         },
       ],
       runwayml: [
@@ -137,7 +138,7 @@ export const providerModels: ProviderModels = {
           name: "stable-diffusion-v1-5",
           label: "Stable Diffusion V1-5",
           enabled: true,
-          hasRole: 0,
+          editorVersion: 0,
         },
       ],
       prompthero: [
@@ -145,7 +146,7 @@ export const providerModels: ProviderModels = {
           name: "openjourney",
           label: "Open Journey",
           enabled: true,
-          hasRole: 0,
+          editorVersion: 0,
         },
       ],
     },
@@ -157,7 +158,12 @@ export const providerModels: ProviderModels = {
     defaultProvider: "WizardCoder",
     defaultModel: "WizardCoder-34B",
     providers: [
-      { name: "WizardCoder", label: "Wizard Coder", enabled: true, hasRole: 0 },
+      {
+        name: "WizardCoder",
+        label: "Wizard Coder",
+        enabled: true,
+        editorVersion: 0,
+      },
     ],
     models: {
       WizardCoder: [
@@ -165,7 +171,32 @@ export const providerModels: ProviderModels = {
           name: "WizardCoder-34B",
           label: "WizardCoder-34B",
           enabled: true,
-          hasRole: 0,
+          editorVersion: 0,
+        },
+      ],
+    },
+  },
+
+  IMAGE2IMAGE: {
+    label: "Image-to-Image",
+    enabled: true,
+    defaultProvider: "segmind",
+    defaultModel: "sd1.5-img2img",
+    providers: [
+      {
+        name: "segmind",
+        label: "Segmind",
+        enabled: true,
+        editorVersion: 3,
+      },
+    ],
+    models: {
+      segmind: [
+        {
+          name: "sd1.5-img2img",
+          label: "Stable Diffusion img2img",
+          enabled: true,
+          editorVersion: 3,
         },
       ],
     },

@@ -51,3 +51,16 @@ export const template = {
   "Mistral-7B": mistral_7B,
   "Mistral-7B-Instruct-v0.1": mistral_7B_Instruct,
 };
+
+export const defaults = {
+  "Mistral-7B": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+  "Mistral-7B-Instruct-v0.1": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+};

@@ -16,7 +16,11 @@ import {
 import { api } from "~/utils/api";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import { getUniqueJsonArray, getVariables } from "~/utils/template";
-import { GenerateInput, GenerateOutput } from "~/validators/service";
+import {
+  GenerateInput,
+  GenerateOutput,
+  GetPromptOutput,
+} from "~/validators/service";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import PromptOutput from "./prompt_output";
 import {
@@ -40,14 +44,8 @@ import { useRouter } from "next/router";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
 import { NextSeo } from "next-seo";
-import DownloadButtonImg from "./download_button_img";
-import { prisma } from "~/server/db";
-import { env } from "~/env.mjs";
 import { providerModels } from "~/validators/base";
-import {
-  PromptDataSchemaType,
-  PromptDataType,
-} from "~/validators/prompt_version";
+import { PromptDataSchemaType } from "~/validators/prompt_version";
 import { promptEnvironment } from "~/validators/base";
 import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
@@ -55,16 +53,13 @@ import DownloadButtonBase64 from "./download_button_base64";
 import LikeButton from "./marketplace/like_button";
 import { LogSchema } from "~/validators/prompt_log";
 import toast from "react-hot-toast";
-import {
-  ImageResponseV1,
-  LlmResponse,
-  TextResponseV1,
-  getCompletionResponse,
-  processLlmResponse,
-} from "~/validators/llm_respose";
+import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
-import PromptLogTable from "~/pages/dashboard/prompts/[id]/logs";
 import { ImageGallery } from "./image_gallery";
+import { FileObject } from "~/utils/common";
+import { getEditorVersion, hasImageModels } from "~/utils/template";
+import PromptInputAttachment from "./prompt_input_attachment";
+import { getDefaults } from "~/services/providers";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -89,6 +84,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const handleOpen = () => setIsOpen(true);
   const [isLoadingState, setIsLoading] = useState(false);
   const [openShareModal, setOpenShareModal] = useState<string>("");
+  const [attachments, setAttachments] = useState<FileObject>();
   const { query } = useRouter();
   const router = useRouter();
 
@@ -101,12 +97,13 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     },
     {
       onSuccess(item) {
-        const haveroleUserAssistant = providerModels[
-          `${item?.modelType as keyof typeof providerModels}`
-        ]?.models[`${item?.llmProvider}`]?.find(
-          (mod) => mod.name === item?.model,
-        )?.hasRole;
-        if (haveroleUserAssistant !== 0) {
+        if (
+          getEditorVersion(
+            item?.modelType as ModelTypeType,
+            item?.llmProvider as string,
+            item?.model as string,
+          ) !== (0 || 3)
+        ) {
           setVariables([
             ...getUniqueJsonArray(
               getVariables(
@@ -148,11 +145,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     );
   }
 
-  const haveroleUserAssistant = providerModels[
-    `${pv?.modelType as keyof typeof providerModels}`
-  ]?.models[`${pv?.llmProvider}`]?.find((mod) => mod.name === pv?.model)
-    ?.hasRole;
-
   const handleVariablesChange = (k: string, v: string) => {
     setVariables((pvrs) => {
       // Step 2: Update the state
@@ -184,10 +176,6 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
       (pvrs ?? []).map((item) => [`${item.type}${item.key}`, item.value]),
     );
 
-    console.log("data");
-    console.log(data);
-    console.log("data");
-
     const pl = await generateMutation.mutateAsync(
       {
         username: username,
@@ -197,6 +185,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         isDevelopment: checked,
         environment: promptEnvironment.Enum.DEV,
         data: data,
+        attachments: attachments,
       } as GenerateInput,
       {
         onSettled(lPl: any, error) {
@@ -260,6 +249,10 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
     color: "white",
     backgroundColor: "var(--sugarcube-component-bg-color) !important",
+  };
+
+  const onFileUpload = (file: FileObject) => {
+    setAttachments(file);
   };
 
   return (
@@ -397,8 +390,28 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                           promptInputs={
                             (pv?.promptData as PromptDataSchemaType).data
                           }
-                          haveroleUserAssistant={haveroleUserAssistant}
+                          haveroleUserAssistant={getEditorVersion(
+                            pv?.modelType,
+                            pv?.llmProvider,
+                            pv?.model,
+                          )}
                         />
+                      )}
+
+                      {pv?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE && (
+                        <Box
+                          sx={{
+                            padding: 2,
+                          }}
+                        >
+                          <PromptInputAttachment
+                            onFileUpload={onFileUpload}
+                            modelDefaultValues={getDefaults(
+                              pv?.llmProvider,
+                              pv?.model,
+                            )}
+                          />
+                        </Box>
                       )}
                       <PromptVariables
                         vars={pvrs}
@@ -543,9 +556,9 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                   )}
                 </Box>
               </div>
-              {pv?.modelType === ModelTypeSchema.enum.TEXT2IMAGE && (
+              {hasImageModels(pv?.modelType as ModelTypeType) && (
                 <ImageGallery
-                  pv={pv}
+                  pv={pv as GetPromptOutput}
                   itemsPerPage={10}
                   outputLog={pl as GenerateOutput}
                   url={url}

@@ -16,21 +16,12 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import {
-  providerModels,
-  Provider,
-  Model,
-  LLM,
-  getDefaultLLM,
-} from "~/validators/base";
+import { providerModels, Provider, Model, LLM } from "~/validators/base";
 import { FormProviderSelectInput } from "./form_components/formProviderSelect";
 import { FormModelSelectInput } from "./form_components/formModelSelect";
-import { Controller } from "react-hook-form";
-import { FormSelectInput } from "./form_components/formSelectInput";
-import {
-  ModelTypeSchema,
-  ModelTypeType,
-} from "~/generated/prisma-client-zod.ts";
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
+import { getEditorVersion } from "~/utils/template";
+
 function LLMSelector({
   initialLLM,
   onLLMChange,
@@ -61,19 +52,13 @@ function LLMSelector({
     setOpenConsent("");
   };
 
-  const getRole = (providerName: string, modelName: string) => {
-    return providerModels[
-      `${llm?.modelType as keyof typeof providerModels}`
-    ].models[`${providerName}`]?.find((mod) => mod.name === modelName)?.hasRole;
-  };
-
   // TODO: Add check for hasRole so it wont always ask for consent.
   const isEditorChanged = function (llm: LLM) {
     console.log("initial LLM", initialLLM);
     console.log("next LLM", llm);
     return (
-      getRole(llm.provider, llm.model) !==
-      getRole(initialLLM.provider, initialLLM.model)
+      getEditorVersion(llm?.modelType, llm.provider, llm.model) !==
+      getEditorVersion(llm?.modelType, initialLLM.provider, initialLLM.model)
     );
   };
 
