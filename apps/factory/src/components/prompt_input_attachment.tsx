@@ -4,6 +4,7 @@ import ReactFileReader from "react-file-reader";
 import { url2ImageBase64Url, FileObject } from "~/utils/common";
 import { ModelDefaultValueSchemaType } from "~/validators/prompt_version";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import toast from "react-hot-toast";
 
 function PromptInputAttachment({
   onFileUpload,
@@ -17,6 +18,18 @@ function PromptInputAttachment({
   const [url, setUrl] = useState<string>(modelDefaultValues.url);
 
   const handleFiles = (file: FileObject): void => {
+    console.log(file);
+    const maxSizeInBase64 = 5 * 1024 * 1024; // 1MB as an example, adjust as needed
+    console.log(maxSizeInBase64);
+    const base64SizeInBytes = file.base64
+      ? (file.base64.length * 3) / 4 - 2
+      : 0;
+    console.log(base64SizeInBytes);
+    if (base64SizeInBytes > maxSizeInBase64) {
+      toast.error(
+        "File size exceeds the 5MB limit. Please upload a smaller image.",
+      );
+    }
     setUrl(file?.base64 as string);
     if (file && onFileUpload) {
       onFileUpload(file);
