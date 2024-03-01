@@ -15,7 +15,11 @@ import {
 } from "@mui/material";
 import { api } from "~/utils/api";
 import PromptVariables, { PromptVariableProps } from "./prompt_variables";
-import { getUniqueJsonArray, getVariables } from "~/utils/template";
+import {
+  getUniqueJsonArray,
+  getVariables,
+  hasImageEditor,
+} from "~/utils/template";
 import {
   GenerateInput,
   GenerateOutput,
@@ -98,16 +102,11 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     {
       onSuccess(item) {
         if (
-          getEditorVersion(
+          !hasImageEditor(
             item?.modelType as ModelTypeType,
             item?.llmProvider as string,
             item?.model as string,
-          ) !== 0 &&
-          getEditorVersion(
-            item?.modelType as ModelTypeType,
-            item?.llmProvider as string,
-            item?.model as string,
-          ) !== 3
+          )
         ) {
           setVariables([
             ...getUniqueJsonArray(
