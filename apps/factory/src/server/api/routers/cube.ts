@@ -7,6 +7,7 @@ import { getPromptInput, getPromptOutput } from "~/validators/service";
 import { getPv } from "./service";
 import { PromptDataSchemaType } from "~/validators/prompt_version";
 import { getLogsInput, logIdsListOutput } from "~/validators/prompt_log";
+import { Prisma } from "@prisma/client";
 
 export const cubeRouter = createTRPCRouter({
   getPrompt: publicProcedure
@@ -73,7 +74,13 @@ export const cubeRouter = createTRPCRouter({
       // console.log(`logs 1 -------------- ${JSON.stringify(filteredWhere)}`);
 
       const totalRecords = await ctx.prisma.promptLog.count({
-        where: filteredWhere,
+        where: {
+          ...filteredWhere,
+          llmResponse: {
+            path: ["data"],
+            not: Prisma.JsonNull,
+          },
+        },
       });
       const totalPages = Math.ceil(totalRecords / perPage);
 
@@ -81,7 +88,13 @@ export const cubeRouter = createTRPCRouter({
 
       const logs = await ctx.prisma.promptLog.findMany({
         cursor: cursor ? { id: cursor } : undefined,
-        where: filteredWhere,
+        where: {
+          ...filteredWhere,
+          llmResponse: {
+            path: ["data"],
+            not: Prisma.JsonNull,
+          },
+        },
         orderBy: {
           createdAt: "desc",
         },
