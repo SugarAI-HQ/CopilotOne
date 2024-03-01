@@ -204,7 +204,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
 
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
     if (pl) {
-      setPl(pl);
+      setPl(pl as GenerateOutput);
       setPromptOutput(
         (processLlmResponse(pl?.llmResponse as LlmResponse) as string) ||
           (pl?.completion as string as string),

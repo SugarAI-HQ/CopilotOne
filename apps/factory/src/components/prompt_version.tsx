@@ -264,7 +264,7 @@ function PromptVersion({
     console.log(`pl >>>>>>>: ${JSON.stringify(pl)}`);
 
     if (pl) {
-      setPl(pl);
+      setPl(pl as GenerateOutput);
       // setPromptOutput(
       //   processLlmResponse(pl?.llmResponse as LlmResponse) as string,
       // );
