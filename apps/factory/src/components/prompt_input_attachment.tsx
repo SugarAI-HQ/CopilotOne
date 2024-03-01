@@ -44,7 +44,7 @@ function PromptInputAttachment({
           fontSize: "1rem",
         }}
       >
-        Input Images
+        Input Image
       </Typography>
 
       <div className={`group relative overflow-hidden ${cube ?? "w-3/12	"}`}>
@@ -64,7 +64,7 @@ function PromptInputAttachment({
           <img
             src={url}
             alt="Placeholder"
-            className="h-full w-full cursor-pointer object-cover group-hover:opacity-50"
+            className="h-full w-full cursor-pointer object-cover group-hover:opacity-30"
           />
         </ReactFileReader>
       </div>
@@ -73,27 +73,3 @@ function PromptInputAttachment({
 }
 
 export default PromptInputAttachment;
-
-{
-  /* <Box
-sx={{
-  display: "flex",
-}}
->
-<Box sx={{ textAlign: "center" }}>
-  <Stack spacing={2} alignItems={"center"}>
-    <ReactFileReader
-      fileTypes={modelDefaultValues.supportFormatType}
-      base64={modelDefaultValues.base64}
-      handleFiles={handleFiles}
-    >
-      <img
-        src={url}
-        alt="Placeholder"
-        className="h-48 w-48 cursor-pointer object-cover"
-      />
-    </ReactFileReader>
-  </Stack>
-</Box>
-</Box> */
-}

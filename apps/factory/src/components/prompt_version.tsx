@@ -30,6 +30,7 @@ import PromptVariables, { PromptVariableProps } from "./prompt_variables";
 import {
   getUniqueJsonArrayWithDefaultValues,
   getVariables,
+  hasImageEditor,
 } from "~/utils/template";
 import SaveIcon from "@mui/icons-material/Save";
 import { CreateVersion } from "./create_version";
@@ -78,7 +79,6 @@ import {
 } from "~/validators/llm_respose";
 import { escapeStringRegexp } from "~/utils/template";
 import PromptInputAttachment from "./prompt_input_attachment";
-import { getEditorVersion } from "~/utils/template";
 
 function PromptVersion({
   ns,
@@ -145,11 +145,11 @@ function PromptVersion({
   const extractTemplate = (lpv: pv): string => {
     let templateValue: string;
     if (
-      getEditorVersion(
+      !hasImageEditor(
         pt?.modelType as ModelTypeType,
         lpv?.llmProvider as string,
         lpv?.llmModel as string,
-      ) !== (0 || 3)
+      )
     ) {
       templateValue = JSON.stringify(lpv?.promptData);
     } else {
@@ -308,16 +308,7 @@ function PromptVersion({
     let currentTemplate = { v: prompt.v, p: prompt.p, data: promptInputs };
     if (
       isLLMChanged &&
-      getEditorVersion(
-        pt?.modelType as ModelTypeType,
-        tllm.provider,
-        tllm.model,
-      ) !==
-        getEditorVersion(
-          pt?.modelType as ModelTypeType,
-          llm.provider,
-          llm.model,
-        )
+      !hasImageEditor(pt?.modelType as ModelTypeType, tllm.provider, tllm.model)
     ) {
       currentTemplate = getTemplate(llm.provider, llm.model);
     } else {
@@ -491,11 +482,11 @@ function PromptVersion({
             md={pt?.modelType === ModelTypeSchema.Enum.IMAGE2IMAGE ? 6 : 7}
           >
             <Box>
-              {getEditorVersion(
+              {hasImageEditor(
                 pt?.modelType as ModelTypeType,
                 llm.provider,
                 llm.model,
-              ) === (0 || 3) ? (
+              ) ? (
                 <>
                   <TextField
                     label="Template"
@@ -624,11 +615,11 @@ function PromptVersion({
             variant="outlined"
             onClick={handleRun}
             disabled={
-              getEditorVersion(
+              !hasImageEditor(
                 pt?.modelType as ModelTypeType,
                 llm.provider,
                 llm.model,
-              ) !== (0 || 3)
+              )
                 ? promptInputs.length > 0 &&
                   !promptInputs.some(
                     (input: { id: string; role: string; content: string }) =>

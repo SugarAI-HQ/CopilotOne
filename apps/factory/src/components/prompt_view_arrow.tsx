@@ -78,7 +78,7 @@ export const PromptView = ({
 }: PromptViewArrowProps) => {
   return (
     <>
-      {haveroleUserAssistant !== (0 || 3) ? (
+      {haveroleUserAssistant !== 0 && haveroleUserAssistant !== 3 ? (
         <>
           <TableContainer sx={{ maxHeight: "200px", overflowY: "auto" }}>
             <Table aria-label="simple table">

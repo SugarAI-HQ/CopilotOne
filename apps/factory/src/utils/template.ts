@@ -169,3 +169,12 @@ export const getEditorVersion = (
     `${providerName}`
   ]?.find((mod) => mod.name === modelName)?.editorVersion;
 };
+
+export const hasImageEditor = (
+  modeType: ModelTypeType,
+  providerName: string,
+  modelName: string,
+): boolean => {
+  const editorVersion = getEditorVersion(modeType, providerName, modelName);
+  return editorVersion === 0 || editorVersion === 3;
+};

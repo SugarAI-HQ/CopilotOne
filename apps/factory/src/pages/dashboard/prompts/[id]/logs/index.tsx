@@ -28,7 +28,7 @@ import PromptLlmResponse, {
 } from "~/components/prompt_llm_response";
 import { LogOutput } from "~/validators/prompt_log";
 import { LlmResponse } from "~/validators/llm_respose";
-import { getEditorVersion } from "~/utils/template";
+import { getEditorVersion, hasImageEditor } from "~/utils/template";
 
 interface PromptLogTableProps {
   logModeMax: boolean;
@@ -170,11 +170,11 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                 {logModeMax && <TableCell>{log.id}</TableCell>}
                 <TableCell>
                   {/* we are checking wether the role is true or false */}
-                  {getEditorVersion(
+                  {!hasImageEditor(
                     log.llmModelType,
                     log.llmProvider,
                     log.llmModel,
-                  ) !== (0 || 3) ? (
+                  ) ? (
                     <>
                       <PromptView
                         promptInputs={JSON.parse(log.prompt)}
@@ -186,7 +186,11 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     <>
                       <PromptView
                         promptInputs={[]}
-                        haveroleUserAssistant={0 || 3}
+                        haveroleUserAssistant={getEditorVersion(
+                          log.llmModelType,
+                          log.llmProvider,
+                          log.llmModel,
+                        )}
                         promptTemplate={log.prompt}
                       />
                     </>
