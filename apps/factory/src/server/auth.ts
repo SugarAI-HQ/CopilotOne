@@ -13,6 +13,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 import * as Sentry from "@sentry/nextjs";
+import { getLogoImage } from "~/utils/log";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -55,7 +56,7 @@ function getAuthOptions(): NextAuthOptions {
     theme: {
       colorScheme: "dark", // "auto" | "dark" | "light"
       // brandColor: "#26453E", // Hex color code
-      logo: env.NEXT_PUBLIC_APP_LOGO, // Absolute URL to image
+      logo: getLogoImage(), // Absolute URL to image
       // buttonText: "#FF2400", // Hex color code
     },
     callbacks: {

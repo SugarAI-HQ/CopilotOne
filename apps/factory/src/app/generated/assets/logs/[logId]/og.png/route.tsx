@@ -6,6 +6,7 @@ import { ResponseType } from "openai/_shims/auto/types";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { response404 } from "~/services/api_helpers";
+import { getLogoImage } from "~/utils/log";
 
 export async function GET(
   req: NextRequest,
@@ -83,7 +84,7 @@ function ogImageResponse(base64Image: string) {
 
           <img
             height={40}
-            src={env.NEXT_PUBLIC_APP_LOGO}
+            src={getLogoImage()}
             style={{
               position: "absolute",
               top: "0px",

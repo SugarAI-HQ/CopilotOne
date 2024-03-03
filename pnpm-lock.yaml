@@ -92,6 +92,9 @@ importers:
       next-auth:
         specifier: ^4.24.5
         version: 4.24.5(next@13.4.13)(react-dom@18.2.0)(react@18.2.0)
+      next-runtime-env:
+        specifier: ~1.7.4
+        version: 1.7.4
       next-seo:
         specifier: ^6.4.0
         version: 6.4.0(next@13.4.13)(react-dom@18.2.0)(react@18.2.0)
@@ -11627,6 +11630,12 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       uuid: 8.3.2
+    dev: false
+
+  /next-runtime-env@1.7.4:
+    resolution: {integrity: sha512-fUmvNxscQt5B1yrHoAtmQC/VFqbHATbsHgwpz9KJO0sBgjfEzITqkOK5b+YDhekiGdQoaznTGyQsp4ty5VabUA==}
+    dependencies:
+      chalk: 4.1.2
     dev: false
 
   /next-seo@6.4.0(next@13.4.13)(react-dom@18.2.0)(react@18.2.0):

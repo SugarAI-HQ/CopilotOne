@@ -66,7 +66,7 @@ import {
 } from "~/validators/prompt_version";
 import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate, getDefaults } from "~/services/providers";
-import { FileObject } from "~/utils/common";
+import { FileObject } from "~/utils/images";
 import { hasImageModels } from "~/utils/template";
 import { LogSchema } from "~/validators/prompt_log";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -241,7 +241,7 @@ function PromptVersion({
     }
     const pl = await generateMutation.mutateAsync(
       {
-        username: ns.username,
+        username: ns?.username,
         package: pp?.name || "",
         template: pt?.name || "",
         versionOrEnvironment: lpv.version || "",
