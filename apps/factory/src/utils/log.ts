@@ -39,3 +39,11 @@ export const getAPIEndPoint = () => {
 export const getSentryDsn = () => {
   return env("NEXT_PUBLIC_SENTRY_DSN") as string;
 };
+
+export const getSentryOrg = () => {
+  return env("NEXT_PUBLIC_SENTRY_ORG") as string;
+};
+
+export const getSentryProject = () => {
+  return env("NEXT_PUBLIC_SENTRY_PROJECT") as string;
+};

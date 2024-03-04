@@ -61,9 +61,10 @@ COPY --chown=nextjs:nodejs ./docker/generate-env.cjs /app/apps/${PROJECT_NAME}/
 
 
 RUN chmod +x /app/entrypoint.sh
+
+RUN npm install next-runtime-env@1.x --omit=optional --prefer-offline --no-audit
 RUN npm install -g prisma@latest
 RUN npm install sharp npm install
-RUN npm install next-runtime-env@1.x --omit=optional --prefer-offline --no-audit
 
 USER root
 
