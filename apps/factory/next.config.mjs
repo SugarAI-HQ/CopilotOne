@@ -1,6 +1,5 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import { configureRuntimeEnv } from "next-runtime-env/build/configure.js";
-import { getSentryOrg, getSentryProject } from "~/utils/log";
 
 configureRuntimeEnv();
 /**
@@ -43,8 +42,8 @@ export default withSentryConfig(
 
     // Suppresses source map uploading logs during build
     silent: true,
-    org: getSentryOrg(),
-    project: getSentryProject(),
+    org: process.env.SENTRY_ORG,
+    project: process.env.SENTRY_PROJECT,
   },
   {
     // For all available options, see:
