@@ -57,10 +57,13 @@ COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/public* ./apps
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/.next/static* ./apps/${PROJECT_NAME}/.next/static
 COPY --from=build --chown=nextjs:nodejs /app/apps/${PROJECT_NAME}/prisma ./apps/${PROJECT_NAME}/prisma
 COPY --chown=nextjs:nodejs ./docker/entrypoint.sh /app/entrypoint.sh
+COPY --chown=nextjs:nodejs ./docker/generate-env.cjs /app/apps/${PROJECT_NAME}/
+
 
 RUN chmod +x /app/entrypoint.sh
 RUN npm install -g prisma@latest
-RUN npm install sharp
+RUN npm install sharp npm install
+RUN npm install next-runtime-env@1.x --omit=optional --prefer-offline --no-audit
 
 USER root
 

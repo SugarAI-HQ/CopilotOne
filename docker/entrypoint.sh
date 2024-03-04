@@ -15,10 +15,14 @@ if [ "${SKIP_MIGRATION_LOWER}" != "false" ]; then
 else
   # Run migrations
   echo "Running migrations..."
-  cd $PROJECT_PATH 
+  cd $PROJECT_PATH
   npx prisma migrate deploy
   cd /app/
 fi
+
+cd $PROJECT_PATH
+node generate-env.cjs
+cd /app/
 
 # Start your application
 exec "$@"
