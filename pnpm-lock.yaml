@@ -92,6 +92,9 @@ importers:
       next-auth:
         specifier: ^4.24.5
         version: 4.24.5(next@13.4.13)(react-dom@18.2.0)(react@18.2.0)
+      next-runtime-env:
+        specifier: ~1.7.4
+        version: 1.7.4
       next-seo:
         specifier: ^6.4.0
         version: 6.4.0(next@13.4.13)(react-dom@18.2.0)(react@18.2.0)
@@ -113,6 +116,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      react-file-reader:
+        specifier: ^1.1.4
+        version: 1.1.4
       react-hook-form:
         specifier: ^7.47.0
         version: 7.47.0(react@18.2.0)
@@ -11626,6 +11632,12 @@ packages:
       uuid: 8.3.2
     dev: false
 
+  /next-runtime-env@1.7.4:
+    resolution: {integrity: sha512-fUmvNxscQt5B1yrHoAtmQC/VFqbHATbsHgwpz9KJO0sBgjfEzITqkOK5b+YDhekiGdQoaznTGyQsp4ty5VabUA==}
+    dependencies:
+      chalk: 4.1.2
+    dev: false
+
   /next-seo@6.4.0(next@13.4.13)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-XQFxkOL2hw0YE+P100HbI3EAvcludlHPxuzMgaIjKb7kPK0CvjGvLFjd9hszZFEDc5oiQkGFA8+cuWcnip7eYA==}
     peerDependencies:
@@ -12974,6 +12986,13 @@ packages:
 
   /react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
+    dev: false
+
+  /react-file-reader@1.1.4:
+    resolution: {integrity: sha512-xTeHFrDIopZpzk4aMZyILzIQbytQ6GCKR32/7kBDzO5lrAr1idbK5PkmpjP4wnT9s5F+TALviuhnWk8UeksddA==}
+    dependencies:
+      prop-types: 15.8.1
+      uuid4: 1.1.4
     dev: false
 
   /react-hook-form@7.47.0(react@18.2.0):
@@ -15227,6 +15246,10 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
     dev: true
+
+  /uuid4@1.1.4:
+    resolution: {integrity: sha512-Gr1q2k40LpF8CokcnQFjPDsdslzJbTCTBG5xQIEflUov431gFkY5KduiGIeKYAamkQnNn4IfdHJbLnl9Bib8TQ==}
+    dev: false
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}

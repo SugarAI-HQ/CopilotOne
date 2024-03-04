@@ -61,6 +61,7 @@ export const generateInput = z
   .object({
     // Template Data
     data: z.record(z.any()),
+    attachments: z.record(z.any()).optional(),
     // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
   })

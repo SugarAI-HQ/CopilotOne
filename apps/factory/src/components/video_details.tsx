@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm";
 import ShareIcon from "@mui/icons-material/Share";
 import ShareCube from "./cubes/share_cube";
 import styles from "../styles/CustomMarkdown.module.css";
+import { getAppUrl } from "~/utils/log";
 
 type VideoDetailsProps = {
   blogData: GetBlogOutput;
@@ -83,7 +84,7 @@ const VideoDetails: React.FC<VideoDetailsProps> = ({ blogData }) => {
             <ShareCube
               setOpenShareModal={setOpenShareModal}
               open={openShareModal}
-              shareUrl={`${process.env.NEXT_PUBLIC_APP_URL}${router.asPath}`}
+              shareUrl={`${getAppUrl()}${router.asPath}`}
               shareTitle={"Share Video"}
             />
           </Grid>

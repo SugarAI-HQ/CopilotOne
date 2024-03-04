@@ -16,6 +16,8 @@ import {
 import DownloadButtonBase64 from "./download_button_base64";
 import CopyToClipboardButton from "./copy_button";
 import Image from "next/image";
+import { hasImageModels } from "~/utils/template";
+import { getAppUrl } from "~/utils/log";
 
 interface PromptLlmResponseProps {
   pl: LogOutput;
@@ -111,10 +113,8 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
     let llr = lr.data as ImageResponseV1;
     return (
       <Image
-        src={`${
-          process.env.NEXT_PUBLIC_APP_URL
-        }/generated/assets/logs/${pl?.id}/image.png?w=${128}&h=${128}`}
-        blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
+        src={`${getAppUrl()}/generated/assets/logs/${pl?.id}/image.png?w=${128}&h=${128}`}
+        blurDataURL={`${getAppUrl()}/generated/assets/og.png`}
         alt="Image"
         style={{
           objectFit: "cover",
@@ -152,7 +152,7 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
   return (
     <>
       {pl?.completion &&
-        (pl.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
+        (hasImageModels(pl.llmModelType) ? (
           <DownloadButtonBase64 logId={pl?.id} />
         ) : (
           <CopyToClipboardButton
@@ -161,8 +161,8 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
           />
         ))}
       {lr?.data &&
-        (pl?.llmModelType === ModelTypeSchema.Enum.TEXT2IMAGE ? (
-          <DownloadButtonBase64 logId={pl?.id} />
+        (hasImageModels(pl?.llmModelType as ModelTypeType) ? (
+          <DownloadButtonBase64 logId={pl?.id as string} />
         ) : (
           <CopyToClipboardButton
             textToCopy={llrText?.completion}

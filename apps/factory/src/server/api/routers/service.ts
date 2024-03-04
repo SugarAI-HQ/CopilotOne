@@ -4,7 +4,11 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { generateInput, generateOutput } from "~/validators/service";
-import { generateLLmConfig, generatePrompt } from "~/utils/template";
+import {
+  generateLLmConfig,
+  generatePrompt,
+  hasImageModels,
+} from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
 import { LlmProvider } from "~/services/llm_providers";
 import { providerModels } from "~/validators/base";
@@ -15,6 +19,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
+import { getEditorVersion } from "~/utils/template";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -45,16 +50,11 @@ export const serviceRouter = createTRPCRouter({
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
         let prompt = "";
-        if (modelType === ModelTypeSchema.Enum.TEXT2IMAGE) {
-          // get template data
+        if (hasImageModels(modelType)) {
           prompt = generatePrompt(pv.template, input.data || {});
         } else {
           // here decide whether to take template data or promptData
-          if (
-            providerModels[`${modelType}`].models[`${pv.llmProvider}`]?.find(
-              (item) => item.name === pv.llmModel,
-            )?.hasRole
-          ) {
+          if (getEditorVersion(modelType, pv.llmProvider, pv.llmModel)) {
             prompt = generatePrompt(
               JSON.stringify(pv.promptData.data),
               input.data || {},
@@ -74,6 +74,7 @@ export const serviceRouter = createTRPCRouter({
           llmConfig,
           pv.llmModelType,
           input.isDevelopment,
+          input.attachments,
         );
 
         console.log(

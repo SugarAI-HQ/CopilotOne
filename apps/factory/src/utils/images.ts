@@ -1,29 +1,37 @@
-import sharp from "sharp";
+export interface FileObject {
+  base64: string;
+  fileList:
+    | FileList
+    | {
+        name: string;
+        size: number;
+        type: string;
+      }[]
+    | null;
+}
 
-export async function resizeBase64Image(
-  base64Image: string,
-  width: number = 300,
-  height: number = 300,
-  quality: number = 50,
-): Promise<string> {
-  // Convert base64 to buffer
+export async function url2ImageBase64Url(imageUrl: string) {
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
 
-  const pieces = base64Image.split(",");
-  const b64Img = pieces[pieces.length - 1] as string;
-
-  const buffer = Buffer.from(b64Img, "base64");
-
-  // Resize the image using sharp
-  const resizedBuffer = await sharp(buffer)
-    .resize({ width: width, height: height }) // Set your desired dimensions
-    .png({ quality: quality })
-    .toBuffer();
-
-  console.log(
-    `Reduce to size(${width}x${height}) from ${buffer.length} to ${
-      resizedBuffer.length
-    }:  ${(resizedBuffer.length * 100) / buffer.length}`,
-  );
-
-  return resizedBuffer.toString("base64");
+    const base64String = await new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
+    const fileObject: FileObject = {
+      base64: base64String,
+      fileList: [
+        {
+          name: imageUrl.substring(imageUrl.lastIndexOf("/") + 1),
+          size: blob.size,
+          type: blob.type,
+        },
+      ],
+    };
+    return fileObject;
+  } catch (error) {
+    console.error("Error fetching or converting image to base64:", error);
+  }
 }

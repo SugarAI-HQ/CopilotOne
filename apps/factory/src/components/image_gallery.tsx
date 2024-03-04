@@ -10,6 +10,7 @@ import { api } from "~/utils/api";
 import { LogIdsArray } from "~/validators/prompt_log";
 import Modal from "@mui/material/Modal";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { getAppUrl } from "~/utils/log";
 
 interface ImageGalleryProps {
   pv: GetPromptOutput;
@@ -111,12 +112,10 @@ export const ImageGallery = ({
                 }}
               >
                 <Image
-                  src={`${
-                    process.env.NEXT_PUBLIC_APP_URL
-                  }/generated/assets/logs/${
+                  src={`${getAppUrl()}/generated/assets/logs/${
                     logId.id
                   }/image.png?w=${128}&h=${128}`}
-                  blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
+                  blurDataURL={`${getAppUrl()}/generated/assets/og.png`}
                   alt=""
                   style={{
                     objectFit: "cover",
@@ -213,10 +212,8 @@ export function ImageFullView({
             }}
           >
             <Image
-              src={`${
-                process.env.NEXT_PUBLIC_APP_URL
-              }/generated/assets/logs/${open}/image.png?w=${1024}&h=${1024}`}
-              blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
+              src={`${getAppUrl()}/generated/assets/logs/${open}/image.png?w=${1024}&h=${1024}`}
+              blurDataURL={`${getAppUrl()}/generated/assets/og.png`}
               alt=""
               style={{
                 objectFit: "contain",

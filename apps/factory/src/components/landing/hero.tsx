@@ -4,6 +4,7 @@ import Image from "next/image";
 import Head from "next/head";
 import Link from "next/link";
 import { env } from "~/env.mjs";
+import { getLogoImage } from "~/utils/log";
 
 const Hero = () => {
   const { data: sessionData } = useSession();
@@ -23,12 +24,7 @@ const Hero = () => {
           {/* <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Sugarcane <span className="text-[hsl(280,100%,70%)]">AI</span>
           </h1> */}
-          <Image
-            src={env.NEXT_PUBLIC_APP_LOGO}
-            width={600}
-            height={600}
-            alt="Logo"
-          />
+          <Image src={getLogoImage()} width={600} height={600} alt="Logo" />
           <p className="p-3 text-center text-2xl font-bold text-white">
             Build and Launch Your First GenAI Application
           </p>

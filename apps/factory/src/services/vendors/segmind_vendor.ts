@@ -13,21 +13,22 @@ import {
 import { GPTResponseType } from "~/validators/openaiResponse";
 import { errorCodes } from "./error_handling";
 
-const engine = "sdxl1.0-txt2img";
-
 class SegmindVendor extends BaseVendor {
   private provider: string;
   private model: string;
+  private attachments?: any;
 
   constructor(
     provider: string,
     model: string,
+    attachments?: any,
     maxRetries: number = 3,
     retryDelay: number = 1000,
   ) {
-    super(`https://api.segmind.com/v1/${engine}`, maxRetries, retryDelay);
+    super(`https://api.segmind.com/v1/${model}`, maxRetries, retryDelay);
     this.provider = provider;
     this.model = model;
+    this.attachments = attachments;
   }
 
   protected createHeaders(): Headers {
@@ -42,27 +43,52 @@ class SegmindVendor extends BaseVendor {
   }
 
   protected createSegMindOptions(prompt: string): RequestInit {
-    const dimension = 1024;
     return {
       method: "POST",
       headers: this.createHeaders(),
-      body: JSON.stringify({
-        prompt,
-        // negative_prompt:
-        //   "ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, extra limbs, disfigured, deformed, body out of frame, blurry, bad anatomy, blurred, watermark, grainy, signature, cut off, draft",
-        style: "base",
-        samples: 1,
-        scheduler: "UniPC",
-        num_inference_steps: 25,
-        guidance_scale: 8,
-        strength: 0.2,
-        high_noise_fraction: 0.8,
-        seed: 468685,
-        img_width: dimension,
-        img_height: dimension,
-        refiner: true,
-        base64: true,
-      }),
+      body: JSON.stringify(
+        this.model === "sdxl1.0-txt2img"
+          ? this.executeText2ImageModel(prompt)
+          : this.executeImage2ImageModel(prompt),
+      ),
+    };
+  }
+
+  protected executeImage2ImageModel(prompt: string) {
+    return {
+      image: this.attachments.base64.split(",")[1],
+      samples: 1,
+      prompt,
+      negative_prompt: "nude, disfigured, blurry",
+      scheduler: "DDIM",
+      num_inference_steps: 25,
+      guidance_scale: 10.5,
+      strength: 0.75,
+      seed: 98877465625,
+      img_width: 512,
+      img_height: 512,
+      base64: true,
+    };
+  }
+
+  protected executeText2ImageModel(prompt: string) {
+    const dimension = 1024;
+    return {
+      prompt,
+      negative_prompt:
+        "ugly, tiling, poorly drawn hands, poorly drawn feet, poorly drawn face, out of frame, extra limbs, disfigured, deformed, body out of frame, blurry, bad anatomy, blurred, watermark, grainy, signature, cut off, draft",
+      style: "base",
+      samples: 1,
+      scheduler: "UniPC",
+      num_inference_steps: 25,
+      guidance_scale: 8,
+      strength: 0.2,
+      high_noise_fraction: 0.8,
+      seed: 468685,
+      img_width: dimension,
+      img_height: dimension,
+      refiner: true,
+      base64: true,
     };
   }
 

@@ -48,3 +48,11 @@ const WizardCoder_34B: PromptDataSchemaType = {
 export const template = {
   "WizardCoder-34B": WizardCoder_34B,
 };
+
+export const defaults = {
+  "WizardCoder-34B": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+};

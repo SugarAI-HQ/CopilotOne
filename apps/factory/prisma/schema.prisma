@@ -51,6 +51,7 @@ enum ModelType {
   TEXT2TEXT
   TEXT2IMAGE
   TEXT2CODE
+  IMAGE2IMAGE
 }
 
 enum PromptRunModes {

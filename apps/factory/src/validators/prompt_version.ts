@@ -73,6 +73,16 @@ export const PromptDataSchema = z.object({
 });
 export type PromptDataSchemaType = z.infer<typeof PromptDataSchema>;
 
+export const ModelDefaultValueSchema = z.object({
+  url: z.string(),
+  supportFormatType: z.array(z.string()),
+  base64: z.boolean(),
+});
+
+export type ModelDefaultValueSchemaType = z.infer<
+  typeof ModelDefaultValueSchema
+>;
+
 export const updateVersionInput = z
   .object({
     id: z.string(),

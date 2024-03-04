@@ -1,11 +1,12 @@
 import { prisma } from "~/server/db";
 import { ImageResponse, type NextRequest } from "next/server";
 import { env } from "~/env.mjs";
-import { resizeBase64Image } from "~/utils/images";
+import { resizeBase64Image } from "~/utils/images_backend";
 import { ResponseType } from "openai/_shims/auto/types";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { response404 } from "~/services/api_helpers";
+import { getLogoImage } from "~/utils/log";
 
 export async function GET(
   req: NextRequest,
@@ -15,7 +16,9 @@ export async function GET(
   const pl = await prisma.promptLog.findFirst({
     where: {
       id: params.logId,
-      llmModelType: ModelTypeSchema.Enum.TEXT2IMAGE,
+      llmModelType: {
+        in: [ModelTypeSchema.Enum.TEXT2IMAGE, ModelTypeSchema.Enum.IMAGE2IMAGE],
+      },
     },
   });
 
@@ -81,7 +84,7 @@ function ogImageResponse(base64Image: string) {
 
           <img
             height={40}
-            src={env.NEXT_PUBLIC_APP_LOGO}
+            src={getLogoImage()}
             style={{
               position: "absolute",
               top: "0px",

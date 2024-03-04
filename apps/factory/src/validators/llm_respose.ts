@@ -39,7 +39,7 @@ export const codeResponseV1 = z.object({
 });
 
 export const llmResponseDataSchema = z
-  .union([textResponseV1, imageResponseV1, codeResponseV1])
+  .union([textResponseV1, imageResponseV1, imageResponseV2, codeResponseV1])
   .transform((data) => {
     if (data.t === ResponseType.TEXT) {
       return { ...textResponseV1.parse(data), v: 1 };
