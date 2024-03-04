@@ -17,6 +17,7 @@ import VideoDetails from "~/components/video_details";
 import Footer from "~/components/footer";
 import { NextSeo } from "next-seo";
 import humanizeString from "humanize-string";
+import { getAppUrl } from "~/utils/log";
 
 const BlogPage: NextPage = () => {
   const router = useRouter();
@@ -46,7 +47,7 @@ const BlogPage: NextPage = () => {
             description={blogData?.description}
             // canonical={shareUrl}
             openGraph={{
-              url: `${process.env.NEXT_PUBLIC_APP_URL}${router.asPath}`,
+              url: `${getAppUrl()}${router.asPath}`,
               title: `${blogData?.title}`,
               description: `${blogData?.description}`,
               type: "website",

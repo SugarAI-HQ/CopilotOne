@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/server";
 import { env } from "~/env.mjs";
+import { getLogoImage } from "~/utils/log";
 
 export function GET(req: Request) {
   return ogImageResponse();
@@ -83,7 +84,7 @@ function ogImageResponse() {
             <img
               width={500}
               // src={"https://sugarcaneai.dev/images/sugar/logo-transparent.png"}
-              src={env.NEXT_PUBLIC_APP_LOGO}
+              src={getLogoImage()}
             ></img>
           </div>
         </div>

@@ -35,6 +35,7 @@ import { LoadingButton } from "@mui/lab";
 import Divider from "@mui/material/Divider";
 import CopyToClipboardButton from "./copy_button";
 import InputBase from "@mui/material/InputBase";
+import { getAppUrl } from "~/utils/log";
 
 function PromptDeploy({
   ns,
@@ -124,7 +125,7 @@ function PromptDeploy({
       setDeploymentSuccess(!!version.publishedAt);
     }, 1000);
   };
-  const link = `${process.env.NEXT_PUBLIC_APP_URL}/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`;
+  const link = `${getAppUrl()}/${ns?.username}/${pp?.name}/${pt?.name}/${environmentType}`;
   return (
     <span>
       {version.publishedAt ? (

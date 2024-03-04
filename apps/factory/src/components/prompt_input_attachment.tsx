@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Typography, Stack, Box, Tooltip } from "@mui/material";
 import ReactFileReader from "react-file-reader";
-import { url2ImageBase64Url, FileObject } from "~/utils/common";
+import { url2ImageBase64Url, FileObject } from "~/utils/images";
 import { ModelDefaultValueSchemaType } from "~/validators/prompt_version";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import toast from "react-hot-toast";

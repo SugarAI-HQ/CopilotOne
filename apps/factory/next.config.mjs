@@ -1,4 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
+import { configureRuntimeEnv } from "next-runtime-env/build/configure.js";
+
+configureRuntimeEnv();
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.

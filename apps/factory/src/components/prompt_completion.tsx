@@ -10,6 +10,7 @@ import { LogSchema } from "~/validators/prompt_log";
 import { LlmResponse, TextResponseV1 } from "~/validators/llm_respose";
 import Image from "next/image";
 import { hasImageModels } from "~/utils/template";
+import { getAppUrl } from "~/utils/log";
 
 interface PromptCompletionProps {
   pl: LogSchema;
@@ -82,8 +83,10 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
     console.log(cube);
     return (
       <Image
-        src={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/logs/${pl.id}/image.png?w=${w}&h=${h}`}
-        blurDataURL={`${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/og.png`}
+        src={`${getAppUrl()}/generated/assets/logs/${
+          pl.id
+        }/image.png?w=${w}&h=${h}`}
+        blurDataURL={`${getAppUrl()}/generated/assets/og.png`}
         alt="Image"
         style={
           {

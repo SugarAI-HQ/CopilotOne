@@ -4,8 +4,9 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { prisma } from "~/server/db";
+import { getSentryDsn } from "~/utils/log";
 
-const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
+const SENTRY_DSN = process.env.SENTRY_DSN || getSentryDsn();
 
 if (SENTRY_DSN && SENTRY_DSN !== "") {
   Sentry.init({

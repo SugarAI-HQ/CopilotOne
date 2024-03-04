@@ -60,10 +60,11 @@ import toast from "react-hot-toast";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
 import { ImageGallery } from "./image_gallery";
-import { FileObject } from "~/utils/common";
+import { FileObject } from "~/utils/images";
 import { getEditorVersion, hasImageModels } from "~/utils/template";
 import PromptInputAttachment from "./prompt_input_attachment";
 import { getDefaults } from "~/services/providers";
+import { getAppUrl } from "~/utils/log";
 
 interface PromptTemplateViewProps {
   username: string;
@@ -232,14 +233,14 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     return;
   };
 
-  const url = `${process.env.NEXT_PUBLIC_APP_URL}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
+  const url = `${getAppUrl()}/${username}/${packageName}/${template}/${versionOrEnvironment}`;
 
   const shareUrl = `${url}${
     openShareModal === "imageshare" || query.logId
       ? `?logId=${query.logId || pl?.id}`
       : ""
   }`;
-  const imageUrl = `${process.env.NEXT_PUBLIC_APP_URL}/generated/assets/${
+  const imageUrl = `${getAppUrl()}/generated/assets/${
     openShareModal === "imageshare" || query.logId
       ? `logs/${query.logId || pl?.id}/og.png`
       : "og.png"

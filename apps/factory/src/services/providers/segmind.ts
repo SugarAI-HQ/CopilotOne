@@ -4,6 +4,7 @@ import {
 } from "~/validators/prompt_version";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import SegmindVendor from "../vendors/segmind_vendor";
+import { getAppUrl } from "~/utils/log";
 
 export interface LLMConfig {
   max_tokens: number;
@@ -36,7 +37,7 @@ export const template = {
 
 export const defaults = {
   "sd1.5-img2img": {
-    url: `${process.env.NEXT_PUBLIC_APP_URL}/images/segmind/portrait.jpg`,
+    url: `${getAppUrl()}/images/segmind/portrait.jpg`,
     supportFormatType: [".png", ".jpg"],
     base64: true,
   },
