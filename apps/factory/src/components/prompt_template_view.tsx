@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "~/components/marketplace/header";
 import humanizeString from "humanize-string";
+import LabelIcons from "./label_icon";
 
 import {
   Container,
@@ -80,7 +81,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   versionOrEnvironment,
 }) => {
   const { data: session, status } = useSession();
-  const [checked, setChecked] = useState(isDev);
+  const [checked, setChecked] = useState(!isDev);
   const [pvrs, setVariables] = useState<PromptVariableProps[]>();
   const [pl, setPl] = useState<GenerateOutput>(null);
   const [promptOutput, setPromptOutput] = useState("");
@@ -515,12 +516,23 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                             <Typography
                               variant="h6"
                               sx={{
+                                alignItems: "center",
+                                display: "flex",
                                 color: "var(--sugarhub-text-color)",
                                 fontWeight: "2rem",
-                                marginRight: "2rem",
+                                marginBottom: "1rem",
+                                width: "100%",
+                                justifyContent: "space-between",
                               }}
                             >
                               Result
+                              {pl && (
+                                <LabelIcons
+                                  logId={pl?.id}
+                                  labelledState={pl?.labelledState}
+                                  cube={true}
+                                />
+                              )}
                             </Typography>
                             {pv?.modelType ===
                               ModelTypeSchema.Enum.TEXT2IMAGE && (

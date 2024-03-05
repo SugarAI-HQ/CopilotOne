@@ -13,6 +13,7 @@ import {
 interface LabelStateIconsProps {
   logId: string;
   labelledState: string;
+  cube?: boolean;
 }
 
 const labelStateIcons: { [key: string]: any } = {
@@ -25,6 +26,7 @@ const labelStateIcons: { [key: string]: any } = {
 const LabelIcons: React.FC<LabelStateIconsProps> = ({
   logId,
   labelledState,
+  cube = false,
 }) => {
   const labelStates = Object.keys(labelStateIcons);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(
@@ -64,6 +66,15 @@ const LabelIcons: React.FC<LabelStateIconsProps> = ({
                 // disabled={isSelected}
                 disableFocusRipple={isSelected}
                 // size={isSelected ? "large" : "small"}
+                sx={
+                  cube
+                    ? {
+                        color: "var(--sugarhub-text-color)",
+                      }
+                    : {
+                        color: "default",
+                      }
+                }
               >
                 <IconComponent />
               </IconButton>
