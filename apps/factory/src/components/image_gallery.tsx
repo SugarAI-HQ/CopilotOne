@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GenerateOutput } from "~/validators/service";
 import ShareCube from "./cubes/share_cube";
 import DownloadButtonBase64 from "./download_button_base64";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, CircularProgress, IconButton, Tooltip } from "@mui/material";
 import ShareIcon from "@mui/icons-material/Share";
 import Image from "next/image";
 import { GetPromptOutput } from "~/validators/service";
@@ -28,6 +28,7 @@ export const ImageGallery = ({
   const [logId, setLogId] = useState("");
   const [logIds, setLogIds] = useState<LogIdsArray>([]);
   const [openShareModal, setOpenShareModal] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const shareUrl = `${url}?logId=${openShareModal}`;
 
@@ -177,7 +178,12 @@ export const ImageGallery = ({
         shareUrl={shareUrl}
         shareTitle={"Share Image"}
       />
-      <ImageFullView open={logId} setOpen={setLogId} />
+      <ImageFullView
+        open={logId}
+        setOpen={setLogId}
+        loading={loading}
+        setLoading={setLoading}
+      />
     </>
   );
 };
@@ -185,11 +191,16 @@ export const ImageGallery = ({
 export function ImageFullView({
   open,
   setOpen,
+  loading,
+  setLoading,
 }: {
   open: string;
   setOpen: React.Dispatch<React.SetStateAction<string>>;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const handleClose = () => setOpen("");
+  const handleLoading = () => setLoading(true);
 
   return (
     <div>
@@ -211,9 +222,21 @@ export function ImageFullView({
               height: { lg: "600px", md: "600px", sm: "400px", xs: "300px" },
             }}
           >
+            {loading && (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "60vh",
+                }}
+              >
+                <CircularProgress size={100} />
+              </Box>
+            )}
             <Image
               src={`${getAppUrl()}/generated/assets/logs/${open}/image.png?w=${1024}&h=${1024}`}
-              blurDataURL={`${getAppUrl()}/generated/assets/og.png`}
+              onLoad={(e) => handleLoading()}
               alt=""
               style={{
                 objectFit: "contain",
@@ -223,7 +246,7 @@ export function ImageFullView({
                 zIndex: 2,
               }}
               fill
-              placeholder="blur"
+              // placeholder="blur"
               loading="lazy"
             />
           </Box>

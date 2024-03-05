@@ -13,18 +13,20 @@ import {
 interface LabelStateIconsProps {
   logId: string;
   labelledState: string;
+  cube?: boolean;
 }
 
 const labelStateIcons: { [key: string]: any } = {
   // UNLABELLED: [Icons.Unarchive, "default"],
   SELECTED: [Icons.ThumbUpOffAlt, "success"],
   REJECTED: [Icons.ThumbDownOffAlt, "error"],
-  NOTSURE: [Icons.Help, "warn"],
+  NOTSURE: [Icons.Help, "warning"],
 };
 
 const LabelIcons: React.FC<LabelStateIconsProps> = ({
   logId,
   labelledState,
+  cube = false,
 }) => {
   const labelStates = Object.keys(labelStateIcons);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(
@@ -64,6 +66,13 @@ const LabelIcons: React.FC<LabelStateIconsProps> = ({
                 // disabled={isSelected}
                 disableFocusRipple={isSelected}
                 // size={isSelected ? "large" : "small"}
+                sx={{
+                  color: cube
+                    ? isSelected
+                      ? color
+                      : "var(--sugarhub-text-color)"
+                    : "default",
+                }}
               >
                 <IconComponent />
               </IconButton>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "~/components/marketplace/header";
 import humanizeString from "humanize-string";
+import LabelIcons from "./label_icon";
 
 import {
   Container,
@@ -522,8 +523,8 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                             >
                               Result
                             </Typography>
-                            {pv?.modelType ===
-                              ModelTypeSchema.Enum.TEXT2IMAGE && (
+
+                            {(pv?.modelType as ModelTypeType) && (
                               <>
                                 <Tooltip title="Share Cube" placement="top">
                                   <IconButton
@@ -560,6 +561,22 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
                     </Stack>
                   )}
                 </Box>
+
+                {pl && (
+                  <Box
+                    sx={{
+                      ml: 2,
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <LabelIcons
+                      logId={pl?.id}
+                      labelledState={pl?.labelledState}
+                      cube={true}
+                    />
+                  </Box>
+                )}
               </div>
               {hasImageModels(pv?.modelType as ModelTypeType) && (
                 <ImageGallery
