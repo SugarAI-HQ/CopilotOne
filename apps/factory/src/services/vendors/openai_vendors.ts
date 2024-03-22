@@ -4,6 +4,7 @@ import OpenAI from "openai";
 import { env } from "~/env.mjs";
 import { GPTResponseType, DalleSchemaType } from "~/validators/openaiResponse";
 import { logLLMResponse } from "~/utils/log";
+import { skillsSchema } from "~/validators/service";
 
 class OpenAIVendor extends BaseVendor {
   private openai = new OpenAI({
@@ -45,6 +46,7 @@ class OpenAIVendor extends BaseVendor {
         {
           index: 0,
           text: response.choices[0]?.message.content,
+          tool_calls: response.choices[0]?.message?.tool_calls,
           logprobs: null,
           finish_reason: "stop",
         },
@@ -66,13 +68,18 @@ class OpenAIVendor extends BaseVendor {
     );
   }
 
-  protected async executeGptModel(prompt: string, dryRun: boolean) {
+  protected async executeGptModel(
+    prompt: string,
+    skills: skillsSchema,
+    dryRun: boolean,
+  ) {
     if (dryRun) {
       return this.createFakeResponse();
     }
     const response = await this.openai.chat.completions.create({
       messages: [...this.parsePromptChat(prompt)],
       model: this.model,
+      ...(skills.length > 0 && { tools: skills }),
     });
     return this.createChatResponse(response);
   }
@@ -103,11 +110,11 @@ class OpenAIVendor extends BaseVendor {
     return response;
   }
 
-  async main(prompt: string, dryRun: boolean) {
+  async main(prompt: string, skills: skillsSchema, dryRun: boolean) {
     const allowedModels = ["gpt-3.5-turbo", "gpt-4"];
     try {
       if (allowedModels.includes(this.model)) {
-        return this.executeGptModel(prompt, dryRun);
+        return this.executeGptModel(prompt, skills, dryRun);
       } else {
         return this.executeDalleModel(prompt, dryRun);
       }

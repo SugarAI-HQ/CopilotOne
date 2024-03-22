@@ -7,6 +7,7 @@ import {
   LlmResponse,
   ResponseType,
   TextResponseV1,
+  TextResponseV2,
 } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
 import {
@@ -18,6 +19,7 @@ import CopyToClipboardButton from "./copy_button";
 import Image from "next/image";
 import { hasImageModels } from "~/utils/template";
 import { getAppUrl } from "~/utils/log";
+import PromptViewResponse from "./prompt_view_response";
 
 interface PromptLlmResponseProps {
   pl: LogOutput;
@@ -33,7 +35,7 @@ const PromptLlmResponse: React.FC<PromptLlmResponseProps> = ({
   cube,
 }) => {
   const lr = pl?.llmResponse as LlmResponse;
-
+  console.log("pl", lr);
   return (
     <>
       {lr.data ? (
@@ -62,6 +64,9 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
   cube,
 }) => {
   let lr = pl?.llmResponse as LlmResponse;
+  const lrCompletion = lr.data as TextResponseV1 | TextResponseV2;
+  const lrSkillCompletion = lrCompletion as TextResponseV2["completion"];
+
   if (lr?.data?.t === ResponseType.TEXT || lr.data?.t === ResponseType.CODE) {
     return (
       <>
@@ -83,7 +88,9 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
           >
             {pl?.completion_tokens ? (
               <>
-                {lr.data.completion}
+                <PromptViewResponse
+                  lrCompletion={lr.data.completion as LlmResponse["data"]}
+                />
                 <p>tokens: {pl?.completion_tokens}</p>
               </>
             ) : (
@@ -95,15 +102,21 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
                       wordWrap: "break-word",
                     }}
                   >
-                    {lr.data.completion}
+                    <PromptViewResponse
+                      lrCompletion={lr.data.completion as LlmResponse["data"]}
+                    />
                   </code>
                 </pre>
               </Typography>
             )}
           </Box>
+        ) : lrSkillCompletion.tool_calls ? (
+          <PromptViewResponse
+            lrCompletion={lr.data.completion as LlmResponse["data"]}
+          />
         ) : (
           <OutputTextAnimation
-            output={lr.data.completion}
+            output={lr.data.completion as TextResponseV1["completion"]}
             modelType={pl?.llmModelType as string}
           />
         )}
@@ -164,10 +177,12 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
         (hasImageModels(pl?.llmModelType as ModelTypeType) ? (
           <DownloadButtonBase64 logId={pl?.id as string} />
         ) : (
-          <CopyToClipboardButton
-            textToCopy={llrText?.completion}
-            textToDisplay={"Copy"}
-          />
+          lr?.data.v == 1 && (
+            <CopyToClipboardButton
+              textToCopy={llrText?.completion}
+              textToDisplay={"Copy"}
+            />
+          )
         ))}
 
       {lr?.error && (

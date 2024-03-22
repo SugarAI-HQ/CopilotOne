@@ -7,10 +7,15 @@ import {
 import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
 import { LogSchema } from "~/validators/prompt_log";
-import { LlmResponse, TextResponseV1 } from "~/validators/llm_respose";
+import {
+  LlmResponse,
+  TextResponseV1,
+  TextResponseV2,
+} from "~/validators/llm_respose";
 import Image from "next/image";
 import { hasImageModels } from "~/utils/template";
 import { getAppUrl } from "~/utils/log";
+import PromptViewResponse from "./prompt_view_response";
 
 interface PromptCompletionProps {
   pl: LogSchema;
@@ -26,6 +31,9 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   cube,
 }) => {
   let lr = pl?.llmResponse as LlmResponse;
+  const lrCompletion = lr.data as TextResponseV1 | TextResponseV2;
+  const lrSkillCompletion = lrCompletion as TextResponseV2["completion"];
+
   if (!hasImageModels(pl?.llmModelType as ModelTypeType)) {
     return (
       <>
@@ -47,9 +55,16 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           >
             {pl.completion_tokens ? (
               <>
-                {pl.completion
-                  ? pl.completion
-                  : (lr.data as TextResponseV1).completion}
+                {pl.completion ? (
+                  pl.completion
+                ) : (
+                  <PromptViewResponse
+                    lrCompletion={
+                      (lr.data as TextResponseV1 | TextResponseV2)
+                        .completion as LlmResponse["data"]
+                    }
+                  />
+                )}
                 <p>tokens: {pl.completion_tokens}</p>
               </>
             ) : (
@@ -61,14 +76,28 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                       wordWrap: "break-word",
                     }}
                   >
-                    {pl.completion
-                      ? pl.completion
-                      : (lr.data as TextResponseV1).completion}
+                    {pl.completion ? (
+                      pl.completion
+                    ) : (
+                      <PromptViewResponse
+                        lrCompletion={
+                          (lr.data as TextResponseV1 | TextResponseV2)
+                            .completion as LlmResponse["data"]
+                        }
+                      />
+                    )}
                   </code>
                 </pre>
               </Typography>
             )}
           </Box>
+        ) : lrSkillCompletion.tool_calls ? (
+          <PromptViewResponse
+            lrCompletion={
+              (lr.data as TextResponseV1 | TextResponseV2)
+                .completion as LlmResponse["data"]
+            }
+          />
         ) : (
           <OutputTextAnimation
             output={(lr.data as TextResponseV1).completion as string}

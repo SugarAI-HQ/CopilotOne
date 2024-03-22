@@ -152,8 +152,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
               <TableCell>Prompt</TableCell>
               <TableCell>LLM Response</TableCell>
               {logModeMax && <TableCell>Version</TableCell>}
-              <TableCell>LLM Provider</TableCell>
-              <TableCell>LLM Model</TableCell>
+              <TableCell>LLM Provider & Model</TableCell>
               <TableCell>Total Tokens</TableCell>
               {logModeMax && <TableCell>Environment</TableCell>}
               <TableCell>Latency(in ms)</TableCell>
@@ -241,8 +240,10 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                   </div>
                 </TableCell>
                 {logModeMax && <TableCell>{log.version}</TableCell>}
-                <TableCell>{log.llmProvider}</TableCell>
-                <TableCell>{log.llmModel}</TableCell>
+                <TableCell>
+                  {log.llmProvider} - {log.llmModel}
+                </TableCell>
+
                 <TableCell>{log.total_tokens}</TableCell>
                 {logModeMax && <TableCell>{log.environment}</TableCell>}
                 <TableCell>{log.latency}</TableCell>

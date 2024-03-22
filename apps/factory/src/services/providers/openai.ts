@@ -18,7 +18,9 @@ import {
   getTextResponseV1,
   getImageResponseV1,
   LlmResponse,
+  getTextResponseV2,
 } from "~/validators/llm_respose";
+import { skillsSchema } from "~/validators/service";
 
 export interface LLMConfig {
   max_tokens: number;
@@ -38,6 +40,7 @@ export interface LLMConfig {
 
 export async function run(
   prompt: string,
+  skills: skillsSchema,
   llm_model: string,
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,
@@ -48,7 +51,7 @@ export async function run(
     const startTime = new Date();
     let response: any;
     const client = new OpenAIVendor(llm_model);
-    response = await client.main(prompt, dryRun);
+    response = await client.main(prompt, skills, dryRun);
 
     // Capture the end time
     const endTime = new Date();
@@ -56,7 +59,11 @@ export async function run(
     let lr: LlmResponse | null = null;
     if (llmModelType !== ModelTypeSchema.Enum.TEXT2IMAGE) {
       if (response?.choices?.length > 0) {
-        lr = getTextResponseV1(response?.choices[0]?.text);
+        if (response?.choices[0]?.text) {
+          lr = getTextResponseV1(response?.choices[0]?.text);
+        } else {
+          lr = getTextResponseV2(response?.choices[0]);
+        }
       }
     } else {
       if (response?.images?.length > 0) {

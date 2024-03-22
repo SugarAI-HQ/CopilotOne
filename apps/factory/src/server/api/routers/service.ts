@@ -3,7 +3,12 @@ import {
   promptMiddleware,
   publicProcedure,
 } from "~/server/api/trpc";
-import { generateInput, generateOutput } from "~/validators/service";
+import {
+  GenerateOutput,
+  skillsSchema,
+  generateInput,
+  generateOutput,
+} from "~/validators/service";
 import {
   generateLLmConfig,
   generatePrompt,
@@ -33,8 +38,7 @@ export const serviceRouter = createTRPCRouter({
     })
     .input(generateInput)
     .use(promptMiddleware)
-    // FIXME:
-    // .output(generateOutput)
+    .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
       let [pv, pt] = await getPv(ctx, input);
@@ -69,6 +73,7 @@ export const serviceRouter = createTRPCRouter({
         const llmConfig = generateLLmConfig(pv.llmConfig);
         const rr = await LlmProvider(
           prompt,
+          input.skills as skillsSchema,
           pv.llmModel,
           pv.llmProvider,
           llmConfig,
@@ -117,7 +122,7 @@ export const serviceRouter = createTRPCRouter({
         }
       }
 
-      return pl;
+      return pl as GenerateOutput;
     }),
 });
 

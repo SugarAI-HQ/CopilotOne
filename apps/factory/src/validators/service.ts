@@ -38,6 +38,28 @@ export type GetPromptInput = z.infer<typeof getPromptInput>;
 //     // .strict()
 // export type GetPromptInput2 = z.infer<typeof getPromptInput2>;
 
+const skillParameterSchema = z.object({
+  type: z.string(),
+  description: z.string(),
+});
+
+const skillDefinitionSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  parameters: z.object({
+    type: z.string(),
+    properties: z.record(skillParameterSchema),
+    required: z.array(z.string()),
+  }),
+});
+
+export const skillSchema = z.object({
+  type: z.literal("function"),
+  function: skillDefinitionSchema,
+});
+
+export const skillsSchema = z.array(skillSchema);
+
 export const getPromptOutput = z
   .object({
     version: z.string().optional(),
@@ -62,6 +84,7 @@ export const generateInput = z
     // Template Data
     data: z.record(z.any()),
     attachments: z.record(z.any()).optional(),
+    skills: skillsSchema.default([]),
     // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
   })
@@ -97,3 +120,5 @@ export const logSchema = z.object({
 export const generateOutput = logSchema.or(z.null());
 export type LogSchema = z.infer<typeof logSchema>;
 export type GenerateOutput = z.infer<typeof generateOutput>;
+export type SkillSchema = z.infer<typeof skillSchema>;
+export type skillsSchema = z.infer<typeof skillsSchema>;

@@ -4,6 +4,7 @@ const choices = z.object({
   text: z.string(),
   index: z.number(),
   logprobs: z.null(),
+  tool_calls: z.array(z.null()).optional(),
   finish_reason: z.string(),
 });
 
