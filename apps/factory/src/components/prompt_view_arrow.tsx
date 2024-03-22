@@ -79,50 +79,54 @@ export const PromptView = ({
   return (
     <>
       {haveroleUserAssistant !== 0 && haveroleUserAssistant !== 3 ? (
-        <>
-          <TableContainer sx={{ maxHeight: "200px", overflowY: "auto" }}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ color: "var(--sugarhub-text-color)" }}>
-                    ROLE
+        <TableContainer
+          sx={{
+            maxHeight: "200px",
+            overflowY: "auto",
+            widith: "100%",
+          }}
+        >
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ color: "var(--sugarhub-text-color)" }}>
+                  ROLE
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ color: "var(--sugarhub-text-color)" }}
+                >
+                  CONTENT
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {promptInputs?.map((promptInput) => (
+                <TableRow
+                  key={promptInput.role}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{ color: "var(--sugarhub-text-color)" }}
+                  >
+                    {promptInput.role}
                   </TableCell>
                   <TableCell
                     align="right"
-                    sx={{ color: "var(--sugarhub-text-color)" }}
+                    sx={{
+                      color: "var(--sugarhub-text-color)",
+                      overflowWrap: "break-word",
+                    }}
                   >
-                    CONTENT
+                    {promptInput.content}
                   </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {promptInputs?.map((promptInput) => (
-                  <TableRow
-                    key={promptInput.role}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      sx={{ color: "var(--sugarhub-text-color)" }}
-                    >
-                      {promptInput.role}
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{
-                        color: "var(--sugarhub-text-color)",
-                        overflowWrap: "break-word",
-                      }}
-                    >
-                      {promptInput.content}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       ) : (
         <>
           <Typography sx={{ color: "var(--sugarhub-text-color)" }}>

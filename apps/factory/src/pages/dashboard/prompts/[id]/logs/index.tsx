@@ -160,65 +160,50 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
               {/* <TableCell>Finetuned State</TableCell> */}
               {logModeMax && <TableCell>Created At</TableCell>}
               <TableCell>Updated At</TableCell>
-              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {promptLogs.map((log) => (
               <TableRow key={log.id}>
                 {logModeMax && <TableCell>{log.id}</TableCell>}
-                <TableCell>
+                <TableCell sx={{ minWidth: "250px", maxWidth: "250px" }}>
                   {/* we are checking wether the role is true or false */}
                   {!hasImageEditor(
                     log.llmModelType,
                     log.llmProvider,
                     log.llmModel,
                   ) ? (
-                    <>
-                      <PromptView
-                        promptInputs={JSON.parse(log.prompt)}
-                        haveroleUserAssistant={1}
-                        promptTemplate={""}
-                      />
-                    </>
+                    <PromptView
+                      promptInputs={JSON.parse(log.prompt)}
+                      haveroleUserAssistant={1}
+                      promptTemplate={""}
+                    />
                   ) : (
-                    <>
-                      <PromptView
-                        promptInputs={[]}
-                        haveroleUserAssistant={getEditorVersion(
-                          log.llmModelType,
-                          log.llmProvider,
-                          log.llmModel,
-                        )}
-                        promptTemplate={log.prompt}
-                      />
-                    </>
+                    <PromptView
+                      promptInputs={[]}
+                      haveroleUserAssistant={getEditorVersion(
+                        log.llmModelType,
+                        log.llmProvider,
+                        log.llmModel,
+                      )}
+                      promptTemplate={log.prompt}
+                    />
                   )}
                   <hr />
                   <p style={{ paddingTop: "1rem" }}>
                     tokens: {log.prompt_tokens}
                   </p>
                 </TableCell>
-                <TableCell
-                  style={
-                    logModeMax
-                      ? {
-                          maxWidth: 150,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          //     whiteSpace: "nowrap",
-                        }
-                      : { whiteSpace: "normal", maxWidth: 150 }
-                  }
-                >
+                <TableCell sx={{ minWidth: "300px", maxWidth: "300px" }}>
                   <div
                     style={{
-                      paddingTop: 5,
-                      justifyContent: "center",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      display: "flex",
-                      maxHeight: 150,
+                      // paddingTop: 5,
+                      // justifyContent: "center",
+                      // flexDirection: "column",
+                      // alignItems: "center",
+                      // display: "flex",
+                      // maxHeight: 250,
+                      width: "100%",
                     }}
                   >
                     {log?.completion && (
