@@ -20,7 +20,7 @@ const PromptViewResponse = ({
           {lrSkillCompletion.tool_calls.map((toolCall: any, index: any) => (
             <li key={index}>
               <div>
-                <p>Function Name: {toolCall.function.name}</p>
+                <p>Function: {toolCall.function.name}</p>
                 <p>Arguments:</p>
                 <ul>
                   {Object.entries(JSON.parse(toolCall.function.arguments)).map(
@@ -32,6 +32,7 @@ const PromptViewResponse = ({
                   )}
                 </ul>
               </div>
+              <hr style={{ margin: "10px 0" }} />
             </li>
           ))}
         </ul>

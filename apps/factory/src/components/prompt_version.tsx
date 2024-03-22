@@ -98,6 +98,7 @@ function PromptVersion({
   const [lpv, setPv] = useState<VersionSchema>(pv);
   const [version, setVersion] = useState<string>(lpv?.version);
   const [template, setTemplate] = useState(lpv?.template || "");
+  const [skills, setSkills] = useState<GenerateInput["skills"]>();
   const [attachments, setAttachments] = useState<FileObject>();
   const [modelDefaultValues, setModelDefaultValues] =
     useState<ModelDefaultValueSchemaType>();
@@ -250,6 +251,7 @@ function PromptVersion({
         environment: promptEnvironment.Enum.DEV,
         data: data,
         attachments: attachments,
+        skills: skills,
       } as GenerateInput,
       {
         onSettled(lPl, error) {
@@ -591,6 +593,20 @@ function PromptVersion({
               vars={pvrs}
               onChange={handleVariableValuesChanged}
               mode={displayModes.Enum.VIEW}
+            />
+            <TextField
+              label="Tools"
+              disabled={!!lpv.publishedAt}
+              multiline
+              fullWidth
+              style={{ width: "100%" }}
+              minRows={3}
+              // maxRows={10}
+              defaultValue={skills}
+              onChange={(e) => {
+                setSkills(JSON.parse(e.target.value) as any);
+              }}
+              variant="outlined"
             />
           </Grid>
         </Grid>
