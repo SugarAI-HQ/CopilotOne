@@ -14,6 +14,10 @@ export const llmConfigSchema = z.object({
   stopSequences: z.string().optional(),
   maxTokens: z.number().optional(),
 });
+
+// export const TEMPLATE_VARIABLE_REGEX = /\{(?:@|%|#|\$)?(\w+)\}/g;
+export const TEMPLATE_VARIABLE_REGEX = /\{(@|%|#|\$)?(\w+)\}/g;
+
 export type LlmConfigSchema = z.infer<typeof llmConfigSchema>;
 
 export const promptJsonDataSchema = z.object({
@@ -26,6 +30,14 @@ export type PromptJsonDataType = z.infer<typeof promptJsonDataSchema>;
 
 export const PromptJsonDataSchema = z.array(promptJsonDataSchema).default([]);
 export type PromptDataType = z.infer<typeof PromptJsonDataSchema>;
+
+export const PromptJson = z.object({
+  data: PromptJsonDataSchema,
+});
+
+export type PromptJsonType = z.infer<typeof PromptJson>;
+
+export type Prompt = string | PromptDataType;
 
 export const getVersionsInput = z
   .object({

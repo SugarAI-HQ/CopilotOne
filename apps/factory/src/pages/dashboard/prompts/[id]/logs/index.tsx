@@ -166,7 +166,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
             {promptLogs.map((log) => (
               <TableRow key={log.id}>
                 {logModeMax && <TableCell>{log.id}</TableCell>}
-                <TableCell sx={{ minWidth: "250px", maxWidth: "250px" }}>
+                <TableCell sx={{ minWidth: "350px", maxWidth: "400px" }}>
                   {/* we are checking wether the role is true or false */}
                   {!hasImageEditor(
                     log.llmModelType,
@@ -194,7 +194,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                     tokens: {log.prompt_tokens}
                   </p>
                 </TableCell>
-                <TableCell sx={{ minWidth: "300px", maxWidth: "300px" }}>
+                <TableCell sx={{ minWidth: "400px", maxWidth: "450px" }}>
                   <div
                     style={{
                       // paddingTop: 5,

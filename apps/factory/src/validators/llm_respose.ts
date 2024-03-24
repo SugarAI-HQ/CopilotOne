@@ -100,12 +100,10 @@ export const getTextResponseV1 = function (text: string): LlmResponse {
   };
 };
 
-export const getTextResponseV2 = function (
-  text: TextResponseV2["completion"],
-): LlmResponse {
+export const getTextResponseV2 = function (choices = []): LlmResponse {
   return {
     data: {
-      completion: text || "",
+      completion: choices || [],
       v: 2,
       t: ResponseType.TEXT,
     },

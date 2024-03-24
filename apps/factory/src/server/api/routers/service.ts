@@ -8,10 +8,12 @@ import {
   skillsSchema,
   generateInput,
   generateOutput,
+  MessagesSchema,
 } from "~/validators/service";
 import {
   generateLLmConfig,
   generatePrompt,
+  generatePromptFromJson,
   hasImageModels,
 } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
@@ -19,12 +21,12 @@ import { LlmProvider } from "~/services/llm_providers";
 import { providerModels } from "~/validators/base";
 import {
   ModelTypeType,
-  ModelTypeSchema,
   PromptRunModesSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
 import { getEditorVersion } from "~/utils/template";
+import { Prompt, PromptDataType } from "~/validators/prompt_version";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -53,26 +55,30 @@ export const serviceRouter = createTRPCRouter({
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
-        let prompt = "";
+        let prompt: Prompt = "";
         if (hasImageModels(modelType)) {
           prompt = generatePrompt(pv.template, input.data || {});
         } else {
           // here decide whether to take template data or promptData
           if (getEditorVersion(modelType, pv.llmProvider, pv.llmModel)) {
-            prompt = generatePrompt(
-              JSON.stringify(pv.promptData.data),
+            // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+            prompt = generatePromptFromJson(
+              pv.promptData.data,
               input.data || {},
-            );
+            ) as PromptDataType;
+            // console.log(prompt);
+            // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
           } else {
             prompt = generatePrompt(pv.template, input.data || {});
           }
         }
 
-        console.log(`prompt >>>> ${prompt}`);
+        console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
 
         const llmConfig = generateLLmConfig(pv.llmConfig);
         const rr = await LlmProvider(
           prompt,
+          input.messages as MessagesSchema,
           input.skills as skillsSchema,
           pv.llmModel,
           pv.llmProvider,
@@ -100,7 +106,7 @@ export const serviceRouter = createTRPCRouter({
               environment: input.environment,
 
               version: pv.version,
-              prompt: prompt,
+              prompt: JSON.stringify(prompt),
               // completion: rr.data?.completion as string,
               llmResponse: rr.response,
 

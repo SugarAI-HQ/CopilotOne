@@ -35,7 +35,6 @@ const PromptLlmResponse: React.FC<PromptLlmResponseProps> = ({
   cube,
 }) => {
   const lr = pl?.llmResponse as LlmResponse;
-  console.log("pl", lr);
   return (
     <>
       {lr.data ? (
@@ -65,7 +64,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
 }) => {
   let lr = pl?.llmResponse as LlmResponse;
   const lrCompletion = lr.data as TextResponseV1 | TextResponseV2;
-  const lrSkillCompletion = lrCompletion as TextResponseV2["completion"];
+  // const lrSkillCompletion = lrCompletion as TextResponseV2["completion"];
 
   if (lr?.data?.t === ResponseType.TEXT || lr.data?.t === ResponseType.CODE) {
     return (
@@ -110,7 +109,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
               </Typography>
             )}
           </Box>
-        ) : lrSkillCompletion.tool_calls ? (
+        ) : lr.data.completion instanceof Array ? (
           <PromptViewResponse
             lrCompletion={lr.data.completion as LlmResponse["data"]}
           />

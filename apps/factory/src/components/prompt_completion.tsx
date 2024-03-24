@@ -32,7 +32,6 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
 }) => {
   let lr = pl?.llmResponse as LlmResponse;
   const lrCompletion = lr.data as TextResponseV1 | TextResponseV2;
-  const lrSkillCompletion = lrCompletion as TextResponseV2["completion"];
 
   if (!hasImageModels(pl?.llmModelType as ModelTypeType)) {
     return (
@@ -91,7 +90,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
               </Typography>
             )}
           </Box>
-        ) : lrSkillCompletion.tool_calls ? (
+        ) : lrCompletion instanceof Array ? (
           <PromptViewResponse
             lrCompletion={
               (lr.data as TextResponseV1 | TextResponseV2)

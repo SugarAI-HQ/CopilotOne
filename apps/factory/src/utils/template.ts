@@ -7,7 +7,11 @@ import {
 import { PromptVariableProps } from "~/components/prompt_variables";
 import { LLMConfig } from "~/services/providers/openai";
 import { JsonObject } from "@prisma/client/runtime/library";
-import { LlmConfigSchema } from "~/validators/prompt_version";
+import {
+  LlmConfigSchema,
+  PromptDataType,
+  TEMPLATE_VARIABLE_REGEX,
+} from "~/validators/prompt_version";
 import {
   ModelTypeSchema,
   ModelTypeType,
@@ -110,6 +114,55 @@ export function generateLLmConfig(c: JsonObject): LlmConfigSchema {
   return config;
 }
 
+function replacePromptVariables(
+  content: string,
+  variables: { [key: string]: string },
+): string {
+  return content.replace(TEMPLATE_VARIABLE_REGEX, (match, sign, key) => {
+    console.log(match, sign, key);
+    // Check if the input variables contain the key
+    return variables[sign + key] || variables[key] || match;
+  });
+}
+
+// function traverseAndReplace(
+//   prompt: PromptDataType,
+//   variables: { [key: string]: string },
+// ): PromptDataType {
+//   const compliledPrompt = prompt.map(({ id, role, content }) => {
+//     // Only call replacePromptVariables when needed
+//     if (TEMPLATE_VARIABLE_REGEX.test(content)) {
+//       // Replace variables in content
+//       const newContent = replacePromptVariables(content, variables);
+//       return { id, role, content: newContent };
+//     }
+//     return { id, role, content };
+//   });
+//   return compliledPrompt;
+// }
+
+export function generatePromptFromJson(
+  prompt: PromptDataType,
+  variables: { [key: string]: string },
+): PromptDataType {
+  // Precompile the regular expression to match the pattern {@SCREEN_MESSAGE}
+
+  // Generate prompt with replaced variables
+  // return traverseAndReplace(prompt, variables);
+
+  const compliledPrompt = prompt.map(({ id, role, content }) => {
+    // Only call replacePromptVariables when needed
+    if (TEMPLATE_VARIABLE_REGEX.test(content)) {
+      // Replace variables in content
+      const newContent = replacePromptVariables(content, variables);
+      return { id, role, content: newContent };
+    }
+    return { id, role, content };
+  });
+
+  return compliledPrompt;
+}
+
 export function generatePrompt(
   template: string,
   data: Record<string, string>,
@@ -127,9 +180,10 @@ export function generatePrompt(
     }
     console.log(`key ${placeholder}`);
     const value = data[key] as string;
+    const escaped_value = value.replace(/"/g, '\\"');
 
     // Replace all occurrences of the placeholder with the value
-    result = result.replace(new RegExp(placeholder, "g"), value);
+    result = result.replace(new RegExp(placeholder, "g"), escaped_value);
   }
 
   return result;

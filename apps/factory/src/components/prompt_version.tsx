@@ -402,6 +402,15 @@ function PromptVersion({
     setAttachments(file);
   };
 
+  const handleSkills = (e: any) => {
+    try {
+      setSkills(JSON.parse(e.target.value));
+    } catch (e) {
+      console.warn(`Skills: invalid json ${e.message}`);
+    }
+    // JSON.parse(e.target.value) as any
+  };
+
   return (
     <>
       <Box sx={{ position: "relative" }}>
@@ -596,16 +605,13 @@ function PromptVersion({
             />
             <TextField
               label="Tools"
-              disabled={!!lpv.publishedAt}
               multiline
               fullWidth
               style={{ width: "100%" }}
               minRows={3}
               // maxRows={10}
               defaultValue={skills}
-              onChange={(e) => {
-                setSkills(JSON.parse(e.target.value) as any);
-              }}
+              onChange={handleSkills}
               variant="outlined"
             />
           </Grid>

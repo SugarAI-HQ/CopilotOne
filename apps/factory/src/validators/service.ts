@@ -79,10 +79,18 @@ export const getPromptOutput = z
   .or(z.null());
 export type GetPromptOutput = z.infer<typeof getPromptOutput>;
 
+export const messageRoleEnum = z.enum(["user", "assistant", "system", "tool"]);
+export const messageSchema = z.object({
+  role: messageRoleEnum,
+  content: z.string(),
+});
+export const messagesSchema = z.array(messageSchema).default([]);
+
 export const generateInput = z
   .object({
     // Template Data
     data: z.record(z.any()),
+    messages: messagesSchema,
     attachments: z.record(z.any()).optional(),
     skills: skillsSchema.default([]),
     // promptDataVariables: z.record(z.any()),
@@ -122,3 +130,5 @@ export type LogSchema = z.infer<typeof logSchema>;
 export type GenerateOutput = z.infer<typeof generateOutput>;
 export type SkillSchema = z.infer<typeof skillSchema>;
 export type skillsSchema = z.infer<typeof skillsSchema>;
+export type MessageSchema = z.infer<typeof messageSchema>;
+export type MessagesSchema = z.infer<typeof messagesSchema>;

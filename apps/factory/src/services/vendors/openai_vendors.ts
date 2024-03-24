@@ -4,7 +4,13 @@ import OpenAI from "openai";
 import { env } from "~/env.mjs";
 import { GPTResponseType, DalleSchemaType } from "~/validators/openaiResponse";
 import { logLLMResponse } from "~/utils/log";
-import { skillsSchema } from "~/validators/service";
+import {
+  MessageSchema,
+  MessagesSchema,
+  skillsSchema,
+} from "~/validators/service";
+import { Message } from "react-hook-form";
+import { Prompt, PromptDataType } from "~/validators/prompt_version";
 
 class OpenAIVendor extends BaseVendor {
   private openai = new OpenAI({
@@ -46,6 +52,7 @@ class OpenAIVendor extends BaseVendor {
         {
           index: 0,
           text: response.choices[0]?.message.content,
+          message: response.choices[0]?.message,
           tool_calls: response.choices[0]?.message?.tool_calls,
           logprobs: null,
           finish_reason: "stop",
@@ -57,27 +64,37 @@ class OpenAIVendor extends BaseVendor {
     return newResponse;
   }
 
-  protected parsePromptChat(prompt: string) {
-    return JSON.parse(prompt).map(
-      (item: { id: string; role: string; content: string }) => {
-        return {
-          role: item.role,
-          content: item.content,
-        };
-      },
-    );
+  protected parsePromptChat(prompt: PromptDataType): MessagesSchema {
+    // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    // console.log(prompt);
+    // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    return prompt.map((item: { id: string; role: string; content: string }) => {
+      return {
+        role: item.role,
+        content: item.content,
+      } as MessageSchema;
+    });
   }
 
   protected async executeGptModel(
     prompt: string,
+    messages: MessagesSchema,
     skills: skillsSchema,
     dryRun: boolean,
   ) {
     if (dryRun) {
       return this.createFakeResponse();
     }
+    console.log("-------------------------------------------------");
+    const promptMessages = [...this.parsePromptChat(prompt)];
+    const allMessages = promptMessages.concat(messages);
+    console.log(`messages: ${JSON.stringify(allMessages)}`);
+    console.log(`skills: ${JSON.stringify(skills)}`);
+    console.log("-------------------------------------------------");
+
     const response = await this.openai.chat.completions.create({
-      messages: [...this.parsePromptChat(prompt)],
+      messages: allMessages,
+
       model: this.model,
       ...(skills.length > 0 && { tools: skills }),
     });
@@ -110,11 +127,16 @@ class OpenAIVendor extends BaseVendor {
     return response;
   }
 
-  async main(prompt: string, skills: skillsSchema, dryRun: boolean) {
+  async main(
+    prompt: string,
+    messages: MessagesSchema,
+    skills: skillsSchema,
+    dryRun: boolean,
+  ) {
     const allowedModels = ["gpt-3.5-turbo", "gpt-4"];
     try {
       if (allowedModels.includes(this.model)) {
-        return this.executeGptModel(prompt, skills, dryRun);
+        return this.executeGptModel(prompt, messages, skills, dryRun);
       } else {
         return this.executeDalleModel(prompt, dryRun);
       }

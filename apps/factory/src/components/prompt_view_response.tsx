@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   LlmResponse,
   TextResponseV1,
@@ -12,29 +12,32 @@ const PromptViewResponse = ({
 }: {
   lrCompletion: LlmResponse["data"];
 }) => {
-  const lrSkillCompletion = lrCompletion as TextResponseV2["completion"];
   return (
     <>
-      {lrSkillCompletion.tool_calls ? (
+      {lrCompletion instanceof Array &&
+      lrCompletion.length > 0 &&
+      lrCompletion[0].message.tool_calls.length > 0 ? (
         <ul>
-          {lrSkillCompletion.tool_calls.map((toolCall: any, index: any) => (
-            <li key={index}>
-              <div>
-                <p>Function: {toolCall.function.name}</p>
-                <p>Arguments:</p>
-                <ul>
-                  {Object.entries(JSON.parse(toolCall.function.arguments)).map(
-                    ([key, value]) => (
+          {lrCompletion[0].message.tool_calls.map(
+            (toolCall: any, index: any) => (
+              <li key={index}>
+                <div>
+                  <p>Function: {toolCall.function.name}</p>
+                  <p>Arguments:</p>
+                  <ul>
+                    {Object.entries(
+                      JSON.parse(toolCall.function.arguments),
+                    ).map(([key, value]) => (
                       <li key={key}>
                         <strong>{key}:</strong> {value as string}
                       </li>
-                    ),
-                  )}
-                </ul>
-              </div>
-              <hr style={{ margin: "10px 0" }} />
-            </li>
-          ))}
+                    ))}
+                  </ul>
+                </div>
+                <hr style={{ margin: "10px 0" }} />
+              </li>
+            ),
+          )}
         </ul>
       ) : (
         <>{lrCompletion}</>
