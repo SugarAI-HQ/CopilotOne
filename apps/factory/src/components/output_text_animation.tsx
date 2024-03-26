@@ -5,9 +5,10 @@ import {
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
 import { hasImageModels } from "~/utils/template";
+import { TextResponseVersion } from "~/validators/llm_respose";
 
 type OutputTextAnimationProps = {
-  output: string;
+  output: TextResponseVersion["completion"];
   modelType: string;
   tokens?: number;
 };
@@ -27,12 +28,18 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
       }
     };
 
+    const newOutput =
+      typeof output === "object"
+        ? JSON.stringify(
+            output[0].message?.tool_calls || output[0].message?.content,
+          )
+        : output;
+
     if (!hasImageModels(modelType as ModelTypeType)) {
       let currentIndex = 0;
-
       const intervalId = setInterval(() => {
-        if (currentIndex <= output.length) {
-          setDisplayedText(output.slice(0, currentIndex));
+        if (currentIndex <= newOutput.length) {
+          setDisplayedText(newOutput.slice(0, currentIndex));
           currentIndex++;
           scrollToBottom();
         } else {
@@ -42,7 +49,7 @@ const OutputTextAnimation: React.FC<OutputTextAnimationProps> = ({
 
       return () => clearInterval(intervalId);
     } else {
-      setDisplayedText(output);
+      setDisplayedText(newOutput);
       scrollToBottom();
       if (containerRef.current) containerRef.current.scrollLeft = 0;
     }

@@ -1,12 +1,17 @@
 import type { LlmConfigSchema, Prompt } from "~/validators/prompt_version";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import { getProvider } from "~/services/providers";
-import { MessagesSchema, skillsSchema } from "~/validators/service";
+import {
+  MessagesSchema,
+  SkillChoicesType,
+  skillsSchema,
+} from "~/validators/service";
 
 type LlmGatewayProps = {
   prompt: Prompt;
   messages: MessagesSchema;
   skills: skillsSchema;
+  skillChoice: SkillChoicesType;
   llmModel: string;
   llmProvider: string;
   llmConfig: LlmConfigSchema;
@@ -19,6 +24,7 @@ export async function LlmGateway({
   prompt,
   messages,
   skills,
+  skillChoice,
   llmModel,
   llmProvider,
   llmConfig,
@@ -33,6 +39,7 @@ export async function LlmGateway({
     prompt,
     messages,
     skills,
+    skillChoice,
     llmModel,
     llmConfig,
     llmModelType,

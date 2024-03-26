@@ -89,7 +89,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           <PromptViewResponse lrResponseData={lr.data as TextResponseVersion} />
         ) : (
           <OutputTextAnimation
-            output={(lr.data as TextResponseV1).completion as string}
+            output={(lr.data as TextResponseVersion).completion}
             modelType={pl.llmModelType}
           />
         )}

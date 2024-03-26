@@ -11,36 +11,42 @@ const PromptViewResponse = ({
   const lrCompletion =
     lrResponseData.completion as TextResponseVersion["completion"];
 
-  if (typeof lrCompletion === "string") {
-    return <>{lrCompletion}</>;
-  }
-
   return (
     <>
-      {lrCompletion.tool_calls instanceof Array &&
-      lrCompletion.tool_calls.length > 0 ? (
+      {lrCompletion instanceof Array &&
+      lrCompletion.length > 0 &&
+      lrCompletion[0].message.tool_calls &&
+      lrCompletion[0].message.tool_calls.length > 0 ? (
         <ul>
-          {lrCompletion.tool_calls.map((toolCall: any, index: any) => (
-            <li key={index}>
-              <div>
-                <p>Function: {toolCall.function.name}</p>
-                <p>Arguments:</p>
-                <ul>
-                  {Object.entries(JSON.parse(toolCall.function.arguments)).map(
-                    ([key, value]) => (
+          {lrCompletion[0].message.tool_calls.map(
+            (toolCall: any, index: any) => (
+              <li key={index}>
+                <div>
+                  <p>Function: {toolCall.function.name}</p>
+                  <p>Arguments:</p>
+                  <ul>
+                    {Object.entries(
+                      JSON.parse(toolCall.function.arguments),
+                    ).map(([key, value]) => (
                       <li key={key}>
                         <strong>{key}:</strong> {value as string}
                       </li>
-                    ),
-                  )}
-                </ul>
-              </div>
-              <hr style={{ margin: "10px 0" }} />
-            </li>
-          ))}
+                    ))}
+                  </ul>
+                </div>
+                <hr style={{ margin: "10px 0" }} />
+              </li>
+            ),
+          )}
         </ul>
       ) : (
-        <>{lrCompletion}</>
+        <>
+          {lrCompletion instanceof Array &&
+          lrCompletion.length > 0 &&
+          lrCompletion[0].message.content
+            ? lrCompletion[0].message.content
+            : lrCompletion}
+        </>
       )}
     </>
   );

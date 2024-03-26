@@ -9,6 +9,7 @@ import {
   generateInput,
   generateOutput,
   MessagesSchema,
+  SkillChoicesType,
 } from "~/validators/service";
 import {
   generateLLmConfig,
@@ -81,6 +82,7 @@ export const serviceRouter = createTRPCRouter({
           prompt,
           messages: input.messages!,
           skills: input.skills!,
+          skillChoice: input.skillChoice as SkillChoicesType,
           llmModel: pv.llmModel,
           llmProvider: pv.llmProvider,
           llmConfig: llmConfig,

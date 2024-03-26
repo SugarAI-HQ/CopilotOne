@@ -3,9 +3,10 @@ import IconButton from "@mui/material/IconButton";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import toast from "react-hot-toast";
 import { Tooltip } from "@mui/material";
+import { TextResponseVersion } from "~/validators/llm_respose";
 
 interface CopyToClipboardButtonProps {
-  textToCopy: string;
+  textToCopy: TextResponseVersion["completion"];
   textToDisplay: string;
   cube?: boolean;
 }
@@ -15,9 +16,22 @@ const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
   textToDisplay,
   cube,
 }) => {
+  console.log(textToCopy);
   const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy);
-    toast.success("Copied");
+    try {
+      let text =
+        typeof textToCopy === "object"
+          ? JSON.stringify(
+              textToCopy[0].message?.tool_calls ||
+                textToCopy[0].message?.content,
+            )
+          : textToCopy.toString();
+      navigator.clipboard.writeText(text);
+      toast.success("Copied");
+    } catch (error) {
+      toast.error("Failed to copy");
+      console.error("Error copying text to clipboard:", error);
+    }
   };
 
   return (

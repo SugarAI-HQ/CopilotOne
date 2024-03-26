@@ -86,6 +86,10 @@ export const messageSchema = z.object({
 });
 export const messagesSchema = z.array(messageSchema).default([]);
 
+export const skillChoiceEnum = z.enum(["auto", "none"]);
+
+const skillChoices = z.enum(["auto", "none"]).default("none");
+
 export const generateInput = z
   .object({
     // Template Data
@@ -93,12 +97,15 @@ export const generateInput = z
     messages: messagesSchema,
     attachments: z.record(z.any()).optional(),
     skills: skillsSchema.default([]),
+    skillChoice: skillChoices,
     // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
   })
   .merge(getPromptInput)
   .strict();
 export type GenerateInput = z.infer<typeof generateInput>;
+
+export type SkillChoicesType = z.infer<typeof skillChoices>;
 
 export const logSchema = z.object({
   id: z.string(),

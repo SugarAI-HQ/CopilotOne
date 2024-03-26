@@ -8,6 +8,7 @@ import {
   MessageSchema,
   MessagesSchema,
   skillsSchema,
+  SkillChoicesType,
 } from "~/validators/service";
 import { Message } from "react-hook-form";
 import { Prompt, PromptDataType } from "~/validators/prompt_version";
@@ -50,10 +51,7 @@ class OpenAIVendor extends BaseVendor {
       model: response.model,
       choices: [
         {
-          index: 0,
-          text: response.choices[0]?.message.content,
           message: response.choices[0]?.message,
-          tool_calls: response.choices[0]?.message?.tool_calls,
           logprobs: null,
           finish_reason: response.choices[0]?.finish_reason,
         },
@@ -80,6 +78,7 @@ class OpenAIVendor extends BaseVendor {
     prompt: PromptDataType,
     messages: MessagesSchema,
     skills: skillsSchema,
+    skillChoice: SkillChoicesType,
     dryRun: boolean,
   ) {
     if (dryRun) {
@@ -95,7 +94,10 @@ class OpenAIVendor extends BaseVendor {
     const response = await this.openai.chat.completions.create({
       messages: allMessages,
       model: this.model,
-      ...(skills.length > 0 && { tools: skills, tool_choice: "auto" }),
+      ...(skills.length > 0 && {
+        tools: skills,
+        tool_choice: skillChoice,
+      }),
     });
     return this.createChatResponse(response);
   }
@@ -130,6 +132,7 @@ class OpenAIVendor extends BaseVendor {
     prompt: Prompt,
     messages: MessagesSchema,
     skills: skillsSchema,
+    skillChoice: SkillChoicesType,
     dryRun: boolean,
   ) {
     const allowedModels = ["gpt-3.5-turbo", "gpt-4"];
@@ -139,6 +142,7 @@ class OpenAIVendor extends BaseVendor {
           prompt as PromptDataType,
           messages,
           skills,
+          skillChoice,
           dryRun,
         );
       } else {

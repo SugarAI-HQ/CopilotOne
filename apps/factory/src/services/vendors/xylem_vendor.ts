@@ -54,8 +54,8 @@ class XylemVendor extends BaseVendor {
       model: response.model,
       choices: [
         {
-          index: 0,
-          text: response.choices["0"]?.message.content,
+          message: response.choices["0"]?.message,
+          // text: response.choices["0"]?.message.content,
           logprobs: null,
           finish_reason: "stop",
         },

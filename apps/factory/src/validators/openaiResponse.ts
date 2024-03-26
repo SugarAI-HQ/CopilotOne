@@ -1,11 +1,8 @@
 import { z } from "zod";
 
 const choices = z.object({
-  text: z.string(),
   message: z.any(),
-  index: z.number(),
   logprobs: z.null(),
-  tool_calls: z.array(z.null()).optional(),
   finish_reason: z.enum(["stop", "tool_calls"]),
 });
 

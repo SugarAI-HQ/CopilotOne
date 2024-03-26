@@ -114,7 +114,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
           <PromptViewResponse lrResponseData={lr.data as TextResponseVersion} />
         ) : (
           <OutputTextAnimation
-            output={lr.data.completion as TextResponseV1["completion"]}
+            output={(lr.data as TextResponseVersion).completion}
             modelType={pl?.llmModelType as string}
           />
         )}
@@ -175,7 +175,7 @@ export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
         (hasImageModels(pl?.llmModelType as ModelTypeType) ? (
           <DownloadButtonBase64 logId={pl?.id as string} />
         ) : (
-          lr?.data.v == 1 && (
+          lr?.data && (
             <CopyToClipboardButton
               textToCopy={llrText?.completion}
               textToDisplay={"Copy"}
