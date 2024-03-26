@@ -14,6 +14,7 @@ export type Model = {
   label: string;
   enabled: boolean;
   editorVersion: number;
+  toolEnabled: boolean;
 };
 
 export type Provider = Model;
@@ -25,6 +26,7 @@ type ModelType = {
   defaultModel: string;
   providers: Provider[];
   models: Record<string, Model[]>;
+  toolEnabled: boolean;
 };
 
 type ProviderModels = {
@@ -40,12 +42,43 @@ export const providerModels: ProviderModels = {
     enabled: true,
     defaultProvider: "llama2",
     defaultModel: "7b",
+    toolEnabled: true,
     providers: [
-      { name: "llama2", label: "Llama2", enabled: true, editorVersion: 0 },
-      { name: "mistral", label: "Mistral", enabled: true, editorVersion: 0 },
-      { name: "openai", label: "OpenAI", enabled: true, editorVersion: 0 },
-      { name: "falcon", label: "Falcon", enabled: false, editorVersion: 0 },
-      { name: "mpt", label: "MPT", enabled: false, editorVersion: 0 },
+      {
+        name: "llama2",
+        label: "Llama2",
+        enabled: true,
+        editorVersion: 0,
+        toolEnabled: false,
+      },
+      {
+        name: "mistral",
+        label: "Mistral",
+        enabled: true,
+        editorVersion: 0,
+        toolEnabled: false,
+      },
+      {
+        name: "openai",
+        label: "OpenAI",
+        enabled: true,
+        editorVersion: 0,
+        toolEnabled: true,
+      },
+      {
+        name: "falcon",
+        label: "Falcon",
+        enabled: false,
+        editorVersion: 0,
+        toolEnabled: false,
+      },
+      {
+        name: "mpt",
+        label: "MPT",
+        enabled: false,
+        editorVersion: 0,
+        toolEnabled: false,
+      },
     ],
     models: {
       openai: [
@@ -55,22 +88,77 @@ export const providerModels: ProviderModels = {
           label: "Gpt 3.5 Turbo",
           enabled: true,
           editorVersion: 1,
+          toolEnabled: true,
         },
-        { name: "gpt-4", label: "Gpt 4", enabled: true, editorVersion: 1 },
+        {
+          name: "gpt-4",
+          label: "Gpt 4",
+          enabled: true,
+          editorVersion: 1,
+          toolEnabled: false,
+        },
       ],
       llama2: [
-        { name: "7b", label: "7B", enabled: true, editorVersion: 0 },
-        { name: "13b", label: "13B", enabled: true, editorVersion: 0 },
-        { name: "70b", label: "70B", enabled: true, editorVersion: 0 },
+        {
+          name: "7b",
+          label: "7B",
+          enabled: true,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
+        {
+          name: "13b",
+          label: "13B",
+          enabled: true,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
+        {
+          name: "70b",
+          label: "70B",
+          enabled: true,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
       ],
       falcon: [
-        { name: "7b", label: "7B", enabled: false, editorVersion: 0 },
-        { name: "40b", label: "40B", enabled: false, editorVersion: 0 },
-        { name: "180b", label: "180B", enabled: false, editorVersion: 0 },
+        {
+          name: "7b",
+          label: "7B",
+          enabled: false,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
+        {
+          name: "40b",
+          label: "40B",
+          enabled: false,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
+        {
+          name: "180b",
+          label: "180B",
+          enabled: false,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
       ],
       mpt: [
-        { name: "7b", label: "7B", enabled: false, editorVersion: 0 },
-        { name: "30b", label: "30B", enabled: false, editorVersion: 0 },
+        {
+          name: "7b",
+          label: "7B",
+          enabled: false,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
+        {
+          name: "30b",
+          label: "30B",
+          enabled: false,
+          editorVersion: 0,
+          toolEnabled: false,
+        },
       ],
       mistral: [
         {
@@ -78,6 +166,7 @@ export const providerModels: ProviderModels = {
           label: "Mistral-7B",
           enabled: true,
           editorVersion: 2,
+          toolEnabled: false,
         },
         // {
         //   name: "WizardCoder-34B",
@@ -90,6 +179,7 @@ export const providerModels: ProviderModels = {
           label: "Mistral-7B-Instruct",
           enabled: true,
           editorVersion: 0,
+          toolEnabled: false,
         },
       ],
     },
@@ -100,20 +190,35 @@ export const providerModels: ProviderModels = {
     enabled: true,
     defaultProvider: "stabilityai",
     defaultModel: "sdxl",
+    toolEnabled: false,
     providers: [
-      { name: "openai", label: "Open AI", enabled: true, editorVersion: 0 },
-      { name: "runwayml", label: "Runway ML", enabled: true, editorVersion: 0 },
+      {
+        name: "openai",
+        label: "Open AI",
+        enabled: true,
+        editorVersion: 0,
+        toolEnabled: false,
+      },
+      {
+        name: "runwayml",
+        label: "Runway ML",
+        enabled: true,
+        editorVersion: 0,
+        toolEnabled: false,
+      },
       {
         name: "prompthero",
         label: "Prompt Hero",
         enabled: true,
         editorVersion: 0,
+        toolEnabled: false,
       },
       {
         name: "stabilityai",
         label: "Stability AI",
         enabled: true,
         editorVersion: 0,
+        toolEnabled: false,
       },
     ],
     models: {
@@ -123,6 +228,7 @@ export const providerModels: ProviderModels = {
           label: "Stable Diffusion XL 1.0",
           enabled: true,
           editorVersion: 0,
+          toolEnabled: false,
         },
       ],
       openai: [
@@ -131,6 +237,7 @@ export const providerModels: ProviderModels = {
           label: "Dall-E-3",
           enabled: true,
           editorVersion: 0,
+          toolEnabled: false,
         },
       ],
       runwayml: [
@@ -139,6 +246,7 @@ export const providerModels: ProviderModels = {
           label: "Stable Diffusion V1-5",
           enabled: true,
           editorVersion: 0,
+          toolEnabled: false,
         },
       ],
       prompthero: [
@@ -147,6 +255,7 @@ export const providerModels: ProviderModels = {
           label: "Open Journey",
           enabled: true,
           editorVersion: 0,
+          toolEnabled: false,
         },
       ],
     },
@@ -157,12 +266,14 @@ export const providerModels: ProviderModels = {
     enabled: true,
     defaultProvider: "WizardCoder",
     defaultModel: "WizardCoder-34B",
+    toolEnabled: false,
     providers: [
       {
         name: "WizardCoder",
         label: "Wizard Coder",
         enabled: true,
         editorVersion: 0,
+        toolEnabled: false,
       },
     ],
     models: {
@@ -172,6 +283,7 @@ export const providerModels: ProviderModels = {
           label: "WizardCoder-34B",
           enabled: true,
           editorVersion: 0,
+          toolEnabled: false,
         },
       ],
     },
@@ -182,12 +294,14 @@ export const providerModels: ProviderModels = {
     enabled: true,
     defaultProvider: "segmind",
     defaultModel: "sd1.5-img2img",
+    toolEnabled: false,
     providers: [
       {
         name: "segmind",
         label: "Segmind",
         enabled: true,
         editorVersion: 3,
+        toolEnabled: false,
       },
     ],
     models: {
@@ -197,6 +311,7 @@ export const providerModels: ProviderModels = {
           label: "Stable Diffusion img2img",
           enabled: true,
           editorVersion: 3,
+          toolEnabled: false,
         },
       ],
     },

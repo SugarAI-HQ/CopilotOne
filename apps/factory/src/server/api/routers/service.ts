@@ -17,7 +17,7 @@ import {
   hasImageModels,
 } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
-import { LlmProvider } from "~/services/llm_providers";
+import { LlmGateway } from "~/services/llm_gateways";
 import { providerModels } from "~/validators/base";
 import {
   ModelTypeType,
@@ -57,36 +57,37 @@ export const serviceRouter = createTRPCRouter({
         console.log(`data >>>> ${JSON.stringify(input)}`);
         let prompt: Prompt = "";
         if (hasImageModels(modelType)) {
-          prompt = generatePrompt(pv.template, input.data || {});
+          prompt = generatePrompt(pv.template, input.variables || {});
         } else {
           // here decide whether to take template data or promptData
           if (getEditorVersion(modelType, pv.llmProvider, pv.llmModel)) {
             // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
             prompt = generatePromptFromJson(
               pv.promptData.data,
-              input.data || {},
+              input.variables || {},
             ) as PromptDataType;
             // console.log(prompt);
             // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
           } else {
-            prompt = generatePrompt(pv.template, input.data || {});
+            prompt = generatePrompt(pv.template, input.variables || {});
           }
         }
 
         console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
 
         const llmConfig = generateLLmConfig(pv.llmConfig);
-        const rr = await LlmProvider(
+
+        const rr = await LlmGateway({
           prompt,
-          input.messages as MessagesSchema,
-          input.skills as skillsSchema,
-          pv.llmModel,
-          pv.llmProvider,
-          llmConfig,
-          pv.llmModelType,
-          input.isDevelopment,
-          input.attachments,
-        );
+          messages: input.messages!,
+          skills: input.skills!,
+          llmModel: pv.llmModel,
+          llmProvider: pv.llmProvider,
+          llmConfig: llmConfig,
+          llmModelType: pv.llmModelType,
+          isDevelopment: input.isDevelopment,
+          attachments: input.attachments,
+        });
 
         console.log(
           `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,

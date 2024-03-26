@@ -6,7 +6,7 @@ const choices = z.object({
   index: z.number(),
   logprobs: z.null(),
   tool_calls: z.array(z.null()).optional(),
-  finish_reason: z.string(),
+  finish_reason: z.enum(["stop", "tool_calls"]),
 });
 
 type ChoicesType = z.infer<typeof choices>;

@@ -181,6 +181,8 @@ export const processLlmResponse = (
   return null;
 };
 
+export const textResponseVersion = z.union([textResponseV1, textResponseV2]);
+
 export type LlmErrorResponse = z.infer<typeof llmLlmErrorResponseSchema>;
 export type LlmResponse = z.infer<typeof llmResponseSchema>;
 export type RunResponse = z.infer<typeof runResponseSchema>;
@@ -190,4 +192,5 @@ export type TextResponseV2 = z.infer<typeof textResponseV2>;
 export type CodeResponseV1 = z.infer<typeof codeResponseV1>;
 export type ImageResponseV1 = z.infer<typeof imageResponseV1>;
 export type ImageResponseV2 = z.infer<typeof imageResponseV2>;
+export type TextResponseVersion = z.infer<typeof textResponseVersion>;
 // export type LlmResponseData = z.infer<typeof llmResponseDataSchema>;

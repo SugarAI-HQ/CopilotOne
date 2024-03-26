@@ -31,6 +31,7 @@ import {
   getUniqueJsonArrayWithDefaultValues,
   getVariables,
   hasImageEditor,
+  isToolEnabled,
 } from "~/utils/template";
 import SaveIcon from "@mui/icons-material/Save";
 import { CreateVersion } from "./create_version";
@@ -249,7 +250,7 @@ function PromptVersion({
         isDevelopment: checked,
         // llmModelType: pt?.modelType,
         environment: promptEnvironment.Enum.DEV,
-        data: data,
+        variables: data,
         attachments: attachments,
         skills: skills,
       } as GenerateInput,
@@ -402,10 +403,10 @@ function PromptVersion({
     setAttachments(file);
   };
 
-  const handleSkills = (e: any) => {
+  const handleSkills = (event: any) => {
     try {
-      setSkills(JSON.parse(e.target.value));
-    } catch (e) {
+      setSkills(JSON.parse(event.target.value));
+    } catch (e: any) {
       console.warn(`Skills: invalid json ${e.message}`);
     }
     // JSON.parse(e.target.value) as any
@@ -603,17 +604,23 @@ function PromptVersion({
               onChange={handleVariableValuesChanged}
               mode={displayModes.Enum.VIEW}
             />
-            <TextField
-              label="Tools"
-              multiline
-              fullWidth
-              style={{ width: "100%" }}
-              minRows={3}
-              // maxRows={10}
-              defaultValue={skills}
-              onChange={handleSkills}
-              variant="outlined"
-            />
+            {isToolEnabled(
+              pt?.modelType as ModelTypeType,
+              lpv?.llmProvider as string,
+              lpv?.llmModel as string,
+            ) && (
+              <TextField
+                label="Tools"
+                multiline
+                fullWidth
+                style={{ width: "100%" }}
+                minRows={3}
+                // maxRows={10}
+                defaultValue={skills}
+                onChange={handleSkills}
+                variant="outlined"
+              />
+            )}
           </Grid>
         </Grid>
         <Divider sx={{ mt: 1 }} textAlign="right"></Divider>

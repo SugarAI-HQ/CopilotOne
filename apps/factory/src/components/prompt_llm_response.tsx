@@ -8,6 +8,7 @@ import {
   ResponseType,
   TextResponseV1,
   TextResponseV2,
+  TextResponseVersion,
 } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
 import {
@@ -63,7 +64,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
   cube,
 }) => {
   let lr = pl?.llmResponse as LlmResponse;
-  const lrCompletion = lr.data as TextResponseV1 | TextResponseV2;
+  const lrCompletion = lr.data as TextResponseVersion;
   // const lrSkillCompletion = lrCompletion as TextResponseV2["completion"];
 
   if (lr?.data?.t === ResponseType.TEXT || lr.data?.t === ResponseType.CODE) {
@@ -88,7 +89,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
             {pl?.completion_tokens ? (
               <>
                 <PromptViewResponse
-                  lrCompletion={lr.data.completion as LlmResponse["data"]}
+                  lrResponseData={lr.data as TextResponseVersion}
                 />
                 <p>tokens: {pl?.completion_tokens}</p>
               </>
@@ -102,7 +103,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
                     }}
                   >
                     <PromptViewResponse
-                      lrCompletion={lr.data.completion as LlmResponse["data"]}
+                      lrResponseData={lr.data as TextResponseVersion}
                     />
                   </code>
                 </pre>
@@ -110,9 +111,7 @@ const LlmDataResponse: React.FC<PromptLlmResponseProps> = ({
             )}
           </Box>
         ) : lr.data.completion instanceof Array ? (
-          <PromptViewResponse
-            lrCompletion={lr.data.completion as LlmResponse["data"]}
-          />
+          <PromptViewResponse lrResponseData={lr.data as TextResponseVersion} />
         ) : (
           <OutputTextAnimation
             output={lr.data.completion as TextResponseV1["completion"]}

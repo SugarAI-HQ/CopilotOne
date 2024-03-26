@@ -214,7 +214,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                         cube={false}
                       />
                     )}
-                    {(log?.llmResponse as LlmResponse).data && (
+                    {(log?.llmResponse as LlmResponse) && (
                       <PromptLlmResponse
                         pl={log as LogOutput}
                         imgClassName={"h-32 w-32 object-contain"}

@@ -3,19 +3,32 @@ import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import { getProvider } from "~/services/providers";
 import { MessagesSchema, skillsSchema } from "~/validators/service";
 
-export async function LlmProvider(
-  prompt: Prompt,
-  messages: MessagesSchema,
-  skills: skillsSchema,
-  llmModel: string,
-  llmProvider: string,
-  llmConfig: LlmConfigSchema,
-  llmModelType: ModelTypeType,
-  isDevelopment: boolean = false,
-  attachments?: any,
-) {
+type LlmGatewayProps = {
+  prompt: Prompt;
+  messages: MessagesSchema;
+  skills: skillsSchema;
+  llmModel: string;
+  llmProvider: string;
+  llmConfig: LlmConfigSchema;
+  llmModelType: ModelTypeType;
+  isDevelopment?: boolean;
+  attachments?: any;
+};
+
+export async function LlmGateway({
+  prompt,
+  messages,
+  skills,
+  llmModel,
+  llmProvider,
+  llmConfig,
+  llmModelType,
+  isDevelopment = false,
+  attachments,
+}: LlmGatewayProps) {
   console.log(`provider >>>> ${llmProvider}`);
   const provider = getProvider(llmProvider);
+
   const output = await provider(
     prompt,
     messages,

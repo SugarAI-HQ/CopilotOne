@@ -55,7 +55,7 @@ class OpenAIVendor extends BaseVendor {
           message: response.choices[0]?.message,
           tool_calls: response.choices[0]?.message?.tool_calls,
           logprobs: null,
-          finish_reason: "stop",
+          finish_reason: response.choices[0]?.finish_reason,
         },
       ],
       usage: response.usage,
@@ -77,7 +77,7 @@ class OpenAIVendor extends BaseVendor {
   }
 
   protected async executeGptModel(
-    prompt: string,
+    prompt: PromptDataType,
     messages: MessagesSchema,
     skills: skillsSchema,
     dryRun: boolean,
@@ -87,23 +87,22 @@ class OpenAIVendor extends BaseVendor {
     }
     console.log("-------------------------------------------------");
     const promptMessages = [...this.parsePromptChat(prompt)];
-    const allMessages = promptMessages.concat(messages);
+    const allMessages: any = promptMessages.concat(messages);
     console.log(`messages: ${JSON.stringify(allMessages)}`);
     console.log(`skills: ${JSON.stringify(skills)}`);
     console.log("-------------------------------------------------");
 
     const response = await this.openai.chat.completions.create({
       messages: allMessages,
-
       model: this.model,
-      ...(skills.length > 0 && { tools: skills }),
+      ...(skills.length > 0 && { tools: skills, tool_choice: "auto" }),
     });
     return this.createChatResponse(response);
   }
-  protected async executeDalleModel(prompt: string, dryRun: boolean) {
+  protected async executeDalleModel(prompt: Prompt, dryRun: boolean) {
     const res = await this.openai.images.generate({
       model: "dall-e-3",
-      prompt: prompt,
+      prompt: prompt as string,
       n: 1,
       size: "1024x1024",
       response_format: "b64_json",
@@ -128,7 +127,7 @@ class OpenAIVendor extends BaseVendor {
   }
 
   async main(
-    prompt: string,
+    prompt: Prompt,
     messages: MessagesSchema,
     skills: skillsSchema,
     dryRun: boolean,
@@ -136,7 +135,12 @@ class OpenAIVendor extends BaseVendor {
     const allowedModels = ["gpt-3.5-turbo", "gpt-4"];
     try {
       if (allowedModels.includes(this.model)) {
-        return this.executeGptModel(prompt, messages, skills, dryRun);
+        return this.executeGptModel(
+          prompt as PromptDataType,
+          messages,
+          skills,
+          dryRun,
+        );
       } else {
         return this.executeDalleModel(prompt, dryRun);
       }

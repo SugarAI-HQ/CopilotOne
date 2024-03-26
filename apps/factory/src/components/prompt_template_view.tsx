@@ -190,7 +190,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
         versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
         isDevelopment: checked,
         environment: promptEnvironment.Enum.DEV,
-        data: data,
+        variables: data,
         attachments: attachments,
       } as GenerateInput,
       {

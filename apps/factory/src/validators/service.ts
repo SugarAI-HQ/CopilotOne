@@ -58,7 +58,7 @@ export const skillSchema = z.object({
   function: skillDefinitionSchema,
 });
 
-export const skillsSchema = z.array(skillSchema);
+export const skillsSchema = z.array(skillSchema).default([]);
 
 export const getPromptOutput = z
   .object({
@@ -89,7 +89,7 @@ export const messagesSchema = z.array(messageSchema).default([]);
 export const generateInput = z
   .object({
     // Template Data
-    data: z.record(z.any()),
+    variables: z.record(z.any()),
     messages: messagesSchema,
     attachments: z.record(z.any()).optional(),
     skills: skillsSchema.default([]),

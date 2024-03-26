@@ -11,6 +11,7 @@ import {
   LlmResponse,
   TextResponseV1,
   TextResponseV2,
+  TextResponseVersion,
 } from "~/validators/llm_respose";
 import Image from "next/image";
 import { hasImageModels } from "~/utils/template";
@@ -31,7 +32,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   cube,
 }) => {
   let lr = pl?.llmResponse as LlmResponse;
-  const lrCompletion = lr.data as TextResponseV1 | TextResponseV2;
+  const lrCompletion = lr.data as TextResponseVersion;
 
   if (!hasImageModels(pl?.llmModelType as ModelTypeType)) {
     return (
@@ -58,10 +59,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                   pl.completion
                 ) : (
                   <PromptViewResponse
-                    lrCompletion={
-                      (lr.data as TextResponseV1 | TextResponseV2)
-                        .completion as LlmResponse["data"]
-                    }
+                    lrResponseData={lr.data as TextResponseVersion}
                   />
                 )}
                 <p>tokens: {pl.completion_tokens}</p>
@@ -79,10 +77,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                       pl.completion
                     ) : (
                       <PromptViewResponse
-                        lrCompletion={
-                          (lr.data as TextResponseV1 | TextResponseV2)
-                            .completion as LlmResponse["data"]
-                        }
+                        lrResponseData={lr.data as TextResponseVersion}
                       />
                     )}
                   </code>
@@ -91,12 +86,7 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
             )}
           </Box>
         ) : lrCompletion instanceof Array ? (
-          <PromptViewResponse
-            lrCompletion={
-              (lr.data as TextResponseV1 | TextResponseV2)
-                .completion as LlmResponse["data"]
-            }
-          />
+          <PromptViewResponse lrResponseData={lr.data as TextResponseVersion} />
         ) : (
           <OutputTextAnimation
             output={(lr.data as TextResponseV1).completion as string}

@@ -214,14 +214,25 @@ export function hasImageModels(llmModelType: ModelTypeType) {
   );
 }
 
-export const getEditorVersion = (
+export const getModel = (
   modeType: ModelTypeType,
   providerName: string,
   modelName: string,
 ) => {
   return providerModels[`${modeType as keyof typeof providerModels}`].models[
     `${providerName}`
-  ]?.find((mod) => mod.name === modelName)?.editorVersion;
+  ]?.find((mod) => mod.name === modelName);
+};
+
+export const getEditorVersion = (
+  modeType: ModelTypeType,
+  providerName: string,
+  modelName: string,
+) => {
+  const model = getModel(modeType, providerName, modelName);
+  if (model) {
+    return model.editorVersion;
+  }
 };
 
 export const hasImageEditor = (
@@ -231,4 +242,15 @@ export const hasImageEditor = (
 ): boolean => {
   const editorVersion = getEditorVersion(modeType, providerName, modelName);
   return editorVersion === 0 || editorVersion === 3;
+};
+
+export const isToolEnabled = (
+  modeType: ModelTypeType,
+  providerName: string,
+  modelName: string,
+) => {
+  const model = getModel(modeType, providerName, modelName);
+  if (model) {
+    return model.toolEnabled;
+  }
 };
