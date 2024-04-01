@@ -4,6 +4,7 @@ import {
   ModelTypeSchema,
 } from "~/generated/prisma-client-zod.ts";
 import semver from "semver";
+import { templateVariablesSchema } from "./prompt_log";
 export const llmConfigSchema = z.object({
   temperature: z.number().optional(),
   maxLength: z.number().optional(),
@@ -63,6 +64,7 @@ export const createVersionInput = z
     version: z.string().refine((version) => semver.valid(version) !== null, {
       message: "Version must be in semantic format (e.g., '1.0.1')",
     }),
+    variables: templateVariablesSchema,
     forkedFromId: z.null().or(z.string().uuid()),
     moduleType: ModelTypeSchema,
   })
@@ -108,6 +110,7 @@ export const updateVersionInput = z
     llmProvider: z.string(),
     llmModel: z.string(),
     llmConfig: llmConfigSchema,
+    variables: templateVariablesSchema,
   })
   .strict()
   .required();
@@ -133,7 +136,7 @@ const versionSchema = z.object({
   llmProvider: z.string(),
   llmModel: z.string(),
   llmConfig: InputJsonValue.nullable(),
-
+  variables: InputJsonValue.nullable(),
   publishedAt: z.coerce.date().nullable(),
   changelog: z.string().nullable(),
   createdAt: z.coerce.date(),

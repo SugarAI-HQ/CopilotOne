@@ -56,7 +56,7 @@ import CopyToClipboardButton from "./copy_button";
 import AddIcon from "@mui/icons-material/Add";
 import DownloadButtonBase64 from "./download_button_base64";
 import LikeButton from "./marketplace/like_button";
-import { LogSchema } from "~/validators/prompt_log";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
 import toast from "react-hot-toast";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
 import { LogOutput } from "~/validators/prompt_log";
@@ -97,7 +97,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
   const { data: pv, isLoading } = api.cube.getPrompt.useQuery(
     {
       username: username,
-      package: packageName,
+      packageName: packageName,
       template: template,
       versionOrEnvironment: versionOrEnvironment?.toUpperCase(),
     },
@@ -185,7 +185,7 @@ const PromptTemplateView: React.FC<PromptTemplateViewProps> = ({
     const pl = await generateMutation.mutateAsync(
       {
         username: username,
-        package: packageName || "",
+        packageName: packageName || "",
         template: template || "",
         versionOrEnvironment: versionOrEnvironment?.toUpperCase() || "",
         isDevelopment: checked,

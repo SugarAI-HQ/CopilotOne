@@ -77,8 +77,8 @@ import {
 import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate, getDefaults } from "~/services/providers";
 import { FileObject } from "~/utils/images";
-import { hasImageModels } from "~/utils/template";
-import { LogSchema } from "~/validators/prompt_log";
+import { hasImageModels, extractVariables } from "~/utils/template";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   LlmResponse,
@@ -143,19 +143,6 @@ function PromptVersion({
   // const [promptOutput, setPromptOutput] = useState("");
 
   const [promptPerformance, setPromptPerformacne] = useState({});
-
-  const extractVariables = (
-    txt: string,
-    pvrs: PromptVariableProps[] = [],
-  ): PromptVariableProps[] => {
-    const variables = getUniqueJsonArrayWithDefaultValues(
-      getVariables(txt),
-      "key",
-      pvrs,
-    );
-    // setVariables([...variables]);
-    return variables;
-  };
 
   const extractTemplate = (lpv: pv): string => {
     let templateValue: string;
@@ -262,7 +249,7 @@ function PromptVersion({
     const pl = await generateMutation.mutateAsync(
       {
         username: ns?.username,
-        package: pp?.name || "",
+        packageName: pp?.name || "",
         template: pt?.name || "",
         versionOrEnvironment: lpv.version || "",
         isDevelopment: checked,
@@ -322,7 +309,7 @@ function PromptVersion({
     return () => {
       clearTimeout(saveTimer);
     };
-  }, [template, isDirty]);
+  }, [template, isDirty, pvrs]);
 
   // if current and nextProvide will be same i will not do anything other wise i will call getTemplate fumction
 
@@ -346,6 +333,7 @@ function PromptVersion({
       llmProvider: llm.provider,
       llmModel: llm.model,
       llmConfig: llmConfig,
+      variables: pvrs as TemplateVariablesType,
     });
     setIsLLMChanged(false);
     setIsDirty(false);
@@ -587,6 +575,7 @@ function PromptVersion({
                                             : "block"
                                         }`,
                                       }}
+                                      disabled={lpv.publishedAt ? true : false}
                                       onClick={() => deletePrompt(ind)}
                                     >
                                       <RemoveCircleIcon />
@@ -598,6 +587,9 @@ function PromptVersion({
                                           sx={{
                                             padding: "1rem",
                                           }}
+                                          disabled={
+                                            lpv.publishedAt ? true : false
+                                          }
                                         >
                                           <AddIcon />
                                         </Button>
@@ -732,7 +724,7 @@ function PromptVersion({
             color="success"
             variant="outlined"
             onClick={handleTest}
-            disabled={true}
+            // disabled={true}
             sx={{
               width: "9rem",
             }}

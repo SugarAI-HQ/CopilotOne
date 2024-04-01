@@ -52,6 +52,21 @@ export const getLogInput = z
 
 export type GetLogInput = z.infer<typeof getLogInput>;
 
+export const templateVariableTypeEnum = z.enum(["", "$", "@", "#", "%"]);
+
+export const templateVariableSchema = z.object({
+  type: templateVariableTypeEnum.default(""),
+  key: z.string(),
+  value: z.string().optional(),
+});
+
+export const templateVariablesSchema = z
+  .array(templateVariableSchema)
+  .default([]);
+
+export type TemplateVariableType = z.infer<typeof templateVariableSchema>;
+export type TemplateVariablesType = z.infer<typeof templateVariablesSchema>;
+
 export const logSchema = z.object({
   id: z.string(),
   // inputId: z.string().optional(),
@@ -62,6 +77,7 @@ export const logSchema = z.object({
   version: z.string(),
   completion: z.string().nullable(),
   llmResponse: InputJsonValue.nullable(),
+  promptVariables: InputJsonValue.nullable(),
   llmProvider: z.string(),
   llmModel: z.string(),
   llmConfig: InputJsonValue.nullable(),

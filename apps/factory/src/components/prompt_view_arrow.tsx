@@ -10,17 +10,20 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { TemplateVariablesType } from "~/validators/prompt_log";
 
 interface PromptViewArrowProps {
   promptInputs: PromptDataType | undefined;
   haveroleUserAssistant: number | undefined;
   promptTemplate: string;
+  promptVariables?: TemplateVariablesType;
 }
 
 const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
   promptTemplate,
   promptInputs,
   haveroleUserAssistant,
+  promptVariables,
 }) => {
   const [isTextOpen, setIsTextOpen] = useState(false);
 
@@ -57,6 +60,7 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
               promptInputs={promptInputs}
               haveroleUserAssistant={haveroleUserAssistant}
               promptTemplate={promptTemplate}
+              promptVariables={promptVariables}
             />
           </>
         ) : (
@@ -75,6 +79,7 @@ export const PromptView = ({
   promptInputs,
   haveroleUserAssistant,
   promptTemplate,
+  promptVariables,
 }: PromptViewArrowProps) => {
   return (
     <>
@@ -124,6 +129,7 @@ export const PromptView = ({
                   </TableCell>
                 </TableRow>
               ))}
+              {promptVariables && promptViewVariables(promptVariables)}
             </TableBody>
           </Table>
         </TableContainer>
@@ -131,10 +137,27 @@ export const PromptView = ({
         <>
           <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
             {promptTemplate}
+            {promptVariables && promptViewVariables(promptVariables)}
           </Typography>
         </>
       )}
     </>
+  );
+};
+
+export const promptViewVariables = (promptVariables: TemplateVariablesType) => {
+  return (
+    <div>
+      <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+        Variables:
+      </Typography>
+      {`{${promptVariables
+        .map(
+          (variable, index) =>
+            `${variable.type}${variable.key}: ${variable.value}`,
+        )
+        .join(", ")}}`}
+    </div>
   );
 };
 

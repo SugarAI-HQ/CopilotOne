@@ -21,7 +21,7 @@ import PromptCompletion from "~/components/prompt_completion";
 import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
-import { LogSchema } from "~/validators/prompt_log";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
 import { GenerateOutput } from "~/validators/service";
 import PromptLlmResponse, {
   LlmResponseAction,
@@ -175,6 +175,9 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                   ) ? (
                     <PromptView
                       promptInputs={JSON.parse(log.prompt)}
+                      promptVariables={
+                        log.promptVariables as TemplateVariablesType
+                      }
                       haveroleUserAssistant={1}
                       promptTemplate={""}
                     />
@@ -187,6 +190,9 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                         log.llmModel,
                       )}
                       promptTemplate={log.prompt}
+                      promptVariables={
+                        log.promptVariables as TemplateVariablesType
+                      }
                     />
                   )}
                   <hr />

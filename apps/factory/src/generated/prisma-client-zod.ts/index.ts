@@ -60,13 +60,13 @@ export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','
 
 export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType','runMode']);
 
-export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','promptData','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
+export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','promptData','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','variables','createdAt','updatedAt']);
 
 export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','username','image','createdAt','updatedAt']);
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires','createdAt','updatedAt']);
 
-export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmResponse','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
+export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmResponse','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','promptVariables','createdAt','updatedAt']);
 
 export const LikeScalarFieldEnumSchema = z.enum(['id','likesCount','entityId','entityType','createdAt','updatedAt']);
 
@@ -239,6 +239,7 @@ export const PromptVersionSchema = z.object({
   outCost: z.number().nullable(),
   promptPackageId: z.string(),
   promptTemplateId: z.string(),
+  variables: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -303,6 +304,7 @@ export const PromptLogSchema = z.object({
   promptPackageId: z.string(),
   promptTemplateId: z.string(),
   promptVersionId: z.string(),
+  promptVariables: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

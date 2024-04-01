@@ -255,6 +255,8 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
+  // console.log(`ctx.jwt?.id ----->   ${ctx.jwt?.id}`);
+
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
   if (opts.input?.username) {
@@ -279,12 +281,12 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
     }
   }
 
-  if (opts.input.userId && opts.input?.package) {
+  if (opts.input.userId && opts.input?.packageName) {
     const { id: promptPackageId, visibility: visibility } =
       (await opts.ctx.prisma.promptPackage.findFirst({
         where: {
           userId: opts.input.userId,
-          name: opts.input.package,
+          name: opts.input.packageName,
         },
         select: { id: true, visibility: true },
       })) as { id: string | null; visibility: PackageVisibility };
@@ -310,7 +312,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
 
     opts.input.promptPackageId = promptPackageId as string;
     console.log(
-      ` <<<>>> package : ${opts.input.package} userId : ${opts.input.promptPackageId}`,
+      ` <<<>>> package : ${opts.input.packageName} userId : ${opts.input.promptPackageId}`,
     );
   }
 

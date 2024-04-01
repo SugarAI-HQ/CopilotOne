@@ -17,7 +17,7 @@ import {
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
 import { LLM, providerModels } from "~/validators/base";
-import { LogSchema } from "~/validators/prompt_log";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
 
 export const getVariables = (template: string) => {
   if (!template) {
@@ -193,18 +193,36 @@ export function escapeStringRegexp(data: string): string {
   return data.replace(/[|\\{}()[\]^$+*?"]/g, "\\$&");
 }
 
-export function setDefaultTemplate(moduleType: string) {
+export const extractVariables = (
+  txt: string,
+  pvrs: PromptVariableProps[] = [],
+): PromptVariableProps[] => {
+  const variables = getUniqueJsonArrayWithDefaultValues(
+    getVariables(txt),
+    "key",
+    pvrs,
+  );
+  // setVariables([...variables]);
+  return variables;
+};
+
+export function setPromptTemplate(moduleType: string) {
   let template;
+  let variables;
   if (moduleType === ModelTypeSchema.Enum.TEXT2TEXT) {
     template = `Tell me a joke on topic "{@topic}"`;
+    variables = extractVariables(template);
   } else if (moduleType === ModelTypeSchema.Enum.TEXT2IMAGE) {
     template = `A photo of an astronaut riding a horse on {@OBJECT}`;
+    variables = extractVariables(template);
   } else if (moduleType === ModelTypeSchema.Enum.IMAGE2IMAGE) {
     template = `A vibrant, oil-painted handmade portrait featuring a {@OBJECT} scene with a beautiful house nestled next to a meandering river, teeming with lively fish. The idyllic setting is surrounded by lush trees, and the scene is bathed in the warm glow of a bright, sunny day.`;
+    variables = extractVariables(template);
   } else {
     template = `A photo of an astronaut riding a horse on {@OBJECT}`;
+    variables = extractVariables(template);
   }
-  return template;
+  return { template: template, variables: variables };
 }
 
 export function hasImageModels(llmModelType: ModelTypeType) {
@@ -253,4 +271,30 @@ export const isToolEnabled = (
   if (model) {
     return model.toolEnabled;
   }
+};
+
+interface Variable {
+  key: string;
+  type: string;
+  value: string;
+}
+
+export const replaceDataVariables = (
+  variables: Record<string, string>,
+): TemplateVariablesType => {
+  const newVariables: Variable[] = [];
+
+  for (const key in variables) {
+    if (Object.hasOwnProperty.call(variables, key)) {
+      const value: string = variables[key] as string;
+      const matchResult: RegExpMatchArray | null = key.match(/[@#$%]/);
+      if (matchResult !== null) {
+        const type: string = matchResult[0];
+        const cleanKey: string = key.replace(/[@#$%]/, "");
+        newVariables.push({ key: cleanKey, type, value: value });
+      }
+    }
+  }
+
+  return newVariables as TemplateVariablesType;
 };

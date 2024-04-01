@@ -16,6 +16,7 @@ import {
   generatePrompt,
   generatePromptFromJson,
   hasImageModels,
+  replaceDataVariables,
 } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
 import { LlmGateway } from "~/services/llm_gateways";
@@ -34,7 +35,7 @@ export const serviceRouter = createTRPCRouter({
     .meta({
       openapi: {
         method: "POST",
-        path: "/{username}/{package}/{template}/{versionOrEnvironment}/generate",
+        path: "/{username}/{packageName}/{template}/{versionOrEnvironment}/generate",
         tags: ["prompts"],
         summary: "Generate prompt completion",
       },
@@ -91,6 +92,8 @@ export const serviceRouter = createTRPCRouter({
           attachments: input.attachments,
         });
 
+        const variables = replaceDataVariables(input.variables || {});
+
         console.log(
           `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
         );
@@ -117,6 +120,7 @@ export const serviceRouter = createTRPCRouter({
               llmProvider: pv.llmProvider,
               llmModel: pv.llmModel,
               llmConfig: llmConfig,
+              promptVariables: variables,
               latency: (rr.performance?.latency as number) || 0,
               prompt_tokens: (rr?.performance?.prompt_tokens as number) || 0,
               completion_tokens:
