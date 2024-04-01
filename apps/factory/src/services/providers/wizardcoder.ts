@@ -6,6 +6,11 @@ import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import XylemVendor from "~/services/vendors/xylem_vendor";
 import { v4 as uuidv4 } from "uuid";
 import { PromptRoleEnum } from "~/validators/base";
+import {
+  MessagesSchema,
+  SkillChoicesType,
+  skillsSchema,
+} from "~/validators/service";
 export interface LLMConfig {
   max_tokens: number;
   temperature: number;
@@ -13,6 +18,9 @@ export interface LLMConfig {
 
 export async function run(
   prompt: string,
+  messages: MessagesSchema,
+  skills: skillsSchema,
+  skillChoice: SkillChoicesType,
   llmModel: string,
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,

@@ -74,6 +74,8 @@ export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','cre
 
 export const BlogScalarFieldEnumSchema = z.enum(['id','title','description','slug','tags','publishedAt','mediaUrl','mediaType','previewImage','createdAt','updatedAt']);
 
+export const ApiKeyScalarFieldEnumSchema = z.enum(['id','userId','name','apiKey','lastUsedAt','isActive','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -359,3 +361,20 @@ export const BlogSchema = z.object({
 })
 
 export type Blog = z.infer<typeof BlogSchema>
+
+/////////////////////////////////////////
+// API KEY SCHEMA
+/////////////////////////////////////////
+
+export const ApiKeySchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  name: z.string(),
+  apiKey: z.string(),
+  lastUsedAt: z.coerce.date().nullable(),
+  isActive: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type ApiKey = z.infer<typeof ApiKeySchema>

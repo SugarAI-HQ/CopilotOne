@@ -5,6 +5,11 @@ import {
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import SegmindVendor from "../vendors/segmind_vendor";
 import { getAppUrl } from "~/utils/log";
+import {
+  MessagesSchema,
+  SkillChoicesType,
+  skillsSchema,
+} from "~/validators/service";
 
 export interface LLMConfig {
   max_tokens: number;
@@ -13,6 +18,9 @@ export interface LLMConfig {
 
 export async function run(
   prompt: string,
+  messages: MessagesSchema,
+  skills: skillsSchema,
+  skillChoice: SkillChoicesType,
   llmModel: string,
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,

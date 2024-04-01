@@ -52,6 +52,7 @@ interface CreateContextOptions {
   jwt: NullableJwt;
   prisma: PrismaClient;
   runMode: PromptRunModesType;
+  apiKey: string;
 }
 
 /**
@@ -70,6 +71,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     jwt: opts.jwt,
     runMode: opts.runMode,
     prisma,
+    apiKey: opts.apiKey,
   };
 };
 
@@ -86,6 +88,8 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const runMode: PromptRunModesType =
     (res.getHeader("x-run-mode") as PromptRunModesType) ||
     PromptRunModesSchema.Enum.LOGGEDIN_ONLY;
+
+  const apiKey = req.headers.authorization?.split(" ")[1] as string;
 
   const requestId = uuid();
   res.setHeader("x-request-id", requestId);
@@ -110,6 +114,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     prisma,
     jwt: token,
     runMode: runMode,
+    apiKey,
   });
 };
 
@@ -218,8 +223,12 @@ function checkUserAuth(ctx: CreateContextOptions) {
 }
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   checkUserAuth(ctx);
+  const userId = await fetchUserIdFromApiKey(ctx);
+  if (userId) {
+    ctx.jwt = { id: userId };
+  }
 
   return next({
     ctx: {
@@ -241,6 +250,27 @@ const conditionalUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+const fetchUserIdFromApiKey = async (ctx: any) => {
+  let keydata;
+  if (ctx.apiKey) {
+    keydata = await ctx.prisma.apiKey.findFirst({
+      where: {
+        apiKey: ctx.apiKey,
+        isActive: true,
+      },
+      select: { userId: true },
+    });
+    if (!keydata) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Invalid API Key",
+      });
+    }
+
+    return keydata?.userId;
+  }
+};
+
 export const promptMiddleware = experimental_standaloneMiddleware<{
   // ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
   ctx: CreateContextOptions;
@@ -255,7 +285,34 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  // console.log(`ctx.jwt?.id ----->   ${ctx.jwt?.id}`);
+  const userId = await fetchUserIdFromApiKey(opts.ctx);
+
+  // let keydata;
+  // if (opts.ctx.apiKey) {
+  //   keydata = await opts.ctx.prisma.apiKey.findFirst({
+  //     where: {
+  //       apiKey: opts.ctx.apiKey,
+  //       isActive: true,
+  //     },
+  //     select: { userId: true },
+  //   });
+  //   if (!keydata) {
+  //     throw new TRPCError({
+  //       code: "UNAUTHORIZED",
+  //       message: "Invalid API Key",
+  //     });
+  //   }
+  //   opts.input.userId = keydata?.userId as string;
+  //   opts.ctx.jwt = {
+  //     id: keydata?.userId as string,
+  //   };
+  // }
+  console.log(`userId in ------------ ${userId}`);
+  opts.input.userId = userId;
+
+  opts.ctx.jwt = {
+    id: userId,
+  };
 
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
