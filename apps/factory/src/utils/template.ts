@@ -222,7 +222,7 @@ export function setPromptTemplate(moduleType: string) {
     template = `A photo of an astronaut riding a horse on {@OBJECT}`;
     variables = extractVariables(template);
   }
-  return { template: template, variables: variables };
+  return { template: template, variables: variables as any };
 }
 
 export function hasImageModels(llmModelType: ModelTypeType) {
