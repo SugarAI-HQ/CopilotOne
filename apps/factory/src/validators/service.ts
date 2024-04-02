@@ -122,7 +122,7 @@ export const logSchema = z.object({
   completion_tokens: z.number(),
   // llmResponse: llmResponseSchema,
   llmResponse: InputJsonValue.nullable(),
-  promptVariables: templateVariablesSchema.nullable(),
+  promptVariables: InputJsonValue.nullable(),
   total_tokens: z.number(),
 
   labelledState: LabelledStateSchema,
