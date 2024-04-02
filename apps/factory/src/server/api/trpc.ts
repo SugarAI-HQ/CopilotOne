@@ -250,10 +250,12 @@ const conditionalUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
-const fetchUserIdFromApiKey = async (ctx: any) => {
-  let keydata;
+const fetchUserIdFromApiKey = async (ctx: CreateContextOptions) => {
+  if (ctx.jwt) {
+    return;
+  }
   if (ctx.apiKey) {
-    keydata = await ctx.prisma.apiKey.findFirst({
+    const keydata = await ctx.prisma.apiKey.findFirst({
       where: {
         apiKey: ctx.apiKey,
         isActive: true,
@@ -267,7 +269,7 @@ const fetchUserIdFromApiKey = async (ctx: any) => {
       });
     }
 
-    return keydata?.userId;
+    return keydata.userId;
   }
 };
 
@@ -287,32 +289,13 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
 
   const userId = await fetchUserIdFromApiKey(opts.ctx);
 
-  // let keydata;
-  // if (opts.ctx.apiKey) {
-  //   keydata = await opts.ctx.prisma.apiKey.findFirst({
-  //     where: {
-  //       apiKey: opts.ctx.apiKey,
-  //       isActive: true,
-  //     },
-  //     select: { userId: true },
-  //   });
-  //   if (!keydata) {
-  //     throw new TRPCError({
-  //       code: "UNAUTHORIZED",
-  //       message: "Invalid API Key",
-  //     });
-  //   }
-  //   opts.input.userId = keydata?.userId as string;
-  //   opts.ctx.jwt = {
-  //     id: keydata?.userId as string,
-  //   };
-  // }
-  console.log(`userId in ------------ ${userId}`);
-  opts.input.userId = userId;
+  if (userId) {
+    opts.input.userId = userId;
 
-  opts.ctx.jwt = {
-    id: userId,
-  };
+    opts.ctx.jwt = {
+      id: userId,
+    };
+  }
 
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
