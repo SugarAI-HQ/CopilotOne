@@ -225,9 +225,9 @@ function checkUserAuth(ctx: CreateContextOptions) {
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   checkUserAuth(ctx);
-  const userId = await fetchUserIdFromApiKey(ctx);
-  if (userId) {
-    ctx.jwt = { id: userId };
+  const apiKey = await fetchUserIdFromApiKey(ctx);
+  if (apiKey?.userId as string) {
+    ctx.jwt = { id: apiKey?.userId as string };
   }
 
   return next({
@@ -260,7 +260,7 @@ const fetchUserIdFromApiKey = async (ctx: CreateContextOptions) => {
         apiKey: ctx.apiKey,
         isActive: true,
       },
-      select: { userId: true },
+      select: { userId: true, copilotId: true },
     });
     if (!keydata) {
       throw new TRPCError({
@@ -269,7 +269,7 @@ const fetchUserIdFromApiKey = async (ctx: CreateContextOptions) => {
       });
     }
 
-    return keydata.userId;
+    return keydata;
   }
 };
 
@@ -287,13 +287,14 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  const userId = await fetchUserIdFromApiKey(opts.ctx);
+  const apiKey = await fetchUserIdFromApiKey(opts.ctx);
 
-  if (userId) {
-    opts.input.userId = userId;
+  if (apiKey?.userId as string) {
+    opts.input.userId = apiKey?.userId;
+    opts.input.copilotId = apiKey?.copilotId as string;
 
     opts.ctx.jwt = {
-      id: userId,
+      id: apiKey?.copilotId,
     };
   }
 

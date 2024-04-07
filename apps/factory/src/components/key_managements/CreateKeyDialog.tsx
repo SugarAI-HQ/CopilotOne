@@ -75,20 +75,6 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
     handleClose();
   };
 
-  function generateApiKey(length = 48) {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const charactersLength = characters.length;
-
-    let apiKey = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * charactersLength);
-      apiKey += characters.charAt(randomIndex);
-    }
-
-    return `pk-${apiKey}`;
-  }
-
   return (
     <>
       <Button
@@ -132,5 +118,19 @@ const CreateKeyDialog: React.FC<CreateKeyDialogProps> = ({
     </>
   );
 };
+
+export function generateApiKey(length = 48) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+
+  let apiKey = "";
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charactersLength);
+    apiKey += characters.charAt(randomIndex);
+  }
+
+  return `pk-${apiKey}`;
+}
 
 export default CreateKeyDialog;

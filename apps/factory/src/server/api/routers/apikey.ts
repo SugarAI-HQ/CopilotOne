@@ -6,6 +6,7 @@ import {
   keyOutput,
   keyListOutput,
   updateKeyInput,
+  getCopilotKeyInput,
 } from "~/validators/api_key";
 
 export const apiKeyRouter = createTRPCRouter({
@@ -19,8 +20,7 @@ export const apiKeyRouter = createTRPCRouter({
 
       const key = await ctx.prisma.apiKey.create({
         data: {
-          name: input.name,
-          apiKey: input.apiKey,
+          ...input,
           userId: userId,
         },
       });
@@ -34,8 +34,26 @@ export const apiKeyRouter = createTRPCRouter({
       const userId = ctx.jwt?.id as string;
 
       const query = {
-        userId: ctx.jwt?.id as string,
+        userId: userId,
         id: input.id,
+      };
+
+      const key = await ctx.prisma.apiKey.findFirst({
+        where: query,
+      });
+
+      return key;
+    }),
+
+  getCopilotKey: protectedProcedure
+    .input(getCopilotKeyInput)
+    .output(keyOutput)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+
+      const query = {
+        userId: userId,
+        copilotId: input.copilotId,
       };
 
       const key = await ctx.prisma.apiKey.findFirst({

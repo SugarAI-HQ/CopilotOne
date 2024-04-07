@@ -4,6 +4,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import DocumentScanner from "@mui/icons-material/DocumentScanner";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Dataset from "@mui/icons-material/Dataset";
@@ -27,6 +28,14 @@ export const mainListItems = (
           <DocumentScanner />
         </ListItemIcon>
         <ListItemText primary="Packages" />
+      </ListItemButton>
+    </Link>
+    <Link href="/dashboard/copilots">
+      <ListItemButton>
+        <ListItemIcon>
+          <PrecisionManufacturingIcon />
+        </ListItemIcon>
+        <ListItemText primary="Copilots" />
       </ListItemButton>
     </Link>
     {/* <Link href="/dashboard/dataset">

@@ -20,6 +20,7 @@ export const createKeyInput = z
         },
       ),
     userId: z.string(),
+    copilotId: z.string().optional(),
     lastUsedAt: z.date().optional().nullable(),
   })
   .strict();
@@ -27,6 +28,13 @@ export const createKeyInput = z
 export const getKeyInput = z
   .object({
     id: z.string(),
+  })
+  .strict()
+  .required();
+
+export const getCopilotKeyInput = z
+  .object({
+    copilotId: z.string(),
   })
   .strict()
   .required();
@@ -44,6 +52,7 @@ export const keySchema = z
     isActive: z.boolean().default(true),
     apiKey: z.string(),
     userId: z.string(),
+    copilotId: z.string().optional().nullable(),
     createdAt: z.coerce.date(),
     lastUsedAt: z.date().nullable(),
     updatedAt: z.coerce.date(),
@@ -59,6 +68,7 @@ export const updateKeyInput = z
 
 export type CreateKeyInput = z.infer<typeof createKeyInput>;
 export type GetKeyInput = z.infer<typeof getKeyInput>;
+export type GetCopilotKeyInput = z.infer<typeof getCopilotKeyInput>;
 export type GetKeysInput = z.infer<typeof getKeysInput>;
 export const keyOutput = keySchema.or(z.null());
 export type KeyOutput = z.infer<typeof keyOutput>;

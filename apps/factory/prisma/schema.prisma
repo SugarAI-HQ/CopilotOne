@@ -65,6 +65,12 @@ enum MediaType {
   VIDEO
 }
 
+enum StatusState {
+  PRODUCTION
+  STAGING
+  SANDBOX
+}
+
 // Necessary for Next auth
 model Account {
   id                String   @id @default(uuid())
@@ -287,10 +293,47 @@ model Blog {
 model ApiKey {
   id         String    @id @default(uuid())
   userId     String
+  copilotId  String?
   name       String
   apiKey     String    @unique
   lastUsedAt DateTime?
   isActive   Boolean   @default(true)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt @map("updated_at")
+}
+
+model Copilot {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  copilotType String
+  settings    Json        @default("{}")
+  userId      String
+  status      StatusState @default(PRODUCTION)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  @@unique([userId, name])
+}
+
+model Chat {
+  id           String   @id @default(uuid())
+  userId       String
+  copilotId    String
+  messageCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt @map("updated_at")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  userId    String
+  copilotId String
+  logId     String?
+  content   String
+  role      String   @default("user")
+  chatId    String
+  createdAt DateTime @default(now())
+  metadata  Json     @default("{}")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }

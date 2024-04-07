@@ -91,6 +91,14 @@ export const skillChoiceEnum = z.enum(["auto", "none"]);
 
 const skillChoices = z.enum(["auto", "none"]).default("none");
 
+export const chatInputScehma = z
+  .object({
+    id: z.string().nullable(),
+    message: messageSchema.default({ role: "user", content: "" }),
+    historyChat: z.number().default(6),
+  })
+  .optional();
+
 export const generateInput = z
   .object({
     // Template Data
@@ -101,6 +109,8 @@ export const generateInput = z
     skillChoice: skillChoices,
     // promptDataVariables: z.record(z.any()),
     isDevelopment: z.boolean().default(false),
+    chat: chatInputScehma,
+    copilotId: z.string().optional(),
   })
   .merge(getPromptInput)
   .strict();
@@ -129,7 +139,7 @@ export const logSchema = z.object({
   llmProvider: z.string(),
   llmModel: z.string(),
   llmModelType: ModelTypeSchema,
-
+  chat: InputJsonValue.optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 });

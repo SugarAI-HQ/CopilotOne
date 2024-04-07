@@ -24,6 +24,7 @@ import { providerModels } from "~/validators/base";
 import {
   ModelTypeType,
   PromptRunModesSchema,
+  MessageSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
@@ -52,6 +53,7 @@ export const serviceRouter = createTRPCRouter({
           ? (env.DEMO_USER_ID as string)
           : (ctx.jwt?.id as string);
       let pl;
+      let chatId = input.chat?.id as string;
       let errorResponse: LlmErrorResponse | null = null;
 
       if (pv && userId && userId != "") {
@@ -79,6 +81,40 @@ export const serviceRouter = createTRPCRouter({
 
         const llmConfig = generateLLmConfig(pv.llmConfig);
 
+        // Set ChatId if chatIs is not available create one
+
+        let copilotId = input?.copilotId as string;
+
+        if (!chatId && copilotId) {
+          const newChat = await ctx.prisma.chat.create({
+            data: {
+              userId,
+              copilotId: copilotId,
+            },
+          });
+          chatId = newChat?.id;
+        }
+
+        if (chatId) {
+          const chatMessages = await ctx.prisma.message.findMany({
+            where: {
+              chatId: chatId,
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: input.chat?.historyChat || 6,
+          });
+
+          const transformedMessages: any[] = chatMessages.map(
+            (message: any) => ({
+              content: message.content,
+              role: message.role,
+            }),
+          );
+          input.messages = [...transformedMessages, input.chat?.message || {}];
+        }
+
         const rr = await LlmGateway({
           prompt,
           messages: input.messages!,
@@ -92,14 +128,40 @@ export const serviceRouter = createTRPCRouter({
           attachments: input.attachments,
         });
 
-        const variables = replaceDataVariables(input.variables || {});
-
         console.log(
           `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
         );
         console.log(
           `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
         );
+
+        if (input.chat?.message && copilotId) {
+          try {
+            const message = await ctx.prisma.message.createMany({
+              data: [
+                {
+                  userId: userId,
+                  chatId: chatId,
+                  copilotId: copilotId,
+                  content: input.chat?.message.content as string,
+                  role: input.chat?.message.role,
+                },
+                {
+                  userId: userId,
+                  chatId: chatId,
+                  copilotId: copilotId,
+                  content: rr.response.data.completion[0].message.content,
+                  role: rr.response.data.completion[0].message.role,
+                },
+              ],
+            });
+            console.log(`message >>>> ${JSON.stringify(message, null, 2)}`);
+          } catch (error) {
+            console.error("Error creating Messages:", error);
+          }
+        }
+
+        const variables = replaceDataVariables(input.variables || {});
         try {
           pl = await ctx.prisma.promptLog.create({
             data: {
@@ -133,8 +195,8 @@ export const serviceRouter = createTRPCRouter({
           // Log the error for debugging
           console.error("Error creating promptLog:", error);
         }
+        pl = { ...pl, chat: { id: chatId as string } };
       }
-
       return pl as GenerateOutput;
     }),
 });
