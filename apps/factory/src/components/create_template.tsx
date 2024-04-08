@@ -196,7 +196,6 @@ export function CreateTemplate({
   const updateMutation = api.prompt.updateTemplate.useMutation();
 
   const updateTemplate = (data: CreateTemplateInput) => {
-    debugger;
     const input = {
       id: ptId as string,
       description: data.description,

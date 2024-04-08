@@ -82,6 +82,8 @@ export const ChatScalarFieldEnumSchema = z.enum(['id','userId','copilotId','mess
 
 export const MessageScalarFieldEnumSchema = z.enum(['id','userId','copilotId','logId','content','role','chatId','createdAt','metadata','updatedAt']);
 
+export const EmbeddingScalarFieldEnumSchema = z.enum(['id','userId','copilotId','clientUserId','scope1','scope2','groupId','chunk','doc','strategy','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -441,3 +443,24 @@ export const MessageSchema = z.object({
 })
 
 export type Message = z.infer<typeof MessageSchema>
+
+/////////////////////////////////////////
+// EMBEDDING SCHEMA
+/////////////////////////////////////////
+
+export const EmbeddingSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  copilotId: z.string(),
+  clientUserId: z.string(),
+  scope1: z.string(),
+  scope2: z.string().nullable(),
+  groupId: z.string().nullable(),
+  chunk: z.string(),
+  doc: z.string(),
+  strategy: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Embedding = z.infer<typeof EmbeddingSchema>

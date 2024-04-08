@@ -353,7 +353,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
 
     opts.input.promptPackageId = promptPackageId as string;
     console.log(
-      ` <<<>>> package : ${opts.input.packageName} userId : ${opts.input.promptPackageId}`,
+      ` <<<>>> package : ${opts.input.packageName} packageId : ${opts.input.promptPackageId}`,
     );
   }
 

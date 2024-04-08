@@ -30,6 +30,8 @@ import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
 import { getEditorVersion } from "~/utils/template";
 import { Prompt, PromptDataType } from "~/validators/prompt_version";
+import { lookupEmbedding } from "./embedding";
+import { TemplateVariablesType } from "~/validators/prompt_log";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -46,19 +48,81 @@ export const serviceRouter = createTRPCRouter({
     .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
       // const userId = input.userId;
+      let userId = ctx.jwt?.id as string;
+
+      // let userId = pt.runMode === PromptRunModesSchema.Enum.ALL
+      //     ? (env.DEMO_USER_ID as string)
+      //     : (ctx.jwt?.id as string);
+
+      let copilotId = input?.copilotId as string;
+      let pl;
+
+      let errorResponse: LlmErrorResponse | null = null;
+
+      // 0. Load latest Prompt version
       let [pv, pt] = await getPv(ctx, input);
       console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
-      const userId =
-        pt.runMode === PromptRunModesSchema.Enum.ALL
-          ? (env.DEMO_USER_ID as string)
-          : (ctx.jwt?.id as string);
-      let pl;
-      let chatId = input.chat?.id as string;
-      let errorResponse: LlmErrorResponse | null = null;
 
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
         console.log(`data >>>> ${JSON.stringify(input)}`);
+
+        // 1. Caching and Data Gathering
+        let chatId = input.chat?.id as string;
+        let userQuery: null | string = null;
+
+        // 1.1 Semantic Caching
+        // TODO
+
+        // 1.2 create chat if not existing and load messages history
+
+        chatId = await findorCreateChatAndLoadHistory(
+          ctx,
+          copilotId,
+          chatId,
+          input,
+        );
+
+        // 1.3 Extract user query from last message
+        if (input.messages && input.messages?.length > 0) {
+          const lastMessage = input.messages[input.messages?.length - 1];
+          userQuery = lastMessage?.content as string;
+        }
+
+        // 2. Build Prompt
+
+        // 2.1 Load Embeddings Data if prompt have any context variables
+
+        let embeddingVariables: any = {};
+        let matches: any = [];
+
+        if (input.scope && userQuery) {
+          // Check prompt version have any variables related to context or not
+          const contextVars = (pv.variables as TemplateVariablesType).filter(
+            (v) => v.type + v.key == "$VIEW_CONTEXT",
+          );
+
+          if (contextVars.length > 0) {
+            matches = await lookupEmbedding(
+              userId,
+              copilotId,
+              userQuery,
+              input.scope,
+            );
+          }
+
+          if (matches.length > 0) {
+            embeddingVariables["$VIEW_CONTEXT"] = matches[0]?.doc;
+          }
+        }
+
+        // 2.2 Build variables
+        const templateVariables = {
+          ...input.variables, //#
+          ...embeddingVariables, //$
+        };
+
+        // 2.3 Generate Prompt using template
         let prompt: Prompt = "";
         if (hasImageModels(modelType)) {
           prompt = generatePrompt(pv.template, input.variables || {});
@@ -68,53 +132,22 @@ export const serviceRouter = createTRPCRouter({
             // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
             prompt = generatePromptFromJson(
               pv.promptData.data,
-              input.variables || {},
+              templateVariables,
             ) as PromptDataType;
             // console.log(prompt);
             // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
           } else {
-            prompt = generatePrompt(pv.template, input.variables || {});
+            prompt = generatePrompt(pv.template, templateVariables);
           }
         }
 
         console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
 
+        // 3. Get LLM Response
+        // 3.1 Get LLM Config
         const llmConfig = generateLLmConfig(pv.llmConfig);
 
-        // Set ChatId if chatIs is not available create one
-
-        let copilotId = input?.copilotId as string;
-
-        if (!chatId && copilotId) {
-          const newChat = await ctx.prisma.chat.create({
-            data: {
-              userId,
-              copilotId: copilotId,
-            },
-          });
-          chatId = newChat?.id;
-        }
-
-        if (chatId) {
-          const chatMessages = await ctx.prisma.message.findMany({
-            where: {
-              chatId: chatId,
-            },
-            orderBy: {
-              createdAt: "desc",
-            },
-            take: input.chat?.historyChat || 6,
-          });
-
-          const transformedMessages: any[] = chatMessages.map(
-            (message: any) => ({
-              content: message.content,
-              role: message.role,
-            }),
-          );
-          input.messages = [...transformedMessages, input.chat?.message || {}];
-        }
-
+        // 3.1 Generate LLM Response
         const rr = await LlmGateway({
           prompt,
           messages: input.messages!,
@@ -135,6 +168,8 @@ export const serviceRouter = createTRPCRouter({
           `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
         );
 
+        // 4. Save Data
+        // 4.1 Save Chat History
         if (input.chat?.message && copilotId) {
           try {
             const message = await ctx.prisma.message.createMany({
@@ -162,6 +197,8 @@ export const serviceRouter = createTRPCRouter({
         }
 
         const variables = replaceDataVariables(input.variables || {});
+
+        // 4.2 Save prompt data to database
         try {
           pl = await ctx.prisma.promptLog.create({
             data: {
@@ -195,7 +232,9 @@ export const serviceRouter = createTRPCRouter({
           // Log the error for debugging
           console.error("Error creating promptLog:", error);
         }
-        pl = { ...pl, chat: { id: chatId as string } };
+        if (chatId) {
+          pl = { ...pl, chat: { id: chatId as string } };
+        }
       }
       return pl as GenerateOutput;
     }),
@@ -260,4 +299,44 @@ export async function getPv(ctx: any, input: any) {
   }
 
   return [pv, pt];
+}
+
+export async function findorCreateChatAndLoadHistory(
+  ctx: any,
+  copilotId: string,
+  chatId: string,
+  input: any,
+) {
+  const userId = ctx.jwt?.id;
+
+  if (!chatId && copilotId) {
+    const newChat = await ctx.prisma.chat.create({
+      data: {
+        userId,
+        copilotId: copilotId,
+      },
+    });
+    chatId = newChat?.id;
+  }
+
+  // Load all chat messages history
+  if (chatId) {
+    const chatMessages = await ctx.prisma.message.findMany({
+      where: {
+        chatId: chatId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: input.chat?.historyChat || 6,
+    });
+
+    const transformedMessages: any[] = chatMessages.map((message: any) => ({
+      content: message.content,
+      role: message.role,
+    }));
+    input.messages = [...transformedMessages, input.chat?.message || {}];
+  }
+
+  return chatId as string;
 }

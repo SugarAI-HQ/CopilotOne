@@ -18,6 +18,7 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import { LLM, providerModels } from "~/validators/base";
 import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
+import { lookupEmbedding } from "~/server/api/routers/embedding";
 
 export const getVariables = (template: string) => {
   if (!template) {
@@ -121,6 +122,23 @@ function replacePromptVariables(
   return content.replace(TEMPLATE_VARIABLE_REGEX, (match, sign, key) => {
     console.log(match, sign, key);
     // Check if the input variables contain the key
+
+    // let output: string = match;
+
+    // switch (sign.toString()) {
+    //   case "$": {
+    //     // get matching embeddings
+    //     // output = variables[sign + key];
+    //     break;
+    //   }
+    //   default: {
+    //     output = variables[sign + key] || variables[key] || match;
+    //     break;
+    //   }
+    // }
+
+    // debugger;
+
     return variables[sign + key] || variables[key] || match;
   });
 }

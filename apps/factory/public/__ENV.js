@@ -1,1 +1,1 @@
-window.__ENV = {"NEXT_PUBLIC_APP_LOGO":"https://sugarcaneai.dev/images/sugar/logo-transparent.png","NEXT_PUBLIC_APP_URL":"http://localhost:3000","NEXT_PUBLIC_API_ENDPOINT":"http://localhost:3000","NEXT_PUBLIC_SENTRY_DSN":"https://aaf901500295a5f643d82d31b907cfe6@o4506115103064064.ingest.sentry.io/4506115108831232"};
+window.__ENV = {"NEXT_PUBLIC_APP_LOGO":"https://sugarcaneai.dev/images/sugar/logo-transparent.png","NEXT_PUBLIC_APP_URL":"http://localhost:3000","NEXT_PUBLIC_API_ENDPOINT":"http://localhost:3000"};

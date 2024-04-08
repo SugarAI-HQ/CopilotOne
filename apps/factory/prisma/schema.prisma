@@ -337,3 +337,24 @@ model Message {
   metadata  Json     @default("{}")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
+model Embedding {
+  id         String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId     String
+  copilotId     String
+
+  clientUserId  String
+  scope1        String
+  scope2        String?
+  groupId       String?
+  
+  chunk       String
+  doc         String
+  embedding  Unsupported("vector(1536)")
+  strategy   String
+  
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt @default(now()) @map("updated_at")
+
+  @@index([userId, copilotId, clientUserId])
+  @@unique([userId, copilotId, clientUserId, scope1, scope2, groupId, chunk])
+}

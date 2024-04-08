@@ -7,6 +7,7 @@ import { versionRouter } from "./routers/versions";
 import { cubeRouter } from "./routers/cube";
 import { likeRouter } from "./routers/likes";
 import { blogRouter } from "./routers/blog";
+import { embeddingRouter } from "./routers/embedding";
 import { apiKeyRouter } from "./routers/apikey";
 import { chatRouter } from "./routers/chat";
 import { messageRouter } from "./routers/message";
@@ -28,6 +29,7 @@ export const appRouter = createTRPCRouter({
   cube: cubeRouter,
   like: likeRouter,
   blog: blogRouter,
+  embedding: embeddingRouter,
   apiKey: apiKeyRouter,
   chat: chatRouter,
   message: messageRouter,

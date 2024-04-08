@@ -6,6 +6,11 @@ import {
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
 
+export const userId = z.string();
+export type UserId = z.infer<typeof userId>;
+export const copilotId = z.string();
+export type CopilotId = z.infer<typeof copilotId>;
+
 export const promptEnvironment = z.enum(["DEV", "PREVIEW", "RELEASE"]);
 export type PromptEnvironment = z.infer<typeof promptEnvironment>;
 
@@ -95,7 +100,7 @@ export const providerModels: ProviderModels = {
           label: "Gpt 4",
           enabled: true,
           editorVersion: 1,
-          toolEnabled: false,
+          toolEnabled: true,
         },
       ],
       llama2: [
