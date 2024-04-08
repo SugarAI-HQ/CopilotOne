@@ -60,6 +60,13 @@ export const copilotSchema = createCopilotInput
   })
   .strict();
 
+export const copilotCloneInput = z
+  .object({
+    promptPackagePath: z.string(),
+    copilotId: z.string(),
+  })
+  .required();
+
 export type CreateCopilotInput = z.infer<typeof createCopilotInput>;
 export type GetCopilotInput = z.infer<typeof getCopilotInput>;
 export type UpdateCopilotInput = z.infer<typeof updateCopilotInput>;

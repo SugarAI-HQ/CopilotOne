@@ -49,6 +49,25 @@ const CopilotHome = () => {
     );
   };
 
+  const clonePromptMutation = api.copilot.clonePackage.useMutation();
+
+  const clonePrompt = (promptPackagePath: string, copilot: CopilotOutput) => {
+    clonePromptMutation.mutate(
+      {
+        promptPackagePath: promptPackagePath as string,
+        copilotId: copilot?.id as string,
+      },
+      {
+        onSuccess(response: any) {
+          console.log(response);
+        },
+        onError(error) {
+          console.error(error);
+        },
+      },
+    );
+  };
+
   const mutation = api.copilot.createCopilot.useMutation({
     onError: (error) => {
       const errorData = JSON.parse(error.message);
@@ -57,6 +76,7 @@ const CopilotHome = () => {
     onSuccess: (createdCopilot) => {
       if (createdCopilot !== null) {
         createApiKey(createdCopilot);
+        clonePrompt("pulkit.ag02/opena1/recipes/0.0.1", createdCopilot);
         setCustomError({});
         handleCopilotCreationSuccess(createdCopilot);
       } else {

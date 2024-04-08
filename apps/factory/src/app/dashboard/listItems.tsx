@@ -38,6 +38,14 @@ export const mainListItems = (
         <ListItemText primary="Copilots" />
       </ListItemButton>
     </Link>
+    <Link href="/settings/api-keys">
+      <ListItemButton>
+        <ListItemIcon>
+          <LockOutlinedIcon />
+        </ListItemIcon>
+        <ListItemText primary="API Keys" />
+      </ListItemButton>
+    </Link>
     {/* <Link href="/dashboard/dataset">
       <ListItemButton >
         <ListItemIcon>
@@ -74,14 +82,6 @@ export const secondaryListItems = (
           <LocalGroceryStoreIcon />
         </ListItemIcon>
         <ListItemText primary="Sugar Hub" />
-      </ListItemButton>
-    </Link>
-    <Link href="/settings/api-keys">
-      <ListItemButton>
-        <ListItemIcon>
-          <LockOutlinedIcon />
-        </ListItemIcon>
-        <ListItemText primary="API Keys" />
       </ListItemButton>
     </Link>
   </React.Fragment>
