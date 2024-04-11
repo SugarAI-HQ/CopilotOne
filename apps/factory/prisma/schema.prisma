@@ -134,6 +134,7 @@ model PromptPackage {
   PromptVariables PromptVariables[]
   PromptVersion   PromptVersion[]
   forkedId        String?
+  CopilotPrompt   CopilotPrompt[]
 
   @@unique([userId, name])
 }
@@ -208,6 +209,7 @@ model User {
   PromptTemplate PromptTemplate[]
   PromptVersion  PromptVersion[]
   sessions       Session[]
+  CopilotPrompt  CopilotPrompt[]
 }
 
 model VerificationToken {
@@ -304,15 +306,16 @@ model ApiKey {
 }
 
 model Copilot {
-  id          String      @id @default(uuid())
-  name        String
-  description String?
-  copilotType String
-  settings    Json        @default("{}")
-  userId      String
-  status      StatusState @default(PRODUCTION)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt @map("updated_at")
+  id            String          @id @default(uuid())
+  name          String
+  description   String?
+  copilotType   String
+  settings      Json            @default("{}")
+  userId        String
+  status        StatusState     @default(PRODUCTION)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  CopilotPrompt CopilotPrompt[]
 
   @@unique([userId, name])
 }
@@ -362,17 +365,20 @@ model Embedding {
 }
 
 model CopilotPrompt {
-  id           String   @id @default(uuid())
-  userId       String
-  copilotId    String
-  copilotKey   String
-  userName     String
-  packageName  String
-  packageId    String
-  templateName String
-  versionName  String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id            String        @id @default(uuid())
+  userId        String
+  copilotId     String
+  copilotKey    String
+  userName      String
+  packageName   String
+  packageId     String
+  templateName  String
+  versionName   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  promptPackage PromptPackage @relation(fields: [packageId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+  copilot       Copilot       @relation(fields: [copilotId], references: [id])
 
   @@unique([userId, copilotId, copilotKey])
 }

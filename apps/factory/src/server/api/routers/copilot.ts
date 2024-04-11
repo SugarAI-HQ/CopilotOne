@@ -130,14 +130,18 @@ export const copilotRouter = createTRPCRouter({
 
   getCopilotPrompts: protectedProcedure
     .input(getCopilotPromptInput)
-    .output(copilotPromptListOutput)
+    // .output(copilotPromptListOutput)
     .query(async ({ ctx, input }) => {
       const copilotPrompt = await ctx.prisma.copilotPrompt.findMany({
         where: {
-          copilotId: input.copilotId,
+          copilotId: input.copilotId as string,
+        },
+        select: {
+          packageId: true,
+          packageName: true,
+          promptPackage: true,
         },
       });
-
       return copilotPrompt;
     }),
 });

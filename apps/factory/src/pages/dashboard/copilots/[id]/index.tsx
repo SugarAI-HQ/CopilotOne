@@ -86,10 +86,11 @@ const CopilotShow: NextPageWithLayout = () => {
     },
   };
 
-  const codePackage = `npm i @sugar-ai/abcd`;
+  const npmPackage = "@sugar-ai/copilot-one-sdk@latest";
+  const codePackage = `npm i ${npmPackage}`;
 
   const copilotConfigCode = `
-  import { CopilotConfigType, CopilotProvider, VoiceToSkillComponent } from '@sugar-ai/abcd';
+  import { CopilotConfigType, CopilotProvider, VoiceToSkillComponent } from '${npmPackage}';
 
   const copilotConfig: CopilotConfigType = {
     copilotId: '${copilot?.id}',
@@ -163,7 +164,17 @@ const CopilotShow: NextPageWithLayout = () => {
                   <CardActionArea
                     href={`/dashboard/prompts/${copilotPrompt?.packageId}`}
                   >
-                    <CardHeader title={copilotPrompt?.packageName} action="" />
+                    <CardHeader
+                      title={copilotPrompt?.packageName}
+                      action={
+                        <Chip
+                          sx={{ mr: 2 }}
+                          size="small"
+                          label={copilotPrompt.promptPackage?.visibility}
+                          // variant="conti"
+                        />
+                      }
+                    />
                     <CardContent>
                       <Typography
                         sx={{
@@ -175,7 +186,7 @@ const CopilotShow: NextPageWithLayout = () => {
                           WebkitBoxOrient: "vertical",
                         }}
                       >
-                        {/* description */}
+                        {copilotPrompt.promptPackage?.description}
                       </Typography>
                     </CardContent>
                   </CardActionArea>

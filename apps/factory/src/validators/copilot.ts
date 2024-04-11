@@ -73,21 +73,19 @@ export const getCopilotPromptInput = z
   })
   .required();
 
-export const copilotPromptOutput = z
-  .object({
-    id: z.string(),
-    userId: z.string(),
-    copilotId: z.string(),
-    copilotKey: z.string(),
-    userName: z.string(),
-    packageName: z.string(),
-    packageId: z.string(),
-    templateName: z.string(),
-    versionName: z.string(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
-  })
-  .strict();
+export const copilotPromptOutput = z.object({
+  id: z.string(),
+  userId: z.string(),
+  copilotId: z.string(),
+  copilotKey: z.string(),
+  userName: z.string(),
+  packageName: z.string(),
+  packageId: z.string(),
+  templateName: z.string(),
+  versionName: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
 
 export const copilotPromptListOutput = z.array(copilotPromptOutput);
 
