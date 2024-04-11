@@ -84,7 +84,7 @@ export const MessageScalarFieldEnumSchema = z.enum(['id','userId','copilotId','l
 
 export const EmbeddingScalarFieldEnumSchema = z.enum(['id','userId','copilotId','clientUserId','scope1','scope2','groupId','chunk','doc','strategy','createdAt','updatedAt']);
 
-export const CopilotPromptScalarFieldEnumSchema = z.enum(['id','userId','copilotId','copilotKey','userName','packageName','templateName','versionName','createdAt','updatedAt']);
+export const CopilotPromptScalarFieldEnumSchema = z.enum(['id','userId','copilotId','copilotKey','userName','packageName','packageId','templateName','versionName','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -479,6 +479,7 @@ export const CopilotPromptSchema = z.object({
   copilotKey: z.string(),
   userName: z.string(),
   packageName: z.string(),
+  packageId: z.string(),
   templateName: z.string(),
   versionName: z.string(),
   createdAt: z.coerce.date(),

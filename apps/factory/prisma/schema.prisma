@@ -368,6 +368,7 @@ model CopilotPrompt {
   copilotKey   String
   userName     String
   packageName  String
+  packageId    String
   templateName String
   versionName  String
   createdAt    DateTime @default(now())

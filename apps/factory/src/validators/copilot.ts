@@ -67,6 +67,30 @@ export const copilotCloneInput = z
   })
   .required();
 
+export const getCopilotPromptInput = z
+  .object({
+    copilotId: z.string(),
+  })
+  .required();
+
+export const copilotPromptOutput = z
+  .object({
+    id: z.string(),
+    userId: z.string(),
+    copilotId: z.string(),
+    copilotKey: z.string(),
+    userName: z.string(),
+    packageName: z.string(),
+    packageId: z.string(),
+    templateName: z.string(),
+    versionName: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+  })
+  .strict();
+
+export const copilotPromptListOutput = z.array(copilotPromptOutput);
+
 export type CreateCopilotInput = z.infer<typeof createCopilotInput>;
 export type GetCopilotInput = z.infer<typeof getCopilotInput>;
 export type UpdateCopilotInput = z.infer<typeof updateCopilotInput>;
@@ -75,3 +99,6 @@ export const copilotOutput = copilotSchema.or(z.null());
 export type CopilotOutput = z.infer<typeof copilotOutput>;
 export const copilotListOutput = z.array(copilotSchema);
 export type CopilotListOutput = z.infer<typeof copilotListOutput>;
+export type GetCopilotPromptInput = z.infer<typeof getCopilotPromptInput>;
+export type CopilotPromptOutput = z.infer<typeof copilotPromptOutput>;
+export type CopilotPromptListOutput = z.infer<typeof copilotPromptListOutput>;

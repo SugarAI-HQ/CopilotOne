@@ -15,6 +15,10 @@ import {
   updateCopilotInput,
   getCopilotInput,
   copilotCloneInput,
+  getCopilotPromptInput,
+  copilotPromptOutput,
+  CopilotPromptOutput,
+  copilotPromptListOutput,
 } from "~/validators/copilot";
 
 export const copilotRouter = createTRPCRouter({
@@ -109,6 +113,33 @@ export const copilotRouter = createTRPCRouter({
         );
       });
     }),
+
+  getCopilotPrompt: protectedProcedure
+    .input(getCopilotPromptInput)
+    .output(copilotPromptOutput)
+    .query(async ({ ctx, input }) => {
+      const copilotPrompt = await ctx.prisma.copilotPrompt.findFirst({
+        where: {
+          copilotId: input.copilotId,
+          copilotKey: "DEFAULT_PROMPT",
+        },
+      });
+
+      return copilotPrompt as CopilotPromptOutput;
+    }),
+
+  getCopilotPrompts: protectedProcedure
+    .input(getCopilotPromptInput)
+    .output(copilotPromptListOutput)
+    .query(async ({ ctx, input }) => {
+      const copilotPrompt = await ctx.prisma.copilotPrompt.findMany({
+        where: {
+          copilotId: input.copilotId,
+        },
+      });
+
+      return copilotPrompt;
+    }),
 });
 
 async function clonePromptPackageWithTemplateAndVersion(
@@ -124,6 +155,10 @@ async function clonePromptPackageWithTemplateAndVersion(
   const versionName = promptPath[3] as string;
 
   try {
+    const user = await prisma.user.findFirst({
+      where: { id: userId },
+    });
+
     const pp = await prisma.promptPackage.findFirst({
       where: { name: packageName },
     });
@@ -203,10 +238,11 @@ async function clonePromptPackageWithTemplateAndVersion(
         userId: userId,
         copilotId: copilotId,
         copilotKey: "DEFAULT_PROMPT",
-        userName: userName,
-        packageName: packageName,
-        templateName: templateName,
-        versionName: versionName,
+        userName: user?.username as string,
+        packageName: clonePromptPackage.name,
+        packageId: clonePromptPackage.id,
+        templateName: clonedTemplate.name,
+        versionName: clonedPromptVersion.version,
       },
     });
 

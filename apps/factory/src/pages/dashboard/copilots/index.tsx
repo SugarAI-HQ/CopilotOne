@@ -76,7 +76,7 @@ const CopilotHome = () => {
     onSuccess: (createdCopilot) => {
       if (createdCopilot !== null) {
         createApiKey(createdCopilot);
-        clonePrompt("pulkit.ag02/opena1/recipes/0.0.1", createdCopilot);
+        clonePrompt("pulkit.ag02/recipies/recipie/0.0.1", createdCopilot);
         setCustomError({});
         handleCopilotCreationSuccess(createdCopilot);
       } else {
