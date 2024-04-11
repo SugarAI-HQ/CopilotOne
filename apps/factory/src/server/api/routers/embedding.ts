@@ -116,6 +116,7 @@ export const embeddingRouter = createTRPCRouter({
 
       const matches = await lookupEmbedding(
         userId,
+        input.copilotId,
         input.userQuery,
         input.scope,
       );
@@ -181,19 +182,19 @@ export const lookupEmbedding = async (
 
   // Build the query string
   const matches = await prisma.$queryRaw`
-    SELECT "id", "chunk", "doc", (embedding <#> ${userQueryEmbed}::vector) * -1 as similarity 
-    FROM "Embedding" 
+    SELECT "id", "chunk", "doc", (embedding <#> ${userQueryEmbed}::vector) * -1 as similarity
+    FROM "Embedding"
       WHERE "userId" = ${userId}
-        AND "clientUserId" = ${scope.clientUserId} 
+        AND "clientUserId" = ${scope.clientUserId}
         AND "groupId" = ${scope.groupId}
         AND (
-          CASE 
+          CASE
             WHEN ${scope.scope1} <> '' THEN "scope1" = ${scope.scope1}
             ELSE TRUE
           END
         )
         AND (
-          CASE 
+          CASE
             WHEN ${scope.scope2} <> '' THEN "scope2" = ${scope.scope2}
             ELSE TRUE
           END
