@@ -103,11 +103,7 @@ export const CreateCopilot: React.FC<CreateCopilotProps> = ({
               control={control}
               label="Copilot Name"
               error={!!errors.name}
-              helperText={
-                errors.name?.message
-                  ? errors.name?.message
-                  : "(allowed: a-z, 0-9, - )"
-              }
+              helperText={errors.name?.message ? errors.name?.message : ""}
               readonly={false}
             />
 

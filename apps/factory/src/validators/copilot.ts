@@ -15,10 +15,10 @@ export const createCopilotInput = z
       .max(30, {
         message: "Name must be at most 30 characters long.",
       })
-      .regex(/^[a-z0-9-]+$/, {
-        message:
-          "Name must only contain lowercase letters, numbers, and hyphen.",
-      })
+      // .regex(/^[a-z0-9-]+$/, {
+      //   message:
+      //     "Name must only contain lowercase letters, numbers, and hyphen.",
+      // })
       .transform((value) => value.toLowerCase())
       .refine((value) => !RESERVED_NAMES.includes(value), {
         message: "This name is reserved.",

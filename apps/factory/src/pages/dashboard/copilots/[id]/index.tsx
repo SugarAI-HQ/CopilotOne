@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -7,9 +7,12 @@ import {
   CardHeader,
   Chip,
   Grid,
+  Paper,
   Typography,
   colors,
 } from "@mui/material";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import { useRouter } from "next/router";
 import { getLayout } from "~/app/layout";
 import CodeHighlight from "~/components/integration/code_highlight";
@@ -25,6 +28,8 @@ import {
   VoiceToSkillComponent,
   ChatContainer,
 } from "@sugar-ai/abcd";
+import { CopilotOutput, CopilotPromptOutput } from "~/validators/copilot";
+import { KeyOutput } from "~/validators/api_key";
 
 const CopilotShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -43,47 +48,72 @@ const CopilotShow: NextPageWithLayout = () => {
     copilotId: copilotId,
   });
 
-  const copilotConfig: CopilotConfigType = {
-    copilotId: copilot?.id as string,
-    style: {
-      container: {
-        position: "bottom-right",
-        margin: "",
-      },
-      theme: {
-        primaryColor: "",
-        secondaryColor: "",
-        fontFamily: "",
-        fontSize: "",
-        textColor: "",
-      },
-      button: {
-        primaryColor: "",
-        secondaryColor: "",
-        width: "",
-        height: "",
-        iconSize: "",
-      },
-    },
+  const copilotConfig: CopilotConfigType = getCopilotConfig(
+    copilot as CopilotOutput,
+    copilotKey as KeyOutput,
+    copilotPrompt as CopilotPromptOutput,
+  );
 
-    server: {
-      endpoint: "/api",
-      token: copilotKey?.apiKey as string,
+  return (
+    <>
+      <CopilotProvider config={copilotConfig}>
+        <VoiceToSkillComponent
+          id={2}
+          position={"bottom-right"}
+          promptVariables={{ $ROLE: "Boss" }}
+          messageStyle={{ color: "black" }}
+        />
+      </CopilotProvider>
 
-      headers: {
-        // optional headers, to be sent with each api request
-        "X-COPILOT-ID": copilot?.id,
-      },
-    },
+      <Box className="w-full">
+        <CopilotTabs
+          copilotId={copilotId}
+          copilot={copilot}
+          copilotPrompt={copilotPrompt}
+          copilotPrompts={copilotPrompts}
+          copilotKey={copilotKey}
+        ></CopilotTabs>
+      </Box>
+    </>
+  );
+};
 
-    ai: {
-      defaultPromptTemmplate: `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`,
-      defaultPromptVariables: {
-        $ROLE: "Boss",
-      },
-      successResponse: "Task Done",
-      failureResponse: "I am not able to do this",
-    },
+const CodeBlock: React.FC<{
+  title: string;
+  code: string;
+  isCopy?: boolean;
+}> = ({ title, code, isCopy = true }) => {
+  return (
+    <Box sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+      <Typography variant="h5" sx={{ mb: 1 }}>
+        {title}
+      </Typography>
+      <CodeHighlight code={code} language="javascript" isCopy={isCopy} />
+    </Box>
+  );
+};
+
+CopilotShow.getLayout = getLayout;
+
+export default CopilotShow;
+
+function CopilotTabs({
+  copilotId,
+  copilotPrompts,
+  copilot,
+  copilotKey,
+  copilotPrompt,
+}: {
+  copilotId: string;
+  copilotPrompts: any[];
+  copilot: CopilotOutput;
+  copilotKey: KeyOutput;
+  copilotPrompt: CopilotPromptOutput;
+}) {
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event: any, newValue: number) => {
+    setValue(newValue);
   };
 
   const npmPackage = "@sugar-ai/copilot-one-sdk@latest";
@@ -120,104 +150,207 @@ const CopilotShow: NextPageWithLayout = () => {
   `;
 
   return (
-    <>
-      <CopilotProvider config={copilotConfig}>
-        <VoiceToSkillComponent
-          id={2}
-          position={"bottom-right"}
-          promptVariables={{ $ROLE: "Boss" }}
-          messageStyle={{ color: "black" }}
-        />
-      </CopilotProvider>
-      <Box
-        sx={{ p: 2, display: "flex", alignItems: "center" }}
-        className="w-full"
-      >
-        <Typography
-          variant="h4"
-          component="span"
-          sx={{ mt: 1, mb: 4, flex: 1 }}
-        >
-          {`${copilot?.name} copilot`}
-        </Typography>
-      </Box>
-      <CodeBlock title={"CopilotId"} code={`copilotId = "${copilot?.id}"`} />
-      <CodeBlock
-        title={"Copilot Token"}
-        code={`token = "${copilotKey?.apiKey}"`}
-      />
-      <CodeBlock title={"Install Package"} code={codePackage} />
-      <CodeBlock title={"Copilot basic config"} code={copilotConfigCode} />
-      <CodeBlock title={"Copilot in react component"} code={copilotUsageCode} />
-      <Box
-        sx={{ p: 2, display: "flex", flexDirection: "column" }}
-        className="w-full"
-      >
-        <Typography variant="h5" sx={{ mb: 1 }}>
-          Copilot Packages
-        </Typography>
-        {copilotPrompts && copilotPrompts.length > 0 && (
-          <Grid container spacing={1} sx={{ paddingTop: 2 }}>
-            {copilotPrompts.map((copilotPrompt, index) => (
-              <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-                <Card>
-                  <CardActionArea
-                    href={`/dashboard/prompts/${copilotPrompt?.packageId}`}
-                  >
-                    <CardHeader
-                      title={copilotPrompt?.packageName}
-                      action={
-                        <Chip
-                          sx={{ mr: 2 }}
-                          size="small"
-                          label={copilotPrompt.promptPackage?.visibility}
-                          // variant="conti"
-                        />
-                      }
-                    />
-                    <CardContent>
-                      <Typography
-                        sx={{
-                          height: "3em",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                        }}
-                      >
-                        {copilotPrompt.promptPackage?.description}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        )}
-      </Box>
-    </>
-  );
-};
-
-const CodeBlock: React.FC<{
-  title: string;
-  code: string;
-  isCopy?: boolean;
-}> = ({ title, code, isCopy = true }) => {
-  return (
-    <Box
-      sx={{ p: 2, display: "flex", flexDirection: "column" }}
-      className="w-full"
+    <div
+      style={
+        {
+          // backgroundColor: "var(--sugarhub-ternary-bg-color)",
+          // padding: "1rem",
+          // borderRadius: "0.5rem",
+        }
+      }
     >
-      <Typography variant="h5" sx={{ mb: 1 }}>
-        {title}
-      </Typography>
-      <CodeHighlight code={code} language="javascript" isCopy={isCopy} />
-    </Box>
+      <Tabs
+        value={value}
+        // style={{ width: "100%" }}
+        centered={true}
+        onChange={handleChange}
+        variant="scrollable" // This makes the tabs scrollable
+        scrollButtons="auto" // This makes scroll buttons appear when there are more tabs than can fit
+        TabIndicatorProps={{
+          style: { background: "var(--sugarhub-text-color)" },
+        }}
+        sx={{
+          ".Mui-selected": {
+            color: "var(--sugarhub-text-color)",
+          },
+        }}
+      >
+        <Tab label="Copilot" sx={{ color: "var(--sugarhub-text-color)" }} />
+
+        <Tab label="Integration" sx={{ color: "var(--sugarhub-text-color)" }} />
+        <Tab
+          label="Linked Prompts"
+          sx={{ color: "var(--sugarhub-text-color)" }}
+        />
+        {/* Add more tabs as needed */}
+      </Tabs>
+      <TabPanel value={value} index={0}>
+        <Paper
+          sx={{
+            backgroundColor: "var(--sugarhub-tab-color)",
+            borderRadius: "0.5rem",
+          }}
+        >
+          <Card
+            sx={{
+              backgroundColor: "var(--sugarhub-tab-color)",
+              borderRadius: "0.5rem",
+              color: "var(--sugarhub-text-color)",
+            }}
+          >
+            <CardContent>
+              <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+                <Typography
+                  variant="h4"
+                  component="p"
+                  sx={{ mt: 1, mb: 4, flex: 1 }}
+                >
+                  {`${copilot?.name} copilot`}
+                </Typography>
+              </Box>
+              <CodeBlock title={"Copilot Id"} code={`${copilot?.id}`} />
+              <CodeBlock
+                title={"Copilot Token"}
+                code={`${copilotKey?.apiKey}`}
+              />
+            </CardContent>
+          </Card>
+        </Paper>
+      </TabPanel>
+
+      <TabPanel value={value} index={1}>
+        <Paper sx={{ backgroundColor: "var(--sugarhub-tab-color)" }}>
+          <CodeBlock title={"Install Package"} code={codePackage} />
+          <CodeBlock title={"Copilot basic config"} code={copilotConfigCode} />
+          <CodeBlock
+            title={"Copilot in react component"}
+            code={copilotUsageCode}
+          />
+        </Paper>
+      </TabPanel>
+
+      <TabPanel value={value} index={2}>
+        <Paper sx={{ backgroundColor: "var(--sugarhub-tab-color)" }}>
+          <Box sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+            <CopilotPrompts
+              copilotPrompts={copilotPrompts as CopilotPromptOutput}
+            ></CopilotPrompts>
+          </Box>
+        </Paper>
+      </TabPanel>
+    </div>
+  );
+}
+
+function TabPanel(props: any) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      style={{ width: "100%", height: "100%" }}
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      {...other}
+    >
+      {value === index && <div>{children}</div>}
+    </div>
+  );
+}
+
+function getCopilotConfig(
+  copilot: CopilotOutput,
+  copilotKey: KeyOutput,
+  copilotPrompt: CopilotPromptOutput,
+): CopilotConfigType {
+  const copilotConfig: CopilotConfigType = {
+    copilotId: copilot?.id as string,
+    server: {
+      endpoint: "/api",
+      token: copilotKey?.apiKey as string,
+    },
+
+    ai: {
+      defaultPromptTemmplate: `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`,
+      defaultPromptVariables: {
+        $ROLE: "Boss",
+      },
+      successResponse: "Task Done",
+      failureResponse: "I am not able to do this",
+    },
+
+    style: {
+      container: {
+        position: "bottom-right",
+        margin: "",
+      },
+      theme: {
+        primaryColor: "",
+        secondaryColor: "",
+        fontFamily: "",
+        fontSize: "",
+        textColor: "",
+      },
+      button: {
+        primaryColor: "",
+        secondaryColor: "",
+        width: "",
+        height: "",
+        iconSize: "",
+      },
+    },
+  };
+
+  return copilotConfig;
+}
+
+const CopilotPrompts = ({
+  copilotPrompts,
+}: {
+  copilotPrompts: CopilotPromptOutput;
+}) => {
+  return (
+    <div>
+      {copilotPrompts && copilotPrompts.length > 0 && (
+        <Grid container spacing={1} sx={{ paddingTop: 2 }}>
+          {copilotPrompts.map((copilotPrompt, index) => (
+            <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+              <Card>
+                <CardActionArea
+                  href={`/dashboard/prompts/${copilotPrompt?.packageId}`}
+                >
+                  <CardHeader
+                    title={copilotPrompt?.packageName}
+                    action={
+                      <Chip
+                        sx={{ mr: 2 }}
+                        size="small"
+                        label={copilotPrompt.promptPackage?.visibility}
+                        // variant="conti"
+                      />
+                    }
+                  />
+                  <CardContent>
+                    <Typography
+                      sx={{
+                        height: "3em",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
+                      {copilotPrompt.promptPackage?.description}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </div>
   );
 };
-
-CopilotShow.getLayout = getLayout;
-
-export default CopilotShow;
