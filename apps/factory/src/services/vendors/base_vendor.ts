@@ -2,6 +2,8 @@ import { GPTResponseType } from "~/validators/openaiResponse";
 import { fakeResponse } from "../llm_response/fake_response";
 import { logLLMResponse, truncateObj } from "~/utils/log";
 import { RunResponse } from "~/validators/llm_respose";
+import { Prompt } from "~/validators/prompt_version";
+import { MessagesSchema } from "~/validators/service";
 
 class BaseVendor {
   private endpoint: string;
@@ -33,7 +35,10 @@ class BaseVendor {
     throw "To be implemented";
   }
 
-  protected createRequestOptions(prompt: string): RequestInit {
+  protected createRequestOptions(
+    prompt: Prompt,
+    messages?: MessagesSchema,
+  ): RequestInit {
     const formdata = new FormData();
     formdata.append("prompt", `${prompt}`);
 

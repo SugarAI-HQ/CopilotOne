@@ -20,6 +20,12 @@ export const textResponseV1 = z.object({
   t: z.literal(ResponseType.TEXT),
 });
 
+export const textResponseV2 = z.object({
+  completion: z.record(z.any()),
+  v: z.number(),
+  t: z.literal(ResponseType.TEXT),
+});
+
 export const imageResponseV1 = z.object({
   base64: z.string(),
   v: z.number(),
@@ -39,10 +45,18 @@ export const codeResponseV1 = z.object({
 });
 
 export const llmResponseDataSchema = z
-  .union([textResponseV1, imageResponseV1, imageResponseV2, codeResponseV1])
+  .union([
+    textResponseV1,
+    textResponseV2,
+    imageResponseV1,
+    imageResponseV2,
+    codeResponseV1,
+  ])
   .transform((data) => {
-    if (data.t === ResponseType.TEXT) {
+    if (data.t === ResponseType.TEXT && data.v === 1) {
       return { ...textResponseV1.parse(data), v: 1 };
+    } else if (data.t === ResponseType.TEXT && data.v === 2) {
+      return { ...textResponseV2.parse(data), v: 2 };
     } else if (data.t === ResponseType.IMAGE && data.v === 1) {
       return { ...imageResponseV1.parse(data), v: 1 };
     } else if (data.t === ResponseType.IMAGE && data.v === 2) {
@@ -80,6 +94,17 @@ export const getTextResponseV1 = function (text: string): LlmResponse {
     data: {
       completion: text || "",
       v: 1,
+      t: ResponseType.TEXT,
+    },
+    error: null,
+  };
+};
+
+export const getTextResponseV2 = function (choices = []): LlmResponse {
+  return {
+    data: {
+      completion: choices || [],
+      v: 2,
       t: ResponseType.TEXT,
     },
     error: null,
@@ -124,13 +149,23 @@ export const getCompletionResponse = function (data: any): string {
   return data?.completion ?? data?.base64 ?? data?.url ?? "";
 };
 
-export const processLlmResponse = (llmResponse: LlmResponse): string | null => {
+export const processLlmResponse = (
+  llmResponse: LlmResponse,
+): string | null | TextResponseV2["completion"] => {
   if (!llmResponse || Object.keys(llmResponse).length === 0) {
     return null;
   }
   const lr = llmResponseSchema.parse(llmResponse);
   if (lr?.data) {
-    if (lr.data.t == ResponseType.TEXT || lr.data.t == ResponseType.CODE) {
+    if (lr.data.t == ResponseType.TEXT) {
+      if (lr.data.v == 1) {
+        return lr.data.completion;
+      }
+      if (lr.data.v == 2) {
+        return lr.data.completion;
+      }
+    }
+    if (lr.data.t == ResponseType.CODE) {
       return lr.data.completion;
     }
     if (lr.data.t == ResponseType.IMAGE) {
@@ -146,12 +181,16 @@ export const processLlmResponse = (llmResponse: LlmResponse): string | null => {
   return null;
 };
 
+export const textResponseVersion = z.union([textResponseV1, textResponseV2]);
+
 export type LlmErrorResponse = z.infer<typeof llmLlmErrorResponseSchema>;
 export type LlmResponse = z.infer<typeof llmResponseSchema>;
 export type RunResponse = z.infer<typeof runResponseSchema>;
 export type PerformanceMetrics = z.infer<typeof performanceMetrics>;
 export type TextResponseV1 = z.infer<typeof textResponseV1>;
+export type TextResponseV2 = z.infer<typeof textResponseV2>;
 export type CodeResponseV1 = z.infer<typeof codeResponseV1>;
 export type ImageResponseV1 = z.infer<typeof imageResponseV1>;
 export type ImageResponseV2 = z.infer<typeof imageResponseV2>;
+export type TextResponseVersion = z.infer<typeof textResponseVersion>;
 // export type LlmResponseData = z.infer<typeof llmResponseDataSchema>;

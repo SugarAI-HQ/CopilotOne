@@ -10,6 +10,7 @@ interface Props<T extends string | number> extends FormInputProps {
   defaultValue: T | undefined;
   readonly: boolean;
   enumValues: Record<string, T>;
+  disabledOptions?: string[];
   // onChange: (event: any) => void;
   onChange: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
@@ -22,6 +23,7 @@ export function FormSelectInput<T extends string | number>({
   onChange,
   readonly,
   enumValues,
+  disabledOptions,
 }: Props<T>) {
   return (
     <FormControl component="fieldset">
@@ -42,7 +44,11 @@ export function FormSelectInput<T extends string | number>({
             onChange={onChange}
           >
             {Object.entries(enumValues).map(([key, value]) => (
-              <MenuItem key={key} value={value}>
+              <MenuItem
+                key={key}
+                value={value}
+                disabled={disabledOptions?.includes(key)}
+              >
                 {value}
               </MenuItem>
             ))}

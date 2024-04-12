@@ -10,6 +10,10 @@ import {
   Typography,
   Chip,
   Tooltip,
+  FormControl,
+  FormLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import LLMSelector from "./llm_selector";
@@ -31,13 +35,19 @@ import {
   getUniqueJsonArrayWithDefaultValues,
   getVariables,
   hasImageEditor,
+  isToolEnabled,
 } from "~/utils/template";
 import SaveIcon from "@mui/icons-material/Save";
 import { CreateVersion } from "./create_version";
 import { inc } from "semver";
 import { VersionOutput, VersionSchema } from "~/validators/prompt_version";
 import { LLM, promptEnvironment } from "~/validators/base";
-import { GenerateInput, GenerateOutput } from "~/validators/service";
+import {
+  GenerateInput,
+  GenerateOutput,
+  SkillChoicesType,
+  skillChoiceEnum,
+} from "~/validators/service";
 import LoadingButton from "@mui/lab/LoadingButton";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { v4 as uuidv4 } from "uuid";
@@ -67,8 +77,8 @@ import {
 import DownloadButtonBase64 from "./download_button_base64";
 import { getTemplate, getDefaults } from "~/services/providers";
 import { FileObject } from "~/utils/images";
-import { hasImageModels } from "~/utils/template";
-import { LogSchema } from "~/validators/prompt_log";
+import { hasImageModels, extractVariables } from "~/utils/template";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   LlmResponse,
@@ -76,6 +86,7 @@ import {
   ImageResponseV1,
   TextResponseV1,
   processLlmResponse,
+  TextResponseVersion,
 } from "~/validators/llm_respose";
 import { escapeStringRegexp } from "~/utils/template";
 import PromptInputAttachment from "./prompt_input_attachment";
@@ -98,9 +109,11 @@ function PromptVersion({
   const [lpv, setPv] = useState<VersionSchema>(pv);
   const [version, setVersion] = useState<string>(lpv?.version);
   const [template, setTemplate] = useState(lpv?.template || "");
+  const [skills, setSkills] = useState<GenerateInput["skills"]>();
   const [attachments, setAttachments] = useState<FileObject>();
   const [modelDefaultValues, setModelDefaultValues] =
     useState<ModelDefaultValueSchemaType>();
+  const [skillChoice, setSkillChoice] = useState<SkillChoicesType>("none");
 
   const [llm, setLLM] = useState<LLM>({
     modelType: pt?.modelType as ModelTypeType,
@@ -124,23 +137,12 @@ function PromptVersion({
     stopSequences: "",
   });
   const [checked, setChecked] = useState(isDev);
+  const [isSkill, setIsSkill] = useState(false);
   const [pl, setPl] = useState<GenerateOutput>(null);
+  const [isInvalidJson, setIsInvalidJson] = useState(false);
   // const [promptOutput, setPromptOutput] = useState("");
 
   const [promptPerformance, setPromptPerformacne] = useState({});
-
-  const extractVariables = (
-    txt: string,
-    pvrs: PromptVariableProps[] = [],
-  ): PromptVariableProps[] => {
-    const variables = getUniqueJsonArrayWithDefaultValues(
-      getVariables(txt),
-      "key",
-      pvrs,
-    );
-    // setVariables([...variables]);
-    return variables;
-  };
 
   const extractTemplate = (lpv: pv): string => {
     let templateValue: string;
@@ -231,6 +233,11 @@ function PromptVersion({
     setChecked((prevChecked) => !prevChecked);
   };
 
+  const handleSkillChange = () => {
+    console.log(`handleSkillChange`);
+    setIsSkill((prevIsSkill) => !prevIsSkill);
+  };
+
   const handleRun = async (e: any) => {
     console.log(`running template version ${version}`);
     // loading
@@ -242,14 +249,16 @@ function PromptVersion({
     const pl = await generateMutation.mutateAsync(
       {
         username: ns?.username,
-        package: pp?.name || "",
+        packageName: pp?.name || "",
         template: pt?.name || "",
         versionOrEnvironment: lpv.version || "",
         isDevelopment: checked,
         // llmModelType: pt?.modelType,
         environment: promptEnvironment.Enum.DEV,
-        data: data,
+        variables: data,
         attachments: attachments,
+        skills: skills,
+        skillChoice: skillChoice,
       } as GenerateInput,
       {
         onSettled(lPl, error) {
@@ -300,7 +309,7 @@ function PromptVersion({
     return () => {
       clearTimeout(saveTimer);
     };
-  }, [template, isDirty]);
+  }, [template, isDirty, pvrs]);
 
   // if current and nextProvide will be same i will not do anything other wise i will call getTemplate fumction
 
@@ -324,6 +333,7 @@ function PromptVersion({
       llmProvider: llm.provider,
       llmModel: llm.model,
       llmConfig: llmConfig,
+      variables: pvrs as TemplateVariablesType,
     });
     setIsLLMChanged(false);
     setIsDirty(false);
@@ -398,6 +408,21 @@ function PromptVersion({
 
   const onFileUpload = (file: FileObject) => {
     setAttachments(file);
+  };
+
+  const handleSkills = (event: any) => {
+    try {
+      setSkills(JSON.parse(event.target.value));
+      setIsInvalidJson(false);
+    } catch (e: any) {
+      console.warn(`Skills: invalid json ${e.message}`);
+      setIsInvalidJson(true);
+    }
+    // JSON.parse(e.target.value) as any
+  };
+
+  const handleSkillChoiceChange = (event: any) => {
+    setSkillChoice(event.target.value as SkillChoicesType);
   };
 
   return (
@@ -550,6 +575,7 @@ function PromptVersion({
                                             : "block"
                                         }`,
                                       }}
+                                      disabled={lpv.publishedAt ? true : false}
                                       onClick={() => deletePrompt(ind)}
                                     >
                                       <RemoveCircleIcon />
@@ -561,6 +587,9 @@ function PromptVersion({
                                           sx={{
                                             padding: "1rem",
                                           }}
+                                          disabled={
+                                            lpv.publishedAt ? true : false
+                                          }
                                         >
                                           <AddIcon />
                                         </Button>
@@ -592,6 +621,41 @@ function PromptVersion({
               onChange={handleVariableValuesChanged}
               mode={displayModes.Enum.VIEW}
             />
+            {isSkill && (
+              <Stack spacing={2} mt={2}>
+                <TextField
+                  label="Tools"
+                  multiline
+                  fullWidth
+                  style={{
+                    width: "100%",
+                    borderColor: isInvalidJson ? "red" : undefined,
+                  }}
+                  minRows={3}
+                  // maxRows={10}
+                  defaultValue={skills}
+                  onChange={handleSkills}
+                  variant="outlined"
+                  error={isInvalidJson} // Apply error style if JSON is invalid
+                  helperText={isInvalidJson ? "Invalid JSON" : ""} // Optional error message
+                />
+                <FormControl fullWidth>
+                  <FormLabel style={{ padding: "0.5rem" }}>
+                    Tools Choice
+                  </FormLabel>
+                  <Select
+                    value={skillChoice}
+                    onChange={handleSkillChoiceChange}
+                  >
+                    {skillChoiceEnum.options.map((option, index) => (
+                      <MenuItem key={index} value={option}>
+                        {option.toUpperCase()}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Stack>
+            )}
           </Grid>
         </Grid>
         <Divider sx={{ mt: 1 }} textAlign="right"></Divider>
@@ -660,7 +724,7 @@ function PromptVersion({
             color="success"
             variant="outlined"
             onClick={handleTest}
-            disabled={true}
+            // disabled={true}
             sx={{
               width: "9rem",
             }}
@@ -679,6 +743,23 @@ function PromptVersion({
           >
             Finetune
           </Button>
+          {isToolEnabled(
+            pt?.modelType as ModelTypeType,
+            lpv?.llmProvider as string,
+            lpv?.llmModel as string,
+          ) && (
+            <Button
+              color={isSkill ? "success" : "primary"}
+              variant="outlined"
+              onClick={handleSkillChange}
+              // disabled={true}
+              sx={{
+                width: "9rem",
+              }}
+            >
+              Tools
+            </Button>
+          )}
 
           <Grid container justifyContent={"flex-end"}>
             <Chip
@@ -744,7 +825,12 @@ function PromptVersion({
                           }}
                         >
                           <CopyToClipboardButton
-                            textToCopy={pl.completion as string}
+                            textToCopy={
+                              (
+                                (pl?.llmResponse as LlmResponse)
+                                  .data as TextResponseVersion
+                              ).completion
+                            }
                             textToDisplay={"Copy"}
                           />
                           |

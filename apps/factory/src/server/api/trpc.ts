@@ -52,6 +52,7 @@ interface CreateContextOptions {
   jwt: NullableJwt;
   prisma: PrismaClient;
   runMode: PromptRunModesType;
+  apiKey: string;
 }
 
 /**
@@ -70,6 +71,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     jwt: opts.jwt,
     runMode: opts.runMode,
     prisma,
+    apiKey: opts.apiKey,
   };
 };
 
@@ -86,6 +88,8 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const runMode: PromptRunModesType =
     (res.getHeader("x-run-mode") as PromptRunModesType) ||
     PromptRunModesSchema.Enum.LOGGEDIN_ONLY;
+
+  const apiKey = req.headers.authorization?.split(" ")[1] as string;
 
   const requestId = uuid();
   res.setHeader("x-request-id", requestId);
@@ -110,6 +114,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     prisma,
     jwt: token,
     runMode: runMode,
+    apiKey,
   });
 };
 
@@ -218,8 +223,12 @@ function checkUserAuth(ctx: CreateContextOptions) {
 }
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
-const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  checkUserAuth(ctx);
+const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
+  ctx.jwt && checkUserAuth(ctx);
+  const apiKey = await fetchUserIdFromApiKey(ctx);
+  if (apiKey?.userId as string) {
+    ctx.jwt = { id: apiKey?.userId as string };
+  }
 
   return next({
     ctx: {
@@ -241,7 +250,30 @@ const conditionalUserIsAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
-export const promptMiddleware = experimental_standaloneMiddleware<{
+const fetchUserIdFromApiKey = async (ctx: CreateContextOptions) => {
+  if (ctx.jwt) {
+    return;
+  }
+  if (ctx.apiKey) {
+    const keydata = await ctx.prisma.apiKey.findFirst({
+      where: {
+        apiKey: ctx.apiKey,
+        isActive: true,
+      },
+      select: { userId: true, copilotId: true },
+    });
+    if (!keydata) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Invalid API Key",
+      });
+    }
+
+    return keydata;
+  }
+};
+
+export const promptMiddleware: any = experimental_standaloneMiddleware<{
   // ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
   ctx: CreateContextOptions;
   input: Partial<GenerateInput>;
@@ -254,6 +286,17 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
   //     message: 'Not allowed',
   //   });
   // }
+
+  const apiKey = await fetchUserIdFromApiKey(opts.ctx);
+
+  if (apiKey?.userId as string) {
+    opts.input.userId = apiKey?.userId;
+    opts.input.copilotId = apiKey?.copilotId as string;
+
+    opts.ctx.jwt = {
+      id: apiKey?.copilotId,
+    };
+  }
 
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
@@ -273,18 +316,19 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
         ` <<<>>> username : ${opts.input.username} userId : ${opts.input.userId}`,
       );
       console.log(
-        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${opts.ctx?.jwt
-          ?.id},  ${opts.input.userId == opts.ctx?.jwt?.id}`,
+        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${
+          opts.ctx?.jwt?.id
+        },  ${opts.input.userId == opts.ctx?.jwt?.id}`,
       );
     }
   }
 
-  if (opts.input.userId && opts.input?.package) {
+  if (opts.input.userId && opts.input?.packageName) {
     const { id: promptPackageId, visibility: visibility } =
       (await opts.ctx.prisma.promptPackage.findFirst({
         where: {
           userId: opts.input.userId,
-          name: opts.input.package,
+          name: opts.input.packageName,
         },
         select: { id: true, visibility: true },
       })) as { id: string | null; visibility: PackageVisibility };
@@ -310,7 +354,7 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
 
     opts.input.promptPackageId = promptPackageId as string;
     console.log(
-      ` <<<>>> package : ${opts.input.package} userId : ${opts.input.promptPackageId}`,
+      ` <<<>>> package : ${opts.input.packageName} packageId : ${opts.input.promptPackageId}`,
     );
   }
 

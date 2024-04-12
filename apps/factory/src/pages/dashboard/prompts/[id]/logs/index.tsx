@@ -21,7 +21,7 @@ import PromptCompletion from "~/components/prompt_completion";
 import PromotOutputLog from "~/components/prompt_output_log";
 import { providerModels } from "~/validators/base";
 import { PromptView } from "~/components/prompt_view_arrow";
-import { LogSchema } from "~/validators/prompt_log";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
 import { GenerateOutput } from "~/validators/service";
 import PromptLlmResponse, {
   LlmResponseAction,
@@ -152,8 +152,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
               <TableCell>Prompt</TableCell>
               <TableCell>LLM Response</TableCell>
               {logModeMax && <TableCell>Version</TableCell>}
-              <TableCell>LLM Provider</TableCell>
-              <TableCell>LLM Model</TableCell>
+              <TableCell>LLM Provider & Model</TableCell>
               <TableCell>Total Tokens</TableCell>
               {logModeMax && <TableCell>Environment</TableCell>}
               <TableCell>Latency(in ms)</TableCell>
@@ -161,65 +160,56 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
               {/* <TableCell>Finetuned State</TableCell> */}
               {logModeMax && <TableCell>Created At</TableCell>}
               <TableCell>Updated At</TableCell>
-              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {promptLogs.map((log) => (
               <TableRow key={log.id}>
                 {logModeMax && <TableCell>{log.id}</TableCell>}
-                <TableCell>
+                <TableCell sx={{ minWidth: "350px", maxWidth: "400px" }}>
                   {/* we are checking wether the role is true or false */}
                   {!hasImageEditor(
                     log.llmModelType,
                     log.llmProvider,
                     log.llmModel,
                   ) ? (
-                    <>
-                      <PromptView
-                        promptInputs={JSON.parse(log.prompt)}
-                        haveroleUserAssistant={1}
-                        promptTemplate={""}
-                      />
-                    </>
+                    <PromptView
+                      promptInputs={JSON.parse(log.prompt)}
+                      promptVariables={
+                        log.promptVariables as TemplateVariablesType
+                      }
+                      haveroleUserAssistant={1}
+                      promptTemplate={""}
+                    />
                   ) : (
-                    <>
-                      <PromptView
-                        promptInputs={[]}
-                        haveroleUserAssistant={getEditorVersion(
-                          log.llmModelType,
-                          log.llmProvider,
-                          log.llmModel,
-                        )}
-                        promptTemplate={log.prompt}
-                      />
-                    </>
+                    <PromptView
+                      promptInputs={[]}
+                      haveroleUserAssistant={getEditorVersion(
+                        log.llmModelType,
+                        log.llmProvider,
+                        log.llmModel,
+                      )}
+                      promptTemplate={log.prompt}
+                      promptVariables={
+                        log.promptVariables as TemplateVariablesType
+                      }
+                    />
                   )}
                   <hr />
                   <p style={{ paddingTop: "1rem" }}>
                     tokens: {log.prompt_tokens}
                   </p>
                 </TableCell>
-                <TableCell
-                  style={
-                    logModeMax
-                      ? {
-                          maxWidth: 150,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          //     whiteSpace: "nowrap",
-                        }
-                      : { whiteSpace: "normal", maxWidth: 150 }
-                  }
-                >
+                <TableCell sx={{ minWidth: "400px", maxWidth: "450px" }}>
                   <div
                     style={{
-                      paddingTop: 5,
-                      justifyContent: "center",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      display: "flex",
-                      maxHeight: 150,
+                      // paddingTop: 5,
+                      // justifyContent: "center",
+                      // flexDirection: "column",
+                      // alignItems: "center",
+                      // display: "flex",
+                      // maxHeight: 250,
+                      width: "100%",
                     }}
                   >
                     {log?.completion && (
@@ -230,7 +220,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                         cube={false}
                       />
                     )}
-                    {(log?.llmResponse as LlmResponse).data && (
+                    {(log?.llmResponse as LlmResponse) && (
                       <PromptLlmResponse
                         pl={log as LogOutput}
                         imgClassName={"h-32 w-32 object-contain"}
@@ -241,8 +231,10 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                   </div>
                 </TableCell>
                 {logModeMax && <TableCell>{log.version}</TableCell>}
-                <TableCell>{log.llmProvider}</TableCell>
-                <TableCell>{log.llmModel}</TableCell>
+                <TableCell>
+                  {log.llmProvider} - {log.llmModel}
+                </TableCell>
+
                 <TableCell>{log.total_tokens}</TableCell>
                 {logModeMax && <TableCell>{log.environment}</TableCell>}
                 <TableCell>{log.latency}</TableCell>

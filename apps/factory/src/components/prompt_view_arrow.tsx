@@ -10,17 +10,20 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { TemplateVariablesType } from "~/validators/prompt_log";
 
 interface PromptViewArrowProps {
   promptInputs: PromptDataType | undefined;
   haveroleUserAssistant: number | undefined;
   promptTemplate: string;
+  promptVariables?: TemplateVariablesType;
 }
 
 const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
   promptTemplate,
   promptInputs,
   haveroleUserAssistant,
+  promptVariables,
 }) => {
   const [isTextOpen, setIsTextOpen] = useState(false);
 
@@ -57,6 +60,7 @@ const PromptViewArrow: React.FC<PromptViewArrowProps> = ({
               promptInputs={promptInputs}
               haveroleUserAssistant={haveroleUserAssistant}
               promptTemplate={promptTemplate}
+              promptVariables={promptVariables}
             />
           </>
         ) : (
@@ -75,62 +79,85 @@ export const PromptView = ({
   promptInputs,
   haveroleUserAssistant,
   promptTemplate,
+  promptVariables,
 }: PromptViewArrowProps) => {
   return (
     <>
       {haveroleUserAssistant !== 0 && haveroleUserAssistant !== 3 ? (
-        <>
-          <TableContainer sx={{ maxHeight: "200px", overflowY: "auto" }}>
-            <Table aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell sx={{ color: "var(--sugarhub-text-color)" }}>
-                    ROLE
+        <TableContainer
+          sx={{
+            maxHeight: "200px",
+            overflowY: "auto",
+            widith: "100%",
+          }}
+        >
+          <Table aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ color: "var(--sugarhub-text-color)" }}>
+                  ROLE
+                </TableCell>
+                <TableCell
+                  align="right"
+                  sx={{ color: "var(--sugarhub-text-color)" }}
+                >
+                  CONTENT
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {promptInputs?.map((promptInput) => (
+                <TableRow
+                  key={promptInput.role}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{ color: "var(--sugarhub-text-color)" }}
+                  >
+                    {promptInput.role}
                   </TableCell>
                   <TableCell
                     align="right"
-                    sx={{ color: "var(--sugarhub-text-color)" }}
+                    sx={{
+                      color: "var(--sugarhub-text-color)",
+                      overflowWrap: "break-word",
+                    }}
                   >
-                    CONTENT
+                    {promptInput.content}
                   </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {promptInputs?.map((promptInput) => (
-                  <TableRow
-                    key={promptInput.role}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell
-                      component="th"
-                      scope="row"
-                      sx={{ color: "var(--sugarhub-text-color)" }}
-                    >
-                      {promptInput.role}
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                      sx={{
-                        color: "var(--sugarhub-text-color)",
-                        overflowWrap: "break-word",
-                      }}
-                    >
-                      {promptInput.content}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
+              ))}
+              {promptVariables && promptViewVariables(promptVariables)}
+            </TableBody>
+          </Table>
+        </TableContainer>
       ) : (
         <>
           <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
             {promptTemplate}
+            {promptVariables && promptViewVariables(promptVariables)}
           </Typography>
         </>
       )}
     </>
+  );
+};
+
+export const promptViewVariables = (promptVariables: TemplateVariablesType) => {
+  return (
+    <div>
+      <Typography sx={{ color: "var(--sugarhub-text-color)" }}>
+        Variables:
+      </Typography>
+      {`{${promptVariables
+        .map(
+          (variable, index) =>
+            `${variable.type}${variable.key}: ${variable.value}`,
+        )
+        .join(", ")}}`}
+    </div>
   );
 };
 

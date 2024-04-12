@@ -7,13 +7,18 @@ import {
 import { PromptVariableProps } from "~/components/prompt_variables";
 import { LLMConfig } from "~/services/providers/openai";
 import { JsonObject } from "@prisma/client/runtime/library";
-import { LlmConfigSchema } from "~/validators/prompt_version";
+import {
+  LlmConfigSchema,
+  PromptDataType,
+  TEMPLATE_VARIABLE_REGEX,
+} from "~/validators/prompt_version";
 import {
   ModelTypeSchema,
   ModelTypeType,
 } from "~/generated/prisma-client-zod.ts";
 import { LLM, providerModels } from "~/validators/base";
-import { LogSchema } from "~/validators/prompt_log";
+import { LogSchema, TemplateVariablesType } from "~/validators/prompt_log";
+import { lookupEmbedding } from "~/server/api/routers/embedding";
 
 export const getVariables = (template: string) => {
   if (!template) {
@@ -110,6 +115,72 @@ export function generateLLmConfig(c: JsonObject): LlmConfigSchema {
   return config;
 }
 
+function replacePromptVariables(
+  content: string,
+  variables: { [key: string]: string },
+): string {
+  return content.replace(TEMPLATE_VARIABLE_REGEX, (match, sign, key) => {
+    console.log(match, sign, key);
+    // Check if the input variables contain the key
+
+    // let output: string = match;
+
+    // switch (sign.toString()) {
+    //   case "$": {
+    //     // get matching embeddings
+    //     // output = variables[sign + key];
+    //     break;
+    //   }
+    //   default: {
+    //     output = variables[sign + key] || variables[key] || match;
+    //     break;
+    //   }
+    // }
+
+    // debugger;
+
+    return variables[sign + key] || variables[key] || match;
+  });
+}
+
+// function traverseAndReplace(
+//   prompt: PromptDataType,
+//   variables: { [key: string]: string },
+// ): PromptDataType {
+//   const compliledPrompt = prompt.map(({ id, role, content }) => {
+//     // Only call replacePromptVariables when needed
+//     if (TEMPLATE_VARIABLE_REGEX.test(content)) {
+//       // Replace variables in content
+//       const newContent = replacePromptVariables(content, variables);
+//       return { id, role, content: newContent };
+//     }
+//     return { id, role, content };
+//   });
+//   return compliledPrompt;
+// }
+
+export function generatePromptFromJson(
+  prompt: PromptDataType,
+  variables: { [key: string]: string },
+): PromptDataType {
+  // Precompile the regular expression to match the pattern {@SCREEN_MESSAGE}
+
+  // Generate prompt with replaced variables
+  // return traverseAndReplace(prompt, variables);
+
+  const compliledPrompt = prompt.map(({ id, role, content }) => {
+    // Only call replacePromptVariables when needed
+    if (TEMPLATE_VARIABLE_REGEX.test(content)) {
+      // Replace variables in content
+      const newContent = replacePromptVariables(content, variables);
+      return { id, role, content: newContent };
+    }
+    return { id, role, content };
+  });
+
+  return compliledPrompt;
+}
+
 export function generatePrompt(
   template: string,
   data: Record<string, string>,
@@ -127,9 +198,10 @@ export function generatePrompt(
     }
     console.log(`key ${placeholder}`);
     const value = data[key] as string;
+    const escaped_value = value.replace(/"/g, '\\"');
 
     // Replace all occurrences of the placeholder with the value
-    result = result.replace(new RegExp(placeholder, "g"), value);
+    result = result.replace(new RegExp(placeholder, "g"), escaped_value);
   }
 
   return result;
@@ -139,18 +211,36 @@ export function escapeStringRegexp(data: string): string {
   return data.replace(/[|\\{}()[\]^$+*?"]/g, "\\$&");
 }
 
-export function setDefaultTemplate(moduleType: string) {
+export const extractVariables = (
+  txt: string,
+  pvrs: PromptVariableProps[] = [],
+): PromptVariableProps[] => {
+  const variables = getUniqueJsonArrayWithDefaultValues(
+    getVariables(txt),
+    "key",
+    pvrs,
+  );
+  // setVariables([...variables]);
+  return variables;
+};
+
+export function setPromptTemplate(moduleType: string) {
   let template;
+  let variables;
   if (moduleType === ModelTypeSchema.Enum.TEXT2TEXT) {
     template = `Tell me a joke on topic "{@topic}"`;
+    variables = extractVariables(template);
   } else if (moduleType === ModelTypeSchema.Enum.TEXT2IMAGE) {
     template = `A photo of an astronaut riding a horse on {@OBJECT}`;
+    variables = extractVariables(template);
   } else if (moduleType === ModelTypeSchema.Enum.IMAGE2IMAGE) {
     template = `A vibrant, oil-painted handmade portrait featuring a {@OBJECT} scene with a beautiful house nestled next to a meandering river, teeming with lively fish. The idyllic setting is surrounded by lush trees, and the scene is bathed in the warm glow of a bright, sunny day.`;
+    variables = extractVariables(template);
   } else {
     template = `A photo of an astronaut riding a horse on {@OBJECT}`;
+    variables = extractVariables(template);
   }
-  return template;
+  return { template: template, variables: variables as any };
 }
 
 export function hasImageModels(llmModelType: ModelTypeType) {
@@ -160,14 +250,25 @@ export function hasImageModels(llmModelType: ModelTypeType) {
   );
 }
 
-export const getEditorVersion = (
+export const getModel = (
   modeType: ModelTypeType,
   providerName: string,
   modelName: string,
 ) => {
   return providerModels[`${modeType as keyof typeof providerModels}`].models[
     `${providerName}`
-  ]?.find((mod) => mod.name === modelName)?.editorVersion;
+  ]?.find((mod) => mod.name === modelName);
+};
+
+export const getEditorVersion = (
+  modeType: ModelTypeType,
+  providerName: string,
+  modelName: string,
+) => {
+  const model = getModel(modeType, providerName, modelName);
+  if (model) {
+    return model.editorVersion;
+  }
 };
 
 export const hasImageEditor = (
@@ -177,4 +278,41 @@ export const hasImageEditor = (
 ): boolean => {
   const editorVersion = getEditorVersion(modeType, providerName, modelName);
   return editorVersion === 0 || editorVersion === 3;
+};
+
+export const isToolEnabled = (
+  modeType: ModelTypeType,
+  providerName: string,
+  modelName: string,
+) => {
+  const model = getModel(modeType, providerName, modelName);
+  if (model) {
+    return model.toolEnabled;
+  }
+};
+
+interface Variable {
+  key: string;
+  type: string;
+  value: string;
+}
+
+export const replaceDataVariables = (
+  variables: Record<string, string>,
+): TemplateVariablesType => {
+  const newVariables: Variable[] = [];
+
+  for (const key in variables) {
+    if (Object.hasOwnProperty.call(variables, key)) {
+      const value: string = variables[key] as string;
+      const matchResult: RegExpMatchArray | null = key.match(/[@#$%]/);
+      if (matchResult !== null) {
+        const type: string = matchResult[0];
+        const cleanKey: string = key.replace(/[@#$%]/, "");
+        newVariables.push({ key: cleanKey, type, value: value });
+      }
+    }
+  }
+
+  return newVariables as TemplateVariablesType;
 };

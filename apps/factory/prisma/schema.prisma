@@ -65,6 +65,12 @@ enum MediaType {
   VIDEO
 }
 
+enum StatusState {
+  PRODUCTION
+  STAGING
+  SANDBOX
+}
+
 // Necessary for Next auth
 model Account {
   id                String   @id @default(uuid())
@@ -127,6 +133,8 @@ model PromptPackage {
   templates       PromptTemplate[]
   PromptVariables PromptVariables[]
   PromptVersion   PromptVersion[]
+  forkedId        String?
+  CopilotPrompt   CopilotPrompt[]
 
   @@unique([userId, name])
 }
@@ -174,6 +182,7 @@ model PromptVersion {
   outCost          Float?
   promptPackageId  String
   promptTemplateId String
+  variables        Json              @default("[]")
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt @map("updated_at")
   previewVersion   PromptTemplate?   @relation("previewVersion")
@@ -200,6 +209,7 @@ model User {
   PromptTemplate PromptTemplate[]
   PromptVersion  PromptVersion[]
   sessions       Session[]
+  CopilotPrompt  CopilotPrompt[]
 }
 
 model VerificationToken {
@@ -235,6 +245,7 @@ model PromptLog {
   promptPackageId   String
   promptTemplateId  String
   promptVersionId   String
+  promptVariables   Json              @default("[]")
   createdAt         DateTime          @default(now()) @map("created_at")
   updatedAt         DateTime          @updatedAt @map("updated_at")
 }
@@ -280,4 +291,94 @@ model Blog {
   previewImage String
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt @map("updated_at")
+}
+
+model ApiKey {
+  id         String    @id @default(uuid())
+  userId     String
+  copilotId  String?
+  name       String
+  apiKey     String    @unique
+  lastUsedAt DateTime?
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+}
+
+model Copilot {
+  id            String          @id @default(uuid())
+  name          String
+  description   String?
+  copilotType   String
+  settings      Json            @default("{}")
+  userId        String
+  status        StatusState     @default(PRODUCTION)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  CopilotPrompt CopilotPrompt[]
+
+  @@unique([userId, name])
+}
+
+model Chat {
+  id           String   @id @default(uuid())
+  userId       String
+  copilotId    String
+  messageCount Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt @map("updated_at")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  userId    String
+  copilotId String
+  logId     String?
+  content   String
+  role      String   @default("user")
+  chatId    String
+  createdAt DateTime @default(now())
+  metadata  Json     @default("{}")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Embedding {
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  userId    String
+  copilotId String
+
+  clientUserId String
+  scope1       String
+  scope2       String?
+  groupId      String?
+
+  chunk     String
+  doc       String
+  embedding Unsupported("vector(1536)")
+  strategy  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([userId, copilotId, clientUserId, scope1, scope2, groupId, chunk])
+  @@index([userId, copilotId, clientUserId])
+}
+
+model CopilotPrompt {
+  id            String        @id @default(uuid())
+  userId        String
+  copilotId     String
+  copilotKey    String
+  userName      String
+  packageName   String
+  packageId     String
+  templateName  String
+  versionName   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  promptPackage PromptPackage @relation(fields: [packageId], references: [id])
+  user          User          @relation(fields: [userId], references: [id])
+  copilot       Copilot       @relation(fields: [copilotId], references: [id])
+
+  @@unique([userId, copilotId, copilotKey])
 }

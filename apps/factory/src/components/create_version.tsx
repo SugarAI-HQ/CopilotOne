@@ -49,6 +49,7 @@ import { LLM, Model, Provider, providerModels } from "~/validators/base";
 import { FormSelectInput } from "./form_components/formSelectInput";
 import { FormProviderSelectInput } from "./form_components/formProviderSelect";
 import { FormModelSelectInput } from "./form_components/formModelSelect";
+import { TemplateVariablesType } from "~/validators/prompt_log";
 
 CreateVersion.defaultProps = {
   icon: <AddCircleIcon />,
@@ -83,6 +84,7 @@ export function CreateVersion({
   });
 
   const forkedFromId = forkedFrom?.id || null;
+  const variables = forkedFrom?.variables as TemplateVariablesType;
   // console.log(`LLM ||| 6 >>>>>>>>> ${JSON.stringify(llm)} ${forkedFromId}`);
 
   const {
@@ -100,6 +102,7 @@ export function CreateVersion({
       moduleType: pt?.modelType,
       provider: llm.provider,
       model: llm.model,
+      variables: variables,
     },
     resolver: zodResolver(inputCreateVersion),
   });
@@ -135,6 +138,7 @@ export function CreateVersion({
       moduleType: pt?.modelType,
       provider: llm.provider,
       model: llm.model,
+      variables: variables,
     };
     console.log(response);
     pvCreateMutation.mutate(response as InputCreateVersion);

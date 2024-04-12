@@ -6,6 +6,11 @@ import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 import StabilityAIVendor from "../vendors/stabilityai_vendor";
 import SegmindVendor from "../vendors/segmind_vendor";
+import {
+  MessagesSchema,
+  SkillChoicesType,
+  skillsSchema,
+} from "~/validators/service";
 
 export interface LLMConfig {
   max_tokens: number;
@@ -14,6 +19,9 @@ export interface LLMConfig {
 
 export async function run(
   prompt: string,
+  messages: MessagesSchema,
+  skills: skillsSchema,
+  skillChoice: SkillChoicesType,
   llmModel: string,
   llmConfig: LlmConfigSchema,
   llmModelType: ModelTypeType,

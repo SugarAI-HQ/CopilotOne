@@ -36,7 +36,7 @@ export const PromptIntegration = ({
 
   console.log(pv?.template, variables);
 
-  const apiUrl = `${env.NEXT_PUBLIC_API_ENDPOINT}/${identifier}`;
+  const apiUrl = `${env.NEXT_PUBLIC_API_ENDPOINT}/api/${identifier}`;
   const jwt = "<jwt token>";
 
   const pythonExample = `

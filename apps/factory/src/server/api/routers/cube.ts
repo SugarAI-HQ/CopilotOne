@@ -14,7 +14,7 @@ export const cubeRouter = createTRPCRouter({
     .meta({
       openapi: {
         method: "GET",
-        path: "/{username}/{package}/{template}/{versionOrEnvironment}",
+        path: "/{username}/{packageName}/{template}/{versionOrEnvironment}",
         tags: ["prompts"],
         summary: "Get Prompt Template",
       },

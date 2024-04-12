@@ -56,23 +56,35 @@ export const SessionScalarFieldEnumSchema = z.enum(['id','sessionToken','userId'
 
 export const PromptVariablesScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','promptTemplateId','promptVersionId','name','majorVersion','minorVersion','variables','createdAt','updatedAt']);
 
-export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt']);
+export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt','forkedId']);
 
 export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType','runMode']);
 
-export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','promptData','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','createdAt','updatedAt']);
+export const PromptVersionScalarFieldEnumSchema = z.enum(['id','forkedFromId','userId','version','template','promptData','inputFields','templateFields','llmProvider','llmModelType','llmModel','llmConfig','lang','changelog','publishedAt','outAccuracy','outLatency','outCost','promptPackageId','promptTemplateId','variables','createdAt','updatedAt']);
 
 export const UserScalarFieldEnumSchema = z.enum(['id','name','email','emailVerified','username','image','createdAt','updatedAt']);
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires','createdAt','updatedAt']);
 
-export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmResponse','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','createdAt','updatedAt']);
+export const PromptLogScalarFieldEnumSchema = z.enum(['id','userId','inputId','environment','version','prompt','completion','llmResponse','llmModelType','llmProvider','llmModel','llmConfig','latency','prompt_tokens','completion_tokens','total_tokens','extras','labelledState','finetunedState','promptPackageId','promptTemplateId','promptVersionId','promptVariables','createdAt','updatedAt']);
 
 export const LikeScalarFieldEnumSchema = z.enum(['id','likesCount','entityId','entityType','createdAt','updatedAt']);
 
 export const LikeUserScalarFieldEnumSchema = z.enum(['id','userId','likeId','createdAt','updatedAt']);
 
 export const BlogScalarFieldEnumSchema = z.enum(['id','title','description','slug','tags','publishedAt','mediaUrl','mediaType','previewImage','createdAt','updatedAt']);
+
+export const ApiKeyScalarFieldEnumSchema = z.enum(['id','userId','copilotId','name','apiKey','lastUsedAt','isActive','createdAt','updatedAt']);
+
+export const CopilotScalarFieldEnumSchema = z.enum(['id','name','description','copilotType','settings','userId','status','createdAt','updatedAt']);
+
+export const ChatScalarFieldEnumSchema = z.enum(['id','userId','copilotId','messageCount','createdAt','updatedAt']);
+
+export const MessageScalarFieldEnumSchema = z.enum(['id','userId','copilotId','logId','content','role','chatId','createdAt','metadata','updatedAt']);
+
+export const EmbeddingScalarFieldEnumSchema = z.enum(['id','userId','copilotId','clientUserId','scope1','scope2','groupId','chunk','doc','strategy','createdAt','updatedAt']);
+
+export const CopilotPromptScalarFieldEnumSchema = z.enum(['id','userId','copilotId','copilotKey','userName','packageName','packageId','templateName','versionName','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -111,6 +123,10 @@ export type PromptRunModesType = `${z.infer<typeof PromptRunModesSchema>}`
 export const MediaTypeSchema = z.enum(['IMAGE','VIDEO']);
 
 export type MediaTypeType = `${z.infer<typeof MediaTypeSchema>}`
+
+export const StatusStateSchema = z.enum(['PRODUCTION','STAGING','SANDBOX']);
+
+export type StatusStateType = `${z.infer<typeof StatusStateSchema>}`
 
 export const EntityTypesSchema = z.enum(['PromptPackage','PromptTemplate','PromptVersion']);
 
@@ -190,6 +206,7 @@ export const PromptPackageSchema = z.object({
   description: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+  forkedId: z.string().nullable(),
 })
 
 export type PromptPackage = z.infer<typeof PromptPackageSchema>
@@ -239,6 +256,7 @@ export const PromptVersionSchema = z.object({
   outCost: z.number().nullable(),
   promptPackageId: z.string(),
   promptTemplateId: z.string(),
+  variables: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -303,6 +321,7 @@ export const PromptLogSchema = z.object({
   promptPackageId: z.string(),
   promptTemplateId: z.string(),
   promptVersionId: z.string(),
+  promptVariables: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -357,3 +376,114 @@ export const BlogSchema = z.object({
 })
 
 export type Blog = z.infer<typeof BlogSchema>
+
+/////////////////////////////////////////
+// API KEY SCHEMA
+/////////////////////////////////////////
+
+export const ApiKeySchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string().nullable(),
+  name: z.string(),
+  apiKey: z.string(),
+  lastUsedAt: z.coerce.date().nullable(),
+  isActive: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type ApiKey = z.infer<typeof ApiKeySchema>
+
+/////////////////////////////////////////
+// COPILOT SCHEMA
+/////////////////////////////////////////
+
+export const CopilotSchema = z.object({
+  status: StatusStateSchema,
+  id: z.string().uuid(),
+  name: z.string(),
+  description: z.string().nullable(),
+  copilotType: z.string(),
+  settings: InputJsonValue,
+  userId: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Copilot = z.infer<typeof CopilotSchema>
+
+/////////////////////////////////////////
+// CHAT SCHEMA
+/////////////////////////////////////////
+
+export const ChatSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string(),
+  messageCount: z.number().int(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Chat = z.infer<typeof ChatSchema>
+
+/////////////////////////////////////////
+// MESSAGE SCHEMA
+/////////////////////////////////////////
+
+export const MessageSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string(),
+  logId: z.string().nullable(),
+  content: z.string(),
+  role: z.string(),
+  chatId: z.string(),
+  createdAt: z.coerce.date(),
+  metadata: InputJsonValue,
+  updatedAt: z.coerce.date(),
+})
+
+export type Message = z.infer<typeof MessageSchema>
+
+/////////////////////////////////////////
+// EMBEDDING SCHEMA
+/////////////////////////////////////////
+
+export const EmbeddingSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  copilotId: z.string(),
+  clientUserId: z.string(),
+  scope1: z.string(),
+  scope2: z.string().nullable(),
+  groupId: z.string().nullable(),
+  chunk: z.string(),
+  doc: z.string(),
+  strategy: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Embedding = z.infer<typeof EmbeddingSchema>
+
+/////////////////////////////////////////
+// COPILOT PROMPT SCHEMA
+/////////////////////////////////////////
+
+export const CopilotPromptSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string(),
+  copilotKey: z.string(),
+  userName: z.string(),
+  packageName: z.string(),
+  packageId: z.string(),
+  templateName: z.string(),
+  versionName: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type CopilotPrompt = z.infer<typeof CopilotPromptSchema>

@@ -11,6 +11,8 @@ import {
 } from "~/validators/llm_respose";
 import { GPTResponseType } from "~/validators/openaiResponse";
 import { errorCodes } from "./error_handling";
+import { Prompt, PromptDataType } from "~/validators/prompt_version";
+import { MessageSchema, MessagesSchema } from "~/validators/service";
 class XylemVendor extends BaseVendor {
   private provider: string;
   private model: string;
@@ -54,8 +56,8 @@ class XylemVendor extends BaseVendor {
       model: response.model,
       choices: [
         {
-          index: 0,
-          text: response.choices["0"]?.message.content,
+          message: response.choices["0"]?.message,
+          // text: response.choices["0"]?.message.content,
           logprobs: null,
           finish_reason: "stop",
         },
@@ -65,18 +67,22 @@ class XylemVendor extends BaseVendor {
     };
     return newResponse;
   }
-  protected parsePromptChat(prompt: string) {
-    return JSON.parse(prompt).map(
-      (item: { id: string; role: string; content: string }) => {
-        return {
-          role: item.role,
-          content: item.content,
-        };
-      },
-    );
+  protected parsePromptChat(prompt: PromptDataType): MessagesSchema {
+    // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    // console.log(prompt);
+    // console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    return prompt.map((item: { id: string; role: string; content: string }) => {
+      return {
+        role: item.role,
+        content: item.content,
+      } as MessageSchema;
+    });
   }
 
-  protected createRequestOptions(prompt: string): RequestInit {
+  protected createRequestOptions(
+    prompt: Prompt,
+    messages: MessagesSchema,
+  ): RequestInit {
     let requestBody;
 
     if (this.provider === "WizardCoder") {
@@ -85,9 +91,13 @@ class XylemVendor extends BaseVendor {
         prompt: prompt,
       };
     } else {
+      const promptMessages = [
+        ...this.parsePromptChat(prompt as PromptDataType),
+      ];
+      const allMessages = promptMessages.concat(messages);
       requestBody = {
         model: `${this.model}`,
-        messages: [...this.parsePromptChat(prompt)],
+        messages: allMessages.filter((item) => item != null),
       };
     }
 

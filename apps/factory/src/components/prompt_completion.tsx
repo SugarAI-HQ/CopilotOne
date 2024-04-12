@@ -7,10 +7,16 @@ import {
 import OutputTextAnimation from "./output_text_animation";
 import { Box } from "@mui/material";
 import { LogSchema } from "~/validators/prompt_log";
-import { LlmResponse, TextResponseV1 } from "~/validators/llm_respose";
+import {
+  LlmResponse,
+  TextResponseV1,
+  TextResponseV2,
+  TextResponseVersion,
+} from "~/validators/llm_respose";
 import Image from "next/image";
 import { hasImageModels } from "~/utils/template";
 import { getAppUrl } from "~/utils/log";
+import PromptViewResponse from "./prompt_view_response";
 
 interface PromptCompletionProps {
   pl: LogSchema;
@@ -26,6 +32,8 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
   cube,
 }) => {
   let lr = pl?.llmResponse as LlmResponse;
+  const lrCompletion = lr.data as TextResponseVersion;
+
   if (!hasImageModels(pl?.llmModelType as ModelTypeType)) {
     return (
       <>
@@ -47,9 +55,13 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
           >
             {pl.completion_tokens ? (
               <>
-                {pl.completion
-                  ? pl.completion
-                  : (lr.data as TextResponseV1).completion}
+                {pl.completion ? (
+                  pl.completion
+                ) : (
+                  <PromptViewResponse
+                    lrResponseData={lr.data as TextResponseVersion}
+                  />
+                )}
                 <p>tokens: {pl.completion_tokens}</p>
               </>
             ) : (
@@ -61,17 +73,23 @@ const PromptCompletion: React.FC<PromptCompletionProps> = ({
                       wordWrap: "break-word",
                     }}
                   >
-                    {pl.completion
-                      ? pl.completion
-                      : (lr.data as TextResponseV1).completion}
+                    {pl.completion ? (
+                      pl.completion
+                    ) : (
+                      <PromptViewResponse
+                        lrResponseData={lr.data as TextResponseVersion}
+                      />
+                    )}
                   </code>
                 </pre>
               </Typography>
             )}
           </Box>
+        ) : lrCompletion instanceof Array ? (
+          <PromptViewResponse lrResponseData={lr.data as TextResponseVersion} />
         ) : (
           <OutputTextAnimation
-            output={(lr.data as TextResponseV1).completion as string}
+            output={(lr.data as TextResponseVersion).completion}
             modelType={pl.llmModelType}
           />
         )}

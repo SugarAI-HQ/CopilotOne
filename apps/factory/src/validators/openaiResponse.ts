@@ -1,10 +1,9 @@
 import { z } from "zod";
 
 const choices = z.object({
-  text: z.string(),
-  index: z.number(),
+  message: z.any(),
   logprobs: z.null(),
-  finish_reason: z.string(),
+  finish_reason: z.enum(["stop", "tool_calls"]),
 });
 
 type ChoicesType = z.infer<typeof choices>;

@@ -37,13 +37,15 @@ import {
   ImageDownloadInput,
   imageDownloadOutput,
   createVersionInput,
+  VersionOutput,
 } from "~/validators/prompt_version";
 import { JsonArray, JsonObject } from "@prisma/client/runtime/library";
 import { ModelTypeSchema } from "~/generated/prisma-client-zod.ts";
 import { Visibility } from "@mui/icons-material";
 import { JSONArray } from "superjson/dist/types";
 import { getTemplate } from "~/services/providers";
-import { setDefaultTemplate } from "~/utils/template";
+import { setPromptTemplate } from "~/utils/template";
+import { TemplateVariablesType } from "~/validators/prompt_log";
 
 export const promptRouter = createTRPCRouter({
   getPackages: protectedProcedure
@@ -249,8 +251,8 @@ export const promptRouter = createTRPCRouter({
       // let template = modelType
       //   ? `Tell me a joke on topic "{@topic}"`
       //   : `A photo of an astronaut riding a horse on {@OBJECT}`;
-
-      let template = setDefaultTemplate(input.moduleType);
+      let defaultPrompt = setPromptTemplate(input.moduleType);
+      let template = defaultPrompt.template;
 
       // points -> take modelType, model, provider from input
       const provider = input.provider;
@@ -269,6 +271,7 @@ export const promptRouter = createTRPCRouter({
         llmProvider: provider,
         llmModel: model,
         llmConfig: {},
+        variables: defaultPrompt.variables,
         // forkedFromId: null
       };
 
@@ -285,6 +288,8 @@ export const promptRouter = createTRPCRouter({
           defaultTemplate.llmProvider = provider || forkedFrom.llmProvider;
           defaultTemplate.llmModel = model || forkedFrom.llmModel;
           defaultTemplate.llmConfig = forkedFrom.llmConfig as JsonObject;
+          defaultTemplate.variables =
+            forkedFrom.variables as TemplateVariablesType;
         }
       }
 
@@ -303,7 +308,7 @@ export const promptRouter = createTRPCRouter({
             changelog: "",
           },
         });
-        return pv;
+        return pv as VersionOutput;
       } catch (error: any) {
         console.log(`Error in creating version -------------- ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("version")) {
@@ -336,6 +341,7 @@ export const promptRouter = createTRPCRouter({
             llmProvider: input.llmProvider,
             llmModel: input.llmModel,
             llmConfig: input.llmConfig,
+            variables: input.variables,
           },
         });
       }
