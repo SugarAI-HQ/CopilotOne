@@ -273,7 +273,7 @@ const fetchUserIdFromApiKey = async (ctx: CreateContextOptions) => {
   }
 };
 
-export const promptMiddleware = experimental_standaloneMiddleware<{
+export const promptMiddleware: any = experimental_standaloneMiddleware<{
   // ctx: { session: NullableSession; prisma: PrismaClient }; // defaults to 'object' if not defined
   ctx: CreateContextOptions;
   input: Partial<GenerateInput>;

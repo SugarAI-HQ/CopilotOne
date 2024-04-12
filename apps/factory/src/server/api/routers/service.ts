@@ -112,7 +112,7 @@ export const serviceRouter = createTRPCRouter({
           }
 
           if (matches.length > 0) {
-            embeddingVariables["$VIEW_CONTEXT"] = matches[0]?.doc;
+            embeddingVariables["$VIEW_CONTEXT" as any] = matches[0]?.doc;
           }
         }
 

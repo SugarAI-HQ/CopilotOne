@@ -1,9 +1,10 @@
 import { prisma } from "~/server/db";
 import OpenAI from "openai";
 import { APIPromise } from "openai/core";
+import { env } from "~/env.mjs";
 
 const openai = new OpenAI({
-  apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
+  apiKey: env.OPENAI_API_KEY, // This is the default and can be omitted
 });
 
 // // Function to create embeddings using pgvector
@@ -161,27 +162,27 @@ function extractText(doc: any): string {
 }
 
 // Function to get matching objects
-function getMatchingObjects(
-  chatId: string,
-  screenId: string,
-  query: any,
-  scoreThreshold: number = 0.77,
-): string[] {
-  const results: any[] = findClosestMatch(chatId, screenId, query);
-  const shortlisted: string[] = [];
+// function getMatchingObjects(
+//   chatId: string,
+//   screenId: string,
+//   query: any,
+//   scoreThreshold: number = 0.77,
+// ): string[] {
+//   const results: any[] = findClosestMatch(chatId, screenId, query);
+//   const shortlisted: string[] = [];
 
-  for (const [doc, score] of results) {
-    if (score > scoreThreshold) {
-      shortlisted.push(extractText(doc));
-    }
-  }
+//   for (const [doc, score] of results) {
+//     if (score > scoreThreshold) {
+//       shortlisted.push(extractText(doc));
+//     }
+//   }
 
-  if (shortlisted.length === 0 && results.length > 0) {
-    shortlisted.push(extractText(results[0]));
-  }
+//   if (shortlisted.length === 0 && results.length > 0) {
+//     shortlisted.push(extractText(results[0]));
+//   }
 
-  return shortlisted;
-}
+//   return shortlisted;
+// }
 
 export async function createEmbeddings(text: string[]) {
   const embeddings = await openai.embeddings.create({
