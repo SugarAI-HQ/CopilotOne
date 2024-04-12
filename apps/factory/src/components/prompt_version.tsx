@@ -724,7 +724,7 @@ function PromptVersion({
             color="success"
             variant="outlined"
             onClick={handleTest}
-            // disabled={true}
+            disabled={true}
             sx={{
               width: "9rem",
             }}
