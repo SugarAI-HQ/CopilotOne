@@ -1,6 +1,7 @@
 import { z } from "zod";
 import {
   InputJsonValue,
+  PromptPackageSchema,
   StatusStateSchema,
 } from "~/generated/prisma-client-zod.ts";
 import { RESERVED_NAMES } from "./reserved_names";
@@ -64,6 +65,7 @@ export const copilotCloneInput = z
   .object({
     promptPackagePath: z.string(),
     copilotId: z.string(),
+    autoGenerate: z.boolean().optional(),
   })
   .required();
 
@@ -73,7 +75,7 @@ export const getCopilotPromptInput = z
   })
   .required();
 
-export const copilotPromptOutput = z.object({
+export const copilotOutputSchema = z.object({
   id: z.string(),
   userId: z.string(),
   copilotId: z.string(),
@@ -87,7 +89,13 @@ export const copilotPromptOutput = z.object({
   updatedAt: z.coerce.date(),
 });
 
-export const copilotPromptListOutput = z.array(copilotPromptOutput);
+export const copilotPromptOutput = copilotOutputSchema;
+
+export const copilotPromptListOutput = z.array(
+  copilotPromptOutput.extend({
+    promptPackage: PromptPackageSchema.or(z.null()).optional(),
+  }),
+);
 
 export type CreateCopilotInput = z.infer<typeof createCopilotInput>;
 export type GetCopilotInput = z.infer<typeof getCopilotInput>;

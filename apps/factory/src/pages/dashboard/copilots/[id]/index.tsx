@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -28,8 +29,13 @@ import {
   VoiceToSkillComponent,
   ChatContainer,
 } from "@sugar-ai/abcd";
-import { CopilotOutput, CopilotPromptOutput } from "~/validators/copilot";
+import {
+  CopilotOutput,
+  CopilotPromptListOutput,
+  CopilotPromptOutput,
+} from "~/validators/copilot";
 import { KeyOutput } from "~/validators/api_key";
+import { clonePrompt } from "..";
 
 const CopilotShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -44,9 +50,12 @@ const CopilotShow: NextPageWithLayout = () => {
     copilotId: copilot?.id as string,
   });
 
-  const { data: copilotPrompts } = api.copilot.getCopilotPrompts.useQuery({
-    copilotId: copilotId,
-  });
+  const { data: copilotPrompts, refetch: refetchPrompts } =
+    api.copilot.getCopilotPrompts.useQuery({
+      copilotId: copilotId,
+    });
+
+  const clonePromptMutation = api.copilot.clonePackage.useMutation();
 
   const copilotConfig: CopilotConfigType = getCopilotConfig(
     copilot as CopilotOutput,
@@ -68,10 +77,12 @@ const CopilotShow: NextPageWithLayout = () => {
       <Box className="w-full">
         <CopilotTabs
           copilotId={copilotId}
-          copilot={copilot}
-          copilotPrompt={copilotPrompt}
-          copilotPrompts={copilotPrompts}
-          copilotKey={copilotKey}
+          copilot={copilot as CopilotOutput}
+          copilotPrompt={copilotPrompt as CopilotPromptOutput}
+          copilotPrompts={copilotPrompts as CopilotPromptListOutput}
+          copilotKey={copilotKey as KeyOutput}
+          clonePromptMutation={clonePromptMutation}
+          refetchPrompts={refetchPrompts}
         ></CopilotTabs>
       </Box>
     </>
@@ -103,12 +114,16 @@ function CopilotTabs({
   copilot,
   copilotKey,
   copilotPrompt,
+  clonePromptMutation,
+  refetchPrompts,
 }: {
   copilotId: string;
-  copilotPrompts: any[];
+  copilotPrompts: CopilotPromptListOutput;
   copilot: CopilotOutput;
   copilotKey: KeyOutput;
   copilotPrompt: CopilotPromptOutput;
+  clonePromptMutation: any;
+  refetchPrompts: () => void;
 }) {
   const [value, setValue] = useState(0);
 
@@ -233,7 +248,10 @@ function CopilotTabs({
         <Paper sx={{ backgroundColor: "var(--sugarhub-tab-color)" }}>
           <Box sx={{ p: 2, display: "flex", flexDirection: "column" }}>
             <CopilotPrompts
-              copilotPrompts={copilotPrompts as CopilotPromptOutput}
+              copilotPrompts={copilotPrompts}
+              copilot={copilot}
+              clonePromptMutation={clonePromptMutation}
+              refetchPrompts={refetchPrompts}
             ></CopilotPrompts>
           </Box>
         </Paper>
@@ -307,12 +325,30 @@ function getCopilotConfig(
 
 const CopilotPrompts = ({
   copilotPrompts,
+  copilot,
+  clonePromptMutation,
+  refetchPrompts,
 }: {
-  copilotPrompts: CopilotPromptOutput;
+  copilotPrompts: CopilotPromptListOutput;
+  copilot: CopilotOutput;
+  clonePromptMutation: any;
+  refetchPrompts: () => void;
 }) => {
+  const router = useRouter();
+
+  const regeneratePromptConfig = () => {
+    const prompts = clonePrompt(
+      clonePromptMutation,
+      env.NEXT_PUBLIC_PROMPT_PACKAGES as string,
+      copilot,
+      true,
+      refetchPrompts,
+    );
+  };
+
   return (
     <div>
-      {copilotPrompts && copilotPrompts.length > 0 && (
+      {copilotPrompts && copilotPrompts.length > 0 ? (
         <Grid container spacing={1} sx={{ paddingTop: 2 }}>
           {copilotPrompts.map((copilotPrompt, index) => (
             <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
@@ -326,7 +362,7 @@ const CopilotPrompts = ({
                       <Chip
                         sx={{ mr: 2 }}
                         size="small"
-                        label={copilotPrompt.promptPackage?.visibility}
+                        label={copilotPrompt?.promptPackage?.visibility}
                         // variant="conti"
                       />
                     }
@@ -350,6 +386,17 @@ const CopilotPrompts = ({
             </Grid>
           ))}
         </Grid>
+      ) : (
+        <>
+          <Button
+            size="small"
+            onClick={regeneratePromptConfig}
+            variant="outlined"
+            color="primary"
+          >
+            Regenerate Prompt
+          </Button>
+        </>
       )}
     </div>
   );

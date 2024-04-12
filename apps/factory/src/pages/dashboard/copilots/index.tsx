@@ -11,6 +11,7 @@ import { CopilotListOutput, CopilotOutput } from "~/validators/copilot";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { generateApiKey } from "~/components/key_managements/CreateKeyDialog";
+import { env } from "~/env.mjs";
 
 const CopilotHome = () => {
   const [status, setStatus] = useState("");
@@ -51,23 +52,6 @@ const CopilotHome = () => {
 
   const clonePromptMutation = api.copilot.clonePackage.useMutation();
 
-  const clonePrompt = (promptPackagePath: string, copilot: CopilotOutput) => {
-    clonePromptMutation.mutate(
-      {
-        promptPackagePath: promptPackagePath as string,
-        copilotId: copilot?.id as string,
-      },
-      {
-        onSuccess(response: any) {
-          console.log(response);
-        },
-        onError(error) {
-          console.error(error);
-        },
-      },
-    );
-  };
-
   const mutation = api.copilot.createCopilot.useMutation({
     onError: (error) => {
       const errorData = JSON.parse(error.message);
@@ -76,7 +60,11 @@ const CopilotHome = () => {
     onSuccess: (createdCopilot) => {
       if (createdCopilot !== null) {
         createApiKey(createdCopilot);
-        clonePrompt("pulkit.ag02/recipies/recipie/0.0.1", createdCopilot);
+        clonePrompt(
+          clonePromptMutation,
+          `${env.NEXT_PUBLIC_PROMPT_PACKAGE}`,
+          createdCopilot,
+        );
         setCustomError({});
         handleCopilotCreationSuccess(createdCopilot);
       } else {
@@ -175,6 +163,35 @@ const Copilots = ({
         </Grid>
       ))}
     </Grid>
+  );
+};
+
+export const clonePrompt = (
+  clonePromptMutation: any,
+  promptPackagePath: string,
+  copilot: CopilotOutput,
+  autoGenerate?: boolean,
+  refetchPrompts?: () => void,
+) => {
+  clonePromptMutation.mutate(
+    {
+      promptPackagePath: promptPackagePath as string,
+      copilotId: copilot?.id as string,
+      autoGenerate: autoGenerate,
+    },
+    {
+      onSuccess(response: any) {
+        console.log(response);
+        if (autoGenerate && refetchPrompts) {
+          console.log("hello");
+          refetchPrompts();
+        }
+        return response;
+      },
+      onError(error: any) {
+        console.error(error);
+      },
+    },
   );
 };
 
