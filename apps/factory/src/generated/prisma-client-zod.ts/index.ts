@@ -56,7 +56,7 @@ export const SessionScalarFieldEnumSchema = z.enum(['id','sessionToken','userId'
 
 export const PromptVariablesScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','promptTemplateId','promptVersionId','name','majorVersion','minorVersion','variables','createdAt','updatedAt']);
 
-export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt']);
+export const PromptPackageScalarFieldEnumSchema = z.enum(['id','userId','name','description','visibility','createdAt','updatedAt','forkedId']);
 
 export const PromptTemplateScalarFieldEnumSchema = z.enum(['id','userId','promptPackageId','name','description','previewVersionId','releaseVersionId','createdAt','updatedAt','modelType','runMode']);
 
@@ -83,6 +83,8 @@ export const ChatScalarFieldEnumSchema = z.enum(['id','userId','copilotId','mess
 export const MessageScalarFieldEnumSchema = z.enum(['id','userId','copilotId','logId','content','role','chatId','createdAt','metadata','updatedAt']);
 
 export const EmbeddingScalarFieldEnumSchema = z.enum(['id','userId','copilotId','clientUserId','scope1','scope2','groupId','chunk','doc','strategy','createdAt','updatedAt']);
+
+export const CopilotPromptScalarFieldEnumSchema = z.enum(['id','userId','copilotId','copilotKey','userName','packageName','packageId','templateName','versionName','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -204,6 +206,7 @@ export const PromptPackageSchema = z.object({
   description: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+  forkedId: z.string().nullable(),
 })
 
 export type PromptPackage = z.infer<typeof PromptPackageSchema>
@@ -464,3 +467,23 @@ export const EmbeddingSchema = z.object({
 })
 
 export type Embedding = z.infer<typeof EmbeddingSchema>
+
+/////////////////////////////////////////
+// COPILOT PROMPT SCHEMA
+/////////////////////////////////////////
+
+export const CopilotPromptSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  copilotId: z.string(),
+  copilotKey: z.string(),
+  userName: z.string(),
+  packageName: z.string(),
+  packageId: z.string(),
+  templateName: z.string(),
+  versionName: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type CopilotPrompt = z.infer<typeof CopilotPromptSchema>

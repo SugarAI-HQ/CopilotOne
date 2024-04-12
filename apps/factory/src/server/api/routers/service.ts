@@ -335,7 +335,8 @@ export async function findorCreateChatAndLoadHistory(
       content: message.content,
       role: message.role,
     }));
-    input.messages = [...transformedMessages, input.chat?.message || {}];
+    const newMessage = input.chat?.message ? [input.chat?.message] : [];
+    input.messages = transformedMessages.concat(newMessage);
   }
 
   return chatId as string;

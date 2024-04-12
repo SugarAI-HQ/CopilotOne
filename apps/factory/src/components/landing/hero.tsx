@@ -25,32 +25,54 @@ const Hero = () => {
             Sugarcane <span className="text-[hsl(280,100%,70%)]">AI</span>
           </h1> */}
           <Image src={getLogoImage()} width={600} height={600} alt="Logo" />
-          <p className="p-3 text-center text-2xl font-bold text-white">
-            Build and Launch Your First GenAI Application
-          </p>
+          <h2 className="mb-5 p-3 text-center text-2xl font-bold text-white">
+            Supercharge your Web/Mobile Apps with Siri-like Copilots
+          </h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
+              href="/dashboard/copilots"
+            >
+              <h3 className="text-2xl font-bold">Build First Copilot →</h3>
+              <div className="text-lg">
+                Build, Version, Train and Ship Prompt Packages over APIs.
+              </div>
+            </Link>
+
+            <Link
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
+              href="https://youtu.be/t2e0CThWZUE"
+              target="_blank"
+            >
+              <h3 className="text-2xl font-bold">Copilot Demo →</h3>
+              <div className="text-lg">
+                Learn what kind of Experiences you can build.
+              </div>
+            </Link>
+
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://sugarai.page.link/whatsapp"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Promptathon 1.0 →</h3>
-            </Link>
+            </Link> */}
 
-            <Link
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               // href="https://youtu.be/5oeRkHOqW28"
               href="/university"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">View Demo →</h3>
-            </Link>
+            </Link> */}
+
             <Link
               href={sessionData ? "/dashboard/prompts" : "/api/auth/signin"}
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
             >
-              <h3 className="text-2xl font-bold">Sugar Factory →</h3>
+              <h3 className="text-2xl font-bold">Prompts Packages →</h3>
               <div className="text-lg">
                 Build, Version, Train and Ship Prompt Packages over APIs.
               </div>

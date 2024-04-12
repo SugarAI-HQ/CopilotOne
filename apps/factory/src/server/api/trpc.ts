@@ -224,7 +224,7 @@ function checkUserAuth(ctx: CreateContextOptions) {
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
-  checkUserAuth(ctx);
+  ctx.jwt && checkUserAuth(ctx);
   const apiKey = await fetchUserIdFromApiKey(ctx);
   if (apiKey?.userId as string) {
     ctx.jwt = { id: apiKey?.userId as string };
@@ -316,8 +316,9 @@ export const promptMiddleware = experimental_standaloneMiddleware<{
         ` <<<>>> username : ${opts.input.username} userId : ${opts.input.userId}`,
       );
       console.log(
-        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${opts.ctx?.jwt
-          ?.id},  ${opts.input.userId == opts.ctx?.jwt?.id}`,
+        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${
+          opts.ctx?.jwt?.id
+        },  ${opts.input.userId == opts.ctx?.jwt?.id}`,
       );
     }
   }

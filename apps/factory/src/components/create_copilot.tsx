@@ -103,11 +103,7 @@ export const CreateCopilot: React.FC<CreateCopilotProps> = ({
               control={control}
               label="Copilot Name"
               error={!!errors.name}
-              helperText={
-                errors.name?.message
-                  ? errors.name?.message
-                  : "(allowed: a-z, 0-9, - )"
-              }
+              helperText={errors.name?.message ? errors.name?.message : ""}
               readonly={false}
             />
 
@@ -129,10 +125,13 @@ export const CreateCopilot: React.FC<CreateCopilotProps> = ({
               helperText={errors.copilotType?.message}
               readonly={false}
               // defaultValue={""}
-              enumValues={["Text2Text", "Text2Voice"] as any}
+              enumValues={
+                ["Web-React", "Mobile-ReactNative - COMING SOON"] as any
+              }
               onChange={(e: any) => {
                 setValue("copilotType", e.target.value);
               }}
+              disabledOptions={["1"]}
               defaultValue={watch("copilotType")}
             />
           </Stack>
