@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Navigate to the directory containing the files
+# cd ../frontend/src
+
+
+rename_files() {
+    # Loop through files ending in "-e" in the current directory
+    for file in "$1"/*-e; do
+        if [ -f "$file" ]; then
+            # Remove the "-e" suffix
+            new_name="${file%-e}"
+            # Rename the file
+            mv "$file" "$new_name"
+        fi
+    done
+
+    # Recursively call the function for subdirectories
+    for dir in "$1"/*/; do
+        if [ -d "$dir" ]; then
+            rename_files "$dir"
+        fi
+    done
+}

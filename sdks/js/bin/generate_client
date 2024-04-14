@@ -1,0 +1,71 @@
+    #!/bin/bash
+
+
+OPENAI_JSON_URL=http://localhost:3000/api/openapi.json
+FERN_DIR=fern/openapi
+API_CLIENT_DIR=api-client
+
+# Function to fetch JSON data from API
+fetch_json_data() {
+
+    # Fetch JSON data using curl and store it in a variable
+    # echo "fetching api contract from  $OPENAI_JSON_URL"
+    local json_data=$(curl -s "$OPENAI_JSON_URL")
+
+    # Check if JSON data was fetched successfully
+    if [ -z "$json_data" ]; then
+        echo "Failed to fetch JSON data from $api_url"
+        exit 1
+    fi
+
+    # Return the fetched JSON data
+    echo "$json_data"
+}
+
+# Main script
+main() {
+    # Fetch JSON data
+    # echo "fetching api contract from  $OPENAI_JSON_URL"
+    local json_data=$(fetch_json_data)
+    local modified_json_data=$json_data
+
+    # Convert JSON to YAML using python3-yaml
+    echo "converting json to yaml file for fern"
+    echo $modified_json_data | npx json2yaml > $FERN_DIR/data.yaml
+
+    # Generate client
+    echo "Geneating client code using fern..."
+    npx fern generate
+
+    # prettify it
+    echo "Pretiify the code"
+    npx prettier --write "src/$API_CLIENT_DIR/**/*.ts"
+
+    # Apply old typescipt fixes
+    git checkout src/$API_CLIENT_DIR/core
+
+
+
+    # migrate package url-join => url-join-ts
+
+    # Define the search and replace strings
+    search_string='import urlJoin from "url-join";'
+    replace_string='import { urlJoin } from "url-join-ts";'
+
+    # Use sed to perform the search and replace recursively
+    # -i option edits files in place
+    # -r option enables extended regular expressions (to handle parentheses)
+    # -s option suppresses error messages about nonexistent or unreadable files
+    RESOURCES_DIR=src/${API_CLIENT_DIR}/api/resources
+    sed -i -r "s@${search_string}@${replace_string}@g" $(grep -rl "${search_string}" "$RESOURCES_DIR")
+    git clean $RESOURCES_DIR -i
+
+    # find "src/${API_CLIENT_DIR}/api/resources/" -type f -name "*.ts" | while IFS= read -r file; do
+    #     # Use sed to perform the search and replace
+    #     sed -i -r "s@${search_string}@${replace_string}@g" "${file}"
+    # done
+
+
+
+# Run the main script
+main

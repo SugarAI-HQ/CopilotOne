@@ -1,5 +1,5 @@
 {
-  "name": "sugarcane-ai",
+  "name": "@sugar",
   "version": "0.0.1",
   "description": "",
   "engines": {
@@ -19,5 +19,12 @@
   "author": "Ankur Agarwal <ankur@sugarcaneai.dev>",
   "dependencies": {
     "husky": "^8.0.3"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "react": "18"
+      }
+    }
   }
 }

@@ -22,13 +22,13 @@ import CopyToClipboardButton from "~/components/copy_button";
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import { env } from "~/env.mjs";
-// import {
-//   useCopilot,
-//   CopilotConfigType,
-//   CopilotProvider,
-//   VoiceToSkillComponent,
-//   ChatContainer,
-// } from "@sugar-ai/abcd";
+import {
+  useCopilot,
+  CopilotConfigType,
+  CopilotProvider,
+  VoiceToSkillComponent,
+  ChatContainer,
+} from "@sugar-ai/copilot-one-js";
 import {
   CopilotOutput,
   CopilotPromptListOutput,
@@ -57,22 +57,24 @@ const CopilotShow: NextPageWithLayout = () => {
 
   const clonePromptMutation = api.copilot.clonePackage.useMutation();
 
-  // const copilotConfig: CopilotConfigType = getCopilotConfig(
-  //   copilot as CopilotOutput,
-  //   copilotKey as KeyOutput,
-  //   copilotPrompt as CopilotPromptOutput,
-  // );
+  const copilotConfig: CopilotConfigType = getCopilotConfig(
+    copilot as CopilotOutput,
+    copilotKey as KeyOutput,
+    copilotPrompt as CopilotPromptOutput,
+  );
 
   return (
     <>
-      {/* <CopilotProvider config={copilotConfig}>
-        <VoiceToSkillComponent
-          id={2}
-          position={"bottom-right"}
-          promptVariables={{ $ROLE: "Boss" }}
-          messageStyle={{ color: "black" }}
-        />
-      </CopilotProvider> */}
+      {
+        <CopilotProvider config={copilotConfig}>
+          <VoiceToSkillComponent
+            id={2}
+            position={"bottom-right"}
+            promptVariables={{ $ROLE: "Boss" }}
+            messageStyle={{ color: "black" }}
+          />
+        </CopilotProvider>
+      }
 
       <Box className="w-full">
         <CopilotTabs
@@ -277,51 +279,51 @@ function TabPanel(props: any) {
   );
 }
 
-// function getCopilotConfig(
-//   copilot: CopilotOutput,
-//   copilotKey: KeyOutput,
-//   copilotPrompt: CopilotPromptOutput,
-// ): CopilotConfigType {
-//   const copilotConfig: CopilotConfigType = {
-//     copilotId: copilot?.id as string,
-//     server: {
-//       endpoint: "/api",
-//       token: copilotKey?.apiKey as string,
-//     },
+function getCopilotConfig(
+  copilot: CopilotOutput,
+  copilotKey: KeyOutput,
+  copilotPrompt: CopilotPromptOutput,
+): CopilotConfigType {
+  const copilotConfig: CopilotConfigType = {
+    copilotId: copilot?.id as string,
+    server: {
+      endpoint: "/api",
+      token: copilotKey?.apiKey as string,
+    },
 
-//     ai: {
-//       defaultPromptTemmplate: `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`,
-//       defaultPromptVariables: {
-//         $ROLE: "Boss",
-//       },
-//       successResponse: "Task Done",
-//       failureResponse: "I am not able to do this",
-//     },
+    ai: {
+      defaultPromptTemmplate: `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`,
+      defaultPromptVariables: {
+        $ROLE: "Boss",
+      },
+      successResponse: "Task Done",
+      failureResponse: "I am not able to do this",
+    },
 
-//     style: {
-//       container: {
-//         position: "bottom-right",
-//         margin: "",
-//       },
-//       theme: {
-//         primaryColor: "",
-//         secondaryColor: "",
-//         fontFamily: "",
-//         fontSize: "",
-//         textColor: "",
-//       },
-//       button: {
-//         primaryColor: "",
-//         secondaryColor: "",
-//         width: "",
-//         height: "",
-//         iconSize: "",
-//       },
-//     },
-//   };
+    style: {
+      container: {
+        position: "bottom-right",
+        margin: "",
+      },
+      theme: {
+        primaryColor: "",
+        secondaryColor: "",
+        fontFamily: "",
+        fontSize: "",
+        textColor: "",
+      },
+      button: {
+        primaryColor: "",
+        secondaryColor: "",
+        width: "",
+        height: "",
+        iconSize: "",
+      },
+    },
+  };
 
-//   return copilotConfig;
-// }
+  return copilotConfig;
+}
 
 const CopilotPrompts = ({
   copilotPrompts,
