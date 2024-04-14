@@ -26,7 +26,7 @@
     "build:clean": "rm -rf ./dist",
     "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
     "build": "npm run build:clean && node build.mjs",
-    "prepublishOnly": "npm run build:prod && npm test && npm run lint",
+    "prepublishOnly": "npm run build && npm test && npm run lint",
     "preversion": "npm test && npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"

@@ -1,4 +1,4 @@
-# SugarAI SDK for Web/React Apps
+# Copilot One Web SDK
 
 Supercharge your existing Web/React App with a Siri-like AI Assistant.
 
