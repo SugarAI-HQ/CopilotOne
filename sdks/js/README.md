@@ -31,7 +31,7 @@ You can install the `@sugar-ai/copilot-one-js` package via npm in your react pro
 
 ### Installation
 ````bash
-npm install @sugar-ai/copilot-one-js
+npm install @sugar-ai/copilot-one-js@latest
 ````
 
 ### Add to your React App
