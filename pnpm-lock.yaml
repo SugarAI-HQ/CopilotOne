@@ -8,18 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@sentry/nextjs':
-        specifier: ^7.92.0
-        version: 7.92.0(next@13.4.13)(react@18.2.0)(webpack@5.89.0)
       husky:
         specifier: ^8.0.3
         version: 8.0.3
-      next:
-        specifier: 13.4.13
-        version: 13.4.13(@babel/core@7.23.0)(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
 
   apps/factory:
     dependencies:
@@ -51,7 +42,7 @@ importers:
         specifier: ^5.3.1
         version: 5.4.2(prisma@5.4.2)
       '@sentry/nextjs':
-        specifier: '*'
+        specifier: ^7.92.0
         version: 7.92.0(next@13.4.13)(react@18.2.0)(webpack@5.89.0)
       '@sugar-ai/abcd':
         specifier: 0.0.21
@@ -110,6 +101,9 @@ importers:
       openai:
         specifier: ^4.24.7
         version: 4.24.7
+      prisma:
+        specifier: ^5.3.1
+        version: 5.4.2
       prismjs:
         specifier: ^1.29.0
         version: 1.29.0
@@ -282,9 +276,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.5.1
         version: 0.5.5(prettier@3.0.3)
-      prisma:
-        specifier: ^5.3.1
-        version: 5.4.2
       storybook:
         specifier: ^7.4.0
         version: 7.4.6
@@ -2661,7 +2652,7 @@ packages:
       '@babel/runtime': 7.23.1
       '@mui/base': 5.0.0-beta.19(@types/react@18.2.28)(react-dom@18.2.0)(react@18.2.0)
       '@mui/core-downloads-tracker': 5.14.13
-      '@mui/system': 5.14.13(@types/react@18.2.28)(react@18.2.0)
+      '@mui/system': 5.14.13(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.28)(react@18.2.0)
       '@mui/types': 7.2.6(@types/react@18.2.28)
       '@mui/utils': 5.14.13(@types/react@18.2.28)(react@18.2.0)
       '@types/react': 18.2.28
@@ -2745,7 +2736,7 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@mui/styled-engine@5.14.13(react@18.2.0):
+  /@mui/styled-engine@5.14.13(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0):
     resolution: {integrity: sha512-1ff/egFQl26hiwcUtCMKAkp4Sgqpm3qIewmXq+GN27fb44lDIACquehMFBuadOjceOFmbIXbayzbA46ZyqFYzA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2760,6 +2751,8 @@ packages:
     dependencies:
       '@babel/runtime': 7.23.1
       '@emotion/cache': 11.11.0
+      '@emotion/react': 11.11.1(@types/react@18.2.28)(react@18.2.0)
+      '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.28)(react@18.2.0)
       csstype: 3.1.2
       prop-types: 15.8.1
       react: 18.2.0
@@ -2829,35 +2822,7 @@ packages:
       '@emotion/react': 11.11.1(@types/react@18.2.28)(react@18.2.0)
       '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.28)(react@18.2.0)
       '@mui/private-theming': 5.14.13(@types/react@18.2.28)(react@18.2.0)
-      '@mui/styled-engine': 5.14.19(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
-      '@mui/types': 7.2.6(@types/react@18.2.28)
-      '@mui/utils': 5.14.13(@types/react@18.2.28)(react@18.2.0)
-      '@types/react': 18.2.28
-      clsx: 2.0.0
-      csstype: 3.1.2
-      prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
-
-  /@mui/system@5.14.13(@types/react@18.2.28)(react@18.2.0):
-    resolution: {integrity: sha512-+5+Dx50lG4csbx2sGjrKLozXQJeCpJ4dIBZolyFLkZ+XphD1keQWouLUvJkPQ3MSglLLKuD37pp52YjMncZMEQ==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      '@emotion/react': ^11.5.0
-      '@emotion/styled': ^11.3.0
-      '@types/react': ^17.0.0 || ^18.0.0
-      react: ^17.0.0 || ^18.0.0
-    peerDependenciesMeta:
-      '@emotion/react':
-        optional: true
-      '@emotion/styled':
-        optional: true
-      '@types/react':
-        optional: true
-    dependencies:
-      '@babel/runtime': 7.23.1
-      '@mui/private-theming': 5.14.13(@types/react@18.2.28)(react@18.2.0)
-      '@mui/styled-engine': 5.14.13(react@18.2.0)
+      '@mui/styled-engine': 5.14.13(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(react@18.2.0)
       '@mui/types': 7.2.6(@types/react@18.2.28)
       '@mui/utils': 5.14.13(@types/react@18.2.28)(react@18.2.0)
       '@types/react': 18.2.28
@@ -3188,6 +3153,7 @@ packages:
   /@prisma/engines@5.4.2:
     resolution: {integrity: sha512-fqeucJ3LH0e1eyFdT0zRx+oETLancu5+n4lhiYECyEz6H2RDskPJHJYHkVc0LhkU4Uv7fuEnppKU3nVKNzMh8g==}
     requiresBuild: true
+    dev: false
 
   /@prisma/generator-helper@5.4.2:
     resolution: {integrity: sha512-UC2W3ZUs87jbdEOCmsQfCyGeuLA0oosAKgS+0vTCoZWnKUPGvMNxMqNPL08rpXTc1vwUFvl09R76ZVC3Zm7PHw==}
@@ -12783,6 +12749,7 @@ packages:
     requiresBuild: true
     dependencies:
       '@prisma/engines': 5.4.2
+    dev: false
 
   /prismjs@1.27.0:
     resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}

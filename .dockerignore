@@ -3,6 +3,8 @@ Dockerfile
 app/factory/.env
 app/factory/.env.example
 app/factory/.env.production
+app/factory/node_modules
+app/factory/.next
 .dockerignore
 node_modules
 npm-debug.log
