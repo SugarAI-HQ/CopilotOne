@@ -59,7 +59,7 @@ const copilotConfig: CopilotConfigType = {
 }
 ```
 
-In a todo App, Track Live Screen context for current user using `useStateCopilot`
+We are taking a exmple of a todo App. To track User's Current Screen Context using `useStateCopilot`
 
 ```js
 
