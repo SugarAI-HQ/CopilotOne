@@ -229,7 +229,7 @@ export const promptRouter = createTRPCRouter({
         userId: ctx.jwt?.id as string,
         id: input.id,
       };
-      const template = ctx.prisma.promptTemplate.findFirst({
+      const template = await ctx.prisma.promptTemplate.findFirst({
         where: query,
       });
 
