@@ -43,6 +43,7 @@ export type GetPromptInput = z.infer<typeof getPromptInput>;
 const skillParameterSchema = z.object({
   type: z.string(),
   description: z.string(),
+  enum: z.array(z.string()).optional(),
 });
 
 const skillDefinitionSchema = z.object({
