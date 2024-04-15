@@ -111,9 +111,10 @@ export const serviceRouter = createTRPCRouter({
             );
           }
 
-          if (matches.length > 0) {
-            embeddingVariables["$VIEW_CONTEXT" as any] = matches[0]?.doc;
-          }
+          embeddingVariables["$VIEW_CONTEXT" as any] =
+            matches.length > 0 ? matches[0]?.doc : "Empty";
+
+          embeddingVariables["$USER_QUERY" as any] = userQuery;
         }
 
         // 2.2 Build variables
@@ -336,6 +337,10 @@ export async function findorCreateChatAndLoadHistory(
       role: message.role,
     }));
     const newMessage = input.chat?.message ? [input.chat?.message] : [];
+
+    if (input.messages.length > 0) {
+      console.warn("Overrideing messages history sent");
+    }
     input.messages = transformedMessages.concat(newMessage);
   }
 

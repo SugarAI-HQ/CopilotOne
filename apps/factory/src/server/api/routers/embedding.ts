@@ -175,11 +175,6 @@ export const lookupEmbedding = async (
   //   .map((c) => `"${c[0]}" = "${c[1]}"`)
   //   .join(" AND ");
 
-  scope.scope1 = "todos";
-  scope.scope2 = "component";
-
-  const scope1 = "scope1";
-
   // Build the query string
   const matches = await prisma.$queryRaw`
     SELECT "id", "chunk", "doc", (embedding <#> ${userQueryEmbed}::vector) * -1 as similarity

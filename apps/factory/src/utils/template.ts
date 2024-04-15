@@ -137,8 +137,6 @@ function replacePromptVariables(
     //   }
     // }
 
-    // debugger;
-
     return variables[sign + key] || variables[key] || match;
   });
 }

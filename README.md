@@ -17,7 +17,7 @@ Supercharge your existing Web/React App with a Siri-like AI Assistant.
 
 These agents focuses on reducing learning curve for user and enalbes handsfree expereince for content discovery, feature discovery, user onboarding and form filling.
 
-Check out Travel Product built using this sdk: https://youtu.be/t2e0CThWZUE
+Goal is to build deep intergration AI Assitatants. Checkout Future of AI Assistants using this sdk.
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/t2e0CThWZUE/0.jpg)](https://www.youtube.com/watch?v=t2e0CThWZUE)
 
@@ -129,7 +129,9 @@ const TodoApp = () => {
   - [x] Current Screen Context
 
 - POC
+
   - [x] Text API Interface
   
+
 - [] Navigation Agent
 - [] Form Agent

@@ -1,6 +1,6 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
@@ -66,7 +66,6 @@
     "prettier": "^3.2.5",
     "react": "^18.2.0",
     "typescript": "^5.4.4",
-    "react-icons": "^5.0.1",
     "zod": "^3.22.4"
   },
   "dependencies": {
@@ -75,6 +74,7 @@
     "form-data": "^4.0.0",
     "js-base64": "^3.7.7",
     "qs": "^6.12.0",
+    "react-icons": "^5.0.1",
     "styled-components": "^6.1.8",
     "url-join-ts": "^1.0.5",
     "window-or-global": "^1.0.1"
