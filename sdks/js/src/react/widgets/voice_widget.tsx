@@ -11,25 +11,14 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   copilotSyleButtonSchema,
-} from "../schema";
-import { useCopilot } from "./CopilotContext";
+} from "../../schema";
+import { useCopilot } from "../CopilotContext";
 // import { WindowObj } from "../schema";
 import root from "window-or-global";
 
-import { styled, css, keyframes } from "styled-components";
+import { styled, css } from "styled-components";
 import { z } from "zod";
-
-const pulse = keyframes`
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-`;
+import { ChatContainer, pulse } from "./base_widget";
 
 // const ping = keyframes`
 //   0% {
@@ -44,54 +33,11 @@ const pulse = keyframes`
 
 const copilotButtonProps = z.object({
   button: copilotSyleButtonSchema,
-  isProcessing: z.boolean(),
-  isPermissionGranted: z.boolean(),
-  isListening: z.boolean(),
+  isprocessing: z.boolean(),
+  ispermissiongranted: z.boolean(),
+  islistening: z.boolean(),
 });
 type CopilotButtonPropsType = z.infer<typeof copilotButtonProps>;
-
-export const ChatContainer = styled.div<{
-  container: CopilotSyleContainerType;
-  position: CopilotStylePositionType;
-}>`
-  position: fixed;
-  bottom: ${({ container, position }) =>
-    (
-      position
-        ? position?.includes("bottom")
-        : (container?.position as CopilotStylePositionType)?.includes("bottom")
-    )
-      ? "20px"
-      : "20px"};
-  top: ${({ container, position }) =>
-    (
-      position
-        ? position?.includes("top")
-        : (container?.position as CopilotStylePositionType)?.includes("top")
-    )
-      ? "20px"
-      : "auto"};
-  right: ${({ container, position }) =>
-    (
-      position
-        ? position?.includes("right")
-        : (container?.position as CopilotStylePositionType)?.includes("right")
-    )
-      ? "20px"
-      : "20px"};
-  left: ${({ container, position }) =>
-    (
-      position
-        ? position?.includes("left")
-        : (container?.position as CopilotStylePositionType)?.includes("left")
-    )
-      ? "20px"
-      : "auto"};
-  margin: ${({ container }) => container?.marging};
-  width: fit-content;
-  height: fit-content;
-  z-index: 1000; /* Ensure the widget is above other elements */
-`;
 
 const ChatMessage = styled.div<{
   container: CopilotSyleContainerType;
@@ -103,7 +49,7 @@ const ChatMessage = styled.div<{
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 10px;
-  box-shadow: 0 2px 10px 1px #b5b5b5;
+  box-shadow: 0 3px 10px 0 rgb(0 0 0 / 20%);
   animation-duration: 0.5s;
   animation-name: d;
   animation-fill-mode: forwards;
@@ -151,20 +97,20 @@ const ChatButton = styled.button<CopilotButtonPropsType>`
   width: ${({ button }) => button?.width};
   height: ${({ button }) => button?.height};
   cursor: pointer;
-  box-shadow: 0 2px 10px 1px #b5b5b5;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
   text-align: -webkit-center;
-  cursor: ${({ isProcessing, isPermissionGranted }) =>
-    isProcessing || !isPermissionGranted ? "not-allowed" : "pointer"};
-  opacity: ${({ isProcessing, isPermissionGranted }) =>
-    isProcessing || !isPermissionGranted ? "0.5" : "1"};
-  ${({ isListening }) =>
-    isListening &&
+  cursor: ${({ isprocessing, ispermissiongranted }) =>
+    isprocessing || !ispermissiongranted ? "not-allowed" : "pointer"};
+  opacity: ${({ isprocessing, ispermissiongranted }) =>
+    isprocessing || !ispermissiongranted ? "0.5" : "1"};
+  ${({ islistening }) =>
+    islistening &&
     css`
       animation: ${pulse} 1s infinite;
     `}
   &:hover {
-    background-color: ${({ isProcessing, isPermissionGranted, button }) =>
-      isProcessing || !isPermissionGranted ? button?.bgColor : button?.bgColor}
+    background-color: ${({ isprocessing, ispermissiongranted, button }) =>
+      isprocessing || !ispermissiongranted ? button?.bgColor : button?.bgColor}
 `;
 
 const Message = styled.div<{ theme: CopilotSyleThemeType }>`
@@ -199,9 +145,9 @@ export const VoiceToSkillComponent = ({
   position?: CopilotStylePositionType;
 }) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
-  const [isListening, setIsListening] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [isPermissionGranted, setIsPermissionGranted] = useState(false);
+  const [islistening, setIslistening] = useState(false);
+  const [isprocessing, setIsprocessing] = useState(false);
+  const [ispermissiongranted, setIspermissiongranted] = useState(false);
   const [interimOutput, setInterimOutput] = useState<string>("");
   const [finalOutput, setFinalOutput] = useState<string>("");
   const [aiResponse, setAiResponse] = useState<string>("");
@@ -230,23 +176,23 @@ export const VoiceToSkillComponent = ({
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(() => {
-        setIsPermissionGranted(true);
+        setIspermissiongranted(true);
       })
       .catch(() => {
-        setIsPermissionGranted(false);
+        setIspermissiongranted(false);
       });
 
     setButtonName(id ?? (position as string));
   }, []);
 
   const startListening = () => {
-    if (!isPermissionGranted) {
+    if (!ispermissiongranted) {
       alert(
         "Microphone permission not granted. Please allow microphone access.",
       );
       return;
     }
-    setIsListening(true);
+    setIslistening(true);
     try {
       if (recognition) {
         PROD: console.log("Starting speech recognition");
@@ -268,7 +214,7 @@ export const VoiceToSkillComponent = ({
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
-      setIsListening(true);
+      setIslistening(true);
     };
 
     recognition.onresult = async (event) => {
@@ -280,7 +226,7 @@ export const VoiceToSkillComponent = ({
           DEV: console.log(`Final: ${finalTranscript}`);
 
           // Take care of it
-          setIsListening(false);
+          setIslistening(false);
           setFinalOutput(finalTranscript);
 
           const newScope: EmbeddingScopeWithUserType = {
@@ -297,7 +243,7 @@ export const VoiceToSkillComponent = ({
             promptVariables,
             newScope,
           ).finally(() => {
-            setIsProcessing(false);
+            setIsprocessing(false);
           });
 
           if (typeof aiResponse === "string") {
@@ -315,20 +261,20 @@ export const VoiceToSkillComponent = ({
 
     recognition.onend = (event) => {
       // debugger;
-      // setIsListening(false);
-      // setIsProcessing(true);
+      // setIslistening(false);
+      // setIsprocessing(true);
       // // Simulate processing delay
       // setTimeout(() => {
       //   const response = "This is a response from your assistant.";
       //   setFinalOutput(response);
       //   speak(response);
-      //   setIsProcessing(false);
+      //   setIsprocessing(false);
       //   recognition.stop();
       // }, 1000);
     };
 
     recognition.onerror = function (event) {
-      // setIsListening(false);
+      // setIslistening(false);
       PROD: console.error(`recognition.onerror ${JSON.stringify(event)}`);
     };
   }
@@ -371,9 +317,9 @@ export const VoiceToSkillComponent = ({
         style={buttonStyle}
         onClick={startListening}
         button={defaultStyle?.button}
-        isPermissionGranted={isPermissionGranted}
-        isProcessing={isProcessing}
-        isListening={isListening}
+        ispermissiongranted={ispermissiongranted}
+        isprocessing={isprocessing}
+        islistening={islistening}
       >
         <FaMicrophone size={defaultStyle?.button?.iconSize || 20} />
       </ChatButton>

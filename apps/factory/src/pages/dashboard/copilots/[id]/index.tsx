@@ -28,7 +28,7 @@ import {
   CopilotProvider,
   VoiceToSkillComponent,
   ChatContainer,
-} from "@sugar-ai/abcd";
+} from "@sugar-ai/copilot-one-js";
 import {
   CopilotOutput,
   CopilotPromptListOutput,
