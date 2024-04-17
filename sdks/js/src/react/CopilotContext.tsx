@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import {
   type SkillRegistrationType,
   type CopilotConfigType,
@@ -210,5 +210,5 @@ export const CopilotProvider = function ({
 };
 
 export function useCopilot() {
-  return React.useContext(CopilotContext);
+  return useContext(CopilotContext);
 }

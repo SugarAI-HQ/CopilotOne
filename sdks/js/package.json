@@ -1,6 +1,6 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
@@ -20,7 +20,7 @@
     "dev": "tsc -b ./tsconfig.esm.json ./tsconfig.types.json -w",
     "format": "prettier --write \"src/**/*.ts\"",
     "updateClient": "fern generate && prettier --write \"src/api-client/**/*.ts\"",
-    "lint": "eslint 'src/**'",
+    "lint": "eslint --quiet 'src/**'",
     "test": "echo \"Error: no test specified\"",
     "testx": "jest --config jest.config.js",
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
