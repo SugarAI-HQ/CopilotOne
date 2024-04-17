@@ -6,6 +6,7 @@ import {
   type SkillDefinitionType,
   type EmbeddingScopeWithUserType,
   type CopilotSytleType,
+  DEFAULT_GROUP_ID,
 } from "../schema";
 import { type SugarAiApi, SugarAiApiClient } from "../api-client";
 import { createUseState } from "./hooks";
@@ -23,7 +24,7 @@ export const CopilotContext = createContext({
     initialState: any,
     scope1: string,
     scope2: string,
-    groupId: string = window.location.pathname,
+    groupId: string = DEFAULT_GROUP_ID,
   ) => [any, Function],
   registerSkill: (
     name: string,

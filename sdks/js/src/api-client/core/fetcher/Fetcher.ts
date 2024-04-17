@@ -1,6 +1,7 @@
 import { default as FormData } from "form-data";
 import qs from "qs";
 import { APIResponse } from "./APIResponse";
+import root from "window-or-global";
 
 export type FetchFunction = <R = unknown>(
   args: Fetcher.Args,
@@ -81,7 +82,7 @@ async function fetcherImpl<R = unknown>(
     body = JSON.stringify(args.body);
   }
 
-  const fetchFn = typeof fetch == "function" ? fetch : window.fetch;
+  const fetchFn = typeof fetch == "function" ? fetch : root.fetch;
 
   const makeRequest = async (): Promise<Response> => {
     const controller = new AbortController();

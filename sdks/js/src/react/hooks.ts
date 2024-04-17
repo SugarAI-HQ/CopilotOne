@@ -1,7 +1,9 @@
 import { useEffect, useState as useStateOriginal } from "react";
 import {
+  defaultGroupId,
   type CopilotConfigType,
   type EmbeddingScopeWithUserType,
+  DEFAULT_GROUP_ID,
 } from "../schema";
 import { createOrUpdate } from "../embedding";
 import { type SugarAiApiClient } from "../api-client";
@@ -18,8 +20,12 @@ export function createUseState(
     initialState: any,
     scope1: string,
     scope2: string,
-    groupId: string = window.location.pathname,
+    groupId: string = DEFAULT_GROUP_ID,
   ) {
+    if (groupId === DEFAULT_GROUP_ID) {
+      groupId = defaultGroupId();
+    }
+
     // Call the original useState hook
     const [state, setState] = useStateOriginal(initialState);
 

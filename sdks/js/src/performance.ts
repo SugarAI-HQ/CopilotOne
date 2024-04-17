@@ -1,10 +1,11 @@
 // latencyTracker.ts
+import root from "window-or-global";
 
 const tss: number[] = [];
 let observer: PerformanceObserver | null = null;
 
 export const addMarker = (stepName: string, timestamps: number[] = tss) => {
-  const timestamp = window.performance.now();
+  const timestamp = root.performance.now();
   timestamps.push(timestamp);
   PROD: console.log(
     `Step ${stepName} took ${timestamp - timestamps[0]} milliseconds`,

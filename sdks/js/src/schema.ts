@@ -1,4 +1,5 @@
 import * as z from "zod";
+import root from "window-or-global";
 
 export const promptTemplateSchema = z.string();
 export type PromptTemplateType = z.infer<typeof promptTemplateSchema>;
@@ -203,3 +204,9 @@ export const skillRegistrationSchema = z.object({
   // }),
 });
 export type SkillRegistrationType = z.infer<typeof skillRegistrationSchema>;
+
+export const DEFAULT_GROUP_ID: string = "DEFAULT_GROUP_ID";
+
+export function defaultGroupId() {
+  return root?.location?.pathname;
+}

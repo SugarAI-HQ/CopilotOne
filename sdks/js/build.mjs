@@ -21,7 +21,7 @@ const sharedConfig = {
   bundle: true,
 
   // size optimizations
-  minify: true,
+  // minify: true,
   metafile: true,
   treeShaking: true,
   // nativeZip: true, // bundle as a single file
@@ -64,7 +64,7 @@ let result = await build({
   outdir: `${outputDir}/esm`,
   platform: "neutral", // for ESM
   format: "esm",
-  plugins: [nodeExternalsPlugin()],
+  // plugins: [nodeExternalsPlugin()],
 });
 
 // console.log(result);
