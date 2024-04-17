@@ -303,26 +303,8 @@ function getCopilotConfig(
       failureResponse: "I am not able to do this",
     },
 
-    style: {
-      container: {
-        position: "bottom-right",
-        margin: "",
-      },
-      theme: {
-        primaryColor: "",
-        secondaryColor: "",
-        fontFamily: "",
-        fontSize: "",
-        textColor: "",
-      },
-      button: {
-        primaryColor: "",
-        secondaryColor: "",
-        width: "",
-        height: "",
-        iconSize: "",
-      },
-    },
+    // @ts-ignore
+    style: {},
   };
 
   return copilotConfig;
