@@ -63,11 +63,14 @@ const CopilotShow: NextPageWithLayout = () => {
     copilotPrompt as CopilotPromptOutput,
   );
 
+  const promptTemplate: string = `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`;
+
   return (
     <>
       {
         <CopilotProvider config={copilotConfig}>
           <VoiceToSkillComponent
+            promptTemplate={promptTemplate}
             id={"preview"}
             position={"bottom-right"}
             promptVariables={{ $ROLE: "Boss" }}
