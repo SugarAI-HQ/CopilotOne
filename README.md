@@ -65,7 +65,18 @@ const copilotConfig: CopilotConfigType = {
     failureResponse: 'I am not able to do this',
   },
 }
+
+// Wrap the App with Copilot Provider
+
+    <CopilotProvider config={copilotConfig}>
+      <TodoApp />
+    </CopilotProvider>
 ```
+
+
+
+
+
 
 We are taking a exmple of a todo App. To track User's Current Screen Context using `useStateCopilot`
 

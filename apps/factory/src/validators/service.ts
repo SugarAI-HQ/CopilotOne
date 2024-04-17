@@ -7,7 +7,6 @@ import {
 } from "~/generated/prisma-client-zod.ts";
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
 import { embeddingScopeSchema } from "./embedding";
-import { templateVariablesSchema } from "./prompt_log";
 
 export const getPromptInput = z.object({
   environment: promptEnvironment.optional(),
