@@ -68,7 +68,7 @@ const CopilotShow: NextPageWithLayout = () => {
       {
         <CopilotProvider config={copilotConfig}>
           <VoiceToSkillComponent
-            id={2}
+            id={"preview"}
             position={"bottom-right"}
             promptVariables={{ $ROLE: "Boss" }}
             messageStyle={{ color: "black" }}
