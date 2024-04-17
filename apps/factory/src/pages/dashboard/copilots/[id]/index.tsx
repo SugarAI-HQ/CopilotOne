@@ -152,7 +152,7 @@ function CopilotTabs({
       },
     },
     ai: {
-      defaultPromptTemmplate: '${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}',
+      defaultPromptTemplate: '${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}',
       defaultPromptVariables: {
         $ROLE: 'Boss',
       },

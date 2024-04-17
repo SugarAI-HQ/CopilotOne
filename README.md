@@ -44,7 +44,7 @@ npm install @sugar-ai/copilot-one-js@latest
 
 ### Add to your React App
 
-In your main file. src/App.tsx 
+In your main file. src/App.tsx
 ```js
 import { useCopilot, CopilotConfigType, CopilotProvider, VoiceToSkillComponent } from '@sugar-ai/copilot-one-js';
 
@@ -57,7 +57,7 @@ const copilotConfig: CopilotConfigType = {
   },
 
   ai: {
-    defaultPromptTemmplate: 'hi/skills/todo-skill/0.0.5',
+    defaultPromptTemplate: 'hi/skills/todo-skill/0.0.5',
     defaultPromptVariables: {
       $ROLE: 'Boss',
     },
@@ -86,7 +86,7 @@ const TodoApp = () => {
 
 const { useStateCopilot, registerSkill, unregisterSkill } = useCopilot(); // Add
 
-// const [todos, setTodos] = useState([]); 
+// const [todos, setTodos] = useState([]);
 const [todos, setTodos] = useStateCopilot([], 'todoApp', 'todos'); // Switch
 
 ...
@@ -102,7 +102,7 @@ const TodoApp = () => {
 
   ...
 
-  // Functionalies 
+  // Functionalies
   const addTodo = (task) => {...}};
   const deleteTodo = (task) => {...};
   const markTodoAsDoneById = function (todoId: number) {...};
@@ -142,7 +142,7 @@ const TodoApp = () => {
 - POC
 
   - [x] Text API Interface
-  
+
 
 - [] Navigation Agent
 - [] Form Agent
