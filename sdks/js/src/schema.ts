@@ -93,7 +93,7 @@ export const copilotConfigSchema = z.object({
 
   ai: z
     .object({
-      defaultPromptTemmplate: promptTemplateSchema.optional(),
+      defaultPromptTemplate: promptTemplateSchema.optional(),
       defaultPromptVariables: z.record(z.any()).optional(),
 
       successResponse: z.string().default("Done"),

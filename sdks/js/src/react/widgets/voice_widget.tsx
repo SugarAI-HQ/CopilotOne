@@ -191,13 +191,13 @@ export const VoiceToSkillComponent = ({
 
   DEV: console.log(`default Style ---> ${JSON.stringify(defaultStyle)}`);
 
-  if (promptTemplate == null && config?.ai?.defaultPromptTemmplate == null) {
+  if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
       "Both promptTemplate and config.prompt.defaultTemmplate are null. Set atleast one of them",
     );
   }
-  if (!promptTemplate && config?.ai?.defaultPromptTemmplate) {
-    promptTemplate = config?.ai?.defaultPromptTemmplate;
+  if (!promptTemplate && config?.ai?.defaultPromptTemplate) {
+    promptTemplate = config?.ai?.defaultPromptTemplate;
   }
 
   useEffect(() => {
