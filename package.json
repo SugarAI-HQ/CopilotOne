@@ -1,9 +1,9 @@
 {
-  "name": "@sugar",
+  "name": "copilot-one",
   "version": "0.0.1",
   "description": "",
   "engines": {
-    "node": "18.18"
+    "node": "20.12"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

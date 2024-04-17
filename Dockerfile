@@ -1,5 +1,5 @@
 # Builder image
-FROM node:18.18-alpine AS build
+FROM node:20.12-alpine AS build
 
 RUN apk add --update --no-cache curl bash git python3 make g++ vips-dev build-base
 
@@ -35,7 +35,7 @@ RUN mv apps/${PROJECT_NAME}/node_modules/ node_modules_old && mv node_modules ap
 RUN pnpm --filter ${PROJECT_NAME} cibuild
 
 # Runtime image
-FROM node:18-alpine AS release
+FROM node:20.12-alpine AS release
 
 LABEL org.opencontainers.image.authors="ankur@sugarai.dev"
 
