@@ -52,16 +52,16 @@ await build({
   ...sharedConfig,
   // splitting: true,
   // outfile: `${outputDir}/esm/index.mjs`,
-  outdir: `${outputDir}/esm`,
-  plugins: [nodeExternalsPlugin()],
+  outdir: `${outputDir}/types`,
+  // plugins: [nodeExternalsPlugin()],
 });
 
 // esm
 let result = await build({
   ...sharedConfig,
   // splitting: true,
-  // outfile: `${outputDir}/esm/index.mjs`,
-  outdir: `${outputDir}/esm`,
+  outfile: `${outputDir}/esm/index.mjs`,
+  // outdir: `${outputDir}/esm`,
   platform: "neutral", // for ESM
   format: "esm",
   // plugins: [nodeExternalsPlugin()],

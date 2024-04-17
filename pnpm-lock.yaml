@@ -125,9 +125,6 @@ importers:
       react-hotkeys:
         specifier: ^2.0.0
         version: 2.0.0(react@18.2.0)
-      react-icons:
-        specifier: ^4.11.0
-        version: 4.11.0(react@18.2.0)
       react-markdown:
         specifier: ^9.0.1
         version: 9.0.1(@types/react@18.2.28)(react@18.2.0)
@@ -14397,14 +14394,6 @@ packages:
       react: '>= 0.14.0 || 18'
     dependencies:
       prop-types: 15.8.1
-      react: 18.2.0
-    dev: false
-
-  /react-icons@4.11.0(react@18.2.0):
-    resolution: {integrity: sha512-V+4khzYcE5EBk/BvcuYRq6V/osf11ODUM2J8hg2FDSswRrGvqiYUYPRy4OdrWaQOBj4NcpJfmHZLNaD+VH0TyA==}
-    peerDependencies:
-      react: '*'
-    dependencies:
       react: 18.2.0
     dev: false
 

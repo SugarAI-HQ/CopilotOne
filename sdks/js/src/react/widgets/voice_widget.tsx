@@ -121,6 +121,35 @@ const Message = styled.div<{ theme: CopilotSyleThemeType }>`
   margin-bottom: 5px;
 `;
 
+// export const VoiceToSkillComponentX = ({
+//   id = null,
+//   promptTemplate = null,
+//   promptVariables = {},
+//   scope1 = "",
+//   scope2 = "",
+//   groupId = root?.location?.pathname as string,
+//   style = {},
+//   buttonStyle = {},
+//   messageStyle = {},
+//   position = copilotStyleDefaults.container.position,
+// }: {
+//   id: string | null;
+//   promptTemplate: PromptTemplateType | null;
+//   groupId?: EmbeddingScopeType["groupId"];
+//   scope1?: EmbeddingScopeType["scope1"];
+//   scope2?: EmbeddingScopeType["scope2"];
+//   promptVariables?: PromptVariablesType;
+//   style?: any;
+//   buttonStyle?: any;
+//   messageStyle?: any;
+//   position?: CopilotStylePositionType;
+// }) => {
+//   const [buttonId, setButtonName] = useState<string>(position as string);
+
+//   setButtonName(position);
+//   return <div>Copilot xxxxxxxx {buttonId}</div>;
+// };
+
 export const VoiceToSkillComponent = ({
   id = null,
   promptTemplate = null,

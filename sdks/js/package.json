@@ -1,19 +1,19 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.3",
+  "version": "0.0.8",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
   ],
-  "module": "dist/esm/index.js",
-  "main": "dist/esm/index.js",
+  "module": "dist/esm/index.mjs",
+  "main": "dist/esm/index.mjs",
   "types": "dist/esm/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js",
-      "default": "./dist/esm/index.js"
+      "requirex": "./dist/cjs/index.cjs",
+      "import": "./dist/esm/index.mjs",
+      "default": "./dist/esm/index.mjs"
     }
   },
   "scripts": {
