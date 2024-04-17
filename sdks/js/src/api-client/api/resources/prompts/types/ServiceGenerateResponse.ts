@@ -5,5 +5,5 @@
 import * as SugarAiApi from "../../..";
 
 export type ServiceGenerateResponse =
-  | SugarAiApi.ServiceGenerateResponseCompletion
+  | SugarAiApi.ServiceGenerateResponseChat
   | "null";

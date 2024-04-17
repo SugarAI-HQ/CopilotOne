@@ -45,6 +45,12 @@ export const ServiceGenerateRequest: core.serialization.Schema<
     )
     .optional(),
   isDevelopment: core.serialization.boolean().optional(),
+  chat: core.serialization
+    .lazyObject(
+      async () => (await import("../../../..")).ServiceGenerateRequestChat,
+    )
+    .optional(),
+  copilotId: core.serialization.string().optional(),
   environment: core.serialization
     .lazy(
       async () =>
@@ -67,6 +73,8 @@ export declare namespace ServiceGenerateRequest {
     skillChoice?: serializers.ServiceGenerateRequestSkillChoice.Raw | null;
     scope?: serializers.ServiceGenerateRequestScope.Raw | null;
     isDevelopment?: boolean | null;
+    chat?: serializers.ServiceGenerateRequestChat.Raw | null;
+    copilotId?: string | null;
     environment?: serializers.ServiceGenerateRequestEnvironment.Raw | null;
     version?: string | null;
     userId?: string | null;

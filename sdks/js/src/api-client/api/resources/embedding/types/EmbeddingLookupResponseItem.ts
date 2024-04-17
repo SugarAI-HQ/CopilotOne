@@ -4,7 +4,7 @@
 
 export interface EmbeddingLookupResponseItem {
   id: string;
-  projectId: string;
+  copilotId: string;
   identifier: string;
   chunk: string;
   doc: string;

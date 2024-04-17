@@ -12,6 +12,8 @@ export interface ServiceGenerateRequest {
   skillChoice?: SugarAiApi.ServiceGenerateRequestSkillChoice;
   scope?: SugarAiApi.ServiceGenerateRequestScope;
   isDevelopment?: boolean;
+  chat?: SugarAiApi.ServiceGenerateRequestChat;
+  copilotId?: string;
   environment?: SugarAiApi.ServiceGenerateRequestEnvironment;
   version?: string;
   userId?: string;

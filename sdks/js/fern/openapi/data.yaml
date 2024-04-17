@@ -233,6 +233,10 @@
                                         type: "string"
                                       description: 
                                         type: "string"
+                                      enum: 
+                                        type: "array"
+                                        items: 
+                                          type: "string"
                                     required: 
                                       - "type"
                                       - "description"
@@ -283,6 +287,39 @@
                   isDevelopment: 
                     type: "boolean"
                     default: false
+                  chat: 
+                    type: "object"
+                    properties: 
+                      id: 
+                        type: "string"
+                        nullable: true
+                      message: 
+                        type: "object"
+                        properties: 
+                          role: 
+                            type: "string"
+                            enum: 
+                              - "user"
+                              - "assistant"
+                              - "system"
+                              - "tool"
+                          content: 
+                            type: "string"
+                        required: 
+                          - "role"
+                          - "content"
+                        additionalProperties: false
+                        default: 
+                          role: "user"
+                          content: ""
+                      historyChat: 
+                        type: "number"
+                        default: 6
+                    required: 
+                      - "id"
+                    additionalProperties: false
+                  copilotId: 
+                    type: "string"
                   environment: 
                     type: "string"
                     enum: 
@@ -413,6 +450,22 @@
                             - "TEXT2IMAGE"
                             - "TEXT2CODE"
                             - "IMAGE2IMAGE"
+                        chat: 
+                          anyOf: 
+                            - 
+                              type: "string"
+                            - 
+                              type: "number"
+                            - 
+                              type: "boolean"
+                            - 
+                              type: "array"
+                              items: 
+                                nullable: true
+                            - 
+                              type: "object"
+                              additionalProperties: 
+                                nullable: true
                         createdAt: 
                           type: "string"
                           format: "date-time"
@@ -699,7 +752,7 @@
                     properties: 
                       id: 
                         type: "string"
-                      projectId: 
+                      copilotId: 
                         type: "string"
                       identifier: 
                         type: "string"
@@ -711,11 +764,281 @@
                         type: "number"
                     required: 
                       - "id"
-                      - "projectId"
+                      - "copilotId"
                       - "identifier"
                       - "chunk"
                       - "doc"
                       - "similarity"
+                    additionalProperties: false
+          default: 
+            $ref: "#/components/responses/error"
+    /copilot/{copilotId}/chats: 
+      post: 
+        operationId: "chat-generateChat"
+        summary: "Generate chat"
+        tags: 
+          - "chat"
+        requestBody: 
+          required: true
+          content: 
+            application/json: 
+              schema: 
+                type: "object"
+                properties: 
+                  messageCount: 
+                    type: "number"
+                    default: 0
+                additionalProperties: false
+        parameters: 
+          - 
+            name: "copilotId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: 
+                  anyOf: 
+                    - 
+                      type: "object"
+                      properties: 
+                        copilotId: 
+                          type: "string"
+                        messageCount: 
+                          type: "number"
+                          default: 0
+                        id: 
+                          type: "string"
+                        userId: 
+                          type: "string"
+                        createdAt: 
+                          type: "string"
+                          format: "date-time"
+                        updatedAt: 
+                          type: "string"
+                          format: "date-time"
+                      required: 
+                        - "copilotId"
+                        - "id"
+                        - "userId"
+                        - "createdAt"
+                        - "updatedAt"
+                      additionalProperties: false
+                    - 
+                      enum: 
+                        - "null"
+                      nullable: true
+          default: 
+            $ref: "#/components/responses/error"
+    /copilot/{copilotId}/chats/{chatId}/messages: 
+      post: 
+        operationId: "message-generateMessage"
+        summary: "Generate chat message"
+        tags: 
+          - "message"
+        requestBody: 
+          required: true
+          content: 
+            application/json: 
+              schema: 
+                type: "object"
+                properties: 
+                  logId: 
+                    type: "string"
+                  content: 
+                    type: "string"
+                  role: 
+                    type: "string"
+                    enum: 
+                      - "user"
+                      - "assistant"
+                      - "system"
+                  metadata: 
+                    anyOf: 
+                      - 
+                        type: "string"
+                      - 
+                        type: "number"
+                      - 
+                        type: "boolean"
+                      - 
+                        type: "array"
+                        items: 
+                          nullable: true
+                      - 
+                        type: "object"
+                        additionalProperties: 
+                          nullable: true
+                    nullable: true
+                required: 
+                  - "content"
+                  - "role"
+                  - "metadata"
+                additionalProperties: false
+        parameters: 
+          - 
+            name: "copilotId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "chatId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: 
+                  anyOf: 
+                    - 
+                      type: "object"
+                      properties: 
+                        copilotId: 
+                          type: "string"
+                        logId: 
+                          type: "string"
+                        content: 
+                          type: "string"
+                        role: 
+                          type: "string"
+                          enum: 
+                            - "user"
+                            - "assistant"
+                            - "system"
+                        chatId: 
+                          type: "string"
+                        metadata: 
+                          anyOf: 
+                            - 
+                              type: "string"
+                            - 
+                              type: "number"
+                            - 
+                              type: "boolean"
+                            - 
+                              type: "array"
+                              items: 
+                                nullable: true
+                            - 
+                              type: "object"
+                              additionalProperties: 
+                                nullable: true
+                          nullable: true
+                        id: 
+                          type: "string"
+                        userId: 
+                          type: "string"
+                        createdAt: 
+                          type: "string"
+                          format: "date-time"
+                        updatedAt: 
+                          type: "string"
+                          format: "date-time"
+                      required: 
+                        - "copilotId"
+                        - "content"
+                        - "role"
+                        - "chatId"
+                        - "metadata"
+                        - "id"
+                        - "userId"
+                        - "createdAt"
+                        - "updatedAt"
+                      additionalProperties: false
+                    - 
+                      enum: 
+                        - "null"
+                      nullable: true
+          default: 
+            $ref: "#/components/responses/error"
+      get: 
+        operationId: "message-getChatHistory"
+        summary: "Get chat messages"
+        tags: 
+          - "chat_history"
+        parameters: 
+          - 
+            name: "chatId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "copilotId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: 
+                  type: "array"
+                  items: 
+                    type: "object"
+                    properties: 
+                      copilotId: 
+                        type: "string"
+                      logId: 
+                        type: "string"
+                      content: 
+                        type: "string"
+                      role: 
+                        type: "string"
+                        enum: 
+                          - "user"
+                          - "assistant"
+                          - "system"
+                      chatId: 
+                        type: "string"
+                      metadata: 
+                        anyOf: 
+                          - 
+                            type: "string"
+                          - 
+                            type: "number"
+                          - 
+                            type: "boolean"
+                          - 
+                            type: "array"
+                            items: 
+                              nullable: true
+                          - 
+                            type: "object"
+                            additionalProperties: 
+                              nullable: true
+                        nullable: true
+                      id: 
+                        type: "string"
+                      userId: 
+                        type: "string"
+                      createdAt: 
+                        type: "string"
+                        format: "date-time"
+                      updatedAt: 
+                        type: "string"
+                        format: "date-time"
+                    required: 
+                      - "copilotId"
+                      - "content"
+                      - "role"
+                      - "chatId"
+                      - "metadata"
+                      - "id"
+                      - "userId"
+                      - "createdAt"
+                      - "updatedAt"
                     additionalProperties: false
           default: 
             $ref: "#/components/responses/error"

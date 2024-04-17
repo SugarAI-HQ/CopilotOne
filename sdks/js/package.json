@@ -1,18 +1,19 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
   ],
-  "module": "dist/esm/index.mjs",
-  "main": "dist/esm/index.mjs",
+  "module": "dist/esm/index.js",
+  "main": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "require": "./dist/cjs/index.cjs",
-      "import": "./dist/esm/index.mjs",
-      "default": "./dist/esm/index.mjs"
+      "types": "./dist/esm/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
     }
   },
   "scripts": {
@@ -23,9 +24,9 @@
     "test": "echo \"Error: no test specified\"",
     "testx": "jest --config jest.config.js",
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
-    "build:clean": "rm -rf ./dist",
+    "build:clean": "rm -rf ./dist meta.json",
     "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
-    "build": "npm run build:clean && node build.mjs",
+    "build": "npm run build:clean && node build.mjs && node ./scripts/rename-module.js",
     "prepublishOnly": "npm run build && npm test && npm run lint",
     "preversion": "npm test && npm run lint",
     "version": "npm run format && git add -A src",
@@ -53,6 +54,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "esbuild": "^0.20.2",
+    "esbuild-node-externals": "^1.13.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard-with-typescript": "^43.0.1",

@@ -12,11 +12,13 @@ export const ServiceGenerateRequestSkillsItemFunctionParametersPropertiesValue: 
 > = core.serialization.object({
   type: core.serialization.string(),
   description: core.serialization.string(),
+  enum: core.serialization.list(core.serialization.string()).optional(),
 });
 
 export declare namespace ServiceGenerateRequestSkillsItemFunctionParametersPropertiesValue {
   interface Raw {
     type: string;
     description: string;
+    enum?: string[] | null;
   }
 }

@@ -5,13 +5,15 @@ import { build, analyzeMetafile } from "esbuild";
 import pkg from "npm-dts";
 import pj from "./package.json" assert { type: "json" };
 import fs from "node:fs";
+import { nodeExternalsPlugin } from "esbuild-node-externals";
 
 const outputDir = `dist`;
 
 new pkg.Generator({
-  entry: "src/index.ts",
-  output: `${outputDir}/types/index.d.ts`,
-  tsc: "--extendedDiagnostics -p ./tsconfig.esm.json",
+  entryPoints: ["src/**/*.ts", "src/*.ts"],
+  // output: `${outputDir}/esm/index.d.ts`,
+  outdir: `${outputDir}/esm`,
+  tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
 }).generate();
 
 const sharedConfig = {
@@ -19,7 +21,7 @@ const sharedConfig = {
   bundle: true,
 
   // size optimizations
-  // minify: true,
+  minify: true,
   metafile: true,
   treeShaking: true,
   // nativeZip: true, // bundle as a single file
@@ -28,7 +30,7 @@ const sharedConfig = {
   sourcemap: true,
 
   // Remove unsued code
-  drop: ["debugger"],
+  // drop: ["debugger"],
   dropLabels: ["DEV", "TEST"],
 
   // External dependencies
@@ -37,17 +39,32 @@ const sharedConfig = {
   ),
 };
 
+// cjs
 build({
   ...sharedConfig,
   platform: "node", // for CJS
-  outfile: `${outputDir}/cjs/index.cjs`,
+  // outfile: `${outputDir}/cjs/index.js`,
+  outdir: `${outputDir}/cjs/`,
 });
 
+// types
+await build({
+  ...sharedConfig,
+  // splitting: true,
+  // outfile: `${outputDir}/esm/index.mjs`,
+  outdir: `${outputDir}/esm`,
+  plugins: [nodeExternalsPlugin()],
+});
+
+// esm
 let result = await build({
   ...sharedConfig,
-  outfile: `${outputDir}/esm/index.mjs`,
+  // splitting: true,
+  // outfile: `${outputDir}/esm/index.mjs`,
+  outdir: `${outputDir}/esm`,
   platform: "neutral", // for ESM
   format: "esm",
+  plugins: [nodeExternalsPlugin()],
 });
 
 // console.log(result);

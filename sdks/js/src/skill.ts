@@ -82,7 +82,9 @@ export const register = (
   skills[name] = transformSkillRegistrationToDefinition(skillDefinition);
   callbacks[name] = skillCallback;
 
-  DEV: console.log(`[${name}] Skill Registered`);
+  PROD: console.log(
+    `[${name}] Skill Registered ${JSON.stringify(skills[name])}`,
+  );
 };
 export const unregister = (
   name: string,
@@ -126,7 +128,7 @@ export function transformSkillRegistrationToDefinition(
       enum: param.enum,
     };
 
-    if (!pp.enum) {
+    if (!param.enum) {
       delete pp.enum;
     }
     skillDefinition.function.parameters.properties[param.name] = pp;
@@ -136,7 +138,6 @@ export function transformSkillRegistrationToDefinition(
       skillDefinition.function.parameters.required.push(param.name);
     }
   });
-
   return skillDefinition;
 }
 

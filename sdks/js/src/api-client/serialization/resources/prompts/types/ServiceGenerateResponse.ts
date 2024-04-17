@@ -11,11 +11,11 @@ export const ServiceGenerateResponse: core.serialization.Schema<
   SugarAiApi.ServiceGenerateResponse
 > = core.serialization.undiscriminatedUnion([
   core.serialization.lazyObject(
-    async () => (await import("../../..")).ServiceGenerateResponseCompletion,
+    async () => (await import("../../..")).ServiceGenerateResponseChat,
   ),
   core.serialization.stringLiteral("null"),
 ]);
 
 export declare namespace ServiceGenerateResponse {
-  type Raw = serializers.ServiceGenerateResponseCompletion.Raw | "null";
+  type Raw = serializers.ServiceGenerateResponseChat.Raw | "null";
 }

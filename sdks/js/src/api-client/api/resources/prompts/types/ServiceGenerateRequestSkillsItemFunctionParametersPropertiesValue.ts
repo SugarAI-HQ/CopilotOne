@@ -5,4 +5,5 @@
 export interface ServiceGenerateRequestSkillsItemFunctionParametersPropertiesValue {
   type: string;
   description: string;
+  enum?: string[];
 }

@@ -11,7 +11,7 @@ export const EmbeddingLookupResponseItem: core.serialization.ObjectSchema<
   SugarAiApi.EmbeddingLookupResponseItem
 > = core.serialization.object({
   id: core.serialization.string(),
-  projectId: core.serialization.string(),
+  copilotId: core.serialization.string(),
   identifier: core.serialization.string(),
   chunk: core.serialization.string(),
   doc: core.serialization.string(),
@@ -21,7 +21,7 @@ export const EmbeddingLookupResponseItem: core.serialization.ObjectSchema<
 export declare namespace EmbeddingLookupResponseItem {
   interface Raw {
     id: string;
-    projectId: string;
+    copilotId: string;
     identifier: string;
     chunk: string;
     doc: string;

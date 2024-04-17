@@ -10,11 +10,7 @@ import {
 import { type SugarAiApi, SugarAiApiClient } from "../api-client";
 import { createUseState } from "./hooks";
 import { generateUserId } from "../utils";
-import {
-  type ServiceGenerateRequestMessagesItem,
-  type ServiceGenerateRequestSkillsItem,
-  type ServiceGenerateResponseCompletion,
-} from "../api-client/api";
+import { type ServiceGenerateRequestSkillsItem } from "../api-client/api";
 import { register, unregister } from "../skill";
 import { any } from "zod";
 import { addMarker, observePerformance, reset } from "../performance";
@@ -125,7 +121,11 @@ export const CopilotProvider = function ({
     reset();
     addMarker("textToSkill:start");
     const [username, pp, pt, pv] = promptTemplate.split("/");
-    const messages = [{ role: "user", content: userQuery }];
+    const msg: SugarAiApi.ServiceGenerateRequestChatMessage = {
+      role: "user",
+      content: userQuery,
+    };
+    // const messages = [msg];
     const result = (await apiClient.prompts.serviceGenerate(
       username,
       pp,
@@ -134,12 +134,16 @@ export const CopilotProvider = function ({
       {
         variables: promptVariables,
         scope: scope as SugarAiApi.ServiceGenerateRequestScope,
-        messages: messages as ServiceGenerateRequestMessagesItem[],
+        // messages: messages as ServiceGenerateRequestMessagesItem[],
+        chat: {
+          id: clientUserId,
+          message: msg,
+        },
         // messages: messages.slice(-3),
         // @ts-expect-error
         skills: Object.values(uxSkills) as ServiceGenerateRequestSkillsItem[],
       },
-    )) as ServiceGenerateResponseCompletion;
+    )) as SugarAiApi.ServiceGenerateResponse;
     // const c = await makeInference(
     //   promptTemplate,
     //   promptVariables,
