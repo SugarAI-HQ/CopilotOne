@@ -40,6 +40,7 @@ const config = {
     "@typescript-eslint/no-unnecessary-type-assertion": "warn",
     "@typescript-eslint/no-base-to-string": "warn",
     "@next/next/no-sync-scripts": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
 
     "@typescript-eslint/consistent-type-imports": [
       "warn",
