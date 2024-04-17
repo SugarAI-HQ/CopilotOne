@@ -24,6 +24,7 @@ ENV PNPM_HOME=/usr/local/bin
 ENV NEXT_TELEMETRY_DISABLED 1
 
 COPY pnpm-lock.yaml .npmrc* ./
+RUN mv .npmrc-ci .npmrc
 # RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm fetch
 
 # Build
