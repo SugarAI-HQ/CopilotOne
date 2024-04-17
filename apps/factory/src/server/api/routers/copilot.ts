@@ -142,7 +142,7 @@ export const copilotRouter = createTRPCRouter({
 
       try {
         const promptPackages = input?.autoGenerate
-          ? JSON.parse(input.promptPackagePath)
+          ? input.promptPackagePath.split(", ")
           : [input.promptPackagePath];
         console.log(promptPackages);
         await Promise.all(promptPackages.map(clonePromptPackage));
