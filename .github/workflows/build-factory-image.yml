@@ -50,6 +50,7 @@ jobs:
             ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.BRANCH_NAME }}-latest
             ${{ secrets.DOCKER_REPO_FACTORY }}:${{ env.SHORT_SHA }}
           push: true
-
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKER_REPO_FACTORY }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_REPO_FACTORY }}:buildcache,mode=max
