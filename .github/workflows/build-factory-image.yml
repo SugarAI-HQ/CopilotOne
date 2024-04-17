@@ -53,4 +53,5 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
           cache-from: type=registry,ref=${{ secrets.DOCKER_REPO_FACTORY }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_REPO_FACTORY }}:buildcache,mode=max
+          cache-to: type=inline
+          # cache-to: type=registry,ref=${{ secrets.DOCKER_REPO_FACTORY }}:buildcache,mode=max
