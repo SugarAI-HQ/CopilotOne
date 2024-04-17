@@ -1,0 +1,51 @@
+
+
+You have the following functions:
+
+```javascript
+// Function to calculate the area of a circle
+function calculate_circle_area(radius) {
+    // Your implementation here
+}
+
+// Function to convert temperature from Celsius to Fahrenheit
+function celsius_to_fahrenheit(celsius) {
+    // Your implementation here
+}
+```
+
+Please convert these functions into their respective JSON object formats. Given example
+
+```javascript
+// Function to get the current weather
+function get_current_weather(location, unit) {
+    // Your implementation here
+}
+```
+converts to 
+
+```json
+{
+    "type": "function",
+    "function": {
+        "name": "get_current_weather",
+        "description": "Get the current weather in a given location",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "The city and state, e.g. San Francisco, CA"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": ["celsius", "fahrenheit"]
+                }
+            },
+            "required": ["location"]
+        }
+    }
+}
+```
+
+Ensure the output for each function come in seperate json blocks

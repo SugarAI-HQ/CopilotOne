@@ -1,5 +1,5 @@
 {
-  "name": "sugarcane-ai",
+  "name": "@sugar",
   "version": "0.0.1",
   "description": "",
   "engines": {
@@ -15,9 +15,16 @@
     "db": "pnpm run --filter \"factory\" db"
   },
   "keywords": [],
-  "packageManager": "pnpm@8.8.0",
+  "packageManager": "pnpm@9.0.1",
   "author": "Ankur Agarwal <ankur@sugarcaneai.dev>",
   "dependencies": {
     "husky": "^8.0.3"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "react": "18"
+      }
+    }
   }
 }

@@ -1,0 +1,84 @@
+{
+  "name": "@sugar-ai/copilot-one-js",
+  "version": "0.0.9",
+  "description": "Add Siri like features to your react app",
+  "files": [
+    "dist/**/*"
+  ],
+  "module": "dist/esm/index.mjs",
+  "main": "dist/esm/index.mjs",
+  "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "requirex": "./dist/cjs/index.cjs",
+      "import": "./dist/esm/index.mjs",
+      "default": "./dist/esm/index.mjs"
+    }
+  },
+  "scripts": {
+    "dev": "tsc -b ./tsconfig.esm.json ./tsconfig.types.json -w",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "updateClient": "fern generate && prettier --write \"src/api-client/**/*.ts\"",
+    "lint": "eslint --quiet 'src/**'",
+    "test": "echo \"Error: no test specified\"",
+    "testx": "jest --config jest.config.js",
+    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
+    "build:clean": "rm -rf ./dist meta.json",
+    "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
+    "build": "npm run build:clean && node build.mjs && node ./scripts/rename-module.js",
+    "prepublishOnly": "npm run build && npm test && npm run lint",
+    "preversion": "npm test && npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "peerDependencies": {
+    "react": ">18.0.0"
+  },
+  "keywords": [
+    "copilot",
+    "siri",
+    "genai",
+    "ai",
+    "assistant",
+    "agents",
+    "skills",
+    "llms"
+  ],
+  "author": "ankur@sugarai.dev",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/qs": "^6.9.14",
+    "@types/react": "^18.2.73",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "esbuild": "^0.20.2",
+    "esbuild-node-externals": "^1.13.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "fern-api": "^0.19.31",
+    "json2yaml": "^1.1.0",
+    "npm-dts": "^1.3.12",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.2.5",
+    "react": "^18.2.0",
+    "typescript": "^5.4.4",
+    "zod": "^3.22.4"
+  },
+  "dependencies": {
+    "@types/dom-speech-recognition": "^0.0.4",
+    "@types/easy-speech": "^1.2.4",
+    "form-data": "^4.0.0",
+    "js-base64": "^3.7.7",
+    "qs": "^6.12.0",
+    "react-icons": "^5.0.1",
+    "styled-components": "^6.1.8",
+    "url-join-ts": "^1.0.5",
+    "window-or-global": "^1.0.1"
+  }
+}

@@ -287,14 +287,14 @@ export const promptMiddleware: any = experimental_standaloneMiddleware<{
   //   });
   // }
 
-  const apiKey = await fetchUserIdFromApiKey(opts.ctx);
+  const userCreds = await fetchUserIdFromApiKey(opts.ctx);
 
-  if (apiKey?.userId as string) {
-    opts.input.userId = apiKey?.userId;
-    opts.input.copilotId = apiKey?.copilotId as string;
+  if (userCreds?.userId as string) {
+    opts.input.userId = userCreds?.userId;
+    opts.input.copilotId = userCreds?.copilotId as string;
 
     opts.ctx.jwt = {
-      id: apiKey?.copilotId,
+      id: userCreds?.userId,
     };
   }
 
@@ -316,9 +316,8 @@ export const promptMiddleware: any = experimental_standaloneMiddleware<{
         ` <<<>>> username : ${opts.input.username} userId : ${opts.input.userId}`,
       );
       console.log(
-        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${
-          opts.ctx?.jwt?.id
-        },  ${opts.input.userId == opts.ctx?.jwt?.id}`,
+        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${opts.ctx?.jwt
+          ?.id},  ${opts.input.userId == opts.ctx?.jwt?.id}`,
       );
     }
   }
