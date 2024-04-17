@@ -12,6 +12,8 @@ export const copilotSylePositionSchema = z.enum([
   "top-right",
   "bottom-left",
   "bottom-right",
+  "top-center",
+  "bottom-center",
 ]);
 export type CopilotStylePositionType = z.infer<
   typeof copilotSylePositionSchema
@@ -19,7 +21,7 @@ export type CopilotStylePositionType = z.infer<
 
 export const copilotSyleContainerSchema = z.object({
   position: copilotSylePositionSchema.default("bottom-right"),
-  marging: z.string().default("0px"),
+  margin: z.string().default("0px"),
 });
 
 export type CopilotSyleContainerType = z.infer<
@@ -61,7 +63,7 @@ export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
 export const copilotStyleDefaults: CopilotSytleType = {
   container: {
     position: "bottom-right",
-    marging: "0px",
+    margin: "0px",
   },
 
   theme: {
