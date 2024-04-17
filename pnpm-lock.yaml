@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       husky:
-        specifier: ^8.0.3
-        version: 8.0.3
+        specifier: ^9.0.11
+        version: 9.0.11
 
   apps/factory:
     dependencies:
@@ -5503,6 +5503,11 @@ packages:
   husky@8.0.3:
     resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
     engines: {node: '>=14'}
+    hasBin: true
+
+  husky@9.0.11:
+    resolution: {integrity: sha512-AB6lFlbwwyIqMdHYhwPe+kjOC3Oc5P3nThEoW/AaO2BX3vJDjWPFxYLxokUZOo6RNX20He3AaT8sESs9NJcmEw==}
+    engines: {node: '>=18'}
     hasBin: true
 
   iconv-lite@0.4.24:
@@ -15589,6 +15594,8 @@ snapshots:
       decamelize: 6.0.0
 
   husky@8.0.3: {}
+
+  husky@9.0.11: {}
 
   iconv-lite@0.4.24:
     dependencies:

@@ -1,9 +1,11 @@
 {
   "name": "copilot-one",
   "version": "0.0.1",
-  "description": "",
+  "description": "Add Siri Like Native AI Assistants to your App",
+  "packageManager": "pnpm@9.0.2",
   "engines": {
-    "node": "20.12"
+    "node": ">=20.12",
+    "pnpm": ">=9.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,10 +17,9 @@
     "db": "pnpm run --filter \"factory\" db"
   },
   "keywords": [],
-  "packageManager": "pnpm@9.0.2",
   "author": "Ankur Agarwal <ankur@sugarcaneai.dev>",
   "dependencies": {
-    "husky": "^8.0.3"
+    "husky": "^9.0.11"
   },
   "pnpm": {
     "peerDependencyRules": {
