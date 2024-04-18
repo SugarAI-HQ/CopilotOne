@@ -11,7 +11,8 @@ const outputDir = `dist`;
 
 new pkg.Generator({
   entryPoints: ["src/**/*.ts", "src/*.ts"],
-  // output: `${outputDir}/esm/index.d.ts`,
+  // entry: "src/index.ts",
+  output: `${outputDir}/esm/index.d.ts`,
   outdir: `${outputDir}/esm`,
   tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
 }).generate();
@@ -45,15 +46,6 @@ build({
   platform: "node", // for CJS
   // outfile: `${outputDir}/cjs/index.js`,
   outdir: `${outputDir}/cjs/`,
-});
-
-// types
-await build({
-  ...sharedConfig,
-  // splitting: true,
-  // outfile: `${outputDir}/esm/index.mjs`,
-  outdir: `${outputDir}/types`,
-  // plugins: [nodeExternalsPlugin()],
 });
 
 // esm

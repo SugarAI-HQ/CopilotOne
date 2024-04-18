@@ -26,7 +26,7 @@
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
     "build:clean": "rm -rf ./dist meta.json",
     "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
-    "build": "npm run build:clean && node build.mjs && node ./scripts/rename-module.js",
+    "build": "npm run build:clean && node build.mjs",
     "prepublishOnly": "npm run build && npm test && npm run lint",
     "preversion": "npm test && npm run lint",
     "version": "npm run format && git add -A src",
