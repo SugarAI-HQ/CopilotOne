@@ -60,11 +60,7 @@ const CopilotHome = () => {
     onSuccess: (createdCopilot) => {
       if (createdCopilot !== null) {
         createApiKey(createdCopilot);
-        clonePrompt(
-          clonePromptMutation,
-          `${env.NEXT_PUBLIC_PROMPT_PACKAGE}`,
-          createdCopilot,
-        );
+        clonePrompt(clonePromptMutation, createdCopilot);
         setCustomError({});
         handleCopilotCreationSuccess(createdCopilot);
       } else {
@@ -168,14 +164,13 @@ const Copilots = ({
 
 export const clonePrompt = (
   clonePromptMutation: any,
-  promptPackagePath: string,
   copilot: CopilotOutput,
   autoGenerate?: boolean,
   refetchPrompts?: () => void,
 ) => {
   clonePromptMutation.mutate(
     {
-      promptPackagePath: promptPackagePath as string,
+      promptPackagePath: "COPILOT_DEFAULT_PACKAGES" as string,
       copilotId: copilot?.id as string,
       autoGenerate: autoGenerate,
     },
