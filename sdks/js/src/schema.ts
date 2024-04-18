@@ -4,7 +4,7 @@ import root from "window-or-global";
 export const promptTemplateSchema = z.string();
 export type PromptTemplateType = z.infer<typeof promptTemplateSchema>;
 
-export const primaryColor = "#8d00ff";
+export const primaryColor = "#8000FF";
 export const secondaryColor = "#FFFFFF";
 
 export const copilotSylePositionSchema = z.enum([

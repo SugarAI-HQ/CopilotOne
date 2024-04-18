@@ -16,7 +16,7 @@ import { useCopilot } from "../CopilotContext";
 // import { WindowObj } from "../schema";
 import root from "window-or-global";
 
-import { styled, css } from "styled-components";
+import { styled, css, StyleSheetManager } from "styled-components";
 import { z } from "zod";
 import { ChatContainer, pulse } from "./base_widget";
 
@@ -33,9 +33,9 @@ import { ChatContainer, pulse } from "./base_widget";
 
 const copilotButtonProps = z.object({
   button: copilotSyleButtonSchema,
-  isprocessing: z.boolean(),
-  ispermissiongranted: z.boolean(),
-  islistening: z.boolean(),
+  isprocessing: z.string(),
+  ispermissiongranted: z.string(),
+  islistening: z.string(),
 });
 type CopilotButtonPropsType = z.infer<typeof copilotButtonProps>;
 
@@ -100,17 +100,21 @@ const ChatButton = styled.button<CopilotButtonPropsType>`
   box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
   text-align: -webkit-center;
   cursor: ${({ isprocessing, ispermissiongranted }) =>
-    isprocessing || !ispermissiongranted ? "not-allowed" : "pointer"};
+    isprocessing === "true" || ispermissiongranted !== "true"
+      ? "not-allowed"
+      : "pointer"};
   opacity: ${({ isprocessing, ispermissiongranted }) =>
-    isprocessing || !ispermissiongranted ? "0.5" : "1"};
+    isprocessing === "true" || ispermissiongranted !== "true" ? "0.5" : "1"};
   ${({ islistening }) =>
-    islistening &&
+    islistening === "true" &&
     css`
       animation: ${pulse} 1s infinite;
     `}
   &:hover {
     background-color: ${({ isprocessing, ispermissiongranted, button }) =>
-      isprocessing || !ispermissiongranted ? button?.bgColor : button?.bgColor}
+      isprocessing === "true" || ispermissiongranted !== "true"
+        ? button?.bgColor
+        : button?.bgColor}
 `;
 
 const Message = styled.div<{ theme: CopilotSyleThemeType }>`
@@ -334,40 +338,45 @@ export const VoiceToSkillComponent = ({
     synth.speak(utterance);
   };
 
+  const shouldForwardProp = (prop: string) =>
+    prop !== "container" && prop !== "position";
+
   return (
-    <ChatContainer
-      id={`sugar-ai-copilot-${buttonId}`}
-      className="sugar-ai-copilot-container"
-      container={defaultStyle?.container}
-      position={position as CopilotStylePositionType}
-      style={style}
-    >
-      <ChatButton
-        style={buttonStyle}
-        onClick={startListening}
-        button={defaultStyle?.button}
-        ispermissiongranted={ispermissiongranted}
-        isprocessing={isprocessing}
-        islistening={islistening}
+    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <ChatContainer
+        id={`sugar-ai-copilot-${buttonId}`}
+        className="sugar-ai-copilot-container"
+        container={defaultStyle?.container}
+        position={position as CopilotStylePositionType}
+        style={style}
       >
-        <FaMicrophone size={defaultStyle?.button?.iconSize || 20} />
-      </ChatButton>
-      {(aiResponse || finalOutput || interimOutput) && (
-        <ChatMessage
-          container={defaultStyle?.container}
-          position={position as CopilotStylePositionType}
-          style={messageStyle}
+        <ChatButton
+          style={buttonStyle}
+          onClick={startListening}
+          button={defaultStyle?.button}
+          ispermissiongranted={ispermissiongranted.toString()}
+          isprocessing={isprocessing.toString()}
+          islistening={islistening.toString()}
         >
-          {(interimOutput || finalOutput) && (
-            <Message theme={defaultStyle?.theme}>
-              {interimOutput || finalOutput}
-            </Message>
-          )}
-          {aiResponse && (
-            <Message theme={defaultStyle?.theme}>{aiResponse}</Message>
-          )}
-        </ChatMessage>
-      )}
-    </ChatContainer>
+          <FaMicrophone size={defaultStyle?.button?.iconSize || 20} />
+        </ChatButton>
+        {(aiResponse || finalOutput || interimOutput) && (
+          <ChatMessage
+            container={defaultStyle?.container}
+            position={position as CopilotStylePositionType}
+            style={messageStyle}
+          >
+            {(interimOutput || finalOutput) && (
+              <Message theme={defaultStyle?.theme}>
+                {interimOutput || finalOutput}
+              </Message>
+            )}
+            {aiResponse && (
+              <Message theme={defaultStyle?.theme}>{aiResponse}</Message>
+            )}
+          </ChatMessage>
+        )}
+      </ChatContainer>
+    </StyleSheetManager>
   );
 };
