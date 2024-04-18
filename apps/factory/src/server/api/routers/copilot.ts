@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { env } from "~/env.mjs";
 import {
   ModelTypeType,
   PromptPackage,
@@ -141,11 +142,19 @@ export const copilotRouter = createTRPCRouter({
       };
 
       try {
-        const promptPackages = input?.autoGenerate
-          ? input.promptPackagePath.split(", ")
-          : [input.promptPackagePath];
-        console.log(promptPackages);
-        await Promise.all(promptPackages.map(clonePromptPackage));
+        let promptPackages;
+        if (
+          input?.copilotId &&
+          input?.promptPackagePath === "COPILOT_DEFAULT_PACKAGES"
+        ) {
+          promptPackages = env.COPILIOT_DEFAULT_PACKAGES?.split(", ");
+          if (!promptPackages) {
+            throw new Error("No Package found.");
+          }
+        }
+        if (promptPackages) {
+          await Promise.all(promptPackages.map(clonePromptPackage));
+        }
       } catch (error) {
         console.error("Error while cloning prompt packages:", error);
         throw new Error("Failed to clone prompt package.");
