@@ -324,9 +324,9 @@ const CopilotPrompts = ({
   const router = useRouter();
 
   const regeneratePromptConfig = () => {
-    const prompts = clonePrompt(
+    clonePrompt(
       clonePromptMutation,
-      env.NEXT_PUBLIC_PROMPT_PACKAGES as string,
+      `${env.NEXT_PUBLIC_PROMPT_PACKAGES}`,
       copilot,
       true,
       refetchPrompts,
