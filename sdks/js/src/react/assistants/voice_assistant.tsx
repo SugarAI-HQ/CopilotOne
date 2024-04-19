@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-// import { FaMicrophone } from "react-icons/fa";
 import {
   type EmbeddingScopeWithUserType,
   type EmbeddingScopeType,
