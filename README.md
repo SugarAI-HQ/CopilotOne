@@ -78,16 +78,16 @@ const copilotConfig: CopilotConfigType = {
 
 
 
-We are taking a exmple of a todo App. To track User's Current Screen Context using `useStateCopilot`
+We are taking a exmple of a todo App. To track User's Current Screen Context using `useStateEmbedding`
 
 ```js
 
 const TodoApp = () => {
 
-const { useStateCopilot, registerSkill, unregisterSkill } = useCopilot(); // Add
+const { useStateEmbedding, registerAction, unregisterAction } = useCopilot(); // Add
 
 // const [todos, setTodos] = useState([]);
-const [todos, setTodos] = useStateCopilot([], 'todoApp', 'todos'); // Switch
+const [todos, setTodos] = useStateEmbedding([], 'todoApp', 'todos'); // Switch
 
 ...
 
@@ -108,7 +108,7 @@ const TodoApp = () => {
   const markTodoAsDoneById = function (todoId: number) {...};
 
   // Register addTodo function
-  registerSkill(
+  registerAction(
     'addTodo',
     {
       name: 'addTodo',
