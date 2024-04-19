@@ -140,22 +140,38 @@ function CopilotTabs({
   const npmPackage = "@sugar-ai/copilot-one-js";
   const codePackage = `npm i ${npmPackage}@latest`;
 
+  const previewConfig = {
+    copilotId: copilot?.id,
+    server: {
+      endpoint: `${env.NEXT_PUBLIC_API_ENDPOINT}/api`,
+      token: copilotKey?.apiKey,
+    },
+    ai: {
+      defaultPromptTemplate: `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`,
+    },
+  };
+
+  // // Preview config
+  // const iframeRef = useRef(null);
+  // const iframeOrigin = "http://localhost:4000";
+  // const sendMessageToIframe = () => {
+  //   const iframeWindow = iframeRef?.current?.contentWindow;
+  //   iframeWindow.postMessage(previewConfig, iframeOrigin);
+  // };
+
   const copilotConfigCode = `
   import { CopilotConfigType } from '${npmPackage}';
 
   const copilotConfig: CopilotConfigType = {
-    copilotId: '${copilot?.id}',
+    copilotId: '${previewConfig.copilotId}',
     server: {
-      endpoint: '${env.NEXT_PUBLIC_API_ENDPOINT}/api',
-      token: '${copilotKey?.apiKey}',
-      headers: {
-        'X-COPILOT-ID': '${copilot?.id}',
-      },
+      endpoint: '${previewConfig.server.endpoint}',
+      token: '${previewConfig.server.token}',
     },
     ai: {
-      defaultPromptTemplate: '${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}',
+      defaultPromptTemplate: '${previewConfig.ai.defaultPromptTemplate}',
       defaultPromptVariables: {
-        $ROLE: 'Boss',
+        $NAME: 'Sugar',
       },
       successResponse: 'Task Done',
       failureResponse: 'I am not able to do this',
@@ -220,13 +236,26 @@ function CopilotTabs({
             }}
           >
             <CardContent>
-              <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+              <Box sx={{ p: 2, alignItems: "center" }}>
                 <Typography
                   variant="h4"
                   component="p"
-                  sx={{ mt: 1, mb: 4, flex: 1 }}
+                  sx={{
+                    mt: 1,
+                    mb: 4,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
                 >
-                  {`${copilot?.name}`}
+                  <span style={{ flexGrow: 1 }}>{`${copilot?.name}`}</span>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={(e) => previewCopilot(previewConfig)}
+                    // href="https://docs.sugarai.dev/guides/get-staretd/"
+                  >
+                    Preview
+                  </Button>
                 </Typography>
               </Box>
               <CodeBlock title={"Copilot Id"} code={`${copilot?.id}`} />
@@ -426,3 +455,16 @@ const CopilotPrompts = ({
     </div>
   );
 };
+
+function previewCopilot(previewConfig: any) {
+  const exampleOrign = "https://demo.sugarai.dev";
+  if (typeof window !== "undefined") {
+    // Convert data to a JSON string and encode it
+    const encodedData = btoa(JSON.stringify(previewConfig));
+
+    // Construct the URL with encoded data
+    const url = `${exampleOrign}/todo?data=${encodeURIComponent(encodedData)}`;
+
+    const targetWindow = window.open(url, "_blank", "noopener,noreferrer");
+  }
+}
