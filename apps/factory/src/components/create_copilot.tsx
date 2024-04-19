@@ -16,9 +16,11 @@ import { useForm } from "react-hook-form";
 import { FormSelectInput } from "./form_components/formSelectInput";
 import { CreateCopilotInput, createCopilotInput } from "~/validators/copilot";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { LoadingButton } from "@mui/lab";
 
 interface CreateCopilotProps {
   onSubmit: Function;
+  isLoading: boolean;
   status: string;
   customError: any;
   copilotsExists: boolean;
@@ -26,6 +28,7 @@ interface CreateCopilotProps {
 
 export const CreateCopilot: React.FC<CreateCopilotProps> = ({
   onSubmit,
+  isLoading,
   status,
   customError,
   copilotsExists,
@@ -143,14 +146,16 @@ export const CreateCopilot: React.FC<CreateCopilotProps> = ({
           <Button size="small" onClick={handleClose} variant="outlined">
             Cancel
           </Button>
-          <Button
+          <LoadingButton
             size="small"
-            onClick={handleSubmit(onFormSubmit)}
             variant="outlined"
-            color="primary"
+            onClick={handleSubmit(onFormSubmit)}
+            loadingPosition="start"
+            loading={isLoading}
+            sx={{ width: "8rem" }}
           >
-            Confirm
-          </Button>
+            {isLoading ? <>Creating...</> : <>Create</>}
+          </LoadingButton>
         </DialogActions>
       </Dialog>
     </>
