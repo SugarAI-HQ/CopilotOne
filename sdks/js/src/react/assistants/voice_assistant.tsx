@@ -1,160 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { FaMicrophone } from "react-icons/fa";
+// import { FaMicrophone } from "react-icons/fa";
 import {
   type EmbeddingScopeWithUserType,
   type EmbeddingScopeType,
   type PromptTemplateType,
   type PromptVariablesType,
   type CopilotStylePositionType,
-  type CopilotSyleContainerType,
-  type CopilotSyleThemeType,
   type CopilotSytleType,
   copilotStyleDefaults,
-  copilotSyleButtonSchema,
 } from "../../schema";
 import { useCopilot } from "../CopilotContext";
 // import { WindowObj } from "../schema";
 import root from "window-or-global";
 
-import { styled, css, StyleSheetManager } from "styled-components";
-import { z } from "zod";
-import { ChatContainer, pulse } from "./base_widget";
+import { StyleSheetManager } from "styled-components";
 
-// const ping = keyframes`
-//   0% {
-//     transform: scale(0);
-//     opacity: 0.5;
-//   }
-//   100% {
-//     transform: scale(3);
-//     opacity: 0;
-//   }
-// `;
+import {
+  ChatContainer,
+  ChatButton,
+  ChatMessage,
+  Message,
+  ToolTipWindow,
+  TootTipMessage,
+} from "../assistants/base_assistant";
+import Mic from "../icons/mic";
 
-const copilotButtonProps = z.object({
-  button: copilotSyleButtonSchema,
-  isprocessing: z.string(),
-  ispermissiongranted: z.string(),
-  islistening: z.string(),
-});
-type CopilotButtonPropsType = z.infer<typeof copilotButtonProps>;
-
-const ChatMessage = styled.div<{
-  container: CopilotSyleContainerType;
-  position: CopilotStylePositionType;
-}>`
-  position: fixed;
-  width: 300px;
-  max-height: calc(100vh - 120px);
-  background-color: white;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgb(0 0 0 / 20%);
-  animation-duration: 0.5s;
-  animation-name: d;
-  animation-fill-mode: forwards;
-  overflow-y: auto;
-  z-index: 1000; // Ensure the chat window is above most elements
-
-  ${({ container, position }) => {
-    const positions = position
-      ? position?.split("-")
-      : (container?.position as CopilotStylePositionType)?.split("-") || [];
-    const styles = positions?.map((position) => {
-      switch (position) {
-        case "top":
-          return css`
-            top: 90px;
-          `;
-        case "bottom":
-          return css`
-            bottom: 90px;
-          `;
-        case "left":
-          return css`
-            left: 20px;
-          `;
-        case "right":
-          return css`
-            right: 20px;
-          `;
-        default:
-          return "";
-      }
-    });
-
-    return css`
-      ${styles.join(" ")}
-    `;
-  }}
-`;
-
-const ChatButton = styled.button<CopilotButtonPropsType>`
-  background-color: ${({ button }) => button?.bgColor};
-  color: ${({ button }) => button?.color};
-  border: none;
-  border-radius: 50%;
-  width: ${({ button }) => button?.width};
-  height: ${({ button }) => button?.height};
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
-  text-align: -webkit-center;
-  cursor: ${({ isprocessing, ispermissiongranted }) =>
-    isprocessing === "true" || ispermissiongranted !== "true"
-      ? "not-allowed"
-      : "pointer"};
-  opacity: ${({ isprocessing, ispermissiongranted }) =>
-    isprocessing === "true" || ispermissiongranted !== "true" ? "0.5" : "1"};
-  ${({ islistening }) =>
-    islistening === "true" &&
-    css`
-      animation: ${pulse} 1s infinite;
-    `}
-  &:hover {
-    background-color: ${({ isprocessing, ispermissiongranted, button }) =>
-      isprocessing === "true" || ispermissiongranted !== "true"
-        ? button?.bgColor
-        : button?.bgColor}
-`;
-
-const Message = styled.div<{ theme: CopilotSyleThemeType }>`
-  background-color: ${({ theme }) => theme?.secondaryColor};
-  font-size: ${({ theme }) => theme?.fontSize};
-  font-family: ${({ theme }) => theme?.fontFamily};
-  padding: 10px;
-  margin-bottom: 5px;
-`;
-
-// export const VoiceToSkillComponentX = ({
-//   id = null,
-//   promptTemplate = null,
-//   promptVariables = {},
-//   scope1 = "",
-//   scope2 = "",
-//   groupId = root?.location?.pathname as string,
-//   style = {},
-//   buttonStyle = {},
-//   messageStyle = {},
-//   position = copilotStyleDefaults.container.position,
-// }: {
-//   id: string | null;
-//   promptTemplate: PromptTemplateType | null;
-//   groupId?: EmbeddingScopeType["groupId"];
-//   scope1?: EmbeddingScopeType["scope1"];
-//   scope2?: EmbeddingScopeType["scope2"];
-//   promptVariables?: PromptVariablesType;
-//   style?: any;
-//   buttonStyle?: any;
-//   messageStyle?: any;
-//   position?: CopilotStylePositionType;
-// }) => {
-//   const [buttonId, setButtonName] = useState<string>(position as string);
-
-//   setButtonName(position);
-//   return <div>Copilot xxxxxxxx {buttonId}</div>;
-// };
-
-export const VoiceToSkillComponent = ({
+export const VoiceAssistant = ({
   id = null,
   promptTemplate = null,
   promptVariables = {},
@@ -179,6 +50,7 @@ export const VoiceToSkillComponent = ({
 }) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
+  const [hideToolTip, setHideToolTip] = useState(false);
   const [isprocessing, setIsprocessing] = useState(false);
   const [ispermissiongranted, setIspermissiongranted] = useState(false);
   const [interimOutput, setInterimOutput] = useState<string>("");
@@ -186,7 +58,7 @@ export const VoiceToSkillComponent = ({
   const [aiResponse, setAiResponse] = useState<string>("");
   const [recognition, setRecognition] = useState<any>();
 
-  const { config, clientUserId, textToSkill } = useCopilot();
+  const { config, clientUserId, textToAction } = useCopilot();
 
   const defaultStyle: CopilotSytleType = {
     ...config?.style,
@@ -226,6 +98,7 @@ export const VoiceToSkillComponent = ({
       return;
     }
     setIslistening(true);
+    setHideToolTip(true);
     try {
       if (recognition) {
         PROD: console.log("Starting speech recognition");
@@ -270,7 +143,7 @@ export const VoiceToSkillComponent = ({
           };
 
           // Generate the response
-          const aiResponse = await textToSkill(
+          const aiResponse = await textToAction(
             promptTemplate as string,
             finalTranscript,
             promptVariables,
@@ -358,8 +231,22 @@ export const VoiceToSkillComponent = ({
           isprocessing={isprocessing.toString()}
           islistening={islistening.toString()}
         >
-          <FaMicrophone size={defaultStyle?.button?.iconSize || 20} />
+          <Mic
+            color={defaultStyle?.button.color}
+            size={defaultStyle?.button?.iconSize}
+          />
         </ChatButton>
+        {!hideToolTip && (
+          <ToolTipWindow
+            container={defaultStyle?.container}
+            position={position as CopilotStylePositionType}
+            style={messageStyle}
+          >
+            <TootTipMessage theme={defaultStyle?.theme}>
+              Tap & Speak: Let AI Guide Your Journey!
+            </TootTipMessage>
+          </ToolTipWindow>
+        )}
         {(aiResponse || finalOutput || interimOutput) && (
           <ChatMessage
             container={defaultStyle?.container}

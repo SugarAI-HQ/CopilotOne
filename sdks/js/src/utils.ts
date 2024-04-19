@@ -40,7 +40,7 @@
 // };
 
 // setTimseout(async () => {
-//   const pt = "hi/skills/todo-skill/0.0.5";
+//   const pt = "hi/actions/todo-action/0.0.5";
 //   const pv = {};
 //   const todos = [
 //     { id: 1, text: "Grociers Shopping" },
@@ -56,12 +56,12 @@
 //     identifier: "todo123",
 //   };
 //   // fake data
-//   // await textToSkill(pt, pv, "Grociers Shopping", scope, true);
-//   // await textToSkill(pt, pv, "Finish homework", scope, true);
-//   // await textToSkill(pt, pv, "Call Parents", scope, true);
+//   // await textToAction(pt, pv, "Grociers Shopping", scope, true);
+//   // await textToAction(pt, pv, "Finish homework", scope, true);
+//   // await textToAction(pt, pv, "Call Parents", scope, true);
 
 //   // Real call
-//   // await textToSkill(pt, pv, "grocieries shopping is done", scope, false);
+//   // await textToAction(pt, pv, "grocieries shopping is done", scope, false);
 
 //   // await createEmbedding(todos, scope);
 

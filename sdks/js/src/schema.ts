@@ -45,7 +45,7 @@ export const copilotSyleButtonSchema = z.object({
   color: z.string().default(secondaryColor),
   width: z.string().default("60px"),
   height: z.string().default("60px"),
-  iconSize: z.string().default("20"),
+  iconSize: z.string().default("25"),
 });
 
 export type CopilotSyleButtonType = z.infer<typeof copilotSyleButtonSchema>;
@@ -71,14 +71,14 @@ export const copilotStyleDefaults: CopilotSytleType = {
     secondaryColor,
     fontFamily: "inherit",
     fontSize: "16px",
-    textColor: undefined, // or any default value you want
+    textColor: "", // or any default value you want
   },
   button: {
     bgColor: primaryColor,
     color: secondaryColor,
     width: "60px",
     height: "60px",
-    iconSize: "20",
+    iconSize: "25",
   },
 };
 
@@ -140,7 +140,7 @@ export type EmbeddingScopeWithUserType = z.infer<
 export const promptVariablesSchema = z.record(z.any());
 export type PromptVariablesType = z.infer<typeof promptVariablesSchema>;
 
-export const skillParameterDataTypeSchema = z.enum([
+export const actionParameterDataTypeSchema = z.enum([
   "boolean",
   "string",
   "integer",
@@ -149,63 +149,63 @@ export const skillParameterDataTypeSchema = z.enum([
   "array",
   "object",
 ]);
-export type SkillParameterDataTypeSchema = z.infer<
-  typeof skillParameterDataTypeSchema
+export type ActionParameterDataTypeSchema = z.infer<
+  typeof actionParameterDataTypeSchema
 >;
 
-export const skillParameterSchema = z.object({
-  type: skillParameterDataTypeSchema,
+export const actionParameterSchema = z.object({
+  type: actionParameterDataTypeSchema,
   enum: z.array(z.string()).optional(),
   description: z.string().min(10),
 });
-export type SkillParameterType = z.infer<typeof skillParameterSchema>;
+export type ActionParameterType = z.infer<typeof actionParameterSchema>;
 
-export const skillParametersSchema = z.object({
+export const actionParametersSchema = z.object({
   type: z.literal("object"),
-  properties: z.record(z.string(), skillParameterSchema),
+  properties: z.record(z.string(), actionParameterSchema),
   required: z.array(z.string()),
 });
-export type SkillParametersType = z.infer<typeof skillParametersSchema>;
+export type ActionParametersType = z.infer<typeof actionParametersSchema>;
 
-export const skillDefinitionSchema = z.object({
+export const actionDefinitionSchema = z.object({
   type: z.literal("function"),
   function: z.object({
     name: z.string().min(5).max(50),
     description: z.string().min(10),
-    parameters: skillParametersSchema,
+    parameters: actionParametersSchema,
   }),
 });
-export type SkillDefinitionType = z.infer<typeof skillDefinitionSchema>;
+export type ActionDefinitionType = z.infer<typeof actionDefinitionSchema>;
 
-export const skillRegistrationParameterSchema = z.object({
+export const actionRegistrationParameterSchema = z.object({
   name: z.string(),
-  type: skillParameterDataTypeSchema,
+  type: actionParameterDataTypeSchema,
   enum: z.array(z.string()).optional(),
   description: z.string().min(10),
   required: z.boolean(),
 });
-export type SkillRegistrationParameterType = z.infer<
-  typeof skillRegistrationParameterSchema
+export type ActionRegistrationParameterType = z.infer<
+  typeof actionRegistrationParameterSchema
 >;
 
-export const skillRegistrationParametersSchema = z.object({
+export const actionRegistrationParametersSchema = z.object({
   type: z.literal("object"),
-  properties: z.record(z.string(), skillParameterSchema),
+  properties: z.record(z.string(), actionParameterSchema),
 });
-export type SkillRegistrationParametersType = z.infer<
-  typeof skillRegistrationParametersSchema
+export type ActionRegistrationParametersType = z.infer<
+  typeof actionRegistrationParametersSchema
 >;
 
-export const skillRegistrationSchema = z.object({
+export const actionRegistrationSchema = z.object({
   // type: z.literal("function"),
   // function: z.object({
   name: z.string().min(5).max(50),
   description: z.string().min(10),
-  parameters: z.array(skillRegistrationParameterSchema),
+  parameters: z.array(actionRegistrationParameterSchema),
   // required: z.array(z.string()),
   // }),
 });
-export type SkillRegistrationType = z.infer<typeof skillRegistrationSchema>;
+export type ActionRegistrationType = z.infer<typeof actionRegistrationSchema>;
 
 export const DEFAULT_GROUP_ID: string = "DEFAULT_GROUP_ID";
 
