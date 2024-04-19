@@ -42,7 +42,7 @@ npm install @sugar-ai/copilot-one-js@latest
 In your main file. src/App.tsx
 
 ```js
-import { useCopilot, CopilotConfigType, CopilotProvider, VoiceToSkillComponent } from '@sugar-ai/copilot-one-js';
+import { useCopilot, CopilotConfigType, CopilotProvider, VoiceAssistant } from '@sugar-ai/copilot-one-js';
 
 
 const copilotConfig: CopilotConfigType = {
