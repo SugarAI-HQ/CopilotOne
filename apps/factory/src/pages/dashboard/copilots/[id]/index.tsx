@@ -8,6 +8,7 @@ import {
   CardHeader,
   Chip,
   Grid,
+  Link,
   Paper,
   Typography,
   colors,
@@ -136,11 +137,11 @@ function CopilotTabs({
     setValue(newValue);
   };
 
-  const npmPackage = "@sugar-ai/copilot-one-sdk@latest";
-  const codePackage = `npm i ${npmPackage}`;
+  const npmPackage = "@sugar-ai/copilot-one-js";
+  const codePackage = `npm i ${npmPackage}@latest`;
 
   const copilotConfigCode = `
-  import { CopilotConfigType, CopilotProvider, VoiceToSkillComponent } from '${npmPackage}';
+  import { CopilotConfigType } from '${npmPackage}';
 
   const copilotConfig: CopilotConfigType = {
     copilotId: '${copilot?.id}',
@@ -199,7 +200,7 @@ function CopilotTabs({
 
         <Tab label="Integration" sx={{ color: "var(--sugarhub-text-color)" }} />
         <Tab
-          label="Linked Prompts"
+          label="Linked Prompt Packages"
           sx={{ color: "var(--sugarhub-text-color)" }}
         />
         {/* Add more tabs as needed */}
@@ -225,7 +226,7 @@ function CopilotTabs({
                   component="p"
                   sx={{ mt: 1, mb: 4, flex: 1 }}
                 >
-                  {`${copilot?.name} copilot`}
+                  {`${copilot?.name}`}
                 </Typography>
               </Box>
               <CodeBlock title={"Copilot Id"} code={`${copilot?.id}`} />
@@ -240,12 +241,47 @@ function CopilotTabs({
 
       <TabPanel value={value} index={1}>
         <Paper sx={{ backgroundColor: "var(--sugarhub-tab-color)" }}>
-          <CodeBlock title={"Install Package"} code={codePackage} />
-          <CodeBlock title={"Copilot basic config"} code={copilotConfigCode} />
-          <CodeBlock
-            title={"Copilot in react component"}
-            code={copilotUsageCode}
-          />
+          <Card
+            sx={{
+              backgroundColor: "var(--sugarhub-tab-color)",
+              borderRadius: "0.5rem",
+              color: "var(--sugarhub-text-color)",
+            }}
+          >
+            <CardContent>
+              <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+                <Typography
+                  variant="h4"
+                  component="p"
+                  sx={{ mt: 1, mb: 4, flex: 1, textAlign: "center" }}
+                >
+                  Add Copilot to your App
+                  <br />
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    href="https://docs.sugarai.dev/guides/get-staretd/"
+                    sx={{ mt: 2 }}
+                  >
+                    Docs
+                  </Button>
+                </Typography>
+                <Box>
+                  <CodeBlock title={"Install Package"} code={codePackage} />
+
+                  <CodeBlock
+                    title={"Copilot basic config"}
+                    code={copilotConfigCode}
+                  />
+                  <Typography sx={{ p: 2 }}>Read more on the docs</Typography>
+                  {/* <CodeBlock
+                  title={"Copilot in react component"}
+                  code={copilotUsageCode}
+                /> */}
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
         </Paper>
       </TabPanel>
 
@@ -368,16 +404,24 @@ const CopilotPrompts = ({
           ))}
         </Grid>
       ) : (
-        <>
+        <Box
+          style={{
+            minHeight: "50vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           <Button
             size="small"
             onClick={regeneratePromptConfig}
             variant="outlined"
             color="primary"
           >
-            Regenerate Prompt
+            Create Linked Prompt Packages
           </Button>
-        </>
+        </Box>
       )}
     </div>
   );

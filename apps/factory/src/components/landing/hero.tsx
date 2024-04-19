@@ -26,7 +26,8 @@ const Hero = () => {
           </h1> */}
           <Image src={getLogoImage()} width={600} height={600} alt="Logo" />
           <h2 className="mb-5 p-3 text-center text-2xl font-bold text-white">
-            Supercharge your Web/Mobile Apps with Siri-like Copilots
+            Supercharge your Web/Mobile Apps with Siri-like Siri Native AI
+            Assistants
           </h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
@@ -34,9 +35,9 @@ const Hero = () => {
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               href="/dashboard/copilots"
             >
-              <h3 className="text-2xl font-bold">Build First Copilot →</h3>
+              <h3 className="text-2xl font-bold">Build Copilot →</h3>
               <div className="text-lg">
-                Build, Version, Train and Ship Prompt Packages over APIs.
+                Add and go live with Voice/Text enabled AI Assitants
               </div>
             </Link>
 
