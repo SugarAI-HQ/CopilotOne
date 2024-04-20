@@ -8,6 +8,7 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   type CopilotSyleKeyboardPositionSchema,
+  copilotAiDefaults,
 } from "../../schema";
 import { useCopilot } from "../CopilotContext";
 import root from "window-or-global";
@@ -86,14 +87,21 @@ export const VoiceAssistant = ({
     theme: currentTheme,
     voiceButton: {
       ...copilotStyleDefaults.voiceButton,
+      ...config?.style?.voiceButton,
       bgColor: currentTheme.primaryColor,
       color: currentTheme.secondaryColor,
     },
     keyboardButton: {
       ...copilotStyleDefaults.keyboardButton,
+      ...config?.style?.keyboardButton,
       bgColor: currentTheme.primaryColor,
       color: currentTheme.secondaryColor,
     },
+  };
+
+  const currentAiConfig = {
+    ...copilotAiDefaults,
+    ...config?.ai,
   };
 
   DEV: console.log(
@@ -324,7 +332,7 @@ export const VoiceAssistant = ({
                 style={messageStyle}
               >
                 <TootTipMessage theme={currentStyle?.theme}>
-                  {config?.ai?.welcomeMessage}
+                  {currentAiConfig.welcomeMessage}
                 </TootTipMessage>
               </ToolTipWindow>
             )}
@@ -335,7 +343,7 @@ export const VoiceAssistant = ({
           <TextBoxContainer>
             <TextBox
               type="text"
-              placeholder="Start typing..."
+              placeholder={currentStyle?.keyboardButton?.placeholder}
               value={textMessage}
               color={currentStyle?.keyboardButton?.bgColor}
               onChange={(e) => {

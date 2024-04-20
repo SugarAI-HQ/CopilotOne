@@ -69,6 +69,7 @@ export const copilotStyleKeyboardButtonSchema = z.object({
   color: z.string().default(secondaryColor),
   position: copilotSyleKeyboardPositionSchema.default("left"),
   iconSize: z.string().default("25").optional(),
+  placeholder: z.string().default("Start typing..."),
 });
 
 export type CopilotSyleButtonType = z.infer<
@@ -129,6 +130,7 @@ export const copilotStyleDefaults: CopilotSytleType = {
     color: secondaryColor,
     position: "left",
     iconSize: "25",
+    placeholder: "Start typing...",
   },
 };
 
