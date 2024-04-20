@@ -15,8 +15,24 @@ export const copilotSylePositionSchema = z.enum([
   "top-center",
   "bottom-center",
 ]);
+
+export const copilotSyleKeyboardPositionSchema = z.enum([
+  "left",
+  "right",
+  "bottom",
+  "top",
+]);
+
+export const messageRoleEnum = z.enum(["assistant", "system", "tool"]);
+
+export type MessageRoleType = z.infer<typeof messageRoleEnum>;
+
 export type CopilotStylePositionType = z.infer<
   typeof copilotSylePositionSchema
+>;
+
+export type CopilotSyleKeyboardPositionSchema = z.infer<
+  typeof copilotSyleKeyboardPositionSchema
 >;
 
 export const copilotSyleContainerSchema = z.object({
@@ -40,7 +56,7 @@ export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
 
 // export const copilotThemeProps = z.object({});
 
-export const copilotSyleButtonSchema = z.object({
+export const copilotStyleVoiceButtonSchema = z.object({
   bgColor: z.string().default(primaryColor),
   color: z.string().default(secondaryColor),
   width: z.string().default("60px"),
@@ -48,12 +64,22 @@ export const copilotSyleButtonSchema = z.object({
   iconSize: z.string().default("25"),
 });
 
-export type CopilotSyleButtonType = z.infer<typeof copilotSyleButtonSchema>;
+export const copilotStyleKeyboardButtonSchema = z.object({
+  bgColor: z.string().default(primaryColor),
+  color: z.string().default(secondaryColor),
+  position: copilotSyleKeyboardPositionSchema.default("left"),
+  iconSize: z.string().default("25").optional(),
+});
+
+export type CopilotSyleButtonType = z.infer<
+  typeof copilotStyleVoiceButtonSchema
+>;
 
 export const copilotSytleSchema = z.object({
   container: copilotSyleContainerSchema,
   theme: copilotSyleThemeSchema,
-  button: copilotSyleButtonSchema,
+  voiceButton: copilotStyleVoiceButtonSchema,
+  keyboardButton: copilotStyleKeyboardButtonSchema,
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
@@ -73,14 +99,23 @@ export const copilotStyleDefaults: CopilotSytleType = {
     fontSize: "16px",
     textColor: "", // or any default value you want
   },
-  button: {
+  voiceButton: {
     bgColor: primaryColor,
     color: secondaryColor,
     width: "60px",
     height: "60px",
     iconSize: "25",
   },
+  keyboardButton: {
+    bgColor: primaryColor,
+    color: secondaryColor,
+    position: "left",
+    iconSize: "25",
+  },
 };
+// Voicebutton
+// keyboardbutton -> position -> right, left, top, bottom
+//
 
 export const copilotConfigSchema = z.object({
   copilotId: z.string(), // No validation on appId itself

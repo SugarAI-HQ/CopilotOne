@@ -7,22 +7,27 @@ import {
   type CopilotStylePositionType,
   type CopilotSytleType,
   copilotStyleDefaults,
+  type CopilotSyleKeyboardPositionSchema,
 } from "../../schema";
 import { useCopilot } from "../CopilotContext";
-// import { WindowObj } from "../schema";
 import root from "window-or-global";
 
 import { StyleSheetManager } from "styled-components";
 
 import {
-  ChatContainer,
-  ChatButton,
+  CopilotContainer,
+  VoiceButton,
   ChatMessage,
   Message,
   ToolTipWindow,
   TootTipMessage,
+  KeyboardButton,
+  TextBoxContainer,
+  TextBoxButton,
+  TextBox,
 } from "../assistants/base_assistant";
 import Mic from "../icons/mic";
+import Keyboard from "../icons/keyboard";
 
 export const VoiceAssistant = ({
   id = null,
@@ -32,9 +37,11 @@ export const VoiceAssistant = ({
   scope2 = "",
   groupId = root?.location?.pathname as string,
   style = {},
-  buttonStyle = {},
+  voiceButtonStyle = {},
+  keyboardButtonStyle = {},
   messageStyle = {},
   position = copilotStyleDefaults.container.position,
+  keyboardPostion = copilotStyleDefaults.keyboardButton.position,
 }: {
   id: string | null;
   promptTemplate: PromptTemplateType | null;
@@ -43,9 +50,11 @@ export const VoiceAssistant = ({
   scope2?: EmbeddingScopeType["scope2"];
   promptVariables?: PromptVariablesType;
   style?: any;
-  buttonStyle?: any;
+  voiceButtonStyle?: any;
+  keyboardButtonStyle?: any;
   messageStyle?: any;
   position?: CopilotStylePositionType;
+  keyboardPostion?: CopilotSyleKeyboardPositionSchema;
 }) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
@@ -56,6 +65,7 @@ export const VoiceAssistant = ({
   const [finalOutput, setFinalOutput] = useState<string>("");
   const [aiResponse, setAiResponse] = useState<string>("");
   const [recognition, setRecognition] = useState<any>();
+  const [hideVoiceButton, setHideVoiceButton] = useState(false);
 
   const { config, clientUserId, textToAction } = useCopilot();
 
@@ -77,23 +87,28 @@ export const VoiceAssistant = ({
 
   useEffect(() => {
     // Check if microphone permission is granted
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(() => {
-        setIspermissiongranted(true);
-      })
-      .catch(() => {
-        setIspermissiongranted(false);
-      });
+    // navigator.mediaDevices
+    //   .getUserMedia({ audio: true })
+    //   .then(() => {
+    //     setIspermissiongranted(true);
+    //   })
+    //   .catch(() => {
+    //     setIspermissiongranted(false);
+    //   });
 
     setButtonName(id ?? (position as string));
   }, []);
 
   const startListening = () => {
     if (!ispermissiongranted) {
-      alert(
-        "Microphone permission not granted. Please allow microphone access.",
-      );
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then(() => {
+          setIspermissiongranted(true);
+        })
+        .catch(() => {
+          setIspermissiongranted(false);
+        });
       return;
     }
     setIslistening(true);
@@ -210,42 +225,90 @@ export const VoiceAssistant = ({
     synth.speak(utterance);
   };
 
+  const enableKeyboard = () => {
+    setHideVoiceButton(!hideVoiceButton);
+  };
+
   const shouldForwardProp = (prop: string) =>
     prop !== "container" && prop !== "position";
 
+  const keyboardPosition = () => {
+    return (
+      <KeyboardButton
+        className="sugar-ai-copilot-keyboard-button"
+        style={keyboardButtonStyle}
+        button={defaultStyle?.keyboardButton}
+        onClick={enableKeyboard}
+      >
+        <Keyboard width={"20"} height={"14"} />
+      </KeyboardButton>
+    );
+  };
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-      <ChatContainer
+      <CopilotContainer
         id={`sugar-ai-copilot-${buttonId}`}
         className="sugar-ai-copilot-container"
         container={defaultStyle?.container}
         position={position as CopilotStylePositionType}
         style={style}
       >
-        <ChatButton
-          style={buttonStyle}
-          onClick={startListening}
-          button={defaultStyle?.button}
-          ispermissiongranted={ispermissiongranted.toString()}
-          isprocessing={isprocessing.toString()}
-          islistening={islistening.toString()}
-        >
-          <Mic
-            color={defaultStyle?.button.color}
-            size={defaultStyle?.button?.iconSize}
-          />
-        </ChatButton>
-        {!hideToolTip && (
-          <ToolTipWindow
-            container={defaultStyle?.container}
-            position={position as CopilotStylePositionType}
-            style={messageStyle}
-          >
-            <TootTipMessage theme={defaultStyle?.theme}>
-              Tap & Speak: Let AI Guide Your Journey!
-            </TootTipMessage>
-          </ToolTipWindow>
+        {!hideVoiceButton && (
+          <>
+            {defaultStyle.keyboardButton.position === "left" &&
+              keyboardPostion === "left" &&
+              keyboardPosition()}
+            <VoiceButton
+              className="sugar-ai-copilot-voice-button"
+              style={voiceButtonStyle}
+              onClick={startListening}
+              button={defaultStyle?.voiceButton}
+              ispermissiongranted={ispermissiongranted.toString()}
+              isprocessing={isprocessing.toString()}
+              islistening={islistening.toString()}
+            >
+              <Mic
+                color={defaultStyle?.voiceButton.color}
+                size={defaultStyle?.voiceButton?.iconSize}
+              />
+            </VoiceButton>
+            {(defaultStyle.keyboardButton.position === "right" ||
+              keyboardPostion === "right") &&
+              keyboardPosition()}
+
+            {!hideToolTip && (
+              <ToolTipWindow
+                container={defaultStyle?.container}
+                position={position as CopilotStylePositionType}
+                style={messageStyle}
+              >
+                <TootTipMessage theme={defaultStyle?.theme}>
+                  Tap & Speak: Let AI Guide Your Journey!
+                </TootTipMessage>
+              </ToolTipWindow>
+            )}
+          </>
         )}
+
+        {hideVoiceButton && (
+          <TextBoxContainer>
+            <TextBox
+              type="text"
+              placeholder="Start typing..."
+              color={defaultStyle?.keyboardButton?.bgColor}
+            />
+            <TextBoxButton onClick={enableKeyboard}>
+              <Mic
+                color={defaultStyle?.keyboardButton?.bgColor}
+                size={defaultStyle?.keyboardButton?.iconSize}
+                width={"26"}
+                height={"30"}
+              />
+            </TextBoxButton>
+          </TextBoxContainer>
+        )}
+
         {(aiResponse || finalOutput || interimOutput) && (
           <ChatMessage
             container={defaultStyle?.container}
@@ -258,11 +321,13 @@ export const VoiceAssistant = ({
               </Message>
             )}
             {aiResponse && (
-              <Message theme={defaultStyle?.theme}>{aiResponse}</Message>
+              <Message theme={defaultStyle?.theme} role="assistant">
+                {aiResponse}
+              </Message>
             )}
           </ChatMessage>
         )}
-      </ChatContainer>
+      </CopilotContainer>
     </StyleSheetManager>
   );
 };

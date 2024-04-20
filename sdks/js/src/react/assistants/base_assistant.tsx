@@ -1,19 +1,30 @@
 import { z } from "zod";
 import { styled, css, keyframes } from "styled-components";
 import {
-  copilotSyleButtonSchema,
+  copilotStyleVoiceButtonSchema,
   type CopilotSyleThemeType,
   type CopilotStylePositionType,
   type CopilotSyleContainerType,
+  type MessageRoleType,
+  messageRoleEnum,
+  copilotStyleKeyboardButtonSchema,
 } from "../../schema";
 
-const copilotButtonProps = z.object({
-  button: copilotSyleButtonSchema,
+const copilotVoiceButtonProps = z.object({
+  button: copilotStyleVoiceButtonSchema,
   isprocessing: z.string(),
   ispermissiongranted: z.string(),
   islistening: z.string(),
 });
-type CopilotButtonPropsType = z.infer<typeof copilotButtonProps>;
+
+const copilotKeyboardButtonProps = z.object({
+  button: copilotStyleKeyboardButtonSchema,
+});
+
+type CopilotVoiceButtonPropsType = z.infer<typeof copilotVoiceButtonProps>;
+type CopilotKeyboardButtonPropsType = z.infer<
+  typeof copilotKeyboardButtonProps
+>;
 
 export const pulse = keyframes`
   0% {
@@ -37,7 +48,7 @@ export const sparkle = keyframes`
     transform: scale(1.2);
   }`;
 
-export const ChatContainer = styled.div<{
+export const CopilotContainer = styled.div<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
 }>`
@@ -149,7 +160,7 @@ export const ChatMessage = styled.div<{
   }}
 `;
 
-export const ChatButton = styled.button<CopilotButtonPropsType>`
+export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
   background-color: ${({ button }) => button?.bgColor};
   color: ${({ button }) => button?.color};
   border: none;
@@ -180,9 +191,33 @@ export const ChatButton = styled.button<CopilotButtonPropsType>`
         : button?.bgColor}
 `;
 
-export const Message = styled.div<{ theme: CopilotSyleThemeType }>`
-  background-color: ${({ theme }) => theme?.primaryColor};
-  color: ${({ theme }) => theme?.secondaryColor};
+export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
+  position: relative;
+  background-color: ${({ button }) => button?.color};
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
+  text-align: -webkit-center;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+`;
+
+export const ButtonContainer = styled.div``;
+
+export const Message = styled.div<{
+  theme: CopilotSyleThemeType;
+  role?: string;
+}>`
+  background-color: ${({ theme, role }) =>
+    messageRoleEnum.options.includes(role as MessageRoleType)
+      ? "white"
+      : theme?.primaryColor};
+  color: ${({ theme, role }) =>
+    messageRoleEnum.options.includes(role as MessageRoleType)
+      ? "black"
+      : theme?.secondaryColor};
   font-size: ${({ theme }) => theme?.fontSize};
   font-family: ${({ theme }) => theme?.fontFamily};
   padding: 10px;
@@ -204,4 +239,35 @@ export const TootTipMessage = styled(Message)`
   border: none;
   box-shadow: none;
   margin-bottom: 0px;
+`;
+
+// Wrapper component to contain input box and button
+export const TextBoxContainer = styled.div`
+  // position: relative;
+  // display: inline-block;
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  margin: 0;
+  z-index: 1000;
+`;
+
+export const TextBox = styled.input<{ color: string }>`
+  padding: 8px 32px 8px 8px; /* Adjust right padding to accommodate the button */
+  border: 1px solid ${({ color }) => color};
+  border-radius: 5px;
+  outline: none;
+`;
+
+// Styled button
+export const TextBoxButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 8px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  color: #fff;
+  cursor: pointer;
+  outline: none;
 `;
