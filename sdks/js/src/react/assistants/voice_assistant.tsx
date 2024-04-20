@@ -41,7 +41,7 @@ export const VoiceAssistant = ({
   voiceButtonStyle = {},
   keyboardButtonStyle = {},
   messageStyle = {},
-  position = copilotStyleDefaults.container.position,
+  position = copilotStyleDefaults.container.position || "bottom-right",
   keyboardPostion = copilotStyleDefaults.keyboardButton.position,
 }: {
   id: string | null;
@@ -66,7 +66,7 @@ export const VoiceAssistant = ({
   const [finalOutput, setFinalOutput] = useState<string>("");
   const [aiResponse, setAiResponse] = useState<string>("");
   const [recognition, setRecognition] = useState<any>();
-  const [hideVoiceButton, setHideVoiceButton] = useState(false);
+  const [hideVoiceButton, setHideVoiceButton] = useState(true);
   const [textMessage, setTextMessage] = useState("");
 
   const { config, clientUserId, textToAction } = useCopilot();
@@ -285,7 +285,10 @@ export const VoiceAssistant = ({
     );
   };
 
-  const processSpeechToText = async (input: string) => {
+  const processSpeechToText = async (
+    input: string,
+    isSpeak: boolean = true,
+  ) => {
     const newScope: EmbeddingScopeWithUserType = {
       clientUserId: clientUserId!,
       scope1,
@@ -302,7 +305,7 @@ export const VoiceAssistant = ({
     });
     if (typeof aiResponse === "string") {
       setAiResponse(aiResponse);
-      speak(aiResponse);
+      isSpeak && speak(aiResponse);
       recognition.stop();
     }
   };
@@ -310,8 +313,9 @@ export const VoiceAssistant = ({
   const startSending = async () => {
     const newTextMessage = textMessage;
     setTextMessage("");
+    setAiResponse("");
     setFinalOutput(newTextMessage);
-    await processSpeechToText(newTextMessage);
+    await processSpeechToText(newTextMessage, false);
   };
 
   return (
@@ -361,7 +365,10 @@ export const VoiceAssistant = ({
         )}
 
         {hideVoiceButton && (
-          <TextBoxContainer>
+          <TextBoxContainer
+            container={currentStyle?.container}
+            position={position}
+          >
             <TextBox
               type="text"
               placeholder={currentStyle?.keyboardButton?.placeholder}

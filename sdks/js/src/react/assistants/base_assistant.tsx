@@ -188,7 +188,8 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
     background-color: ${({ isprocessing, ispermissiongranted, button }) =>
       isprocessing === "true" || ispermissiongranted !== "true"
         ? button?.bgColor
-        : button?.bgColor}
+        : button?.bgColor};
+  }
 `;
 
 export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
@@ -242,10 +243,13 @@ export const TootTipMessage = styled(Message)`
 `;
 
 // Wrapper component to contain input box and button
-export const TextBoxContainer = styled.div`
+export const TextBoxContainer = styled.div<{
+  container: CopilotSyleContainerType;
+  position: CopilotStylePositionType;
+}>`
   position: fixed;
-  bottom: 25px;
   right: 25px;
+
   margin: 0;
   z-index: 1000;
   // width: -webkit-fill-available;
@@ -257,6 +261,27 @@ export const TextBoxContainer = styled.div`
     width: -webkit-fill-available;
     max-width: unset;
   }
+  ${({ container, position }) => {
+    const positions =
+      (position as CopilotStylePositionType) ||
+      (container?.position as CopilotStylePositionType);
+    switch (positions) {
+      case "top-left":
+      case "top-right":
+      case "top-center":
+        return css`
+          top: 25px;
+        `;
+      case "bottom-right":
+      case "bottom-left":
+      case "bottom-center":
+        return css`
+          bottom: 25px;
+        `;
+      default:
+        return ""; // If no position matches, default to an empty string
+    }
+  }}
 `;
 
 export const TextBox = styled.input<{ color: string }>`
