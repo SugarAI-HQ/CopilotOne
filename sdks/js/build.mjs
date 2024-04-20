@@ -22,7 +22,7 @@ const sharedConfig = {
   bundle: true,
 
   // size optimizations
-  // minify: true,
+  minify: true,
   metafile: true,
   treeShaking: true,
   // nativeZip: true, // bundle as a single file
@@ -31,8 +31,8 @@ const sharedConfig = {
   sourcemap: true,
 
   // Remove unsued code
-  // drop: ["debugger"],
-  // dropLabels: ["DEV", "TEST"],
+  drop: ["debugger"],
+  dropLabels: ["DEV", "TEST"],
 
   // External dependencies
   external: Object.keys(pj.dependencies).concat(
