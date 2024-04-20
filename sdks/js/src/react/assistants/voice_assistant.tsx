@@ -122,7 +122,7 @@ export const VoiceAssistant = ({
   }
 
   useEffect(() => {
-    checkIfAudioPermissionGranted();
+    void checkIfAudioPermissionGranted();
     // Check if microphone permission is granted
     // navigator.mediaDevices
     //   .getUserMedia({ audio: true })
@@ -146,7 +146,9 @@ export const VoiceAssistant = ({
 
   const checkIfAudioPermissionGranted = async () => {
     if (!ispermissiongranted) {
-      const result = await navigator.permissions.query({ name: "microphone" });
+      const result = await navigator.permissions.query({
+        name: "microphone" as PermissionName,
+      });
       if (result.state === "granted") {
         DEV: console.log("[Audio] Permission already granted");
         setIspermissiongranted(true);
