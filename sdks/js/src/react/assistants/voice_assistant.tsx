@@ -122,6 +122,7 @@ export const VoiceAssistant = ({
   }
 
   useEffect(() => {
+    checkIfAudioPermissionGranted();
     // Check if microphone permission is granted
     // navigator.mediaDevices
     //   .getUserMedia({ audio: true })
@@ -135,23 +136,53 @@ export const VoiceAssistant = ({
     setButtonName(id ?? (position as string));
   }, []);
 
+  useEffect(() => {
+    if (islistening) {
+      PROD: console.log("[Audio] listening");
+    } else {
+      PROD: console.log("[Audio] Not listening");
+    }
+  }, [islistening]);
+
+  const checkIfAudioPermissionGranted = async () => {
+    if (!ispermissiongranted) {
+      const result = await navigator.permissions.query({ name: "microphone" });
+      if (result.state === "granted") {
+        DEV: console.log("[Audio] Permission already granted");
+        setIspermissiongranted(true);
+      }
+    }
+  };
+
   const startListening = () => {
+    let haveMicPermission = false;
     if (!ispermissiongranted) {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then(() => {
+          haveMicPermission = true;
           setIspermissiongranted(true);
         })
         .catch(() => {
           setIspermissiongranted(false);
         });
       return;
+    } else {
+      haveMicPermission = true;
     }
+    if (!haveMicPermission) {
+      // TODO: Show error tooltip with message
+      PROD: console.warn("[Audio] haven't got mic permissions");
+      return;
+    }
+
+    // Listening Success
     setIslistening(true);
     setHideToolTip(true);
+
     try {
       if (recognition) {
-        PROD: console.log("Starting speech recognition");
+        PROD: console.log("[Audio] Starting speech recognition");
         initRecognition(recognition);
         recognition?.start();
 
@@ -159,7 +190,8 @@ export const VoiceAssistant = ({
         setAiResponse("");
       }
     } catch (e: any) {
-      PROD: console.warn(`Error starting recognition ${e.message}`);
+      // TODO: Show error tooltip with message
+      PROD: console.warn(`[Audio] Error starting recognition ${e.message}`);
     }
   };
 
@@ -179,7 +211,7 @@ export const VoiceAssistant = ({
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           finalTranscript = event.results[i][0].transcript;
-          DEV: console.log(`Final: ${finalTranscript}`);
+          DEV: console.log(`[Audio] Final: ${finalTranscript}`);
 
           // Take care of it
           setIslistening(false);
@@ -195,21 +227,11 @@ export const VoiceAssistant = ({
     };
 
     recognition.onend = (event) => {
-      // debugger;
-      // setIslistening(false);
-      // setIsprocessing(true);
-      // // Simulate processing delay
-      // setTimeout(() => {
-      //   const response = "This is a response from your assistant.";
-      //   setFinalOutput(response);
-      //   speak(response);
-      //   setIsprocessing(false);
-      //   recognition.stop();
-      // }, 1000);
+      setIslistening(false);
     };
 
     recognition.onerror = function (event) {
-      // setIslistening(false);
+      setIslistening(false);
       PROD: console.error(`recognition.onerror ${JSON.stringify(event)}`);
     };
   }
@@ -217,7 +239,6 @@ export const VoiceAssistant = ({
   useEffect(() => {
     let srx: any = null;
     let recognition: any = null;
-    DEV: console.log(`Window or global ${root}`);
     if (
       !recognition &&
       typeof root !== "undefined" &&

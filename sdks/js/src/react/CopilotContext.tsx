@@ -7,6 +7,7 @@ import {
   type EmbeddingScopeWithUserType,
   type CopilotSytleType,
   DEFAULT_GROUP_ID,
+  copilotAiDefaults,
 } from "../schema";
 import { type SugarAiApi, SugarAiApiClient } from "../api-client";
 import { createUseState } from "./hooks";
@@ -52,6 +53,17 @@ export const CopilotProvider = function ({
 }) {
   const uxActions: Array<Record<string, ActionDefinitionType>> = [];
   const uxActionCallbacks: Array<Record<string, Function>> = [];
+
+  // 0. setup config
+  config = {
+    ...config,
+    ai: {
+      ...copilotAiDefaults,
+      ...config.ai,
+    },
+  };
+
+  PROD: console.log(`copilot config ${JSON.stringify(config)}`);
 
   // 1. Setup userId
   const clientUserId: string = generateUserId(config?.client?.userId ?? null);

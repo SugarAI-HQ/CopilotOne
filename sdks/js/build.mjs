@@ -32,7 +32,7 @@ const sharedConfig = {
 
   // Remove unsued code
   // drop: ["debugger"],
-  dropLabels: ["DEV", "TEST"],
+  // dropLabels: ["DEV", "TEST"],
 
   // External dependencies
   external: Object.keys(pj.dependencies).concat(
@@ -41,12 +41,12 @@ const sharedConfig = {
 };
 
 // cjs
-build({
-  ...sharedConfig,
-  platform: "node", // for CJS
-  // outfile: `${outputDir}/cjs/index.js`,
-  outdir: `${outputDir}/cjs/`,
-});
+// build({
+//   ...sharedConfig,
+//   platform: "node", // for CJS
+//   // outfile: `${outputDir}/cjs/index.js`,
+//   outdir: `${outputDir}/cjs/`,
+// });
 
 // esm
 let result = await build({

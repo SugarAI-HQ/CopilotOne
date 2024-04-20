@@ -182,7 +182,7 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
           animation: ${pulse} 1s infinite;
         `
       : css`
-          animation: ${sparkle} 3s ease-in-out 4s infinite;
+          // animation: ${sparkle} 3s ease-in-out 4s infinite;
         `}
   &:hover {
     background-color: ${({ isprocessing, ispermissiongranted, button }) =>
