@@ -70,13 +70,39 @@ export const VoiceAssistant = ({
 
   const { config, clientUserId, textToAction } = useCopilot();
 
-  const defaultStyle: CopilotSytleType = {
-    ...config?.style,
-    ...copilotStyleDefaults,
+  const currentTheme = {
+    ...copilotStyleDefaults.theme,
+    ...config?.style?.theme,
   };
 
-  DEV: console.log(`default Ai ---> ${JSON.stringify(config?.ai)}`);
-  DEV: console.log(`default Style ---> ${JSON.stringify(defaultStyle)}`);
+  DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
+
+  const currentStyle: CopilotSytleType = {
+    ...copilotStyleDefaults,
+    container: {
+      ...copilotStyleDefaults.container,
+      ...config?.style?.container,
+    },
+    theme: currentTheme,
+    voiceButton: {
+      ...copilotStyleDefaults.voiceButton,
+      bgColor: currentTheme.primaryColor,
+      color: currentTheme.secondaryColor,
+    },
+    keyboardButton: {
+      ...copilotStyleDefaults.keyboardButton,
+      bgColor: currentTheme.primaryColor,
+      color: currentTheme.secondaryColor,
+    },
+  };
+
+  DEV: console.log(
+    `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
+  );
+
+  DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
+
+  DEV: console.log(`default Style ---> ${JSON.stringify(currentStyle)}`);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -218,10 +244,14 @@ export const VoiceAssistant = ({
       <KeyboardButton
         className="sugar-ai-copilot-keyboard-button"
         style={keyboardButtonStyle}
-        button={defaultStyle?.keyboardButton}
+        button={currentStyle?.keyboardButton}
         onClick={enableKeyboard}
       >
-        <Keyboard width={"20"} height={"14"} />
+        <Keyboard
+          width={"20"}
+          height={"14"}
+          color={currentStyle?.keyboardButton?.bgColor}
+        />
       </KeyboardButton>
     );
   };
@@ -260,40 +290,40 @@ export const VoiceAssistant = ({
       <CopilotContainer
         id={`sugar-ai-copilot-${buttonId}`}
         className="sugar-ai-copilot-container"
-        container={defaultStyle?.container}
+        container={currentStyle?.container}
         position={position as CopilotStylePositionType}
         style={style}
       >
         {!hideVoiceButton && (
           <>
-            {defaultStyle.keyboardButton.position === "left" &&
+            {currentStyle.keyboardButton.position === "left" &&
               keyboardPostion === "left" &&
               keyboardPosition()}
             <VoiceButton
               className="sugar-ai-copilot-voice-button"
               style={voiceButtonStyle}
               onClick={startListening}
-              button={defaultStyle?.voiceButton}
+              button={currentStyle?.voiceButton}
               ispermissiongranted={ispermissiongranted.toString()}
               isprocessing={isprocessing.toString()}
               islistening={islistening.toString()}
             >
               <Mic
-                color={defaultStyle?.voiceButton.color}
-                size={defaultStyle?.voiceButton?.iconSize}
+                color={currentStyle?.voiceButton.color}
+                size={currentStyle?.voiceButton?.iconSize}
               />
             </VoiceButton>
-            {(defaultStyle.keyboardButton.position === "right" ||
+            {(currentStyle.keyboardButton.position === "right" ||
               keyboardPostion === "right") &&
               keyboardPosition()}
 
             {!hideToolTip && (
               <ToolTipWindow
-                container={defaultStyle?.container}
+                container={currentStyle?.container}
                 position={position as CopilotStylePositionType}
                 style={messageStyle}
               >
-                <TootTipMessage theme={defaultStyle?.theme}>
+                <TootTipMessage theme={currentStyle?.theme}>
                   {config?.ai?.welcomeMessage}
                 </TootTipMessage>
               </ToolTipWindow>
@@ -307,7 +337,7 @@ export const VoiceAssistant = ({
               type="text"
               placeholder="Start typing..."
               value={textMessage}
-              color={defaultStyle?.keyboardButton?.bgColor}
+              color={currentStyle?.keyboardButton?.bgColor}
               onChange={(e) => {
                 setTextMessage(e.target.value);
               }}
@@ -317,8 +347,8 @@ export const VoiceAssistant = ({
             />
             <TextBoxButton onClick={enableKeyboard}>
               <Mic
-                color={defaultStyle?.keyboardButton?.bgColor}
-                size={defaultStyle?.keyboardButton?.iconSize}
+                color={currentStyle?.keyboardButton?.bgColor}
+                size={currentStyle?.keyboardButton?.iconSize}
                 width={"26"}
                 height={"30"}
               />
@@ -328,17 +358,17 @@ export const VoiceAssistant = ({
 
         {(aiResponse || finalOutput || interimOutput) && (
           <ChatMessage
-            container={defaultStyle?.container}
+            container={currentStyle?.container}
             position={position as CopilotStylePositionType}
             style={messageStyle}
           >
             {(interimOutput || finalOutput) && (
-              <Message theme={defaultStyle?.theme}>
+              <Message theme={currentStyle?.theme}>
                 {interimOutput || finalOutput}
               </Message>
             )}
             {aiResponse && (
-              <Message theme={defaultStyle?.theme} role="assistant">
+              <Message theme={currentStyle?.theme} role="assistant">
                 {aiResponse}
               </Message>
             )}
