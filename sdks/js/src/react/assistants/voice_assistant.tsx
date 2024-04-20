@@ -29,6 +29,7 @@ import {
 } from "../assistants/base_assistant";
 import Mic from "../icons/mic";
 import Keyboard from "../icons/keyboard";
+import Spinner from "../icons/spinner";
 
 export const VoiceAssistant = ({
   id = null,
@@ -297,6 +298,8 @@ export const VoiceAssistant = ({
       scope2,
       groupId,
     };
+
+    setIsprocessing(true);
     const aiResponse = await textToAction(
       promptTemplate as string,
       input,
@@ -347,6 +350,18 @@ export const VoiceAssistant = ({
                 color={currentStyle?.voiceButton.color}
                 size={currentStyle?.voiceButton?.iconSize}
               />
+              {isprocessing && (
+                <Spinner
+                  style={{
+                    position: "absolute",
+                    bottom: "-6px",
+                    left: "54px",
+                    opacity: "0.4",
+                  }}
+                  size={"72"}
+                  color={currentStyle?.voiceButton.bgColor}
+                />
+              )}
             </VoiceButton>
             {(currentStyle.keyboardButton.position === "right" ||
               keyboardPostion === "right") &&
