@@ -63,6 +63,7 @@ const copilotConfig: CopilotConfigType = {
     },
     successResponse: 'Task is completed',
     failureResponse: 'I am not able to do this',
+    welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
   },
 }
 

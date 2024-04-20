@@ -110,6 +110,7 @@ const CopilotHome = () => {
             </Typography>
             <CreateCopilot
               onSubmit={mutation.mutate}
+              isLoading={mutation.isLoading}
               status={status}
               customError={customError}
               copilotsExists={false}

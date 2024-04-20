@@ -75,6 +75,15 @@ export type CopilotSyleButtonType = z.infer<
   typeof copilotStyleVoiceButtonSchema
 >;
 
+export const copilotAiSchema = z.object({
+  defaultPromptTemplate: promptTemplateSchema.optional(),
+  defaultPromptVariables: z.record(z.any()).optional(),
+
+  successResponse: z.string().default("Done"),
+  failureResponse: z.string().default("Something went wrong"),
+  welcomeMessage: z.string().default("Tap & Speak: Let AI Guide Your Journey!"),
+});
+
 export const copilotSytleSchema = z.object({
   container: copilotSyleContainerSchema,
   theme: copilotSyleThemeSchema,
@@ -83,8 +92,17 @@ export const copilotSytleSchema = z.object({
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
+export type CopilotAiType = z.infer<typeof copilotAiSchema>;
 // export type CopilotContainerPropsType = z.infer<typeof copilotContainerProps>;
 // export type CopilotThemePropsType = z.infer<typeof copilotThemeProps>;
+
+export const copilotAiDefaults: CopilotAiType = {
+  defaultPromptTemplate: "",
+  defaultPromptVariables: {},
+  successResponse: "Done",
+  failureResponse: "Something went wrong",
+  welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
+};
 
 export const copilotStyleDefaults: CopilotSytleType = {
   container: {
@@ -113,9 +131,6 @@ export const copilotStyleDefaults: CopilotSytleType = {
     iconSize: "25",
   },
 };
-// Voicebutton
-// keyboardbutton -> position -> right, left, top, bottom
-//
 
 export const copilotConfigSchema = z.object({
   copilotId: z.string(), // No validation on appId itself
@@ -126,15 +141,7 @@ export const copilotConfigSchema = z.object({
     // headers: z.record(z.any()),
   }),
 
-  ai: z
-    .object({
-      defaultPromptTemplate: promptTemplateSchema.optional(),
-      defaultPromptVariables: z.record(z.any()).optional(),
-
-      successResponse: z.string().default("Done"),
-      failureResponse: z.string().default("Something went wrong"),
-    })
-    .optional(),
+  ai: copilotAiSchema.default(copilotAiDefaults).optional(),
 
   style: copilotSytleSchema.default(copilotStyleDefaults),
 

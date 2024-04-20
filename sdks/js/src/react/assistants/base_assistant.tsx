@@ -243,26 +243,38 @@ export const TootTipMessage = styled(Message)`
 
 // Wrapper component to contain input box and button
 export const TextBoxContainer = styled.div`
-  // position: relative;
-  // display: inline-block;
   position: fixed;
   bottom: 25px;
   right: 25px;
   margin: 0;
   z-index: 1000;
+  // width: -webkit-fill-available;
+  width: 100%; // Defaults to full width
+  max-width: 300px; // Adjust this as needed
+
+  @media (max-width: 768px) {
+    width: -webkit-fill-available;
+    max-width: unset;
+  }
 `;
 
 export const TextBox = styled.input<{ color: string }>`
-  padding: 8px 32px 8px 8px; /* Adjust right padding to accommodate the button */
+  padding: 15px 32px 15px 8px;
   border: 1px solid ${({ color }) => color};
   border-radius: 5px;
   outline: none;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    width: -webkit-fill-available; // Only on small screens
+    margin-left: 25px;
+  }
 `;
 
 // Styled button
 export const TextBoxButton = styled.button`
   position: absolute;
-  top: 0;
+  top: 5px;
   right: 0;
   padding: 8px;
   border: none;
@@ -271,3 +283,5 @@ export const TextBoxButton = styled.button`
   cursor: pointer;
   outline: none;
 `;
+
+// button, voice -> theme -> defaults

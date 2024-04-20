@@ -65,7 +65,8 @@ export const VoiceAssistant = ({
   const [finalOutput, setFinalOutput] = useState<string>("");
   const [aiResponse, setAiResponse] = useState<string>("");
   const [recognition, setRecognition] = useState<any>();
-  const [hideVoiceButton, setHideVoiceButton] = useState(false);
+  const [hideVoiceButton, setHideVoiceButton] = useState(true);
+  const [textMessage, setTextMessage] = useState("");
 
   const { config, clientUserId, textToAction } = useCopilot();
 
@@ -74,6 +75,7 @@ export const VoiceAssistant = ({
     ...copilotStyleDefaults,
   };
 
+  DEV: console.log(`default Ai ---> ${JSON.stringify(config?.ai)}`);
   DEV: console.log(`default Style ---> ${JSON.stringify(defaultStyle)}`);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
@@ -149,28 +151,7 @@ export const VoiceAssistant = ({
           setIslistening(false);
           setFinalOutput(finalTranscript);
 
-          const newScope: EmbeddingScopeWithUserType = {
-            clientUserId: clientUserId!,
-            scope1,
-            scope2,
-            groupId,
-          };
-
-          // Generate the response
-          const aiResponse = await textToAction(
-            promptTemplate as string,
-            finalTranscript,
-            promptVariables,
-            newScope,
-          ).finally(() => {
-            setIsprocessing(false);
-          });
-
-          if (typeof aiResponse === "string") {
-            setAiResponse(aiResponse);
-            speak(aiResponse);
-            recognition.stop();
-          }
+          await processSpeechToText(finalTranscript);
         } else {
           interimTranscript += event.results[i][0].transcript;
         }
@@ -245,6 +226,35 @@ export const VoiceAssistant = ({
     );
   };
 
+  const processSpeechToText = async (input: string) => {
+    const newScope: EmbeddingScopeWithUserType = {
+      clientUserId: clientUserId!,
+      scope1,
+      scope2,
+      groupId,
+    };
+    const aiResponse = await textToAction(
+      promptTemplate as string,
+      input,
+      promptVariables,
+      newScope,
+    ).finally(() => {
+      setIsprocessing(false);
+    });
+    if (typeof aiResponse === "string") {
+      setAiResponse(aiResponse);
+      speak(aiResponse);
+      recognition.stop();
+    }
+  };
+
+  const startSending = async () => {
+    const newTextMessage = textMessage;
+    setTextMessage("");
+    setFinalOutput(newTextMessage);
+    await processSpeechToText(newTextMessage);
+  };
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <CopilotContainer
@@ -284,7 +294,7 @@ export const VoiceAssistant = ({
                 style={messageStyle}
               >
                 <TootTipMessage theme={defaultStyle?.theme}>
-                  Tap & Speak: Let AI Guide Your Journey!
+                  {config?.ai?.welcomeMessage}
                 </TootTipMessage>
               </ToolTipWindow>
             )}
@@ -296,7 +306,14 @@ export const VoiceAssistant = ({
             <TextBox
               type="text"
               placeholder="Start typing..."
+              value={textMessage}
               color={defaultStyle?.keyboardButton?.bgColor}
+              onChange={(e) => {
+                setTextMessage(e.target.value);
+              }}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") void startSending();
+              }}
             />
             <TextBoxButton onClick={enableKeyboard}>
               <Mic
