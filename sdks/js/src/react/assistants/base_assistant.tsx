@@ -249,8 +249,9 @@ export const TextBoxContainer = styled.div`
   margin: 0;
   z-index: 1000;
   // width: -webkit-fill-available;
-  width: 100%; // Defaults to full width
-  max-width: 300px; // Adjust this as needed
+  // width: 100%; // Defaults to full width
+  // max-width: 300px; // Adjust this as needed
+  width: -webkit-fill-available;
 
   @media (max-width: 768px) {
     width: -webkit-fill-available;
@@ -263,8 +264,9 @@ export const TextBox = styled.input<{ color: string }>`
   border: 1px solid ${({ color }) => color};
   border-radius: 5px;
   outline: none;
-  width: 100%;
-
+  // width: 100%;
+  width: -webkit-fill-available; // Only on small screens
+  margin-left: 25px;
   @media (max-width: 768px) {
     width: -webkit-fill-available; // Only on small screens
     margin-left: 25px;

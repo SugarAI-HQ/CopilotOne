@@ -65,7 +65,7 @@ export const VoiceAssistant = ({
   const [finalOutput, setFinalOutput] = useState<string>("");
   const [aiResponse, setAiResponse] = useState<string>("");
   const [recognition, setRecognition] = useState<any>();
-  const [hideVoiceButton, setHideVoiceButton] = useState(true);
+  const [hideVoiceButton, setHideVoiceButton] = useState(false);
   const [textMessage, setTextMessage] = useState("");
 
   const { config, clientUserId, textToAction } = useCopilot();
