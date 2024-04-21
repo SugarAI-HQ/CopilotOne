@@ -1,24 +1,24 @@
 import { ZodError } from "zod";
 
 import {
-  type SkillDefinitionType,
-  type SkillRegistrationType,
-  skillRegistrationSchema,
+  type ActionDefinitionType,
+  type ActionRegistrationType,
+  actionRegistrationSchema,
 } from "./schema";
 import { extractFunctionParams } from "./utils";
 
 export function validate(
   name: string,
-  registrationSchema: SkillRegistrationType,
+  registrationSchema: ActionRegistrationType,
   func: Function,
 ): string[] {
   const errors: string[] = [];
 
   // Validate the definition to be sure
   try {
-    skillRegistrationSchema.parse(registrationSchema);
+    actionRegistrationSchema.parse(registrationSchema);
   } catch (error: any) {
-    const msg: string = `[${name}] Invalid skill schema: ${error instanceof ZodError ? JSON.stringify(error.errors) : error.message}`;
+    const msg: string = `[${name}] Invalid action schema: ${error instanceof ZodError ? JSON.stringify(error.errors) : error.message}`;
     console.error(msg);
     errors.push(msg);
     // return false;
@@ -31,10 +31,10 @@ export function validate(
   const functionParams = extractFunctionParams(name, funcString);
   const functionParamNames = functionParams.map((param) => param.trim());
 
-  // Extract parameters from SkillDefinitionType
+  // Extract parameters from ActionDefinitionType
   const parameters = registrationSchema.parameters;
 
-  // Check if all function parameters exist in SkillRegistration
+  // Check if all function parameters exist in ActionRegistration
   if (functionParamNames.length !== parameters.length) {
     DEV: console.log(JSON.stringify(functionParamNames));
     DEV: console.log(JSON.stringify(parameters));
@@ -59,55 +59,57 @@ export function validate(
 
 export const register = (
   name: string,
-  skillDefinition: SkillRegistrationType,
-  skillCallback: Function,
-  skills: Array<Record<string, SkillDefinitionType>>,
+  actionDefinition: ActionRegistrationType,
+  actionCallback: Function,
+  actions: Array<Record<string, ActionDefinitionType>>,
   callbacks: Array<Record<string, Function>>,
 ) => {
-  if (!skillDefinition) {
-    throw new Error(`[${name}] Skill config is required`);
+  if (!actionDefinition) {
+    throw new Error(`[${name}] Action config is required`);
   }
 
-  if (skills[name]) {
-    DEV: console.warn(`[${name}] Skill already registered `);
+  if (actions[name]) {
+    DEV: console.warn(`[${name}] Action already registered `);
   }
 
-  const errors = validate(name, skillDefinition, skillCallback);
+  const errors = validate(name, actionDefinition, actionCallback);
   if (errors.length > 0) {
-    throw new Error(`[${name}] Invalid skill definition: ${errors.join(", ")}`);
+    throw new Error(
+      `[${name}] Invalid action definition: ${errors.join(", ")}`,
+    );
   }
 
-  //  Generate skill JSON object
-  // skills[func.name] = generateTool(func);
-  skills[name] = transformSkillRegistrationToDefinition(skillDefinition);
-  callbacks[name] = skillCallback;
+  //  Generate action JSON object
+  // actions[func.name] = generateTool(func);
+  actions[name] = transformActionRegistrationToDefinition(actionDefinition);
+  callbacks[name] = actionCallback;
 
   PROD: console.log(
-    `[${name}] Skill Registered ${JSON.stringify(skills[name])}`,
+    `[${name}] Action Registered ${JSON.stringify(actions[name])}`,
   );
 };
 export const unregister = (
   name: string,
-  skills: Array<Record<string, SkillDefinitionType>>,
+  actions: Array<Record<string, ActionDefinitionType>>,
   callbacks: Array<Record<string, Function>>,
 ) => {
-  // Assuming skills is defined somewhere globally or in the scope
-  DEV: console.log(`Unregistering Skills ${name}`);
-  //  Generate skill JSON object
-  if (skills[name] ?? false) {
-    delete skills[name];
+  // Assuming actions is defined somewhere globally or in the scope
+  DEV: console.log(`Unregistering Actions ${name}`);
+  //  Generate action JSON object
+  if (actions[name] ?? false) {
+    delete actions[name];
   }
   if (callbacks[name] ?? false) {
     delete callbacks[name];
   }
 
-  // console.log(JSON.stringify(Object.values(skills)));
+  // console.log(JSON.stringify(Object.values(actions)));
 };
 
-export function transformSkillRegistrationToDefinition(
-  registration: SkillRegistrationType,
-): SkillDefinitionType {
-  const skillDefinition: SkillDefinitionType = {
+export function transformActionRegistrationToDefinition(
+  registration: ActionRegistrationType,
+): ActionDefinitionType {
+  const actionDefinition: ActionDefinitionType = {
     type: "function",
     function: {
       name: registration.name,
@@ -131,20 +133,20 @@ export function transformSkillRegistrationToDefinition(
     if (!param.enum) {
       delete pp.enum;
     }
-    skillDefinition.function.parameters.properties[param.name] = pp;
+    actionDefinition.function.parameters.properties[param.name] = pp;
 
     // Check if the parameter is required and add it to the required array if so
     if (param.required) {
-      skillDefinition.function.parameters.required.push(param.name);
+      actionDefinition.function.parameters.required.push(param.name);
     }
   });
-  return skillDefinition;
+  return actionDefinition;
 }
 
 TEST: setTimeout(() => {
-  const registration: SkillRegistrationType = {
-    name: "exampleSkill",
-    description: "This is an example skill",
+  const registration: ActionRegistrationType = {
+    name: "exampleAction",
+    description: "This is an example action",
     parameters: [
       {
         name: "param1",
@@ -163,8 +165,8 @@ TEST: setTimeout(() => {
     // required: ["param1"],
   };
 
-  const definition: SkillDefinitionType =
-    transformSkillRegistrationToDefinition(registration);
+  const definition: ActionDefinitionType =
+    transformActionRegistrationToDefinition(registration);
 
   TEST: console.log(definition);
 }, 1000);

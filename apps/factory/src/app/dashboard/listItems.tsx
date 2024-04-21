@@ -22,14 +22,6 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItemButton>
     </Link>
-    <Link href="/dashboard/prompts">
-      <ListItemButton>
-        <ListItemIcon>
-          <DocumentScanner />
-        </ListItemIcon>
-        <ListItemText primary="Packages" />
-      </ListItemButton>
-    </Link>
     <Link href="/dashboard/copilots">
       <ListItemButton>
         <ListItemIcon>
@@ -38,6 +30,15 @@ export const mainListItems = (
         <ListItemText primary="Copilots" />
       </ListItemButton>
     </Link>
+    <Link href="/dashboard/prompts">
+      <ListItemButton>
+        <ListItemIcon>
+          <DocumentScanner />
+        </ListItemIcon>
+        <ListItemText primary="Packages" />
+      </ListItemButton>
+    </Link>
+
     <Link href="/settings/api-keys">
       <ListItemButton>
         <ListItemIcon>

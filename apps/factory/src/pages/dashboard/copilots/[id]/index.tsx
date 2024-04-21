@@ -10,24 +10,20 @@ import {
   Grid,
   Paper,
   Typography,
-  colors,
 } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useRouter } from "next/router";
 import { getLayout } from "~/app/layout";
 import CodeHighlight from "~/components/integration/code_highlight";
-import CopyToClipboardButton from "~/components/copy_button";
 
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import { env } from "~/env.mjs";
 import {
-  useCopilot,
   CopilotConfigType,
   CopilotProvider,
-  VoiceToSkillComponent,
-  ChatContainer,
+  VoiceAssistant,
 } from "@sugar-ai/copilot-one-js";
 import {
   CopilotOutput,
@@ -69,7 +65,7 @@ const CopilotShow: NextPageWithLayout = () => {
     <>
       {
         <CopilotProvider config={copilotConfig}>
-          <VoiceToSkillComponent
+          <VoiceAssistant
             promptTemplate={promptTemplate}
             id={"preview"}
             position={"bottom-right"}
@@ -136,36 +132,53 @@ function CopilotTabs({
     setValue(newValue);
   };
 
-  const npmPackage = "@sugar-ai/copilot-one-sdk@latest";
-  const codePackage = `npm i ${npmPackage}`;
+  const npmPackage = "@sugar-ai/copilot-one-js";
+  const codePackage = `npm i ${npmPackage}@latest`;
 
-  const copilotConfigCode = `
-  import { CopilotConfigType, CopilotProvider, VoiceToSkillComponent } from '${npmPackage}';
-
-  const copilotConfig: CopilotConfigType = {
-    copilotId: '${copilot?.id}',
+  const previewConfig = {
+    copilotId: copilot?.id,
     server: {
-      endpoint: '${env.NEXT_PUBLIC_API_ENDPOINT}/api',
-      token: '${copilotKey?.apiKey}',
-      headers: {
-        'X-COPILOT-ID': '${copilot?.id}',
-      },
+      endpoint: `${env.NEXT_PUBLIC_API_ENDPOINT}/api`,
+      token: copilotKey?.apiKey,
     },
     ai: {
-      defaultPromptTemplate: '${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}',
+      defaultPromptTemplate: `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`,
+    },
+  };
+
+  // // Preview config
+  // const iframeRef = useRef(null);
+  // const iframeOrigin = "http://localhost:4000";
+  // const sendMessageToIframe = () => {
+  //   const iframeWindow = iframeRef?.current?.contentWindow;
+  //   iframeWindow.postMessage(previewConfig, iframeOrigin);
+  // };
+
+  const copilotConfigCode = `
+  import { CopilotConfigType } from '${npmPackage}';
+
+  const copilotConfig: CopilotConfigType = {
+    copilotId: '${previewConfig.copilotId}',
+    server: {
+      endpoint: '${previewConfig.server.endpoint}',
+      token: '${previewConfig.server.token}',
+    },
+    ai: {
+      defaultPromptTemplate: '${previewConfig.ai.defaultPromptTemplate}',
       defaultPromptVariables: {
-        $ROLE: 'Boss',
+        $NAME: 'Sugar',
       },
       successResponse: 'Task Done',
       failureResponse: 'I am not able to do this',
+      welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
     },
   };
   `;
 
   const copilotUsageCode = `
   <CopilotProvider config={copilotConfig}>
-    <VoiceToSkillComponent promptVariables={{ $ROLE: 'Boss' }} >
-    </VoiceToSkillComponent>
+    <VoiceAssistant promptVariables={{ $ROLE: 'Boss' }} >
+    </VoiceAssistant>
   </CopilotProvider>
   `;
 
@@ -199,7 +212,7 @@ function CopilotTabs({
 
         <Tab label="Integration" sx={{ color: "var(--sugarhub-text-color)" }} />
         <Tab
-          label="Linked Prompts"
+          label="Linked Prompt Packages"
           sx={{ color: "var(--sugarhub-text-color)" }}
         />
         {/* Add more tabs as needed */}
@@ -219,13 +232,26 @@ function CopilotTabs({
             }}
           >
             <CardContent>
-              <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+              <Box sx={{ p: 2, alignItems: "center" }}>
                 <Typography
                   variant="h4"
                   component="p"
-                  sx={{ mt: 1, mb: 4, flex: 1 }}
+                  sx={{
+                    mt: 1,
+                    mb: 4,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
                 >
-                  {`${copilot?.name} copilot`}
+                  <span style={{ flexGrow: 1 }}>{`${copilot?.name}`}</span>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={(e) => previewCopilot(previewConfig)}
+                    // href="https://docs.sugarai.dev/guides/get-staretd/"
+                  >
+                    Preview
+                  </Button>
                 </Typography>
               </Box>
               <CodeBlock title={"Copilot Id"} code={`${copilot?.id}`} />
@@ -240,12 +266,47 @@ function CopilotTabs({
 
       <TabPanel value={value} index={1}>
         <Paper sx={{ backgroundColor: "var(--sugarhub-tab-color)" }}>
-          <CodeBlock title={"Install Package"} code={codePackage} />
-          <CodeBlock title={"Copilot basic config"} code={copilotConfigCode} />
-          <CodeBlock
-            title={"Copilot in react component"}
-            code={copilotUsageCode}
-          />
+          <Card
+            sx={{
+              backgroundColor: "var(--sugarhub-tab-color)",
+              borderRadius: "0.5rem",
+              color: "var(--sugarhub-text-color)",
+            }}
+          >
+            <CardContent>
+              <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+                <Typography
+                  variant="h4"
+                  component="p"
+                  sx={{ mt: 1, mb: 4, flex: 1, textAlign: "center" }}
+                >
+                  Add Copilot to your App
+                  <br />
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    href="https://docs.sugarai.dev/guides/get-staretd/"
+                    sx={{ mt: 2 }}
+                  >
+                    Docs
+                  </Button>
+                </Typography>
+                <Box>
+                  <CodeBlock title={"Install Package"} code={codePackage} />
+
+                  <CodeBlock
+                    title={"Copilot basic config"}
+                    code={copilotConfigCode}
+                  />
+                  <Typography sx={{ p: 2 }}>Read more on the docs</Typography>
+                  {/* <CodeBlock
+                  title={"Copilot in react component"}
+                  code={copilotUsageCode}
+                /> */}
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
         </Paper>
       </TabPanel>
 
@@ -301,6 +362,7 @@ function getCopilotConfig(
       },
       successResponse: "Task Done",
       failureResponse: "I am not able to do this",
+      welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
     },
 
     // @ts-ignore
@@ -368,17 +430,38 @@ const CopilotPrompts = ({
           ))}
         </Grid>
       ) : (
-        <>
+        <Box
+          style={{
+            minHeight: "50vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
           <Button
             size="small"
             onClick={regeneratePromptConfig}
             variant="outlined"
             color="primary"
           >
-            Regenerate Prompt
+            Create Linked Prompt Packages
           </Button>
-        </>
+        </Box>
       )}
     </div>
   );
 };
+
+function previewCopilot(previewConfig: any) {
+  const exampleOrign = "https://demo.sugarai.dev";
+  if (typeof window !== "undefined") {
+    // Convert data to a JSON string and encode it
+    const encodedData = btoa(JSON.stringify(previewConfig));
+
+    // Construct the URL with encoded data
+    const url = `${exampleOrign}/todo?data=${encodeURIComponent(encodedData)}`;
+
+    const targetWindow = window.open(url, "_blank", "noopener,noreferrer");
+  }
+}

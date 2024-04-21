@@ -1,18 +1,19 @@
 import { createContext, useContext } from "react";
 import {
-  type SkillRegistrationType,
+  type ActionRegistrationType,
   type CopilotConfigType,
   type EmbeddingScopeType,
-  type SkillDefinitionType,
+  type ActionDefinitionType,
   type EmbeddingScopeWithUserType,
   type CopilotSytleType,
   DEFAULT_GROUP_ID,
+  copilotAiDefaults,
 } from "../schema";
 import { type SugarAiApi, SugarAiApiClient } from "../api-client";
 import { createUseState } from "./hooks";
 import { generateUserId } from "../utils";
 import { type ServiceGenerateRequestSkillsItem } from "../api-client/api";
-import { register, unregister } from "../skill";
+import { register, unregister } from "../actions";
 import { any } from "zod";
 import { addMarker, observePerformance, reset } from "../performance";
 
@@ -20,19 +21,19 @@ export const CopilotContext = createContext({
   config: null as CopilotConfigType | null,
   apiClient: null as any,
   clientUserId: null as null | string,
-  useStateCopilot: (
+  useStateEmbedding: (
     initialState: any,
     scope1: string,
     scope2: string,
     groupId: string = DEFAULT_GROUP_ID,
   ) => [any, Function],
-  registerSkill: (
+  registerAction: (
     name: string,
-    skillDefinition: SkillRegistrationType,
-    skillcallback: Function,
+    actionDefinition: ActionRegistrationType,
+    actioncallback: Function,
   ) => {},
-  unregisterSkill: (name: string) => {},
-  textToSkill: async (
+  unregisterAction: (name: string) => {},
+  textToAction: async (
     promptTemplate: string,
     userQuery: string,
     promptVariables: any,
@@ -41,7 +42,7 @@ export const CopilotContext = createContext({
   // ) => Promise<string>,
 });
 
-// const SkillsDispatchContext = createContext(null)
+// const ActionsDispatchContext = createContext(null)
 
 export const CopilotProvider = function ({
   config,
@@ -50,8 +51,19 @@ export const CopilotProvider = function ({
   config: CopilotConfigType;
   children: any;
 }) {
-  const uxSkills: Array<Record<string, SkillDefinitionType>> = [];
-  const uxSkillCallbacks: Array<Record<string, Function>> = [];
+  const uxActions: Array<Record<string, ActionDefinitionType>> = [];
+  const uxActionCallbacks: Array<Record<string, Function>> = [];
+
+  // 0. setup config
+  config = {
+    ...config,
+    ai: {
+      ...copilotAiDefaults,
+      ...config.ai,
+    },
+  };
+
+  PROD: console.log(`copilot config ${JSON.stringify(config)}`);
 
   // 1. Setup userId
   const clientUserId: string = generateUserId(config?.client?.userId ?? null);
@@ -74,53 +86,59 @@ export const CopilotProvider = function ({
   //   groupId: window.location.pathname,
   // };
 
-  const useStateCopilot = createUseState(apiClient, config, clientUserId);
+  const useStateEmbedding = createUseState(apiClient, config, clientUserId);
 
-  const registerSkill = (
+  const registerAction = (
     name: string,
-    skillDefinition: SkillRegistrationType,
-    skillCallback: Function,
+    actionDefinition: ActionRegistrationType,
+    actionCallback: Function,
   ) => {
-    register(name, skillDefinition, skillCallback, uxSkills, uxSkillCallbacks);
+    register(
+      name,
+      actionDefinition,
+      actionCallback,
+      uxActions,
+      uxActionCallbacks,
+    );
   };
 
-  const unregisterSkill = (name: string) => {
-    unregister(name, uxSkills, uxSkillCallbacks);
+  const unregisterAction = (name: string) => {
+    unregister(name, uxActions, uxActionCallbacks);
   };
 
-  const executeSkill = async function executeSkill(skills) {
-    for (const index in skills) {
-      // Access each skill object
-      const skill = skills[index];
-      const skillName = skill.function.name;
+  const executeAction = async function executeAction(actions) {
+    for (const index in actions) {
+      // Access each action object
+      const action = actions[index];
+      const actionName = action.function.name;
 
-      // Access properties of the skill object
-      const skillArgs = JSON.parse(skill.function.arguments);
+      // Access properties of the action object
+      const actionArgs = JSON.parse(action.function.arguments);
 
       // Call the corresponding callback function using apply
-      // skillCallbacks[skillName].apply(null, skillArgs);
-      // skillCallbacks[skillName].call(null, skillArgs);
-      // skillCallbacks[skillName].apply(null, skillArgs);
+      // actionCallbacks[actionName].apply(null, actionArgs);
+      // actionCallbacks[actionName].call(null, actionArgs);
+      // actionCallbacks[actionName].apply(null, actionArgs);
       PROD: console.log(
-        `[${skillName}] Calling skill ----> ${skillName}(${skill.function.arguments})`,
+        `[${actionName}] Calling action ----> ${actionName}(${action.function.arguments})`,
       );
 
       // @ts-expect-error
-      uxSkillCallbacks[skillName](...Object.values(skillArgs));
+      uxActionCallbacks[actionName](...Object.values(actionArgs));
     }
   };
 
   const style: CopilotSytleType = config.style;
   DEV: console.log(`default style: ${JSON.stringify(style)}`);
 
-  async function textToSkill(
+  async function textToAction(
     promptTemplate,
     userQuery,
     promptVariables,
     scope: EmbeddingScopeWithUserType,
   ): Promise<string> {
     reset();
-    addMarker("textToSkill:start");
+    addMarker("textToAction:start");
     const [username, pp, pt, pv] = promptTemplate.split("/");
     const msg: SugarAiApi.ServiceGenerateRequestChatMessage = {
       role: "user",
@@ -142,48 +160,48 @@ export const CopilotProvider = function ({
         },
         // messages: messages.slice(-3),
         // @ts-expect-error
-        skills: Object.values(uxSkills) as ServiceGenerateRequestSkillsItem[],
+        actions: Object.values(uxActions) as ServiceGenerateRequestSkillsItem[],
       },
     )) as SugarAiApi.ServiceGenerateResponse;
     // const c = await makeInference(
     //   promptTemplate,
     //   promptVariables,
     //   userQuery,
-    //   uxSkills,
+    //   uxActions,
     //   scope,
     //   dryRun,
     // );
 
     let output: string = config?.ai?.successResponse as string;
 
-    addMarker("textToSkill:gotLLMResponse");
+    addMarker("textToAction:gotLLMResponse");
 
     // @ts-expect-error
     if (result.llmResponse?.error) {
       output = config.ai?.failureResponse as string;
-      addMarker("textToSkill:failed");
+      addMarker("textToAction:failed");
     } else {
       // @ts-expect-error
       const choices: string | any[] = result.llmResponse?.data?.completion;
 
       if (choices instanceof Array) {
         if (choices[0].message?.tool_calls) {
-          addMarker("textToSkill:executingSkills");
-          await executeSkill(choices[0].message.tool_calls);
-          addMarker("textToSkill:executedSkills");
+          addMarker("textToAction:executingActions");
+          await executeAction(choices[0].message.tool_calls);
+          addMarker("textToAction:executedActions");
         }
 
         if (choices[0].message?.content) {
           output = choices[0].message.content as string;
-          addMarker("textToSkill:success");
+          addMarker("textToAction:success");
         }
       } else if (typeof choices === "string") {
         output = choices;
-        addMarker("textToSkill:success");
+        addMarker("textToAction:success");
       } else {
         PROD: console.error(`Unknown response ${JSON.stringify(choices)}`);
         output = config?.ai?.failureResponse as string;
-        addMarker("textToSkill:failed");
+        addMarker("textToAction:failed");
       }
     }
 
@@ -197,11 +215,11 @@ export const CopilotProvider = function ({
         config,
         apiClient,
         clientUserId,
-        useStateCopilot,
-        registerSkill,
-        unregisterSkill,
+        useStateEmbedding,
+        registerAction,
+        unregisterAction,
         // @ts-expect-error
-        textToSkill,
+        textToAction,
       }}
     >
       {children}

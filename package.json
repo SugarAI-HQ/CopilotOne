@@ -19,7 +19,7 @@
   "keywords": [],
   "author": "Ankur Agarwal <ankur@sugarcaneai.dev>",
   "dependencies": {
-    "husky": "^9.0.11"
+    "husky": "^8.0.3"
   },
   "pnpm": {
     "peerDependencyRules": {

@@ -8,3 +8,6 @@ build
 next-env.d.ts
 .nvmrc
 .sentryclirc
+
+yalc.lock
+.yalc

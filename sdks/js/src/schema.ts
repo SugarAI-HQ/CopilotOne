@@ -4,7 +4,7 @@ import root from "window-or-global";
 export const promptTemplateSchema = z.string();
 export type PromptTemplateType = z.infer<typeof promptTemplateSchema>;
 
-export const primaryColor = "#8d00ff";
+export const primaryColor = "#8000FF";
 export const secondaryColor = "#FFFFFF";
 
 export const copilotSylePositionSchema = z.enum([
@@ -15,8 +15,24 @@ export const copilotSylePositionSchema = z.enum([
   "top-center",
   "bottom-center",
 ]);
+
+export const copilotSyleKeyboardPositionSchema = z.enum([
+  "left",
+  "right",
+  "bottom",
+  "top",
+]);
+
+export const messageRoleEnum = z.enum(["assistant", "system", "tool"]);
+
+export type MessageRoleType = z.infer<typeof messageRoleEnum>;
+
 export type CopilotStylePositionType = z.infer<
   typeof copilotSylePositionSchema
+>;
+
+export type CopilotSyleKeyboardPositionSchema = z.infer<
+  typeof copilotSyleKeyboardPositionSchema
 >;
 
 export const copilotSyleContainerSchema = z.object({
@@ -32,7 +48,7 @@ export const copilotSyleThemeSchema = z.object({
   primaryColor: z.string().default(primaryColor),
   secondaryColor: z.string().default(secondaryColor),
   fontFamily: z.string().default("inherit"),
-  fontSize: z.string().default("16px"),
+  fontSize: z.string().default("14px"),
   textColor: z.string().optional(),
 });
 
@@ -40,25 +56,54 @@ export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
 
 // export const copilotThemeProps = z.object({});
 
-export const copilotSyleButtonSchema = z.object({
+export const copilotStyleVoiceButtonSchema = z.object({
   bgColor: z.string().default(primaryColor),
   color: z.string().default(secondaryColor),
   width: z.string().default("60px"),
   height: z.string().default("60px"),
-  iconSize: z.string().default("20"),
+  iconSize: z.string().default("25"),
 });
 
-export type CopilotSyleButtonType = z.infer<typeof copilotSyleButtonSchema>;
+export const copilotStyleKeyboardButtonSchema = z.object({
+  bgColor: z.string().default(primaryColor),
+  color: z.string().default(secondaryColor),
+  position: copilotSyleKeyboardPositionSchema.default("left"),
+  iconSize: z.string().default("25").optional(),
+  placeholder: z.string().default("Start typing..."),
+});
+
+export type CopilotSyleButtonType = z.infer<
+  typeof copilotStyleVoiceButtonSchema
+>;
+
+export const copilotAiSchema = z.object({
+  defaultPromptTemplate: promptTemplateSchema.optional(),
+  defaultPromptVariables: z.record(z.any()).optional(),
+
+  successResponse: z.string().default("Done"),
+  failureResponse: z.string().default("Something went wrong"),
+  welcomeMessage: z.string().default("Tap & Speak: Let AI Guide Your Journey!"),
+});
 
 export const copilotSytleSchema = z.object({
   container: copilotSyleContainerSchema,
   theme: copilotSyleThemeSchema,
-  button: copilotSyleButtonSchema,
+  voiceButton: copilotStyleVoiceButtonSchema,
+  keyboardButton: copilotStyleKeyboardButtonSchema,
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
+export type CopilotAiType = z.infer<typeof copilotAiSchema>;
 // export type CopilotContainerPropsType = z.infer<typeof copilotContainerProps>;
 // export type CopilotThemePropsType = z.infer<typeof copilotThemeProps>;
+
+export const copilotAiDefaults: CopilotAiType = {
+  defaultPromptTemplate: "",
+  defaultPromptVariables: {},
+  successResponse: "Done",
+  failureResponse: "Something went wrong",
+  welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
+};
 
 export const copilotStyleDefaults: CopilotSytleType = {
   container: {
@@ -70,15 +115,22 @@ export const copilotStyleDefaults: CopilotSytleType = {
     primaryColor,
     secondaryColor,
     fontFamily: "inherit",
-    fontSize: "16px",
-    textColor: undefined, // or any default value you want
+    fontSize: "14px",
+    textColor: "", // or any default value you want
   },
-  button: {
+  voiceButton: {
     bgColor: primaryColor,
     color: secondaryColor,
     width: "60px",
     height: "60px",
-    iconSize: "20",
+    iconSize: "25",
+  },
+  keyboardButton: {
+    bgColor: primaryColor,
+    color: secondaryColor,
+    position: "left",
+    iconSize: "25",
+    placeholder: "Start typing...",
   },
 };
 
@@ -91,15 +143,7 @@ export const copilotConfigSchema = z.object({
     // headers: z.record(z.any()),
   }),
 
-  ai: z
-    .object({
-      defaultPromptTemplate: promptTemplateSchema.optional(),
-      defaultPromptVariables: z.record(z.any()).optional(),
-
-      successResponse: z.string().default("Done"),
-      failureResponse: z.string().default("Something went wrong"),
-    })
-    .optional(),
+  ai: copilotAiSchema.default(copilotAiDefaults).optional(),
 
   style: copilotSytleSchema.default(copilotStyleDefaults),
 
@@ -140,7 +184,7 @@ export type EmbeddingScopeWithUserType = z.infer<
 export const promptVariablesSchema = z.record(z.any());
 export type PromptVariablesType = z.infer<typeof promptVariablesSchema>;
 
-export const skillParameterDataTypeSchema = z.enum([
+export const actionParameterDataTypeSchema = z.enum([
   "boolean",
   "string",
   "integer",
@@ -149,63 +193,63 @@ export const skillParameterDataTypeSchema = z.enum([
   "array",
   "object",
 ]);
-export type SkillParameterDataTypeSchema = z.infer<
-  typeof skillParameterDataTypeSchema
+export type ActionParameterDataTypeSchema = z.infer<
+  typeof actionParameterDataTypeSchema
 >;
 
-export const skillParameterSchema = z.object({
-  type: skillParameterDataTypeSchema,
+export const actionParameterSchema = z.object({
+  type: actionParameterDataTypeSchema,
   enum: z.array(z.string()).optional(),
   description: z.string().min(10),
 });
-export type SkillParameterType = z.infer<typeof skillParameterSchema>;
+export type ActionParameterType = z.infer<typeof actionParameterSchema>;
 
-export const skillParametersSchema = z.object({
+export const actionParametersSchema = z.object({
   type: z.literal("object"),
-  properties: z.record(z.string(), skillParameterSchema),
+  properties: z.record(z.string(), actionParameterSchema),
   required: z.array(z.string()),
 });
-export type SkillParametersType = z.infer<typeof skillParametersSchema>;
+export type ActionParametersType = z.infer<typeof actionParametersSchema>;
 
-export const skillDefinitionSchema = z.object({
+export const actionDefinitionSchema = z.object({
   type: z.literal("function"),
   function: z.object({
     name: z.string().min(5).max(50),
     description: z.string().min(10),
-    parameters: skillParametersSchema,
+    parameters: actionParametersSchema,
   }),
 });
-export type SkillDefinitionType = z.infer<typeof skillDefinitionSchema>;
+export type ActionDefinitionType = z.infer<typeof actionDefinitionSchema>;
 
-export const skillRegistrationParameterSchema = z.object({
+export const actionRegistrationParameterSchema = z.object({
   name: z.string(),
-  type: skillParameterDataTypeSchema,
+  type: actionParameterDataTypeSchema,
   enum: z.array(z.string()).optional(),
   description: z.string().min(10),
   required: z.boolean(),
 });
-export type SkillRegistrationParameterType = z.infer<
-  typeof skillRegistrationParameterSchema
+export type ActionRegistrationParameterType = z.infer<
+  typeof actionRegistrationParameterSchema
 >;
 
-export const skillRegistrationParametersSchema = z.object({
+export const actionRegistrationParametersSchema = z.object({
   type: z.literal("object"),
-  properties: z.record(z.string(), skillParameterSchema),
+  properties: z.record(z.string(), actionParameterSchema),
 });
-export type SkillRegistrationParametersType = z.infer<
-  typeof skillRegistrationParametersSchema
+export type ActionRegistrationParametersType = z.infer<
+  typeof actionRegistrationParametersSchema
 >;
 
-export const skillRegistrationSchema = z.object({
+export const actionRegistrationSchema = z.object({
   // type: z.literal("function"),
   // function: z.object({
   name: z.string().min(5).max(50),
   description: z.string().min(10),
-  parameters: z.array(skillRegistrationParameterSchema),
+  parameters: z.array(actionRegistrationParameterSchema),
   // required: z.array(z.string()),
   // }),
 });
-export type SkillRegistrationType = z.infer<typeof skillRegistrationSchema>;
+export type ActionRegistrationType = z.infer<typeof actionRegistrationSchema>;
 
 export const DEFAULT_GROUP_ID: string = "DEFAULT_GROUP_ID";
 

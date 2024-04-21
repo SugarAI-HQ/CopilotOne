@@ -16,7 +16,7 @@ export function createUseState(
 ) {
   let timerId: any = null;
 
-  return function useStateCopilot(
+  return function useStateEmbedding(
     initialState: any,
     scope1: string,
     scope2: string,

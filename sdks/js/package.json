@@ -1,6 +1,6 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.10",
+  "version": "0.0.15",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
@@ -26,7 +26,7 @@
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
     "build:clean": "rm -rf ./dist meta.json",
     "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
-    "build": "npm run build:clean && node build.mjs && node ./scripts/rename-module.js",
+    "build": "npm run build:clean && node build.mjs",
     "prepublishOnly": "npm run build && npm test && npm run lint",
     "preversion": "npm test && npm run lint",
     "version": "npm run format && git add -A src",
@@ -76,7 +76,6 @@
     "form-data": "^4.0.0",
     "js-base64": "^3.7.7",
     "qs": "^6.12.0",
-    "react-icons": "^5.0.1",
     "styled-components": "^6.1.8",
     "url-join-ts": "^1.0.5",
     "window-or-global": "^1.0.1"

@@ -21,7 +21,6 @@ Goal is to build deep intergration AI Assitatants. Checkout Future of AI Assista
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/t2e0CThWZUE/0.jpg)](https://www.youtube.com/watch?v=t2e0CThWZUE)
 
-
 # Get Started
 
 ## Prerequisites
@@ -30,23 +29,24 @@ Before using this package, ensure you have the following:
 
 - An existing React application
 
-- Create copilot credentials from  [Sugar AI](https://play.sugarcaneai.dev) or [Self Hosted](https://github.com/SugarAI-HQ/CopilotOne/tree/develop/apps/factory) Account
-
-
+- Create copilot credentials from [Sugar AI](https://play.sugarcaneai.dev) or [Self Hosted](https://github.com/SugarAI-HQ/CopilotOne/tree/develop/apps/factory) Account
 
 ## Install
+
 You can install the `@sugar-ai/copilot-one-js` package via npm in your react project
 
 ### Installation
-````bash
+
+```bash
 npm install @sugar-ai/copilot-one-js@latest
-````
+```
 
 ### Add to your React App
 
 In your main file. src/App.tsx
+
 ```js
-import { useCopilot, CopilotConfigType, CopilotProvider, VoiceToSkillComponent } from '@sugar-ai/copilot-one-js';
+import { useCopilot, CopilotConfigType, CopilotProvider, VoiceAssistant } from '@sugar-ai/copilot-one-js';
 
 
 const copilotConfig: CopilotConfigType = {
@@ -63,6 +63,7 @@ const copilotConfig: CopilotConfigType = {
     },
     successResponse: 'Task is completed',
     failureResponse: 'I am not able to do this',
+    welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
   },
 }
 
@@ -73,21 +74,16 @@ const copilotConfig: CopilotConfigType = {
     </CopilotProvider>
 ```
 
-
-
-
-
-
-We are taking a exmple of a todo App. To track User's Current Screen Context using `useStateCopilot`
+We are taking a exmple of a todo App. To track User's Current Screen Context using `useStateEmbedding`
 
 ```js
 
 const TodoApp = () => {
 
-const { useStateCopilot, registerSkill, unregisterSkill } = useCopilot(); // Add
+const { useStateEmbedding, registerAction, unregisterAction } = useCopilot(); // Add
 
 // const [todos, setTodos] = useState([]);
-const [todos, setTodos] = useStateCopilot([], 'todoApp', 'todos'); // Switch
+const [todos, setTodos] = useStateEmbedding([], 'todoApp', 'todos'); // Switch
 
 ...
 
@@ -108,7 +104,7 @@ const TodoApp = () => {
   const markTodoAsDoneById = function (todoId: number) {...};
 
   // Register addTodo function
-  registerSkill(
+  registerAction(
     'addTodo',
     {
       name: 'addTodo',
@@ -131,10 +127,10 @@ const TodoApp = () => {
 
 ```
 
-
-
 # Roadmap
+
 - [x] Web SDK Released
+
   - [x] Voice To Action
   - [x] Text To Action
   - [x] Current Screen Context
@@ -142,7 +138,6 @@ const TodoApp = () => {
 - POC
 
   - [x] Text API Interface
-
 
 - [] Navigation Agent
 - [] Form Agent

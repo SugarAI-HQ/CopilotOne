@@ -1,25 +1,25 @@
 import {
-  type SkillDefinitionType,
-  type SkillParameterType,
-  type SkillParametersType,
-  SkillRegistrationType,
+  type ActionDefinitionType,
+  type ActionParameterType,
+  type ActionParametersType,
+  ActionRegistrationType,
 } from "./schema";
 
-import { transformSkillRegistrationToDefinition } from "./skill";
+import { transformActionRegistrationToDefinition } from "./action";
 
-const location: SkillParameterType = {
+const location: ActionParameterType = {
   type: "string",
   description: "The city and state, e.g. San Francisco, CA",
 };
 
-const format: SkillParameterType = {
+const format: ActionParameterType = {
   type: "string",
   enum: ["celsius", "fahrenheit"],
   description:
     "The temperature unit to use. Infer this from the users location.",
 };
 
-const parameters: SkillParametersType = {
+const parameters: ActionParametersType = {
   type: "object",
   properties: {
     location,
@@ -28,8 +28,8 @@ const parameters: SkillParametersType = {
   required: ["location", "format"],
 };
 
-// Example SkillDefinition object
-const exampleSkillDefinition: SkillDefinitionType = {
+// Example ActionDefinition object
+const exampleActionDefinition: ActionDefinitionType = {
   type: "function",
   function: {
     name: "get_current_weather",
@@ -38,7 +38,7 @@ const exampleSkillDefinition: SkillDefinitionType = {
   },
 };
 
-const skills: SkillDefinitionType[] = [
+const actions: ActionDefinitionType[] = [
   {
     type: "function",
     function: {

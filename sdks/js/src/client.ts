@@ -24,7 +24,7 @@
 //   prompt_template: string,
 //   variables = {},
 //   userQuery: string,
-//   skills,
+//   actions,
 //   scope: EmbeddingScopeType,
 //   dryRun = false,
 // ) {
@@ -49,7 +49,7 @@
 //       scope: scope,
 //       messages: messages,
 //       // messages: messages.slice(-3),
-//       skills: Object.values(skills),
+//       actions: Object.values(actions),
 //     });
 
 //     // response = await fetch(API_URL, {
@@ -63,7 +63,7 @@
 //     //     scope: scope,
 //     //     messages: messages,
 //     //     // messages: messages.slice(-3),
-//     //     skills: Object.values(skills),
+//     //     actions: Object.values(actions),
 //     //   }),
 //     // });
 
