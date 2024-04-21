@@ -43,6 +43,8 @@ export const VoiceAssistant = ({
   voiceButtonStyle = {},
   keyboardButtonStyle = {},
   messageStyle = {},
+  toolTipContainerStyle = {},
+  toolTipMessageStyle = {},
   position = copilotStyleDefaults.container.position || "bottom-right",
   keyboardPostion = copilotStyleDefaults.keyboardButton.position,
 }: {
@@ -56,6 +58,8 @@ export const VoiceAssistant = ({
   voiceButtonStyle?: any;
   keyboardButtonStyle?: any;
   messageStyle?: any;
+  toolTipContainerStyle?: any;
+  toolTipMessageStyle?: any;
   position?: CopilotStylePositionType;
   keyboardPostion?: CopilotSyleKeyboardPositionSchema;
 }) => {
@@ -391,13 +395,14 @@ export const VoiceAssistant = ({
               <ToolTipWindow
                 container={currentStyle?.container}
                 position={position as CopilotStylePositionType}
-                style={messageStyle}
+                style={toolTipContainerStyle}
                 id={`sugar-ai-tool-tip-${buttonId}`}
                 className="sugar-ai-tool-tip"
               >
                 <TootTipMessage
                   theme={currentStyle?.theme}
                   id={`sugar-ai-tool-tip-message-${buttonId}`}
+                  style={toolTipMessageStyle}
                   className="sugar-ai-tool-tip-message"
                 >
                   {tipMessage}

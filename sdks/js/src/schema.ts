@@ -48,7 +48,7 @@ export const copilotSyleThemeSchema = z.object({
   primaryColor: z.string().default(primaryColor),
   secondaryColor: z.string().default(secondaryColor),
   fontFamily: z.string().default("inherit"),
-  fontSize: z.string().default("16px"),
+  fontSize: z.string().default("14px"),
   textColor: z.string().optional(),
 });
 
@@ -115,7 +115,7 @@ export const copilotStyleDefaults: CopilotSytleType = {
     primaryColor,
     secondaryColor,
     fontFamily: "inherit",
-    fontSize: "16px",
+    fontSize: "14px",
     textColor: "", // or any default value you want
   },
   voiceButton: {
