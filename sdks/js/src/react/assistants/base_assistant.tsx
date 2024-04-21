@@ -170,12 +170,9 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
   text-align: -webkit-center;
-  cursor: ${({ isprocessing, ispermissiongranted }) =>
-    isprocessing === "true" || ispermissiongranted !== "true"
-      ? "pointer"
-      : "pointer"};
-  opacity: ${({ isprocessing, ispermissiongranted }) =>
-    isprocessing === "true" || ispermissiongranted !== "true" ? "0.5" : "1"};
+  cursor: ${({ isprocessing }) =>
+    isprocessing === "true" ? "not-allowed" : "pointer"};
+  opacity: ${({ isprocessing }) => (isprocessing === "true" ? "0.5" : "1")};
   ${({ islistening }) =>
     islistening === "true"
       ? css`
@@ -184,12 +181,6 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
       : css`
           // animation: ${sparkle} 3s ease-in-out 4s infinite;
         `}
-  &:hover {
-    background-color: ${({ isprocessing, ispermissiongranted, button }) =>
-      isprocessing === "true" || ispermissiongranted !== "true"
-        ? button?.bgColor
-        : button?.bgColor};
-  }
 `;
 
 export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`

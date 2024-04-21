@@ -107,6 +107,8 @@ export const VoiceAssistant = ({
     ...config?.ai,
   };
 
+  const [tipMessage, setTipMessage] = useState(currentAiConfig.welcomeMessage);
+
   DEV: console.log(
     `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
   );
@@ -159,11 +161,11 @@ export const VoiceAssistant = ({
     }
   };
 
-  const startListening = () => {
+  const startListening = async (e: any) => {
     let haveMicPermission = false;
     setIsUserEngaged(true);
     if (!ispermissiongranted) {
-      navigator.mediaDevices
+      await navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then(() => {
           haveMicPermission = true;
@@ -172,13 +174,14 @@ export const VoiceAssistant = ({
         .catch(() => {
           setIspermissiongranted(false);
         });
-      return;
+      // return;
     } else {
       haveMicPermission = true;
     }
     if (!haveMicPermission) {
       // TODO: Show error tooltip with message
       PROD: console.warn("[Audio] haven't got mic permissions");
+      setTipMessage("Please enable Mic permission");
       return;
     }
 
@@ -341,11 +344,18 @@ export const VoiceAssistant = ({
               currentStyle.keyboardButton.position === "left" &&
               keyboardPostion === "left" &&
               keyboardPosition()}
+            {isUserEngaged &&
+              (currentStyle.keyboardButton.position === "right" ||
+                keyboardPostion === "right") && (
+                <KeyboardEmptyContainer></KeyboardEmptyContainer>
+              )}
             <VoiceButton
               id={`sugar-ai-voice-button-${buttonId}`}
               className="sugar-ai-copilot-voice-button"
               style={voiceButtonStyle}
-              onClick={startListening}
+              onClick={(e) => {
+                void startListening(e);
+              }}
               button={currentStyle?.voiceButton}
               ispermissiongranted={ispermissiongranted.toString()}
               isprocessing={isprocessing.toString()}
@@ -368,12 +378,15 @@ export const VoiceAssistant = ({
                 />
               )}
             </VoiceButton>
-            {isUserEngaged && <KeyboardEmptyContainer></KeyboardEmptyContainer>}
-            {((isUserEngaged &&
-              currentStyle.keyboardButton.position === "right") ||
-              keyboardPostion === "right") &&
+            {isUserEngaged &&
+              currentStyle.keyboardButton.position === "left" &&
+              keyboardPostion === "left" && (
+                <KeyboardEmptyContainer></KeyboardEmptyContainer>
+              )}
+            {isUserEngaged &&
+              (currentStyle.keyboardButton.position === "right" ||
+                keyboardPostion === "right") &&
               keyboardPosition()}
-
             {!hideToolTip && (
               <ToolTipWindow
                 container={currentStyle?.container}
@@ -387,7 +400,7 @@ export const VoiceAssistant = ({
                   id={`sugar-ai-tool-tip-message-${buttonId}`}
                   className="sugar-ai-tool-tip-message"
                 >
-                  {currentAiConfig.welcomeMessage}
+                  {tipMessage}
                 </TootTipMessage>
               </ToolTipWindow>
             )}
