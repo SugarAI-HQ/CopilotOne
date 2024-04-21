@@ -63,7 +63,7 @@ const CopilotShow: NextPageWithLayout = () => {
 
   return (
     <>
-      {
+      {/* {
         <CopilotProvider config={copilotConfig}>
           <VoiceAssistant
             promptTemplate={promptTemplate}
@@ -73,7 +73,7 @@ const CopilotShow: NextPageWithLayout = () => {
             messageStyle={{ color: "black" }}
           />
         </CopilotProvider>
-      }
+      } */}
 
       <Box className="w-full">
         <CopilotTabs
