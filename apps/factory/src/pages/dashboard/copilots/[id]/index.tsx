@@ -8,27 +8,22 @@ import {
   CardHeader,
   Chip,
   Grid,
-  Link,
   Paper,
   Typography,
-  colors,
 } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useRouter } from "next/router";
 import { getLayout } from "~/app/layout";
 import CodeHighlight from "~/components/integration/code_highlight";
-import CopyToClipboardButton from "~/components/copy_button";
 
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import { env } from "~/env.mjs";
 import {
-  useCopilot,
   CopilotConfigType,
   CopilotProvider,
-  VoiceToSkillComponent,
-  ChatContainer,
+  VoiceAssistant,
 } from "@sugar-ai/copilot-one-js";
 import {
   CopilotOutput,
@@ -70,7 +65,7 @@ const CopilotShow: NextPageWithLayout = () => {
     <>
       {
         <CopilotProvider config={copilotConfig}>
-          <VoiceToSkillComponent
+          <VoiceAssistant
             promptTemplate={promptTemplate}
             id={"preview"}
             position={"bottom-right"}
@@ -182,8 +177,8 @@ function CopilotTabs({
 
   const copilotUsageCode = `
   <CopilotProvider config={copilotConfig}>
-    <VoiceToSkillComponent promptVariables={{ $ROLE: 'Boss' }} >
-    </VoiceToSkillComponent>
+    <VoiceAssistant promptVariables={{ $ROLE: 'Boss' }} >
+    </VoiceAssistant>
   </CopilotProvider>
   `;
 
@@ -367,6 +362,7 @@ function getCopilotConfig(
       },
       successResponse: "Task Done",
       failureResponse: "I am not able to do this",
+      welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
     },
 
     // @ts-ignore

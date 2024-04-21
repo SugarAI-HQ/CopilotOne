@@ -18,7 +18,7 @@ const copilotVoiceButtonProps = z.object({
 });
 
 const copilotKeyboardButtonProps = z.object({
-  button: copilotStyleKeyboardButtonSchema,
+  button: copilotStyleKeyboardButtonSchema.optional(),
 });
 
 type CopilotVoiceButtonPropsType = z.infer<typeof copilotVoiceButtonProps>;
@@ -172,7 +172,7 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
   text-align: -webkit-center;
   cursor: ${({ isprocessing, ispermissiongranted }) =>
     isprocessing === "true" || ispermissiongranted !== "true"
-      ? "not-allowed"
+      ? "pointer"
       : "pointer"};
   opacity: ${({ isprocessing, ispermissiongranted }) =>
     isprocessing === "true" || ispermissiongranted !== "true" ? "0.5" : "1"};
@@ -203,6 +203,7 @@ export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
   border-radius: 10px;
   margin-left: 10px;
   margin-right: 10px;
+  bottom: 5px;
 `;
 
 export const ButtonContainer = styled.div``;
@@ -312,3 +313,8 @@ export const TextBoxButton = styled.button`
 `;
 
 // button, voice -> theme -> defaults
+
+export const KeyboardEmptyContainer = styled(KeyboardButton)`
+  box-shadow: none;
+  height: 0px;
+`;

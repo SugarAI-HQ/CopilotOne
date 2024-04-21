@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       husky:
-        specifier: ^9.0.11
-        version: 9.0.11
+        specifier: ^8.0.3
+        version: 8.0.3
 
   apps/factory:
     dependencies:
@@ -45,8 +45,8 @@ importers:
         specifier: ^7.92.0
         version: 7.92.0(next@13.4.13(@babel/core@7.23.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(webpack@5.88.2(@swc/core@1.3.92(@swc/helpers@0.5.1))(esbuild@0.18.20))
       '@sugar-ai/copilot-one-js':
-        specifier: ^0.0.10
-        version: 0.0.10(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        specifier: 0.0.15
+        version: 0.0.15(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@t3-oss/env-nextjs':
         specifier: ^0.6.0
         version: 0.6.1(typescript@5.2.2)(zod@3.22.4)
@@ -319,9 +319,6 @@ importers:
       qs:
         specifier: ^6.12.0
         version: 6.12.0
-      react-icons:
-        specifier: ^5.0.1
-        version: 5.0.1(react@18.2.0)
       styled-components:
         specifier: ^6.1.8
         version: 6.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -2797,8 +2794,8 @@ packages:
   '@storybook/types@7.4.6':
     resolution: {integrity: sha512-6QLXtMVsFZFpzPkdGWsu/iuc8na9dnS67AMOBKm5qCLPwtUJOYkwhMdFRSSeJthLRpzV7JLAL8Kwvl7MFP3QSw==}
 
-  '@sugar-ai/copilot-one-js@0.0.10':
-    resolution: {integrity: sha512-Pby/cVyUpAjVNW7ch+hMG9qOoA3Qvu3sUDlI3kZPFhUcygTFzznLGSZNUby8pD2GuldYHDpYUU6KpRh92OVw3Q==}
+  '@sugar-ai/copilot-one-js@0.0.15':
+    resolution: {integrity: sha512-EyzBR+99m0L1/CEn0pytvQDda9bT/J84lF9RqFGQKl+hJNeHySlB17FaS7ybZtpkmrEXog+tfika/J79u0Tcrw==}
     peerDependencies:
       react: '>18.0.0'
 
@@ -5505,11 +5502,6 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
-  husky@9.0.11:
-    resolution: {integrity: sha512-AB6lFlbwwyIqMdHYhwPe+kjOC3Oc5P3nThEoW/AaO2BX3vJDjWPFxYLxokUZOo6RNX20He3AaT8sESs9NJcmEw==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -7366,11 +7358,6 @@ packages:
     resolution: {integrity: sha512-3n3OU8vLX/pfcJrR3xJ1zlww6KS1kEJt0Whxc4FiGV+MJrQ1mYSYI3qS/11d2MJDFm8IhOXMTFQirfu6AVOF6Q==}
     peerDependencies:
       react: '>= 0.14.0'
-
-  react-icons@5.0.1:
-    resolution: {integrity: sha512-WqLZJ4bLzlhmsvme6iFdgO8gfZP17rfjYEJ2m9RsZjZ+cc4k1hTzknEz63YS1MeT50kVzoa1Nz36f4BEx+Wigw==}
-    peerDependencies:
-      react: '*'
 
   react-immutable-proptypes@2.2.0:
     resolution: {integrity: sha512-Vf4gBsePlwdGvSZoLSBfd4HAP93HDauMY4fDjXhreg/vg6F3Fj/MXDNyTbltPC/xZKmZc+cjLu3598DdYK6sgQ==}
@@ -11914,7 +11901,7 @@ snapshots:
       '@types/express': 4.17.19
       file-system-cache: 2.3.0
 
-  '@sugar-ai/copilot-one-js@0.0.10(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@sugar-ai/copilot-one-js@0.0.15(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@types/dom-speech-recognition': 0.0.4
       '@types/easy-speech': 1.2.4
@@ -11922,7 +11909,6 @@ snapshots:
       js-base64: 3.7.7
       qs: 6.12.0
       react: 18.2.0
-      react-icons: 5.0.1(react@18.2.0)
       styled-components: 6.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       url-join-ts: 1.0.5
       window-or-global: 1.0.1
@@ -15595,8 +15581,6 @@ snapshots:
 
   husky@8.0.3: {}
 
-  husky@9.0.11: {}
-
   iconv-lite@0.4.24:
     dependencies:
       safer-buffer: 2.1.2
@@ -17693,10 +17677,6 @@ snapshots:
   react-hotkeys@2.0.0(react@18.2.0):
     dependencies:
       prop-types: 15.8.1
-      react: 18.2.0
-
-  react-icons@5.0.1(react@18.2.0):
-    dependencies:
       react: 18.2.0
 
   react-immutable-proptypes@2.2.0(immutable@3.8.2):

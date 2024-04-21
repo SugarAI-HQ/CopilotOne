@@ -26,6 +26,7 @@ import {
   TextBoxContainer,
   TextBoxButton,
   TextBox,
+  KeyboardEmptyContainer,
 } from "../assistants/base_assistant";
 import Mic from "../icons/mic";
 import Keyboard from "../icons/keyboard";
@@ -69,6 +70,7 @@ export const VoiceAssistant = ({
   const [recognition, setRecognition] = useState<any>();
   const [hideVoiceButton, setHideVoiceButton] = useState(false);
   const [textMessage, setTextMessage] = useState("");
+  const [isUserEngaged, setIsUserEngaged] = useState(false);
 
   const { config, clientUserId, textToAction } = useCopilot();
 
@@ -159,6 +161,7 @@ export const VoiceAssistant = ({
 
   const startListening = () => {
     let haveMicPermission = false;
+    setIsUserEngaged(true);
     if (!ispermissiongranted) {
       navigator.mediaDevices
         .getUserMedia({ audio: true })
@@ -334,10 +337,12 @@ export const VoiceAssistant = ({
       >
         {!hideVoiceButton && (
           <>
-            {currentStyle.keyboardButton.position === "left" &&
+            {isUserEngaged &&
+              currentStyle.keyboardButton.position === "left" &&
               keyboardPostion === "left" &&
               keyboardPosition()}
             <VoiceButton
+              id={`sugar-ai-voice-button-${buttonId}`}
               className="sugar-ai-copilot-voice-button"
               style={voiceButtonStyle}
               onClick={startListening}
@@ -363,7 +368,9 @@ export const VoiceAssistant = ({
                 />
               )}
             </VoiceButton>
-            {(currentStyle.keyboardButton.position === "right" ||
+            {isUserEngaged && <KeyboardEmptyContainer></KeyboardEmptyContainer>}
+            {((isUserEngaged &&
+              currentStyle.keyboardButton.position === "right") ||
               keyboardPostion === "right") &&
               keyboardPosition()}
 
@@ -372,8 +379,14 @@ export const VoiceAssistant = ({
                 container={currentStyle?.container}
                 position={position as CopilotStylePositionType}
                 style={messageStyle}
+                id={`sugar-ai-tool-tip-${buttonId}`}
+                className="sugar-ai-tool-tip"
               >
-                <TootTipMessage theme={currentStyle?.theme}>
+                <TootTipMessage
+                  theme={currentStyle?.theme}
+                  id={`sugar-ai-tool-tip-message-${buttonId}`}
+                  className="sugar-ai-tool-tip-message"
+                >
                   {currentAiConfig.welcomeMessage}
                 </TootTipMessage>
               </ToolTipWindow>
@@ -381,53 +394,67 @@ export const VoiceAssistant = ({
           </>
         )}
 
-        {hideVoiceButton && (
-          <TextBoxContainer
-            container={currentStyle?.container}
-            position={position}
-          >
-            <TextBox
-              type="text"
-              placeholder={currentStyle?.keyboardButton?.placeholder}
-              value={textMessage}
-              color={currentStyle?.keyboardButton?.bgColor}
-              onChange={(e) => {
-                setTextMessage(e.target.value);
-              }}
-              onKeyUp={(e) => {
-                if (e.key === "Enter") void startSending();
-              }}
-            />
-            <TextBoxButton onClick={enableKeyboard}>
-              <Mic
-                color={currentStyle?.keyboardButton?.bgColor}
-                size={currentStyle?.keyboardButton?.iconSize}
-                width={"26"}
-                height={"30"}
-              />
-            </TextBoxButton>
-          </TextBoxContainer>
-        )}
-
         {(aiResponse || finalOutput || interimOutput) && (
           <ChatMessage
             container={currentStyle?.container}
             position={position as CopilotStylePositionType}
             style={messageStyle}
+            id={`sugar-ai-chat-message-${buttonId}`}
+            className="sugar-ai-chat-message"
           >
             {(interimOutput || finalOutput) && (
-              <Message theme={currentStyle?.theme}>
+              <Message
+                theme={currentStyle?.theme}
+                id={`sugar-ai-message-${buttonId}`}
+                className="sugar-ai-message"
+              >
                 {interimOutput || finalOutput}
               </Message>
             )}
             {aiResponse && (
-              <Message theme={currentStyle?.theme} role="assistant">
+              <Message
+                theme={currentStyle?.theme}
+                id={`sugar-ai-message-${buttonId}`}
+                className="sugar-ai-message"
+                role="assistant"
+              >
                 {aiResponse}
               </Message>
             )}
           </ChatMessage>
         )}
       </CopilotContainer>
+      {hideVoiceButton && (
+        <TextBoxContainer
+          container={currentStyle?.container}
+          position={position}
+          id={`sugar-ai-text-box-container-${buttonId}`}
+          className="sugar-ai-text-box-container"
+        >
+          <TextBox
+            type="text"
+            placeholder={currentStyle?.keyboardButton?.placeholder}
+            value={textMessage}
+            color={currentStyle?.keyboardButton?.bgColor}
+            onChange={(e) => {
+              setTextMessage(e.target.value);
+            }}
+            onKeyUp={(e) => {
+              if (e.key === "Enter") void startSending();
+            }}
+            id={`sugar-ai-text-box-${buttonId}`}
+            className="sugar-ai-text-box"
+          />
+          <TextBoxButton onClick={enableKeyboard}>
+            <Mic
+              color={currentStyle?.keyboardButton?.bgColor}
+              size={currentStyle?.keyboardButton?.iconSize}
+              width={"26"}
+              height={"30"}
+            />
+          </TextBoxButton>
+        </TextBoxContainer>
+      )}
     </StyleSheetManager>
   );
 };
