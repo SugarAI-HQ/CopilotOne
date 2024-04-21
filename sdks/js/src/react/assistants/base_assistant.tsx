@@ -220,11 +220,32 @@ export const Message = styled.div<{
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
 `;
 
-export const ToolTipWindow = styled(ChatMessage)`
+const fadeInOut = keyframes`
+  0% { opacity: 0; }
+  10% { opacity: 0.25; }
+  20% { opacity: 0.50; }
+  30% { opacity: 0.75; }
+  40% { opacity: 1; }
+  45% { opacity: 1; }
+  50% { opacity: 1; }
+  55% { opacity: 1; }
+  60% { opacity: 1; }
+  65% { opacity: 1; }
+  70% { opacity: 0.75; }
+  80% { opacity: 0.50; }
+  90% { opacity: 0.25; }
+  100% { opacity: 0; }
+`;
+
+export const ToolTipContainer = styled(ChatMessage)`
   width: 200px;
   text-align: center;
   border: 1px solid #ccc;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  animation: ${fadeInOut} 7s linear forwards;
+  animation-fill-mode: forwards;
+  animation-delay: 0.8s;
 `;
 
 export const TootTipMessage = styled(Message)`

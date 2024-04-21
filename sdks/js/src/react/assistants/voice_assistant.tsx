@@ -20,7 +20,7 @@ import {
   VoiceButton,
   ChatMessage,
   Message,
-  ToolTipWindow,
+  ToolTipContainer,
   TootTipMessage,
   KeyboardButton,
   TextBoxContainer,
@@ -65,7 +65,7 @@ export const VoiceAssistant = ({
 }) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
-  const [hideToolTip, setHideToolTip] = useState(false);
+  const [hideToolTip, setHideToolTip] = useState(true);
   const [isprocessing, setIsprocessing] = useState(false);
   const [ispermissiongranted, setIspermissiongranted] = useState(false);
   const [interimOutput, setInterimOutput] = useState<string>("");
@@ -143,6 +143,13 @@ export const VoiceAssistant = ({
     //   });
 
     setButtonName(id ?? (position as string));
+    const timer = setTimeout(() => {
+      setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
+    }, 3000);
+    setHideToolTip(true);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -392,7 +399,7 @@ export const VoiceAssistant = ({
                 keyboardPostion === "right") &&
               keyboardPosition()}
             {!hideToolTip && (
-              <ToolTipWindow
+              <ToolTipContainer
                 container={currentStyle?.container}
                 position={position as CopilotStylePositionType}
                 style={toolTipContainerStyle}
@@ -407,7 +414,7 @@ export const VoiceAssistant = ({
                 >
                   {tipMessage}
                 </TootTipMessage>
-              </ToolTipWindow>
+              </ToolTipContainer>
             )}
           </>
         )}
