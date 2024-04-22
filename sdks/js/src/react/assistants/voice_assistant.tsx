@@ -106,7 +106,7 @@ export const VoiceAssistant = ({
     },
     toolTip: {
       ...copilotStyleDefaults.toolTip,
-      ...config?.style.toolTip,
+      ...config?.style?.toolTip,
     },
   };
 

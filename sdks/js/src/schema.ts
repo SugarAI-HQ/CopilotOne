@@ -90,7 +90,7 @@ export const copilotToolTipSchema = z.object({
   welcomeMessage: stringOptional,
   delay: z.number().optional(),
   duration: z.number().optional(),
-  disabled: z.boolean().default(true),
+  disabled: z.boolean(),
 });
 
 export type CopilotSyleTooltipType = z.infer<typeof copilotToolTipSchema>;
@@ -126,7 +126,7 @@ export const copilotStyleDefaults: CopilotSytleType = {
     secondaryColor,
     fontFamily: "inherit",
     fontSize: "14px",
-    textColor: "", // or any default value you want
+    textColor: "inherit",
   },
   voiceButton: {
     bgColor: primaryColor,
