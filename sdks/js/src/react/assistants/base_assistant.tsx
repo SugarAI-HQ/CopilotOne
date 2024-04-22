@@ -196,6 +196,7 @@ export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
   margin-left: 10px;
   margin-right: 10px;
   bottom: 5px;
+  border: unset;
 `;
 
 export const ButtonContainer = styled.div``;
@@ -333,4 +334,5 @@ export const TextBoxButton = styled.button`
 export const KeyboardEmptyContainer = styled(KeyboardButton)`
   box-shadow: none;
   height: 0px;
+  background: unset;
 `;
