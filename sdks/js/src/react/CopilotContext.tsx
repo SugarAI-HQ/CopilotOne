@@ -160,7 +160,7 @@ export const CopilotProvider = function ({
         },
         // messages: messages.slice(-3),
         // @ts-expect-error
-        actions: Object.values(uxActions) as ServiceGenerateRequestSkillsItem[],
+        skills: Object.values(uxActions) as ServiceGenerateRequestSkillsItem[],
       },
     )) as SugarAiApi.ServiceGenerateResponse;
     // const c = await makeInference(
