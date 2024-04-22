@@ -104,6 +104,10 @@ export const VoiceAssistant = ({
       bgColor: currentTheme.primaryColor,
       color: currentTheme.secondaryColor,
     },
+    toolTip: {
+      ...copilotStyleDefaults.toolTip,
+      ...config?.style.toolTip,
+    },
   };
 
   const currentAiConfig = {
@@ -111,7 +115,9 @@ export const VoiceAssistant = ({
     ...config?.ai,
   };
 
-  const [tipMessage, setTipMessage] = useState(currentAiConfig.welcomeMessage);
+  const [tipMessage, setTipMessage] = useState(
+    currentStyle.toolTip.welcomeMessage,
+  );
 
   DEV: console.log(
     `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
@@ -145,7 +151,7 @@ export const VoiceAssistant = ({
     setButtonName(id ?? (position as string));
     const timer = setTimeout(() => {
       setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
-    }, 3000);
+    }, currentStyle?.toolTip?.delay);
     setHideToolTip(true);
     return () => {
       clearTimeout(timer);
@@ -401,6 +407,7 @@ export const VoiceAssistant = ({
             {!hideToolTip && (
               <ToolTipContainer
                 container={currentStyle?.container}
+                config={currentStyle?.toolTip}
                 position={position as CopilotStylePositionType}
                 style={toolTipContainerStyle}
                 id={`sugar-ai-tool-tip-${buttonId}`}

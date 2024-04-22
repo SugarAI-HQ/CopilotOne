@@ -5,6 +5,7 @@ import {
   type CopilotSyleThemeType,
   type CopilotStylePositionType,
   type CopilotSyleContainerType,
+  type CopilotSyleTooltipType,
   type MessageRoleType,
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
@@ -237,13 +238,16 @@ const fadeInOut = keyframes`
   100% { opacity: 0; }
 `;
 
-export const ToolTipContainer = styled(ChatMessage)`
+export const ToolTipContainer = styled(ChatMessage)<{
+  config: CopilotSyleTooltipType;
+}>`
   width: 200px;
   text-align: center;
   border: 1px solid #ccc;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
   opacity: 0;
-  animation: ${fadeInOut} 7s linear forwards;
+
+  animation: ${fadeInOut} ${(props) => props.config?.duration}s linear forwards;
   animation-fill-mode: forwards;
   animation-delay: 0.8s;
 `;

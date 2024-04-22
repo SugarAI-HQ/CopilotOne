@@ -36,8 +36,8 @@ export type CopilotSyleKeyboardPositionSchema = z.infer<
 >;
 
 export const copilotSyleContainerSchema = z.object({
-  position: copilotSylePositionSchema.default("bottom-right"),
-  margin: z.string().default("0px"),
+  position: copilotSylePositionSchema,
+  margin: z.string(),
 });
 
 export type CopilotSyleContainerType = z.infer<
@@ -45,11 +45,11 @@ export type CopilotSyleContainerType = z.infer<
 >;
 
 export const copilotSyleThemeSchema = z.object({
-  primaryColor: z.string().default(primaryColor),
-  secondaryColor: z.string().default(secondaryColor),
-  fontFamily: z.string().default("inherit"),
-  fontSize: z.string().default("14px"),
-  textColor: z.string().optional(),
+  primaryColor: z.string(),
+  secondaryColor: z.string(),
+  fontFamily: z.string(),
+  fontSize: z.string(),
+  textColor: z.string(),
 });
 
 export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
@@ -57,19 +57,19 @@ export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
 // export const copilotThemeProps = z.object({});
 
 export const copilotStyleVoiceButtonSchema = z.object({
-  bgColor: z.string().default(primaryColor),
-  color: z.string().default(secondaryColor),
-  width: z.string().default("60px"),
-  height: z.string().default("60px"),
-  iconSize: z.string().default("25"),
+  bgColor: z.string(),
+  color: z.string(),
+  width: z.string(),
+  height: z.string(),
+  iconSize: z.string(),
 });
 
 export const copilotStyleKeyboardButtonSchema = z.object({
-  bgColor: z.string().default(primaryColor),
-  color: z.string().default(secondaryColor),
-  position: copilotSyleKeyboardPositionSchema.default("left"),
-  iconSize: z.string().default("25").optional(),
-  placeholder: z.string().default("Start typing..."),
+  bgColor: z.string(),
+  color: z.string(),
+  position: copilotSyleKeyboardPositionSchema,
+  iconSize: z.string().optional(),
+  placeholder: z.string(),
 });
 
 export type CopilotSyleButtonType = z.infer<
@@ -80,16 +80,25 @@ export const copilotAiSchema = z.object({
   defaultPromptTemplate: promptTemplateSchema.optional(),
   defaultPromptVariables: z.record(z.any()).optional(),
 
-  successResponse: z.string().default("Done"),
-  failureResponse: z.string().default("Something went wrong"),
-  welcomeMessage: z.string().default("Tap & Speak: Let AI Guide Your Journey!"),
+  successResponse: z.string(),
+  failureResponse: z.string(),
 });
+
+export const copilotToolTipSchema = z.object({
+  welcomeMessage: z.string().optional(),
+  delay: z.number().optional(),
+  duration: z.number().optional(),
+  disabled: z.boolean().default(true),
+});
+
+export type CopilotSyleTooltipType = z.infer<typeof copilotToolTipSchema>;
 
 export const copilotSytleSchema = z.object({
   container: copilotSyleContainerSchema,
   theme: copilotSyleThemeSchema,
   voiceButton: copilotStyleVoiceButtonSchema,
   keyboardButton: copilotStyleKeyboardButtonSchema,
+  toolTip: copilotToolTipSchema,
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
@@ -102,7 +111,6 @@ export const copilotAiDefaults: CopilotAiType = {
   defaultPromptVariables: {},
   successResponse: "Done",
   failureResponse: "Something went wrong",
-  welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
 };
 
 export const copilotStyleDefaults: CopilotSytleType = {
@@ -131,6 +139,12 @@ export const copilotStyleDefaults: CopilotSytleType = {
     position: "left",
     iconSize: "25",
     placeholder: "Start typing...",
+  },
+  toolTip: {
+    welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
+    disabled: true,
+    delay: 3000,
+    duration: 7,
   },
 };
 
