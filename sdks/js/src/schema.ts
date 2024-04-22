@@ -23,6 +23,8 @@ export const copilotSyleKeyboardPositionSchema = z.enum([
   "top",
 ]);
 
+export const stringOptional = z.string().optional();
+
 export const messageRoleEnum = z.enum(["assistant", "system", "tool"]);
 
 export type MessageRoleType = z.infer<typeof messageRoleEnum>;
@@ -37,7 +39,7 @@ export type CopilotSyleKeyboardPositionSchema = z.infer<
 
 export const copilotSyleContainerSchema = z.object({
   position: copilotSylePositionSchema,
-  margin: z.string(),
+  margin: stringOptional,
 });
 
 export type CopilotSyleContainerType = z.infer<
@@ -45,11 +47,11 @@ export type CopilotSyleContainerType = z.infer<
 >;
 
 export const copilotSyleThemeSchema = z.object({
-  primaryColor: z.string(),
-  secondaryColor: z.string(),
-  fontFamily: z.string(),
-  fontSize: z.string(),
-  textColor: z.string(),
+  primaryColor: stringOptional,
+  secondaryColor: stringOptional,
+  fontFamily: stringOptional,
+  fontSize: stringOptional,
+  textColor: stringOptional,
 });
 
 export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
@@ -57,19 +59,19 @@ export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
 // export const copilotThemeProps = z.object({});
 
 export const copilotStyleVoiceButtonSchema = z.object({
-  bgColor: z.string(),
-  color: z.string(),
-  width: z.string(),
-  height: z.string(),
-  iconSize: z.string(),
+  bgColor: stringOptional,
+  color: stringOptional,
+  width: stringOptional,
+  height: stringOptional,
+  iconSize: stringOptional,
 });
 
 export const copilotStyleKeyboardButtonSchema = z.object({
-  bgColor: z.string(),
-  color: z.string(),
+  bgColor: stringOptional,
+  color: stringOptional,
   position: copilotSyleKeyboardPositionSchema,
-  iconSize: z.string().optional(),
-  placeholder: z.string(),
+  iconSize: stringOptional,
+  placeholder: stringOptional,
 });
 
 export type CopilotSyleButtonType = z.infer<
@@ -85,7 +87,7 @@ export const copilotAiSchema = z.object({
 });
 
 export const copilotToolTipSchema = z.object({
-  welcomeMessage: z.string().optional(),
+  welcomeMessage: stringOptional,
   delay: z.number().optional(),
   duration: z.number().optional(),
   disabled: z.boolean().default(true),
