@@ -404,7 +404,7 @@ export const VoiceAssistant = ({
               (currentStyle.keyboardButton.position === "right" ||
                 keyboardPostion === "right") &&
               keyboardPosition()}
-            {!hideToolTip && (
+            {!hideToolTip && currentStyle.toolTip.disabled && (
               <ToolTipContainer
                 container={currentStyle?.container}
                 config={currentStyle?.toolTip}
