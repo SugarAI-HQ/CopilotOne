@@ -327,6 +327,7 @@ export const TextBoxButton = styled.button`
   color: #fff;
   cursor: pointer;
   outline: none;
+  background: unset;
 `;
 
 // button, voice -> theme -> defaults
