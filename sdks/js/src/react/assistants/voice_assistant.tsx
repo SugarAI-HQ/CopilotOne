@@ -115,6 +115,8 @@ export const VoiceAssistant = ({
     ...config?.ai,
   };
 
+  DEV: console.log(currentAiConfig);
+
   const [tipMessage, setTipMessage] = useState(
     currentStyle.toolTip.welcomeMessage,
   );
