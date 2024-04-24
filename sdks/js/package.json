@@ -1,11 +1,7 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Add Siri like features to your react app",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SugarAI-HQ/CopilotOne.git"
-  },
   "files": [
     "dist/**/*"
   ],
@@ -19,6 +15,12 @@
       "import": "./dist/esm/index.mjs",
       "default": "./dist/esm/index.mjs"
     }
+  },
+  "homepage": "https://github.com/SugarAI-HQ/CopilotOne",
+  "bugs": "https://github.com/SugarAI-HQ/CopilotOne/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SugarAI-HQ/CopilotOne.git"
   },
   "scripts": {
     "devx": "tsc -b ./tsconfig.esm.json ./tsconfig.types.json -w",
