@@ -316,7 +316,10 @@ function CopilotTabs({
                   },
                 }}
               >
-                <Tab label="NPM" sx={{ color: "var(--sugarhub-text-color)" }} />
+                <Tab
+                  label="React"
+                  sx={{ color: "var(--sugarhub-text-color)" }}
+                />
 
                 <Tab
                   label="Javascript"
