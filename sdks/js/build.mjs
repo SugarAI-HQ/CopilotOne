@@ -35,9 +35,6 @@ const sharedConfig = {
   dropLabels: ["DEV", "TEST"],
 
   // External dependencies
-  external: Object.keys(pj.dependencies).concat(
-    Object.keys(pj.peerDependencies),
-  ),
 };
 
 // cjs
@@ -56,6 +53,9 @@ let result = await build({
   // outdir: `${outputDir}/esm`,
   platform: "neutral", // for ESM
   format: "esm",
+  external: Object.keys(pj.dependencies).concat(
+    Object.keys(pj.peerDependencies),
+  ),
   // plugins: [nodeExternalsPlugin()],
 });
 
@@ -68,3 +68,17 @@ console.log(
     verbose: false,
   }),
 );
+
+let jsBuildResult = await build({
+  ...sharedConfig,
+  entryPoints: ["src/js/index.js"],
+  outfile: `${outputDir}/js/copilot-one.min.js`,
+  bundle: true,
+  minify: true,
+  platform: "browser",
+  format: "iife",
+});
+
+fs.writeFileSync("meta-js.json", JSON.stringify(jsBuildResult.metafile));
+
+// jsBuildResult;
