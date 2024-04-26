@@ -41,8 +41,11 @@ import {
       root.render(this.App());
     },
     init: function init() {
-      win.saiData.forEach(this.processArgument);
-      win.saiData.push = this.processArgument;
+      if (typeof win.saiData !== "undefined") {
+        win.saiData = win.saiData || [];
+        win.saiData.forEach(this.processArgument);
+        win.saiData.push = this.processArgument;
+      }
       this.render();
     },
     processArgument: function processArgument(args) {
