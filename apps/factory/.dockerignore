@@ -16,3 +16,4 @@
 !.env.example
 !package-lock.json
 !typings
+!postcss.config.cjs

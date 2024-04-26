@@ -8,10 +8,6 @@ WORKDIR /app
 # Set up npm
 RUN npm install -g npm@latest
 
-RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
-# RUN npm install -g prisma@latest
-RUN npm install sharp
-
 COPY package.json package-lock.json* ./
 
 # Install dependencies using npm
@@ -48,7 +44,7 @@ COPY --from=build --chown=nextjs:nodejs /app/.next/standalone/ ./
 COPY --from=build --chown=nextjs:nodejs /app/next.config.mjs ./
 COPY --from=build --chown=nextjs:nodejs /app/package.json ./
 COPY --from=build --chown=nextjs:nodejs /app/public* ./public
-COPY --from=build --chown=nextjs:nodejs /app/.next/static* ./.next/static
+COPY --from=build --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=build --chown=nextjs:nodejs /app/prisma ./prisma
 # COPY --from=build --chown=nextjs:nodejs /app/server.js ./
 COPY docker .
@@ -59,9 +55,12 @@ COPY docker .
 
 RUN chmod +x /app/entrypoint.sh
 
+RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
+RUN npm install sharp npm install
 
 
 USER root
+
 
 # RUN ln -s /app/apps/${PROJECT_NAME}/server.js /app/server.js && ln -s /app/apps/${PROJECT_NAME}/.env /app/.env
 
