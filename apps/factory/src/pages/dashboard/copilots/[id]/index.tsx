@@ -453,12 +453,13 @@ const CopilotPrompts = ({
 
 function previewCopilot(previewConfig: any) {
   const exampleOrign = "https://demo.sugarai.dev";
+  // const exampleOrign = "http://localhost:4000";
   if (typeof window !== "undefined") {
     // Convert data to a JSON string and encode it
     const encodedData = btoa(JSON.stringify(previewConfig));
-
     // Construct the URL with encoded data
-    const url = `${exampleOrign}/todo?data=${encodeURIComponent(encodedData)}`;
+    // const url = `${exampleOrign}/todo?data=${encodeURIComponent(encodedData)}`;
+    const url = `${exampleOrign}/todo?data=${encodedData}`;
 
     const targetWindow = window.open(url, "_blank", "noopener,noreferrer");
   }
