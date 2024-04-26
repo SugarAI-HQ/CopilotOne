@@ -30,13 +30,13 @@ jobs:
         with:
           node-version: 20.12.2
           check-latest: true
-
+      # - name: Change to factory directory
+      #   run: cd apps/factory
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          
 
       # - name: Npm version name
       #   run: echo running on branch ${NPM_PACKAGE_VERSION} --- ${GITHUB_ENV}
@@ -44,6 +44,8 @@ jobs:
       - name: Build Docker Image
         uses: docker/build-push-action@v5.1.0
         with:
+          context: apps/factory # Specify the directory where Dockerfile is located
+          # file: Dockerfile # Specify the path to your Dockerfi
           build-args: |
             "PROJECT_NAME=factory"
           tags: |

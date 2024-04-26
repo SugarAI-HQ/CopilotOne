@@ -127,9 +127,14 @@ function CopilotTabs({
   refetchPrompts: () => void;
 }) {
   const [value, setValue] = useState(0);
+  const [pvalue, setPvalue] = useState(0);
 
   const handleChange = (event: any, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handlePackageChange = (event: any, newValue: number) => {
+    setPvalue(newValue);
   };
 
   const npmPackage = "@sugar-ai/copilot-one-js";
@@ -180,6 +185,27 @@ function CopilotTabs({
     </VoiceAssistant>
   </CopilotProvider>
   `;
+
+  const javascriptHead = `
+  <script
+    type="module"
+    src="https://cdn.jsdelivr.net/npm/@sugar-ai/copilot-one-js@latest/dist/js/copilot-one.min.js"
+    async
+  ></script>
+`;
+
+  const javascriptBody = `
+  <!-- Adding copilot one container to your webiste  -->
+  <a id="copilot-one" href="https://sugarai.dev"></a>
+  <script>
+    window.saiData = window.saiData || [];
+
+    function saiAsync() {
+      saiData.push(arguments);
+    }
+  </script>
+
+`;
 
   return (
     <div
@@ -253,6 +279,7 @@ function CopilotTabs({
                   </Button>
                 </Typography>
               </Box>
+
               <CodeBlock title={"Copilot Id"} code={`${copilot?.id}`} />
               <CodeBlock
                 title={"Copilot Token"}
@@ -273,37 +300,63 @@ function CopilotTabs({
             }}
           >
             <CardContent>
-              <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
-                <Typography
-                  variant="h4"
-                  component="p"
-                  sx={{ mt: 1, mb: 4, flex: 1, textAlign: "center" }}
-                >
-                  Add Copilot to your App
-                  <br />
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    href="https://docs.sugarai.dev/guides/1_introduction/"
-                    sx={{ mt: 2 }}
-                  >
-                    Docs
-                  </Button>
-                </Typography>
-                <Box>
-                  <CodeBlock title={"Install Package"} code={codePackage} />
+              <Tabs
+                value={pvalue}
+                // style={{ width: "100%" }}
+                centered={true}
+                onChange={handlePackageChange}
+                variant="scrollable" // This makes the tabs scrollable
+                scrollButtons="auto" // This makes scroll buttons appear when there are more tabs than can fit
+                TabIndicatorProps={{
+                  style: { background: "var(--sugarhub-text-color)" },
+                }}
+                sx={{
+                  ".Mui-selected": {
+                    color: "var(--sugarhub-text-color)",
+                  },
+                }}
+              >
+                <Tab label="NPM" sx={{ color: "var(--sugarhub-text-color)" }} />
 
-                  <CodeBlock
-                    title={"Copilot basic config"}
-                    code={copilotConfigCode}
-                  />
-                  <Typography sx={{ p: 2 }}>Read more on the docs</Typography>
-                  {/* <CodeBlock
-                  title={"Copilot in react component"}
-                  code={copilotUsageCode}
-                /> */}
+                <Tab
+                  label="Javascript"
+                  sx={{ color: "var(--sugarhub-text-color)" }}
+                />
+              </Tabs>
+              <TabPanel value={pvalue} index={0}>
+                <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+                  <BoxDescription
+                    title={"Add Copilot to your App"}
+                  ></BoxDescription>
+                  <Box>
+                    <CodeBlock title={"Install Package"} code={codePackage} />
+
+                    <CodeBlock
+                      title={"Copilot basic config"}
+                      code={copilotConfigCode}
+                    />
+                    <Typography sx={{ p: 2 }}>Read more on the docs</Typography>
+                  </Box>
                 </Box>
-              </Box>
+              </TabPanel>
+              <TabPanel value={pvalue} index={1}>
+                <Box sx={{ p: 2, display: "flex", alignItems: "center" }}>
+                  <BoxDescription
+                    title={"Add Copilot to your Website"}
+                  ></BoxDescription>
+
+                  <Box>
+                    <CodeBlock
+                      title={"Add this to your Head tag"}
+                      code={javascriptHead}
+                    />
+                    <CodeBlock
+                      title={"Add this inside your HTML body"}
+                      code={javascriptBody}
+                    />
+                  </Box>
+                </Box>
+              </TabPanel>
             </CardContent>
           </Card>
         </Paper>
@@ -322,6 +375,29 @@ function CopilotTabs({
         </Paper>
       </TabPanel>
     </div>
+  );
+}
+
+function BoxDescription(props: any) {
+  return (
+    <>
+      <Typography
+        variant="h4"
+        component="p"
+        sx={{ mt: 1, mb: 4, flex: 1, textAlign: "center" }}
+      >
+        {props.title}
+        <br />
+        <Button
+          variant="outlined"
+          size="large"
+          href="https://docs.sugarai.dev/guides/1_introduction/"
+          sx={{ mt: 2 }}
+        >
+          Docs
+        </Button>
+      </Typography>
+    </>
   );
 }
 
@@ -453,13 +529,12 @@ const CopilotPrompts = ({
 
 function previewCopilot(previewConfig: any) {
   const exampleOrign = "https://demo.sugarai.dev";
-  // const exampleOrign = "http://localhost:4000";
   if (typeof window !== "undefined") {
     // Convert data to a JSON string and encode it
     const encodedData = btoa(JSON.stringify(previewConfig));
+
     // Construct the URL with encoded data
-    // const url = `${exampleOrign}/todo?data=${encodeURIComponent(encodedData)}`;
-    const url = `${exampleOrign}/todo?data=${encodedData}`;
+    const url = `${exampleOrign}/todo?data=${encodeURIComponent(encodedData)}`;
 
     const targetWindow = window.open(url, "_blank", "noopener,noreferrer");
   }
