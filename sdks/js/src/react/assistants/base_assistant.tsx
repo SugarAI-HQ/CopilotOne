@@ -5,6 +5,7 @@ import {
   type CopilotSyleThemeType,
   type CopilotStylePositionType,
   type CopilotSyleContainerType,
+  type CopilotSyleTooltipType,
   type MessageRoleType,
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
@@ -195,6 +196,7 @@ export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
   margin-left: 10px;
   margin-right: 10px;
   bottom: 5px;
+  border: unset;
 `;
 
 export const ButtonContainer = styled.div``;
@@ -220,11 +222,35 @@ export const Message = styled.div<{
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
 `;
 
-export const ToolTipWindow = styled(ChatMessage)`
+const fadeInOut = keyframes`
+  0% { opacity: 0; }
+  10% { opacity: 0.25; }
+  20% { opacity: 0.50; }
+  30% { opacity: 0.75; }
+  40% { opacity: 1; }
+  45% { opacity: 1; }
+  50% { opacity: 1; }
+  55% { opacity: 1; }
+  60% { opacity: 1; }
+  65% { opacity: 1; }
+  70% { opacity: 0.75; }
+  80% { opacity: 0.50; }
+  90% { opacity: 0.25; }
+  100% { opacity: 0; }
+`;
+
+export const ToolTipContainer = styled(ChatMessage)<{
+  config: CopilotSyleTooltipType;
+}>`
   width: 200px;
   text-align: center;
   border: 1px solid #ccc;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+  opacity: 0;
+
+  animation: ${fadeInOut} ${(props) => props.config?.duration}s linear forwards;
+  animation-fill-mode: forwards;
+  animation-delay: 0.8s;
 `;
 
 export const TootTipMessage = styled(Message)`
@@ -301,6 +327,7 @@ export const TextBoxButton = styled.button`
   color: #fff;
   cursor: pointer;
   outline: none;
+  background: unset;
 `;
 
 // button, voice -> theme -> defaults
@@ -308,4 +335,5 @@ export const TextBoxButton = styled.button`
 export const KeyboardEmptyContainer = styled(KeyboardButton)`
   box-shadow: none;
   height: 0px;
+  background: unset;
 `;

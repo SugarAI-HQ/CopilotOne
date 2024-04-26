@@ -170,7 +170,6 @@ function CopilotTabs({
       },
       successResponse: 'Task Done',
       failureResponse: 'I am not able to do this',
-      welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
     },
   };
   `;
@@ -362,7 +361,6 @@ function getCopilotConfig(
       },
       successResponse: "Task Done",
       failureResponse: "I am not able to do this",
-      welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
     },
 
     // @ts-ignore

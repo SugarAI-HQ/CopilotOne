@@ -23,6 +23,8 @@ export const copilotSyleKeyboardPositionSchema = z.enum([
   "top",
 ]);
 
+export const stringOptional = z.string().optional();
+
 export const messageRoleEnum = z.enum(["assistant", "system", "tool"]);
 
 export type MessageRoleType = z.infer<typeof messageRoleEnum>;
@@ -36,8 +38,8 @@ export type CopilotSyleKeyboardPositionSchema = z.infer<
 >;
 
 export const copilotSyleContainerSchema = z.object({
-  position: copilotSylePositionSchema.default("bottom-right"),
-  margin: z.string().default("0px"),
+  position: copilotSylePositionSchema,
+  margin: stringOptional,
 });
 
 export type CopilotSyleContainerType = z.infer<
@@ -45,11 +47,11 @@ export type CopilotSyleContainerType = z.infer<
 >;
 
 export const copilotSyleThemeSchema = z.object({
-  primaryColor: z.string().default(primaryColor),
-  secondaryColor: z.string().default(secondaryColor),
-  fontFamily: z.string().default("inherit"),
-  fontSize: z.string().default("14px"),
-  textColor: z.string().optional(),
+  primaryColor: stringOptional,
+  secondaryColor: stringOptional,
+  fontFamily: stringOptional,
+  fontSize: stringOptional,
+  textColor: stringOptional,
 });
 
 export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
@@ -57,19 +59,19 @@ export type CopilotSyleThemeType = z.infer<typeof copilotSyleThemeSchema>;
 // export const copilotThemeProps = z.object({});
 
 export const copilotStyleVoiceButtonSchema = z.object({
-  bgColor: z.string().default(primaryColor),
-  color: z.string().default(secondaryColor),
-  width: z.string().default("60px"),
-  height: z.string().default("60px"),
-  iconSize: z.string().default("25"),
+  bgColor: stringOptional,
+  color: stringOptional,
+  width: stringOptional,
+  height: stringOptional,
+  iconSize: stringOptional,
 });
 
 export const copilotStyleKeyboardButtonSchema = z.object({
-  bgColor: z.string().default(primaryColor),
-  color: z.string().default(secondaryColor),
-  position: copilotSyleKeyboardPositionSchema.default("left"),
-  iconSize: z.string().default("25").optional(),
-  placeholder: z.string().default("Start typing..."),
+  bgColor: stringOptional,
+  color: stringOptional,
+  position: copilotSyleKeyboardPositionSchema,
+  iconSize: stringOptional,
+  placeholder: stringOptional,
 });
 
 export type CopilotSyleButtonType = z.infer<
@@ -80,16 +82,25 @@ export const copilotAiSchema = z.object({
   defaultPromptTemplate: promptTemplateSchema.optional(),
   defaultPromptVariables: z.record(z.any()).optional(),
 
-  successResponse: z.string().default("Done"),
-  failureResponse: z.string().default("Something went wrong"),
-  welcomeMessage: z.string().default("Tap & Speak: Let AI Guide Your Journey!"),
+  successResponse: z.string(),
+  failureResponse: z.string(),
 });
+
+export const copilotToolTipSchema = z.object({
+  welcomeMessage: stringOptional,
+  delay: z.number().optional(),
+  duration: z.number().optional(),
+  disabled: z.boolean(),
+});
+
+export type CopilotSyleTooltipType = z.infer<typeof copilotToolTipSchema>;
 
 export const copilotSytleSchema = z.object({
   container: copilotSyleContainerSchema,
   theme: copilotSyleThemeSchema,
   voiceButton: copilotStyleVoiceButtonSchema,
   keyboardButton: copilotStyleKeyboardButtonSchema,
+  toolTip: copilotToolTipSchema,
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
@@ -102,7 +113,6 @@ export const copilotAiDefaults: CopilotAiType = {
   defaultPromptVariables: {},
   successResponse: "Done",
   failureResponse: "Something went wrong",
-  welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
 };
 
 export const copilotStyleDefaults: CopilotSytleType = {
@@ -116,7 +126,7 @@ export const copilotStyleDefaults: CopilotSytleType = {
     secondaryColor,
     fontFamily: "inherit",
     fontSize: "14px",
-    textColor: "", // or any default value you want
+    textColor: "inherit",
   },
   voiceButton: {
     bgColor: primaryColor,
@@ -131,6 +141,12 @@ export const copilotStyleDefaults: CopilotSytleType = {
     position: "left",
     iconSize: "25",
     placeholder: "Start typing...",
+  },
+  toolTip: {
+    welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
+    disabled: true,
+    delay: 3000,
+    duration: 7,
   },
 };
 

@@ -4,8 +4,12 @@ import {
   type ActionDefinitionType,
   type ActionRegistrationType,
   actionRegistrationSchema,
+  type EmbeddingScopeWithUserType,
 } from "./schema";
 import { extractFunctionParams } from "./utils";
+import { addMarker, observePerformance, reset } from "./performance";
+import { SugarAiApiClient, type SugarAiApi } from "./api-client";
+import { type ServiceGenerateRequestSkillsItem } from "./api-client/api";
 
 export function validate(
   name: string,
@@ -170,3 +174,116 @@ TEST: setTimeout(() => {
 
   TEST: console.log(definition);
 }, 1000);
+
+export const executeAction = async function executeAction(
+  actions,
+  actionCallbacks,
+) {
+  for (const index in actions) {
+    // Access each action object
+    const action = actions[index];
+    const actionName = action.function.name;
+    // Access properties of the action object
+    const actionArgs = JSON.parse(action.function.arguments);
+
+    // Call the corresponding callback function using apply
+    // actionCallbacks[actionName].apply(null, actionArgs);
+    // actionCallbacks[actionName].call(null, actionArgs);
+    // actionCallbacks[actionName].apply(null, actionArgs);
+    PROD: console.log(
+      `[${actionName}] Calling action ----> ${actionName}(${action.function.arguments})`,
+    );
+
+    actionCallbacks[actionName](...Object.values(actionArgs));
+  }
+};
+
+export async function textToAction(
+  promptTemplate,
+  userQuery,
+  promptVariables,
+  scope: EmbeddingScopeWithUserType,
+  config,
+  actions: Array<Record<string, ActionDefinitionType>> = [],
+  actionCallbacks: Array<Record<string, Function>> = [],
+): Promise<string> {
+  reset();
+  addMarker("textToAction:start");
+  const [username, pp, pt, pv] = promptTemplate.split("/");
+  const msg: SugarAiApi.ServiceGenerateRequestChatMessage = {
+    role: "user",
+    content: userQuery,
+  };
+
+  const apiClient = new SugarAiApiClient({
+    environment: config?.server.endpoint,
+    token: config?.server.token,
+  });
+
+  // const messages = [msg];
+  console.log("actions", JSON.stringify(actions));
+  console.log("actionCallbacks", JSON.stringify(actionCallbacks));
+
+  const result = (await apiClient.prompts.serviceGenerate(
+    username,
+    pp,
+    pt,
+    pv,
+    {
+      variables: promptVariables,
+      scope: scope as SugarAiApi.ServiceGenerateRequestScope,
+      // messages: messages as ServiceGenerateRequestMessagesItem[],
+      chat: {
+        id: config.clientUserId,
+        message: msg,
+      },
+      // messages: messages.slice(-3),
+      // @ts-expect-error
+      skills: Object.values(actions) as ServiceGenerateRequestSkillsItem[],
+    },
+  )) as SugarAiApi.ServiceGenerateResponse;
+  // const c = await makeInference(
+  //   promptTemplate,
+  //   promptVariables,
+  //   userQuery,
+  //   uxActions,
+  //   scope,
+  //   dryRun,
+  // );
+
+  let output: string = config?.ai?.successResponse as string;
+
+  addMarker("textToAction:gotLLMResponse");
+
+  // @ts-expect-error
+  if (result.llmResponse?.error) {
+    output = config.ai?.failureResponse as string;
+    addMarker("textToAction:failed");
+  } else {
+    // @ts-expect-error
+    const choices: string | any[] = result.llmResponse?.data?.completion;
+
+    if (choices instanceof Array) {
+      if (choices[0].message?.tool_calls) {
+        addMarker("textToAction:executingActions");
+        await executeAction(choices[0].message.tool_calls, actionCallbacks);
+        addMarker("textToAction:executedActions");
+      }
+
+      if (choices[0].message?.content) {
+        output = choices[0].message.content as string;
+        addMarker("textToAction:success");
+      }
+    } else if (typeof choices === "string") {
+      output = choices;
+      addMarker("textToAction:success");
+    } else {
+      PROD: console.error(`Unknown response ${JSON.stringify(choices)}`);
+      output = config?.ai?.failureResponse as string;
+      addMarker("textToAction:failed");
+    }
+  }
+
+  observePerformance();
+  return output;
+}

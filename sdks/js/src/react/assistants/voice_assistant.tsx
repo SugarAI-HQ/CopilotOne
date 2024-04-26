@@ -20,7 +20,7 @@ import {
   VoiceButton,
   ChatMessage,
   Message,
-  ToolTipWindow,
+  ToolTipContainer,
   TootTipMessage,
   KeyboardButton,
   TextBoxContainer,
@@ -47,6 +47,8 @@ export const VoiceAssistant = ({
   toolTipMessageStyle = {},
   position = copilotStyleDefaults.container.position || "bottom-right",
   keyboardPostion = copilotStyleDefaults.keyboardButton.position,
+  actionsFn,
+  actionCallbacksFn,
 }: {
   id: string | null;
   promptTemplate: PromptTemplateType | null;
@@ -62,10 +64,12 @@ export const VoiceAssistant = ({
   toolTipMessageStyle?: any;
   position?: CopilotStylePositionType;
   keyboardPostion?: CopilotSyleKeyboardPositionSchema;
+  actionsFn?: Function;
+  actionCallbacksFn?: Function;
 }) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
-  const [hideToolTip, setHideToolTip] = useState(false);
+  const [hideToolTip, setHideToolTip] = useState(true);
   const [isprocessing, setIsprocessing] = useState(false);
   const [ispermissiongranted, setIspermissiongranted] = useState(false);
   const [interimOutput, setInterimOutput] = useState<string>("");
@@ -82,6 +86,10 @@ export const VoiceAssistant = ({
     ...copilotStyleDefaults.theme,
     ...config?.style?.theme,
   };
+
+  const actions = typeof actionsFn === "function" ? actionsFn() : [];
+  const actionCallbacks =
+    typeof actionCallbacksFn === "function" ? actionCallbacksFn() : [];
 
   DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
 
@@ -104,14 +112,32 @@ export const VoiceAssistant = ({
       bgColor: currentTheme.primaryColor,
       color: currentTheme.secondaryColor,
     },
+    toolTip: {
+      ...copilotStyleDefaults.toolTip,
+      ...config?.style?.toolTip,
+    },
   };
+
+  const isRightPositioned =
+    currentStyle.keyboardButton.position === "right" ||
+    keyboardPostion === "right";
+  const isLeftPositioned =
+    currentStyle.keyboardButton.position === "left" &&
+    keyboardPostion === "left";
+  const isCenterPositioned =
+    ["bottom-center", "top-center"].includes(position) ||
+    ["bottom-center", "top-center"].includes(currentStyle.container.position);
 
   const currentAiConfig = {
     ...copilotAiDefaults,
     ...config?.ai,
   };
 
-  const [tipMessage, setTipMessage] = useState(currentAiConfig.welcomeMessage);
+  DEV: console.log(currentAiConfig);
+
+  const [tipMessage, setTipMessage] = useState(
+    currentStyle.toolTip.welcomeMessage,
+  );
 
   DEV: console.log(
     `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
@@ -143,6 +169,13 @@ export const VoiceAssistant = ({
     //   });
 
     setButtonName(id ?? (position as string));
+    const timer = setTimeout(() => {
+      setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
+    }, currentStyle?.toolTip?.delay);
+    setHideToolTip(true);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -310,11 +343,14 @@ export const VoiceAssistant = ({
     };
 
     setIsprocessing(true);
+
     const aiResponse = await textToAction(
       promptTemplate as string,
       input,
       promptVariables,
       newScope,
+      actions,
+      actionCallbacks,
     ).finally(() => {
       setIsprocessing(false);
     });
@@ -344,15 +380,10 @@ export const VoiceAssistant = ({
       >
         {!hideVoiceButton && (
           <>
-            {isUserEngaged &&
-              currentStyle.keyboardButton.position === "left" &&
-              keyboardPostion === "left" &&
-              keyboardPosition()}
-            {isUserEngaged &&
-              (currentStyle.keyboardButton.position === "right" ||
-                keyboardPostion === "right") && (
-                <KeyboardEmptyContainer></KeyboardEmptyContainer>
-              )}
+            {isUserEngaged && isLeftPositioned && keyboardPosition()}
+            {isUserEngaged && isRightPositioned && isCenterPositioned && (
+              <KeyboardEmptyContainer></KeyboardEmptyContainer>
+            )}
             <VoiceButton
               id={`sugar-ai-voice-button-${buttonId}`}
               className="sugar-ai-copilot-voice-button"
@@ -382,18 +413,14 @@ export const VoiceAssistant = ({
                 />
               )}
             </VoiceButton>
-            {isUserEngaged &&
-              currentStyle.keyboardButton.position === "left" &&
-              keyboardPostion === "left" && (
-                <KeyboardEmptyContainer></KeyboardEmptyContainer>
-              )}
-            {isUserEngaged &&
-              (currentStyle.keyboardButton.position === "right" ||
-                keyboardPostion === "right") &&
-              keyboardPosition()}
-            {!hideToolTip && (
-              <ToolTipWindow
+            {isUserEngaged && isLeftPositioned && isCenterPositioned && (
+              <KeyboardEmptyContainer></KeyboardEmptyContainer>
+            )}
+            {isUserEngaged && isRightPositioned && keyboardPosition()}
+            {!hideToolTip && !currentStyle.toolTip.disabled && (
+              <ToolTipContainer
                 container={currentStyle?.container}
+                config={currentStyle?.toolTip}
                 position={position as CopilotStylePositionType}
                 style={toolTipContainerStyle}
                 id={`sugar-ai-tool-tip-${buttonId}`}
@@ -407,7 +434,7 @@ export const VoiceAssistant = ({
                 >
                   {tipMessage}
                 </TootTipMessage>
-              </ToolTipWindow>
+              </ToolTipContainer>
             )}
           </>
         )}

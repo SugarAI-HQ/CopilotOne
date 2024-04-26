@@ -17,9 +17,19 @@ Supercharge your existing Web/React App with a Siri-like AI Assistant.
 
 These agents focuses on reducing learning curve for user and enalbes handsfree expereince for content discovery, feature discovery, user onboarding and form filling.
 
-Goal is to build deep intergration AI Assitatants. Checkout Future of AI Assistants using this sdk.
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/t2e0CThWZUE/0.jpg)](https://www.youtube.com/watch?v=t2e0CThWZUE)
+## Demo Video
+
+[![Copilot One Demo Video](https://img.youtube.com/vi/gYynr1xRLeU/0.jpg)](https://www.youtube.com/watch?v=gYynr1xRLeU)
+
+
+
+## What future of AI Assistants looks Like ?
+Goal is to create an open protocol for AI Assistants, Agents & Actions. Checkout Future of AI Assistants using this sdk.
+
+[![Future of AI Assistants with Copilot One](https://img.youtube.com/vi/t2e0CThWZUE/0.jpg)](https://www.youtube.com/watch?v=t2e0CThWZUE)
+
+
 
 # Get Started
 
@@ -31,11 +41,12 @@ Before using this package, ensure you have the following:
 
 - Create copilot credentials from [Sugar AI](https://play.sugarcaneai.dev) or [Self Hosted](https://github.com/SugarAI-HQ/CopilotOne/tree/develop/apps/factory) Account
 
+
 ## Install
 
 You can install the `@sugar-ai/copilot-one-js` package via npm in your react project
 
-### Installation
+### Install Package
 
 ```bash
 npm install @sugar-ai/copilot-one-js@latest
@@ -52,18 +63,17 @@ import { useCopilot, CopilotConfigType, CopilotProvider, VoiceAssistant } from '
 const copilotConfig: CopilotConfigType = {
   copilotId: '<copilotId>',
   server: {
-    endpoint: 'http://sugarai.dev:3000/api',
+    endpoint: 'http://play.sugarcaneai.dev/api',
     token: '<token>',
   },
 
   ai: {
-    defaultPromptTemplate: 'hi/skills/todo-skill/0.0.5',
+    defaultPromptTemplate: '<prompt template>',
     defaultPromptVariables: {
-      $ROLE: 'Boss',
+      $AGENT_NAME: 'Sugar',
     },
     successResponse: 'Task is completed',
-    failureResponse: 'I am not able to do this',
-    welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
+    failureResponse: 'I am not able to do this'
   },
 }
 
