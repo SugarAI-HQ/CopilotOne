@@ -20,11 +20,11 @@ import CodeHighlight from "~/components/integration/code_highlight";
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import { env } from "~/env.mjs";
-import {
-  CopilotConfigType,
-  CopilotProvider,
-  VoiceAssistant,
-} from "@sugar-ai/copilot-one-js";
+// import {
+//   CopilotConfigType,
+//   CopilotProvider,
+//   VoiceAssistant,
+// } from "@sugar-ai/copilot-one-js";
 import {
   CopilotOutput,
   CopilotPromptListOutput,
@@ -53,11 +53,11 @@ const CopilotShow: NextPageWithLayout = () => {
 
   const clonePromptMutation = api.copilot.clonePackage.useMutation();
 
-  const copilotConfig: CopilotConfigType = getCopilotConfig(
-    copilot as CopilotOutput,
-    copilotKey as KeyOutput,
-    copilotPrompt as CopilotPromptOutput,
-  );
+  // const copilotConfig: CopilotConfigType = getCopilotConfig(
+  //   copilot as CopilotOutput,
+  //   copilotKey as KeyOutput,
+  //   copilotPrompt as CopilotPromptOutput,
+  // );
 
   const promptTemplate: string = `${copilotPrompt?.userName}/${copilotPrompt?.packageName}/${copilotPrompt?.templateName}/${copilotPrompt?.versionName}`;
 
@@ -284,7 +284,7 @@ function CopilotTabs({
                   <Button
                     variant="outlined"
                     size="large"
-                    href="https://docs.sugarai.dev/guides/get-staretd/"
+                    href="https://docs.sugarai.dev/guides/1_introduction/"
                     sx={{ mt: 2 }}
                   >
                     Docs
@@ -346,8 +346,8 @@ function getCopilotConfig(
   copilot: CopilotOutput,
   copilotKey: KeyOutput,
   copilotPrompt: CopilotPromptOutput,
-): CopilotConfigType {
-  const copilotConfig: CopilotConfigType = {
+) {
+  const copilotConfig = {
     copilotId: copilot?.id as string,
     server: {
       endpoint: "/api",
