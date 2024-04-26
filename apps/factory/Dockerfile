@@ -8,6 +8,10 @@ WORKDIR /app
 # Set up npm
 RUN npm install -g npm@latest
 
+RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
+# RUN npm install -g prisma@latest
+RUN npm install sharp
+
 COPY package.json package-lock.json* ./
 
 # Install dependencies using npm
@@ -55,9 +59,7 @@ COPY docker .
 
 RUN chmod +x /app/entrypoint.sh
 
-RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
-# RUN npm install -g prisma@latest
-# RUN npm install sharp
+
 
 USER root
 
