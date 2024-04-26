@@ -44,7 +44,7 @@ jobs:
       - name: Build Docker Image
         uses: docker/build-push-action@v5.1.0
         with:
-          context: app/factory # Specify the directory where Dockerfile is located
+          context: apps/factory # Specify the directory where Dockerfile is located
           # file: Dockerfile # Specify the path to your Dockerfi
           build-args: |
             "PROJECT_NAME=factory"
