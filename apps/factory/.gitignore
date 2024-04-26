@@ -49,4 +49,3 @@ yarn-error.log*
 .sentryclirc
 
 public/__ENV.js
-package-lock.json
