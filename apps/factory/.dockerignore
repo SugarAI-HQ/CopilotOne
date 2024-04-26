@@ -1,7 +1,6 @@
 *
 !.eslintrc.cjs
 !next-env.d.ts
-!.next
 !.sentryclirc
 !next.config.mjs
 !package.json
@@ -13,3 +12,7 @@
 !src
 !tailwind.config.ts
 !tsconfig.json
+!docker
+!.env.example
+!package-lock.json
+!typings
