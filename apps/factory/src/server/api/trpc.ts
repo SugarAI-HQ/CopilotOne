@@ -304,73 +304,87 @@ export const promptMiddleware: any = experimental_standaloneMiddleware<{
     if (opts.input?.username.toLowerCase() === "demo") {
       opts.input.userId = env.DEMO_USER_ID;
     } else {
-      const { id: userId } = (await opts.ctx.prisma.user.findFirst({
-        where: {
-          username: opts.input.username,
-        },
-        select: { id: true },
-      })) as { id: string | null };
+      try {
+        const { id: userId } = (await opts.ctx.prisma.user.findFirstOrThrow({
+          where: {
+            username: opts.input.username,
+          },
+          select: { id: true },
+        })) as { id: string | null };
 
-      opts.input.userId = userId as string;
-      console.log(
-        ` <<<>>> username : ${opts.input.username} userId : ${opts.input.userId}`,
-      );
-      console.log(
-        ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${opts.ctx?.jwt
-          ?.id},  ${opts.input.userId == opts.ctx?.jwt?.id}`,
-      );
+        opts.input.userId = userId as string;
+        console.log(
+          ` <<<>>> username : ${opts.input.username} userId : ${opts.input.userId}`,
+        );
+        console.log(
+          ` <<<>>> current username: ${opts.ctx.jwt?.name} userId: ${opts.ctx
+            ?.jwt?.id},  ${opts.input.userId == opts.ctx?.jwt?.id}`,
+        );
+      } catch (ex) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
     }
   }
-
   if (opts.input.userId && opts.input?.packageName) {
-    const { id: promptPackageId, visibility: visibility } =
-      (await opts.ctx.prisma.promptPackage.findFirst({
-        where: {
-          userId: opts.input.userId,
-          name: opts.input.packageName,
-        },
-        select: { id: true, visibility: true },
-      })) as { id: string | null; visibility: PackageVisibility };
+    try {
+      const { id: promptPackageId, visibility: visibility } =
+        (await opts.ctx.prisma.promptPackage.findFirstOrThrow({
+          where: {
+            userId: opts.input.userId,
+            name: opts.input.packageName,
+          },
+          select: { id: true, visibility: true },
+        })) as { id: string | null; visibility: PackageVisibility };
 
-    if (!promptPackageId) {
+      if (
+        promptPackageId &&
+        !(
+          visibility == packageVisibility.enum.PUBLIC ||
+          opts.input.userId == opts.ctx?.jwt?.id
+        )
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Not allowed",
+        });
+      }
+
+      opts.input.promptPackageId = promptPackageId as string;
+      console.log(
+        ` <<<>>> package : ${opts.input.packageName} packageId : ${opts.input.promptPackageId}`,
+      );
+    } catch (ex) {
       throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Prompt package not ",
+        code: "NOT_FOUND",
+        message: "Prompt package not found",
       });
     }
-    if (
-      promptPackageId &&
-      !(
-        visibility == packageVisibility.enum.PUBLIC ||
-        opts.input.userId == opts.ctx?.jwt?.id
-      )
-    ) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "Not allowed",
-      });
-    }
-
-    opts.input.promptPackageId = promptPackageId as string;
-    console.log(
-      ` <<<>>> package : ${opts.input.packageName} packageId : ${opts.input.promptPackageId}`,
-    );
   }
 
   if (opts.input.userId && opts.input.promptPackageId && opts.input?.template) {
-    const { id: promptTemplateId } =
-      (await opts.ctx.prisma.promptTemplate.findFirst({
-        where: {
-          userId: opts.input.userId,
-          promptPackageId: opts.input.promptPackageId,
-          name: opts.input.template,
-        },
-        select: { id: true },
-      })) as { id: string | null };
-    opts.input.promptTemplateId = promptTemplateId as string;
-    console.log(
-      ` <<<>>> template : ${opts.input.template} templateId : ${opts.input.promptTemplateId}`,
-    );
+    try {
+      const { id: promptTemplateId } =
+        (await opts.ctx.prisma.promptTemplate.findFirstOrThrow({
+          where: {
+            userId: opts.input.userId,
+            promptPackageId: opts.input.promptPackageId,
+            name: opts.input.template,
+          },
+          select: { id: true },
+        })) as { id: string | null };
+      opts.input.promptTemplateId = promptTemplateId as string;
+      console.log(
+        ` <<<>>> template : ${opts.input.template} templateId : ${opts.input.promptTemplateId}`,
+      );
+    } catch (ex) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Prompt Template not found",
+      });
+    }
   }
 
   console.info(

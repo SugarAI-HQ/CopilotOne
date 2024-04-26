@@ -21,17 +21,14 @@ import {
 import { promptEnvironment } from "~/validators/base";
 import { LlmGateway } from "~/services/llm_gateways";
 import { providerModels } from "~/validators/base";
-import {
-  ModelTypeType,
-  PromptRunModesSchema,
-  MessageSchema,
-} from "~/generated/prisma-client-zod.ts";
+import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import { env } from "~/env.mjs";
 import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
 import { getEditorVersion } from "~/utils/template";
 import { Prompt, PromptDataType } from "~/validators/prompt_version";
 import { lookupEmbedding } from "./embedding";
 import { TemplateVariablesType } from "~/validators/prompt_log";
+import { TRPCError } from "@trpc/server";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -279,18 +276,25 @@ export async function getPv(ctx: any, input: any) {
     console.info(
       `loading version ${input.versionOrEnvironment} ${JSON.stringify(input)}`,
     );
-    pv = await ctx.prisma.promptVersion.findFirst({
-      where: {
-        // userId: userId,
-        promptPackageId: input.promptPackageId,
-        promptTemplateId: input.promptTemplateId,
-        version: input.version,
-      },
-      include: {
-        promptTemplate: true,
-      },
-    });
-    pt = pv.promptTemplate;
+    try {
+      pv = await ctx.prisma.promptVersion.findFirstOrThrow({
+        where: {
+          // userId: userId,
+          promptPackageId: input.promptPackageId,
+          promptTemplateId: input.promptTemplateId,
+          version: input.version,
+        },
+        include: {
+          promptTemplate: true,
+        },
+      });
+      pt = pv.promptTemplate;
+    } catch (ex) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Prompt Version not found",
+      });
+    }
   }
 
   if (!pv) {
