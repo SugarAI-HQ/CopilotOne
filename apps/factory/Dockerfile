@@ -55,7 +55,7 @@ COPY docker .
 
 RUN chmod +x /app/entrypoint.sh
 
-RUN npm install next-runtime-env@1.x --omit=optional --prefer-offline --no-audit
+RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
 # RUN npm install -g prisma@latest
 # RUN npm install sharp
 
