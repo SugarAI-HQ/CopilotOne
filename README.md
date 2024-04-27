@@ -33,6 +33,9 @@ Goal is to create an open protocol for AI Assistants, Agents & Actions. Checkout
 
 # Get Started
 
+For details instructions. Read [docs](https://docs.sugarai.dev)
+
+
 ## Prerequisites
 
 Before using this package, ensure you have the following:
