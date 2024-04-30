@@ -537,7 +537,7 @@ function previewCopilot(previewConfig: any) {
     const encodedData = btoa(JSON.stringify(previewConfig));
 
     // Construct the URL with encoded data
-    const url = `${exampleOrign}/todo?data=${encodeURIComponent(encodedData)}`;
+    const url = `${exampleOrign}/todo?data=${encodedData}`;
 
     const targetWindow = window.open(url, "_blank", "noopener,noreferrer");
   }
