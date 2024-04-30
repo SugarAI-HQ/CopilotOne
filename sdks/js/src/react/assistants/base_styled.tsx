@@ -317,7 +317,7 @@ export const TextBox = styled.input<{ color: string }>`
 `;
 
 // Styled button
-export const TextBoxButton = styled.button`
+export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
   position: absolute;
   top: 5px;
   right: 0;
@@ -328,6 +328,12 @@ export const TextBoxButton = styled.button`
   cursor: pointer;
   outline: none;
   background: unset;
+  ${({ iskeyboard }) =>
+    iskeyboard === "true" &&
+    css`
+      top: 13px;
+      right: 5px;
+    `}
 `;
 
 // button, voice -> theme -> defaults

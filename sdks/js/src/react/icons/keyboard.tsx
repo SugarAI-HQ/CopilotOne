@@ -5,7 +5,7 @@ export interface MicSvgProps extends SvgIconProps {
   color?: string;
 }
 
-const Keyboard = (props: MicSvgProps): React.ReactElement => {
+const KeyboardIcon = (props: MicSvgProps): React.ReactElement => {
   return (
     <SvgIcon {...props}>
       <g fill="none">
@@ -90,4 +90,4 @@ const Keyboard = (props: MicSvgProps): React.ReactElement => {
   );
 };
 
-export default Keyboard;
+export default KeyboardIcon;

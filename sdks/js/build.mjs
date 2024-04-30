@@ -80,5 +80,3 @@ let jsBuildResult = await build({
 });
 
 fs.writeFileSync("meta-js.json", JSON.stringify(jsBuildResult.metafile));
-
-// jsBuildResult;

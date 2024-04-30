@@ -3,42 +3,28 @@ import { createRoot } from "react-dom/client";
 import {
   register,
   unregister,
-  CopilotProvider,
-  VoiceAssistant,
+  addAssistant,
+  removeAssistant,
+  App,
 } from "../index";
 
 (function (win) {
-  win.sai = win.sai || {
+  var sai = (win.sai = win.sai || {
     register: register,
     unregister: unregister,
     actions: [],
     actionCallbacks: [],
-    config: function (config) {
+    assistants: [],
+    renderedAssistants: new Set(),
+    addAssistant: function (containerId, assistant, assistantConfig) {
+      addAssistant(containerId, assistant, assistantConfig, sai.assistants);
+      this.renderAssistant(containerId);
+    },
+    removeAssistant: removeAssistant,
+    App: App,
+    config: null,
+    setConfig: function (config) {
       this.config = config;
-    },
-    App: function App() {
-      return createElement(
-        CopilotProvider,
-        {
-          config: win.sai.config,
-        },
-        createElement(VoiceAssistant, {
-          actionsFn: function () {
-            return win.sai.actions;
-          },
-          actionCallbacksFn: function () {
-            return win.sai.actionCallbacks;
-          },
-        }),
-      );
-    },
-    render: function render() {
-      const el = document.getElementById("copilot-one");
-      el.addEventListener("click", function (e) {
-        e.preventDefault();
-      });
-      const root = createRoot(el);
-      root.render(this.App());
     },
     init: function init() {
       if (typeof win.saiData !== "undefined") {
@@ -46,18 +32,50 @@ import {
         win.saiData.forEach(this.processArgument);
         win.saiData.push = this.processArgument;
       }
-      this.render();
+      this.renderAllAssistants();
     },
     processArgument: function processArgument(args) {
-      const fn = args[0];
-      const argsValue = Array.prototype.slice.call(args, 1);
+      const [fn, ...argsValue] = args;
       if (fn === "register" || fn === "unregister") {
-        win.sai[fn](...argsValue, win.sai.actions, win.sai.actionCallbacks);
+        sai[fn](...argsValue, sai.actions, sai.actionCallbacks);
+      } else if (fn === "addAssistant" || fn === "removeAssistant") {
+        sai[fn](...argsValue, sai.assistants);
       } else {
-        win.sai[fn](...argsValue);
+        sai[fn](...argsValue);
       }
     },
-  };
+    renderAllAssistants: function renderAllAssistants() {
+      this.assistants.forEach((assistant) => {
+        this.renderAssistant(assistant.containerId);
+      });
+    },
+    // renderAssistant: renderAssistant,
+    renderAssistant: function renderAssistant(containerId) {
+      if (this.renderedAssistants.has(containerId)) {
+        PROD: console.log(
+          `Assistant for container '${containerId}' already rendered.`,
+        );
+        return;
+      }
 
-  win.sai.init();
+      const el = document.getElementById(containerId);
+      if (!el) {
+        PROD: console.error(`Element with id '${containerId}' not found`);
+        return;
+      }
+
+      const assistant = sai.assistants.find(
+        (assistant) => assistant.containerId === containerId,
+      );
+      if (assistant) {
+        const root = createRoot(el);
+        root.render(
+          this.App(assistant, sai.config, sai.actions, sai.actionCallbacks),
+        );
+        this.renderedAssistants.add(containerId);
+      }
+    },
+  });
+
+  sai.init();
 })(window);
