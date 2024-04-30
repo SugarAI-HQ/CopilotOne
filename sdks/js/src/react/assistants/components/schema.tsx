@@ -10,9 +10,7 @@ export interface BaseAssistantProps {
   id?: string | null;
   promptTemplate?: PromptTemplateType | null;
   promptVariables?: PromptVariablesType;
-  scope1?: EmbeddingScopeType["scope1"];
-  scope2?: EmbeddingScopeType["scope2"];
-  groupId?: EmbeddingScopeType["groupId"];
+  scope?: EmbeddingScopeType;
   style?: any;
   keyboardButtonStyle?: any;
   messageStyle?: any;

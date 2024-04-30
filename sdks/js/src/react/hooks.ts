@@ -4,6 +4,8 @@ import {
   type CopilotConfigType,
   type EmbeddingScopeWithUserType,
   DEFAULT_GROUP_ID,
+  type EmbeddingScopeType,
+  scopeDefaults,
 } from "../schema";
 import { createOrUpdate } from "../embedding";
 import { type SugarAiApiClient } from "../api-client";
@@ -18,13 +20,13 @@ export function createUseState(
 
   return function useStateEmbedding(
     initialState: any,
-    scope1: string,
-    scope2: string,
-    groupId: string = DEFAULT_GROUP_ID,
+    scope: EmbeddingScopeType,
   ) {
-    if (groupId === DEFAULT_GROUP_ID) {
-      groupId = defaultGroupId();
+    if (scope.groupId === DEFAULT_GROUP_ID) {
+      scope.groupId = defaultGroupId();
     }
+
+    scope = { ...scopeDefaults, ...scope };
 
     // Call the original useState hook
     const [state, setState] = useStateOriginal(initialState);
@@ -40,11 +42,7 @@ export function createUseState(
       timerId = setTimeout(() => {
         const scope: EmbeddingScopeWithUserType = {
           clientUserId,
-
-          scope1, // pageId
-          scope2, // ComponentId
-
-          groupId,
+          ...scope,
         };
         // Avoid using async here, handle promise inside the function
         createOrUpdate({ config, client, scope, payload: state }).catch(

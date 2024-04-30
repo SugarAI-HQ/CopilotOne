@@ -172,12 +172,20 @@ export const copilotConfigSchema = z.object({
 
 export type CopilotConfigType = z.infer<typeof copilotConfigSchema>;
 
+export const DEFAULT_GROUP_ID: string = "DEFAULT_GROUP_ID";
+
+export const scopeDefaults = {
+  scope1: "",
+  scope2: "",
+  groupId: DEFAULT_GROUP_ID,
+};
+
 export const embeddingScopeSchema = z.object({
   // clientUserId: z.string(),
   // copilotId: z.string(),
   scope1: z.string().optional().default(""),
   scope2: z.string().optional().default(""),
-  groupId: z.string(),
+  groupId: z.string().default(DEFAULT_GROUP_ID),
 });
 export type EmbeddingScopeType = z.infer<typeof embeddingScopeSchema>;
 
@@ -266,8 +274,6 @@ export const actionRegistrationSchema = z.object({
   // }),
 });
 export type ActionRegistrationType = z.infer<typeof actionRegistrationSchema>;
-
-export const DEFAULT_GROUP_ID: string = "DEFAULT_GROUP_ID";
 
 export function defaultGroupId() {
   return root?.location?.pathname;

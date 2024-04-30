@@ -1,28 +1,38 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "plugins": ["@typescript-eslint"],
-    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "standard-with-typescript", "prettier"],
-    "ignorePatterns": ["src/api-client/**", "src/**/*.test.ts", "node_modules/**"],
-    "rules": {
-        "@typescript-eslint/no-explicit-any": "warn",
-        "@typescript-eslint/explicit-function-return-type": "warn",
-        "@typescript-eslint/no-unsafe-argument": "warn",
-        "@typescript-eslint/strict-boolean-expressions": "warn",
-        "@typescript-eslint/no-dynamic-delete": "warn",
-        "@typescript-eslint/ban-types": "warn",
-        "@typescript-eslint/ban-ts-comment": "warn",
-        "new-cap": "warn",
-        "@typescript-eslint/non-nullable-type-assertion-style": "warn",
-        "@typescript-eslint/no-non-null-assertion": "warn",
-        "no-unused-labels": "warn",
-        "no-labels": "warn"
-    }
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "standard-with-typescript",
+    "prettier"
+  ],
+  "ignorePatterns": [
+    "src/api-client/**",
+    "src/**/*.test.ts",
+    "node_modules/**"
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/no-unsafe-argument": "warn",
+    "@typescript-eslint/strict-boolean-expressions": "warn",
+    "@typescript-eslint/no-dynamic-delete": "warn",
+    "@typescript-eslint/ban-types": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/no-use-before-define": "warn",
+    "new-cap": "warn",
+    "@typescript-eslint/non-nullable-type-assertion-style": "warn",
+    "@typescript-eslint/no-non-null-assertion": "warn",
+    "no-unused-labels": "warn",
+    "no-labels": "warn"
+  }
 }

@@ -5,6 +5,7 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   copilotAiDefaults,
+  scopeDefaults,
 } from "../../schema";
 import { useCopilot } from "../CopilotContext";
 import root from "window-or-global";
@@ -27,9 +28,7 @@ export const VoiceAssistant = ({
   id = null,
   promptTemplate = null,
   promptVariables = {},
-  scope1 = "",
-  scope2 = "",
-  groupId = root?.location?.pathname as string,
+  scope = scopeDefaults,
   style = {},
   voiceButtonStyle = {},
   keyboardButtonStyle = {},
@@ -275,15 +274,15 @@ export const VoiceAssistant = ({
     setHideVoiceButton(!hideVoiceButton);
   };
 
+  scope = { ...scopeDefaults, ...scope };
+
   const processSpeechToText = async (
     input: string,
     isSpeak: boolean = true,
   ) => {
     const newScope: EmbeddingScopeWithUserType = {
       clientUserId: clientUserId!,
-      scope1,
-      scope2,
-      groupId,
+      ...scope,
     };
 
     setIsprocessing(true);

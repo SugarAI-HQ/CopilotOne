@@ -5,6 +5,9 @@ import {
   type ActionRegistrationType,
   actionRegistrationSchema,
   type EmbeddingScopeWithUserType,
+  DEFAULT_GROUP_ID,
+  defaultGroupId,
+  scopeDefaults,
 } from "./schema";
 import { extractFunctionParams } from "./utils";
 import { addMarker, observePerformance, reset } from "./performance";
@@ -223,6 +226,12 @@ export async function textToAction(
   // const messages = [msg];
   console.log("actions", JSON.stringify(actions));
   console.log("actionCallbacks", JSON.stringify(actionCallbacks));
+
+  scope = { ...scopeDefaults, ...scope };
+
+  if (scope.groupId === DEFAULT_GROUP_ID) {
+    scope.groupId = defaultGroupId();
+  }
 
   const result = (await apiClient.prompts.serviceGenerate(
     username,

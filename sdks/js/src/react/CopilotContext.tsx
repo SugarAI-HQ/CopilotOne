@@ -6,7 +6,6 @@ import {
   type ActionDefinitionType,
   type EmbeddingScopeWithUserType,
   type CopilotSytleType,
-  DEFAULT_GROUP_ID,
   copilotAiDefaults,
 } from "../schema";
 import { SugarAiApiClient } from "../api-client";
@@ -24,12 +23,10 @@ export const CopilotContext = createContext({
   config: null as CopilotConfigType | null,
   apiClient: null as any,
   clientUserId: null as null | string,
-  useStateEmbedding: (
-    initialState: any,
-    scope1: string,
-    scope2: string,
-    groupId: string = DEFAULT_GROUP_ID,
-  ) => [any, Function],
+  useStateEmbedding: (initialState: any, scope: EmbeddingScopeType) => [
+    any,
+    Function,
+  ],
   registerAction: (
     name: string,
     actionDefinition: ActionRegistrationType,

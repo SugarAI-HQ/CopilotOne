@@ -5,9 +5,9 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   copilotAiDefaults,
+  scopeDefaults,
 } from "../../schema";
 import { useCopilot } from "../CopilotContext";
-import root from "window-or-global";
 
 import { StyleSheetManager } from "styled-components";
 
@@ -16,7 +16,7 @@ import { GlobalStyle } from "./reset_css";
 import Keyboard from "./components/keyboard";
 import Message from "./components/message";
 import ToolTip from "./components/tooltip";
-import TextBox from "./components/textbox";
+import AssistantTextBox from "./components/textbox";
 import {
   shouldForwardProp,
   type BaseAssistantProps,
@@ -26,16 +26,14 @@ export const TextAssistant = ({
   id = null,
   promptTemplate = null,
   promptVariables = {},
-  scope1 = "",
-  scope2 = "",
-  groupId = root?.location?.pathname as string,
+  scope = scopeDefaults,
   style = {},
   keyboardButtonStyle = {},
   messageStyle = {},
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
   position = copilotStyleDefaults.container.position || "bottom-right",
-  keyboardPosition = copilotStyleDefaults.keyboardButton.position,
+  keyboardPostion = copilotStyleDefaults.keyboardButton.position,
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {
@@ -94,6 +92,7 @@ export const TextAssistant = ({
   };
 
   DEV: console.log(currentAiConfig);
+  DEV: console.log(isprocessing);
 
   const [tipMessage, setTipMessage] = useState(
     currentStyle.toolTip.welcomeMessage,
@@ -122,6 +121,7 @@ export const TextAssistant = ({
       setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
     }, currentStyle?.toolTip?.delay);
     setHideToolTip(true);
+    setTipMessage(currentStyle.toolTip.welcomeMessage);
     return () => {
       clearTimeout(timer);
     };
@@ -131,12 +131,12 @@ export const TextAssistant = ({
     setHideTextButton(!hideTextButton);
   };
 
+  scope = { ...scopeDefaults, ...scope };
+
   const processTextToText = async (input: string) => {
     const newScope: EmbeddingScopeWithUserType = {
       clientUserId: clientUserId!,
-      scope1,
-      scope2,
-      groupId,
+      ...scope,
     };
 
     setIsprocessing(true);
@@ -207,7 +207,7 @@ export const TextAssistant = ({
         )}
       </CopilotContainer>
       {hideTextButton && (
-        <TextBox
+        <AssistantTextBox
           currentStyle={currentStyle}
           position={position}
           buttonId={buttonId}
