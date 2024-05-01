@@ -1,6 +1,6 @@
 # Copilot One
 
-Supercharge your existing Web/React App with a Siri-like AI Assistant.
+Supercharge your existing Web/React App with a Siri-like Native AI Assistant.
 
 ## Key Features
 
