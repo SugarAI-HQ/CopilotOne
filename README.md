@@ -18,6 +18,9 @@ Supercharge your existing Web/React App with a Siri-like Native AI Assistant.
 These agents focuses on reducing learning curve for user and enalbes handsfree expereince for content discovery, feature discovery, user onboarding and form filling.
 
 
+## Assistants
+- **Voice To Action**: Offer Hansdfree expereicne to use your App.
+
 ## Demo Video
 
 [![Copilot One Demo Video](https://img.youtube.com/vi/gYynr1xRLeU/0.jpg)](https://www.youtube.com/watch?v=gYynr1xRLeU)
@@ -64,19 +67,19 @@ import { useCopilot, CopilotConfigType, CopilotProvider, VoiceAssistant } from '
 
 
 const copilotConfig: CopilotConfigType = {
-  copilotId: '<copilotId>',
+  copilotId: "<copilotId>",
   server: {
-    endpoint: 'http://play.sugarcaneai.dev/api',
-    token: '<token>',
+    endpoint: "http://play.sugarcaneai.dev/api",
+    token: "<token>",
   },
 
   ai: {
-    defaultPromptTemplate: '<prompt template>',
+    defaultPromptTemplate: "<prompt template>",
     defaultPromptVariables: {
-      $AGENT_NAME: 'Sugar',
+      $AGENT_NAME: "Sugar",
     },
-    successResponse: 'Task is completed',
-    failureResponse: 'I am not able to do this'
+    successResponse: "Task is completed",
+    failureResponse: "I am not able to do this"
   },
 }
 
@@ -96,7 +99,7 @@ const TodoApp = () => {
 const { useStateEmbedding, registerAction, unregisterAction } = useCopilot(); // Add
 
 // const [todos, setTodos] = useState([]);
-const [todos, setTodos] = useStateEmbedding([], 'todoApp', 'todos'); // Switch
+const [todos, setTodos] = useStateEmbedding([], {scope1:"todoApp", scope2: "todos"}); // Switch
 
 ...
 
@@ -118,15 +121,15 @@ const TodoApp = () => {
 
   // Register addTodo function
   registerAction(
-    'addTodo',
+    "addTodo",
     {
-      name: 'addTodo',
-      description: 'Add a new todo',
+      name: "addTodo",
+      description: "Add a new todo",
       parameters: [
         {
-          name: 'task',
-          type: 'string',
-          description: 'Task description',
+          name: "task",
+          type: "string",
+          description: "Task description",
           required: true,
         }
       ],

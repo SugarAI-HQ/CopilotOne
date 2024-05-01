@@ -31,27 +31,20 @@ Before using this package, ensure you have the following:
 
 You can install the `@sugar-ai/copilot-one-js` package via npm in your react project
 
+
 ### Installation
 
 ```bash
 npm install @sugar-ai/copilot-one-js@latest
 ```
 
-### Add to your React App
+| SDK      | Documentation Link                             |
+|-------------------|-------------------------------------------------|
+| React             | [Add to React/Nextjs App](https://docs.sugarai.dev/integrations/1_react/) |
+| JavaScript        | [Add to any javascript App](https://docs.sugarai.dev/integrations/0_js/) |
+| React Native      | [Coming Soon](https://docs.sugarai.dev/integrations/2_react_native/) |
+| Angular           | [Coming Soon](https://docs.sugarai.dev/integrations/3_angular/) |
+| Vue               | [Coming Soon](https://docs.sugarai.dev/integrations/4_vue/) |
 
-In your main file. src/App.tsx
-
-```js
-import { useCopilot, CopilotConfigType, CopilotProvider, VoiceAssistant } from '@sugar-ai/copilot-one-js';
 
 
-const copilotConfig: CopilotConfigType = {
-	@@ -61,7 +61,7 @@ const copilotConfig: CopilotConfigType = {
-}
-```
-
-We are taking a exmple of a todo App. To track User's Current Screen Context using `useStateEmbedding`
-
-```js
-
-```
