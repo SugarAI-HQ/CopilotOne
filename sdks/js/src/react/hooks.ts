@@ -26,7 +26,7 @@ export function createUseState(
       scope.groupId = defaultGroupId();
     }
 
-    scope = { ...scopeDefaults, ...scope };
+    const effectiveScope = { ...scopeDefaults, ...scope };
 
     // Call the original useState hook
     const [state, setState] = useStateOriginal(initialState);
@@ -42,7 +42,7 @@ export function createUseState(
       timerId = setTimeout(() => {
         const scope: EmbeddingScopeWithUserType = {
           clientUserId,
-          ...scope,
+          ...effectiveScope,
         };
         // Avoid using async here, handle promise inside the function
         createOrUpdate({ config, client, scope, payload: state }).catch(
