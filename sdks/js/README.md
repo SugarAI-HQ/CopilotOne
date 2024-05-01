@@ -23,7 +23,7 @@ Check out Travel Product built using this sdk: https://youtu.be/t2e0CThWZUE
 
 Before using this package, ensure you have the following:
 
-- An existing React application
+- An existing Frontend application
 
 - Create copilot credentials from [Sugar AI](https://play.sugarcaneai.dev) or [Self Hosted](https://github.com/SugarAI-HQ/CopilotOne/tree/develop/apps/factory) Account
 
@@ -31,8 +31,6 @@ Before using this package, ensure you have the following:
 
 You can install the `@sugar-ai/copilot-one-js` package via npm in your react project
 
-
-### Installation
 
 ```bash
 npm install @sugar-ai/copilot-one-js@latest
@@ -45,6 +43,10 @@ npm install @sugar-ai/copilot-one-js@latest
 | React Native      | [Coming Soon](https://docs.sugarai.dev/integrations/2_react_native/) |
 | Angular           | [Coming Soon](https://docs.sugarai.dev/integrations/3_angular/) |
 | Vue               | [Coming Soon](https://docs.sugarai.dev/integrations/4_vue/) |
+
+
+
+Read more in [Docs](https://docs.sugarai.dev) |
 
 
 
