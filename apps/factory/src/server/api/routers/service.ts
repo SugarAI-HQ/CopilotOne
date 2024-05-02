@@ -5,10 +5,8 @@ import {
 } from "~/server/api/trpc";
 import {
   GenerateOutput,
-  skillsSchema,
   generateInput,
   generateOutput,
-  MessagesSchema,
   SkillChoicesType,
 } from "~/validators/service";
 import {
@@ -20,15 +18,15 @@ import {
 } from "~/utils/template";
 import { promptEnvironment } from "~/validators/base";
 import { LlmGateway } from "~/services/llm_gateways";
-import { providerModels } from "~/validators/base";
 import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
-import { env } from "~/env.mjs";
-import { llmResponseSchema, LlmErrorResponse } from "~/validators/llm_respose";
+import { LlmErrorResponse } from "~/validators/llm_respose";
 import { getEditorVersion } from "~/utils/template";
 import { Prompt, PromptDataType } from "~/validators/prompt_version";
 import { lookupEmbedding } from "./embedding";
 import { TemplateVariablesType } from "~/validators/prompt_log";
 import { TRPCError } from "@trpc/server";
+import { createTrackTime } from "~/utils/performance";
+import { env } from "~/env.mjs";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -44,6 +42,9 @@ export const serviceRouter = createTRPCRouter({
     .use(promptMiddleware)
     .output(generateOutput)
     .mutation(async ({ ctx, input }) => {
+      const { trackTime, resetTime, getStats } = createTrackTime();
+      resetTime();
+      trackTime("start");
       // const userId = input.userId;
       let userId = ctx.jwt?.id as string;
 
@@ -79,6 +80,7 @@ export const serviceRouter = createTRPCRouter({
           chatId,
           input,
         );
+        trackTime("load_chat");
 
         // 1.3 Extract user query from last message
         if (input.messages && input.messages?.length > 0) {
@@ -112,6 +114,7 @@ export const serviceRouter = createTRPCRouter({
             matches.length > 0 ? matches[0]?.doc : "Empty";
 
           embeddingVariables["$USER_QUERY" as any] = userQuery;
+          trackTime("embeddings");
         }
 
         // 2.2 Build variables
@@ -138,12 +141,14 @@ export const serviceRouter = createTRPCRouter({
             prompt = generatePrompt(pv.template, templateVariables);
           }
         }
+        trackTime("generate_prompt");
 
         console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
 
         // 3. Get LLM Response
         // 3.1 Get LLM Config
         const llmConfig = generateLLmConfig(pv.llmConfig);
+        trackTime("load_llm_config");
 
         // 3.1 Generate LLM Response
         const rr = await LlmGateway({
@@ -158,6 +163,7 @@ export const serviceRouter = createTRPCRouter({
           isDevelopment: input.isDevelopment,
           attachments: input.attachments,
         });
+        trackTime("llm_gateway_response");
 
         console.log(
           `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
@@ -183,13 +189,15 @@ export const serviceRouter = createTRPCRouter({
                   userId: userId,
                   chatId: chatId,
                   copilotId: copilotId,
-                  content: rr.response.data.completion[0].message.content,
+                  content: rr.response.data.completion[0].message.content ?? "",
                   role: rr.response.data.completion[0].message.role,
                 },
               ],
             });
+            trackTime("save_chat_history");
             console.log(`message >>>> ${JSON.stringify(message, null, 2)}`);
           } catch (error) {
+            trackTime("save_chat_history_failed");
             console.error("Error creating Messages:", error);
           }
         }
@@ -224,16 +232,21 @@ export const serviceRouter = createTRPCRouter({
                 (rr?.performance?.completion_tokens as number) || 0,
               total_tokens: (rr?.performance?.total_tokens as number) || 0,
               extras: rr?.performance?.extra ? rr?.performance?.extra : {},
+              stats: { ...getStats(), ...{ llmStats: rr.performance } },
             },
           });
+          trackTime("save_prompt_data");
         } catch (error) {
-          // Log the error for debugging
+          trackTime("save_prompt_data_failed");
           console.error("Error creating promptLog:", error);
         }
         if (chatId) {
           pl = { ...pl, chat: { id: chatId as string } };
         }
       }
+
+      trackTime("end");
+      // pl = { ...pl, stats: getStats() };
       return pl as GenerateOutput;
     }),
 });

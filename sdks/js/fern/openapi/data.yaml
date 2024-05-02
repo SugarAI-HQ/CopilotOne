@@ -6,7 +6,7 @@
     version: "1.0.0"
   servers: 
     - 
-      url: "http://localhost:3000/api/"
+      url: "https://api.sugarcaneai.dev/api"
   paths: 
     /packages: 
       get: 
@@ -472,6 +472,23 @@
                         updatedAt: 
                           type: "string"
                           format: "date-time"
+                        stats: 
+                          anyOf: 
+                            - 
+                              type: "string"
+                            - 
+                              type: "number"
+                            - 
+                              type: "boolean"
+                            - 
+                              type: "array"
+                              items: 
+                                nullable: true
+                            - 
+                              type: "object"
+                              additionalProperties: 
+                                nullable: true
+                          nullable: true
                       required: 
                         - "id"
                         - "environment"

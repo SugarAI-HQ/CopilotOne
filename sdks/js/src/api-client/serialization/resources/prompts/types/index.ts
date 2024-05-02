@@ -16,6 +16,7 @@ export * from "./ServiceGenerateResponseChatPromptVariables";
 export * from "./ServiceGenerateResponseChatLabelledState";
 export * from "./ServiceGenerateResponseChatLlmModelType";
 export * from "./ServiceGenerateResponseChatChat";
+export * from "./ServiceGenerateResponseChatStats";
 export * from "./ServiceGenerateResponseChat";
 export * from "./ServiceGenerateResponse";
 export * from "./CubeGetPromptRequestEnvironment";

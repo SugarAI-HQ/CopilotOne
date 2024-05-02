@@ -235,6 +235,7 @@ model PromptLog {
   llmProvider       String
   llmModel          String
   llmConfig         Json
+  stats             Json              @default("{}")
   latency           Int
   prompt_tokens     Int
   completion_tokens Int

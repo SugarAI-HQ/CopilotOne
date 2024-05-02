@@ -23,4 +23,5 @@ export interface ServiceGenerateResponseChat {
   chat?: SugarAiApi.ServiceGenerateResponseChatChat;
   createdAt: Date;
   updatedAt: Date;
+  stats?: SugarAiApi.ServiceGenerateResponseChatStats;
 }
