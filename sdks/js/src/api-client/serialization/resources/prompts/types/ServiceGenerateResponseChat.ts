@@ -60,6 +60,11 @@ export const ServiceGenerateResponseChat: core.serialization.ObjectSchema<
     .optional(),
   createdAt: core.serialization.date(),
   updatedAt: core.serialization.date(),
+  stats: core.serialization
+    .lazy(
+      async () => (await import("../../..")).ServiceGenerateResponseChatStats,
+    )
+    .optional(),
 });
 
 export declare namespace ServiceGenerateResponseChat {
@@ -82,5 +87,6 @@ export declare namespace ServiceGenerateResponseChat {
     chat?: serializers.ServiceGenerateResponseChatChat.Raw | null;
     createdAt: string;
     updatedAt: string;
+    stats?: serializers.ServiceGenerateResponseChatStats.Raw | null;
   }
 }

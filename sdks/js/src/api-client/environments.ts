@@ -3,7 +3,7 @@
  */
 
 export const SugarAiApiEnvironment = {
-  Default: "http://localhost:3000/api",
+  Default: "https://api.sugarcaneai.dev/api",
 } as const;
 
 export type SugarAiApiEnvironment = typeof SugarAiApiEnvironment.Default;
