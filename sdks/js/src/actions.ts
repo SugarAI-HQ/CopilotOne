@@ -296,7 +296,7 @@ export async function textToAction(
   }
   observePerformance();
   PROD: console.log("Performance Stats", {
-    //@ts-ignore
+    // @ts-expect-error
     ...result.stats,
     ...{ clientStats: getStats() },
   });
