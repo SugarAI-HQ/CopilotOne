@@ -10,7 +10,7 @@ import {
   scopeDefaults,
 } from "./schema";
 import { extractFunctionParams } from "./utils";
-import { addMarker, observePerformance, reset } from "./performance";
+import { performanceTracker } from "./performance";
 import { SugarAiApiClient, type SugarAiApi } from "./api-client";
 import { type ServiceGenerateRequestSkillsItem } from "./api-client/api";
 
@@ -210,6 +210,8 @@ export async function textToAction(
   actions: Array<Record<string, ActionDefinitionType>> = [],
   actionCallbacks: Array<Record<string, Function>> = [],
 ): Promise<string> {
+  const { reset, addMarker, observePerformance, getStats } =
+    performanceTracker();
   reset();
   addMarker("textToAction:start");
   const [username, pp, pt, pv] = promptTemplate.split("/");
@@ -292,7 +294,11 @@ export async function textToAction(
       addMarker("textToAction:failed");
     }
   }
-
   observePerformance();
+  PROD: console.log("Performance Stats", {
+    //@ts-ignore
+    ...result.stats,
+    ...{ clientStats: getStats() },
+  });
   return output;
 }

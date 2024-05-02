@@ -144,6 +144,7 @@ export const logSchema = z.object({
   chat: InputJsonValue.optional(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+  stats: InputJsonValue.nullable().optional(),
 });
 
 export const generateOutput = logSchema.or(z.null());
