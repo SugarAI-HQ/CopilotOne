@@ -213,7 +213,7 @@ export async function textToAction(
   const { reset, addMarker, observePerformance, getStats } =
     performanceTracker();
   reset();
-  addMarker("textToAction:start");
+  addMarker("start");
   const [username, pp, pt, pv] = promptTemplate.split("/");
   const msg: SugarAiApi.ServiceGenerateRequestChatMessage = {
     role: "user",
@@ -264,7 +264,7 @@ export async function textToAction(
 
   let output: string = config?.ai?.successResponse as string;
 
-  addMarker("textToAction:gotLLMResponse");
+  addMarker("got_llm_response");
 
   // @ts-expect-error
   if (result.llmResponse?.error) {
@@ -276,14 +276,14 @@ export async function textToAction(
 
     if (choices instanceof Array) {
       if (choices[0].message?.tool_calls) {
-        addMarker("textToAction:executingActions");
+        addMarker("executing_actions");
         await executeAction(choices[0].message.tool_calls, actionCallbacks);
-        addMarker("textToAction:executedActions");
+        addMarker("executed_actions");
       }
 
       if (choices[0].message?.content) {
         output = choices[0].message.content as string;
-        addMarker("textToAction:success");
+        addMarker("success");
       }
     } else if (typeof choices === "string") {
       output = choices;
@@ -294,6 +294,7 @@ export async function textToAction(
       addMarker("textToAction:failed");
     }
   }
+  addMarker("end");
   observePerformance();
   PROD: console.log("Performance Stats", {
     // @ts-expect-error

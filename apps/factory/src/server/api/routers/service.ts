@@ -246,7 +246,7 @@ export const serviceRouter = createTRPCRouter({
       }
 
       trackTime("end");
-      // pl = { ...pl, stats: getStats() };
+      pl = { ...pl, stats: getStats() };
       return pl as GenerateOutput;
     }),
 });
