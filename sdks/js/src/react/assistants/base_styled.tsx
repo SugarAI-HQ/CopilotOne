@@ -171,6 +171,7 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
   text-align: -webkit-center;
+  text-align: -moz-center;
   cursor: ${({ isprocessing }) =>
     isprocessing === "true" ? "not-allowed" : "pointer"};
   opacity: ${({ isprocessing }) => (isprocessing === "true" ? "0.5" : "1")};
@@ -192,6 +193,7 @@ export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
   text-align: -webkit-center;
+  text-align: -moz-center;
   border-radius: 10px;
   margin-left: 10px;
   margin-right: 10px;
@@ -271,12 +273,13 @@ export const TextBoxContainer = styled.div<{
   margin: 0;
   z-index: 1000;
   // width: -webkit-fill-available;
-  // width: 100%; // Defaults to full width
   // max-width: 300px; // Adjust this as needed
-  width: -webkit-fill-available;
-
+  // width: -webkit-fill-available;
+  width: 100%; // Defaults to full width
+  padding-left: 20px;
+  padding-right: 20px;
   @media (max-width: 768px) {
-    width: -webkit-fill-available;
+    width: 100%; /* Adjust width for smaller screens */
     max-width: unset;
   }
   ${({ container, position }) => {
@@ -307,11 +310,11 @@ export const TextBox = styled.input<{ color: string }>`
   border: 1px solid ${({ color }) => color};
   border-radius: 5px;
   outline: none;
-  // width: 100%;
-  width: -webkit-fill-available; // Only on small screens
+  width: 100%;
+  // width: -webkit-fill-available; // Only on small screens
   margin-left: 25px;
   @media (max-width: 768px) {
-    width: -webkit-fill-available; // Only on small screens
+    width: 100%;
     margin-left: 25px;
   }
 `;
