@@ -147,9 +147,17 @@ export const logSchema = z.object({
   stats: InputJsonValue.nullable().optional(),
 });
 
+export const logLiteSchema = z.object({
+  llmResponse: InputJsonValue.nullable(),
+  chat: InputJsonValue.optional(),
+  stats: InputJsonValue.nullable().optional(),
+});
+
 export const generateOutput = logSchema.or(z.null());
+export const generateLiteOutput = logLiteSchema.or(z.null());
 export type LogSchema = z.infer<typeof logSchema>;
 export type GenerateOutput = z.infer<typeof generateOutput>;
+export type GenerateLiteOutput = z.infer<typeof generateLiteOutput>;
 export type SkillSchema = z.infer<typeof skillSchema>;
 export type skillsSchema = z.infer<typeof skillsSchema>;
 export type MessageSchema = z.infer<typeof messageSchema>;

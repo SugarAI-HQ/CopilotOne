@@ -19,6 +19,8 @@ export * from "./ServiceGenerateResponseChatChat";
 export * from "./ServiceGenerateResponseChatStats";
 export * from "./ServiceGenerateResponseChat";
 export * from "./ServiceGenerateResponse";
+export * from "./LiteServiceGenerateResponseChat";
+export * from "./LiteServiceGenerateResponse";
 export * from "./CubeGetPromptRequestEnvironment";
 export * from "./CubeGetPromptResponseCreatedAtModelType";
 export * from "./CubeGetPromptResponseCreatedAtRunMode";

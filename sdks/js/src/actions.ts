@@ -235,7 +235,7 @@ export async function textToAction(
     scope.groupId = defaultGroupId();
   }
 
-  const result = (await apiClient.prompts.serviceGenerate(
+  const result = (await apiClient.prompts.liteServiceGenerate(
     username,
     pp,
     pt,
@@ -252,7 +252,7 @@ export async function textToAction(
       // @ts-expect-error
       skills: Object.values(actions) as ServiceGenerateRequestSkillsItem[],
     },
-  )) as SugarAiApi.ServiceGenerateResponse;
+  )) as SugarAiApi.LiteServiceGenerateResponse;
   // const c = await makeInference(
   //   promptTemplate,
   //   promptVariables,

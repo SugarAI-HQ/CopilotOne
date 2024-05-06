@@ -9,7 +9,6 @@ const Message = ({
   buttonId,
   messageStyle,
 }) => {
-  console.log(position);
   return (
     <ChatMessage
       container={currentStyle?.container}

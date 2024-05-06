@@ -12,6 +12,7 @@ import { apiKeyRouter } from "./routers/apikey";
 import { chatRouter } from "./routers/chat";
 import { messageRouter } from "./routers/message";
 import { copilotRouter } from "./routers/copilot";
+import { serviceLiteRouter } from "./routers/service";
 
 // export const runtime = 'nodejs';
 
@@ -23,6 +24,7 @@ import { copilotRouter } from "./routers/copilot";
 export const appRouter = createTRPCRouter({
   prompt: promptRouter,
   service: serviceRouter,
+  liteService: serviceLiteRouter,
   marketplace: marketplaceRouter,
   log: logRouter,
   version: versionRouter,

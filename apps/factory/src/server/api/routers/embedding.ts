@@ -153,14 +153,14 @@ export const lookupEmbedding = async (
   const userQueryEmbed = JSON.stringify(embeddings[0]);
 
   // Start building the WHERE clause
-  let whereClauses = [
-    ["userId", userId],
-    ["copilotId", copilotId],
-    ["clientUserId", scope.clientUserId],
-    ["groupId", scope.groupId],
-    ["scope1", scope.scope1],
-    ["scope2", scope.scope2],
-  ].filter((k) => k[1] && k[1] !== "");
+  // let whereClauses = [
+  //   ["userId", userId],
+  //   ["copilotId", copilotId],
+  //   ["clientUserId", scope.clientUserId],
+  //   ["groupId", scope.groupId],
+  //   ["scope1", scope.scope1],
+  //   ["scope2", scope.scope2],
+  // ].filter((k) => k[1] && k[1] !== "");
 
   // for (const [key, value] of Object.entries(scope)) {
   //   if (value) {

@@ -87,6 +87,69 @@ export class Prompts {
     }
   }
 
+  public async liteServiceGenerate(
+    username: string,
+    packageName: string,
+    template: string,
+    versionOrEnvironment: string,
+    request: SugarAiApi.LiteServiceGenerateRequest,
+    requestOptions?: Prompts.RequestOptions,
+  ): Promise<SugarAiApi.LiteServiceGenerateResponse> {
+    const _response = await core.fetcher({
+      url: urlJoin(
+        (await core.Supplier.get(this._options.environment)) ??
+          environments.SugarAiApiEnvironment.Default,
+        `${username}/${packageName}/${template}/${versionOrEnvironment}/generate/lite`,
+      ),
+      method: "POST",
+      headers: {
+        Authorization: await this._getAuthorizationHeader(),
+        "X-Fern-Language": "JavaScript",
+      },
+      contentType: "application/json",
+      body: await serializers.LiteServiceGenerateRequest.jsonOrThrow(request, {
+        unrecognizedObjectKeys: "strip",
+      }),
+      timeoutMs:
+        requestOptions?.timeoutInSeconds != null
+          ? requestOptions.timeoutInSeconds * 1000
+          : 60000,
+      maxRetries: requestOptions?.maxRetries,
+    });
+    if (_response.ok) {
+      return await serializers.LiteServiceGenerateResponse.parseOrThrow(
+        _response.body,
+        {
+          unrecognizedObjectKeys: "passthrough",
+          allowUnrecognizedUnionMembers: true,
+          allowUnrecognizedEnumValues: true,
+          breadcrumbsPrefix: ["response"],
+        },
+      );
+    }
+
+    if (_response.error.reason === "status-code") {
+      throw new errors.SugarAiApiError({
+        statusCode: _response.error.statusCode,
+        body: _response.error.body,
+      });
+    }
+
+    switch (_response.error.reason) {
+      case "non-json":
+        throw new errors.SugarAiApiError({
+          statusCode: _response.error.statusCode,
+          body: _response.error.rawBody,
+        });
+      case "timeout":
+        throw new errors.SugarAiApiTimeoutError();
+      case "unknown":
+        throw new errors.SugarAiApiError({
+          message: _response.error.errorMessage,
+        });
+    }
+  }
+
   public async cubeGetPrompt(
     username: string,
     packageName: string,
