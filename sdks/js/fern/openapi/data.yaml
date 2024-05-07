@@ -514,6 +514,275 @@
                       nullable: true
           default: 
             $ref: "#/components/responses/error"
+    /{username}/{packageName}/{template}/{versionOrEnvironment}/generate/lite: 
+      post: 
+        operationId: "liteService-generate"
+        summary: "Generate prompt completion"
+        tags: 
+          - "prompts"
+        requestBody: 
+          required: true
+          content: 
+            application/json: 
+              schema: 
+                type: "object"
+                properties: 
+                  variables: 
+                    type: "object"
+                    additionalProperties: {}
+                  messages: 
+                    type: "array"
+                    items: 
+                      type: "object"
+                      properties: 
+                        role: 
+                          type: "string"
+                          enum: 
+                            - "user"
+                            - "assistant"
+                            - "system"
+                            - "tool"
+                        content: 
+                          type: "string"
+                      required: 
+                        - "role"
+                        - "content"
+                      additionalProperties: false
+                    default: []
+                  attachments: 
+                    type: "object"
+                    additionalProperties: {}
+                  skills: 
+                    type: "array"
+                    items: 
+                      type: "object"
+                      properties: 
+                        type: 
+                          type: "string"
+                          enum: 
+                            - "function"
+                        function: 
+                          type: "object"
+                          properties: 
+                            name: 
+                              type: "string"
+                            description: 
+                              type: "string"
+                            parameters: 
+                              type: "object"
+                              properties: 
+                                type: 
+                                  type: "string"
+                                properties: 
+                                  type: "object"
+                                  additionalProperties: 
+                                    type: "object"
+                                    properties: 
+                                      type: 
+                                        type: "string"
+                                      description: 
+                                        type: "string"
+                                      enum: 
+                                        type: "array"
+                                        items: 
+                                          type: "string"
+                                    required: 
+                                      - "type"
+                                      - "description"
+                                    additionalProperties: false
+                                required: 
+                                  type: "array"
+                                  items: 
+                                    type: "string"
+                              required: 
+                                - "type"
+                                - "properties"
+                                - "required"
+                              additionalProperties: false
+                          required: 
+                            - "name"
+                            - "description"
+                            - "parameters"
+                          additionalProperties: false
+                      required: 
+                        - "type"
+                        - "function"
+                      additionalProperties: false
+                    default: []
+                  skillChoice: 
+                    type: "string"
+                    enum: 
+                      - "auto"
+                      - "none"
+                    default: "auto"
+                  scope: 
+                    type: "object"
+                    properties: 
+                      clientUserId: 
+                        type: "string"
+                      scope1: 
+                        type: "string"
+                        default: ""
+                      scope2: 
+                        type: "string"
+                        default: ""
+                      groupId: 
+                        type: "string"
+                        nullable: true
+                    required: 
+                      - "clientUserId"
+                      - "groupId"
+                    additionalProperties: false
+                  isDevelopment: 
+                    type: "boolean"
+                    default: false
+                  chat: 
+                    type: "object"
+                    properties: 
+                      id: 
+                        type: "string"
+                        nullable: true
+                      message: 
+                        type: "object"
+                        properties: 
+                          role: 
+                            type: "string"
+                            enum: 
+                              - "user"
+                              - "assistant"
+                              - "system"
+                              - "tool"
+                          content: 
+                            type: "string"
+                        required: 
+                          - "role"
+                          - "content"
+                        additionalProperties: false
+                        default: 
+                          role: "user"
+                          content: ""
+                      historyChat: 
+                        type: "number"
+                        default: 6
+                    required: 
+                      - "id"
+                    additionalProperties: false
+                  copilotId: 
+                    type: "string"
+                  environment: 
+                    type: "string"
+                    enum: 
+                      - "DEV"
+                      - "PREVIEW"
+                      - "RELEASE"
+                  version: 
+                    type: "string"
+                  userId: 
+                    type: "string"
+                  promptPackageId: 
+                    type: "string"
+                  promptTemplateId: 
+                    type: "string"
+                  promptVersionId: 
+                    type: "string"
+                required: 
+                  - "variables"
+                additionalProperties: false
+        parameters: 
+          - 
+            name: "username"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "packageName"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "template"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "versionOrEnvironment"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+              default: "RELEASE"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: 
+                  anyOf: 
+                    - 
+                      type: "object"
+                      properties: 
+                        llmResponse: 
+                          anyOf: 
+                            - 
+                              type: "string"
+                            - 
+                              type: "number"
+                            - 
+                              type: "boolean"
+                            - 
+                              type: "array"
+                              items: 
+                                nullable: true
+                            - 
+                              type: "object"
+                              additionalProperties: 
+                                nullable: true
+                          nullable: true
+                        chat: 
+                          anyOf: 
+                            - 
+                              type: "string"
+                            - 
+                              type: "number"
+                            - 
+                              type: "boolean"
+                            - 
+                              type: "array"
+                              items: 
+                                nullable: true
+                            - 
+                              type: "object"
+                              additionalProperties: 
+                                nullable: true
+                        stats: 
+                          anyOf: 
+                            - 
+                              type: "string"
+                            - 
+                              type: "number"
+                            - 
+                              type: "boolean"
+                            - 
+                              type: "array"
+                              items: 
+                                nullable: true
+                            - 
+                              type: "object"
+                              additionalProperties: 
+                                nullable: true
+                          nullable: true
+                      required: 
+                        - "llmResponse"
+                      additionalProperties: false
+                    - 
+                      enum: 
+                        - "null"
+                      nullable: true
+          default: 
+            $ref: "#/components/responses/error"
     /{username}/{packageName}/{template}/{versionOrEnvironment}: 
       get: 
         operationId: "cube-getPrompt"
