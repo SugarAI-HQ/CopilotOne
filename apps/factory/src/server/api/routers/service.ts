@@ -511,9 +511,9 @@ export async function findOrCreateChatAndLoadHistory(
   input: any,
 ) {
   const userId = ctx.jwt?.id;
-  let newChatPromise;
+  let newChatPromise = null;
+  let chatMessagesPromise = null;
 
-  // Create chat if not existing and load chat messages history
   if (!chatId && copilotId) {
     newChatPromise = ctx.prisma.chat.create({
       data: {
@@ -525,26 +525,28 @@ export async function findOrCreateChatAndLoadHistory(
     chatId = newChat?.id;
   }
 
-  // Load all chat messages history
-  const chatMessagesPromise = ctx.prisma.message.findMany({
-    where: {
-      chatId: chatId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: input.chat?.historyChat || 6,
-  });
+  if (chatId) {
+    chatMessagesPromise = ctx.prisma.message.findMany({
+      where: {
+        chatId: chatId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: input.chat?.historyChat || 6,
+    });
+  }
 
   const [chatMessages, newChat] = await Promise.all([
     chatMessagesPromise,
     newChatPromise,
   ]);
 
-  const transformedMessages: any[] = chatMessages.map((message: any) => ({
-    content: message.content,
-    role: message.role,
-  }));
+  const transformedMessages: any[] =
+    chatMessages?.map((message: any) => ({
+      content: message.content,
+      role: message.role,
+    })) || [];
   const newMessage = input.chat?.message ? [input.chat?.message] : [];
 
   if (input.messages.length > 0) {
