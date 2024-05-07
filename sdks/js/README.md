@@ -47,5 +47,3 @@ npm install @sugar-ai/copilot-one-js@latest
 
 
 Read more in [Docs](https://docs.sugarai.dev)
-
-
