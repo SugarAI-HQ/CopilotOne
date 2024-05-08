@@ -189,7 +189,7 @@ export const serviceRouter = createTRPCRouter({
         }
 
         const variables = replaceDataVariables(input.variables || {});
-
+        trackTime("end");
         // 4.2 Save prompt data to database
         try {
           pl = await ctx.prisma.promptLog.create({
@@ -219,6 +219,7 @@ export const serviceRouter = createTRPCRouter({
               total_tokens: (rr?.performance?.total_tokens as number) || 0,
               extras: rr?.performance?.extra ? rr?.performance?.extra : {},
               stats: { ...getStats(), ...{ llmStats: rr.performance } },
+              copilotId: copilotId,
             },
           });
           trackTime("save_prompt_data");
@@ -231,7 +232,6 @@ export const serviceRouter = createTRPCRouter({
         }
       }
 
-      trackTime("end");
       pl = { ...pl, stats: getStats() };
       return pl as GenerateOutput;
     }),
@@ -377,7 +377,7 @@ export const serviceLiteRouter = createTRPCRouter({
         );
 
         const variables = replaceDataVariables(input.variables || {});
-
+        trackTime("end");
         // 4.2 Save prompt data to database
         ctx.prisma.promptLog
           .create({
@@ -406,6 +406,7 @@ export const serviceLiteRouter = createTRPCRouter({
               total_tokens: (rr?.performance?.total_tokens as number) || 0,
               extras: rr?.performance?.extra ? rr?.performance?.extra : {},
               stats: { ...getStats(), ...{ llmStats: rr.performance } },
+              copilotId: copilotId,
             },
           })
           .then(() => {
@@ -431,7 +432,6 @@ export const serviceLiteRouter = createTRPCRouter({
         }
       }
 
-      trackTime("end");
       pl = { ...pl, stats: getStats() };
       return pl as GenerateLiteOutput;
     }),

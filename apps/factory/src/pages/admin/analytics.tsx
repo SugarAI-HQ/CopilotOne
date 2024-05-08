@@ -27,25 +27,43 @@ const Analytics = () => {
       </Box>
       <Grid container spacing={2} mt={2}>
         <Grid item xs={12} md={6} sx={{ p: 1 }}>
-          <MetricLineChart metric={"load_chat"} heading={"Load Chat History"} />
-        </Grid>
-        <Grid item xs={12} md={6} sx={{ p: 1 }}>
-          <MetricLineChart metric={"embeddings"} heading={"Embeddings"} />
+          <MetricLineChart
+            metricField={"incrementalTime"}
+            metric={"end"}
+            heading={"Total Response Time"}
+          />
         </Grid>
         <Grid item xs={12} md={6} sx={{ p: 1 }}>
           <MetricLineChart
+            metricField={"cumulativeTime"}
+            metric={"load_chat"}
+            heading={"Load Chat History"}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ p: 1 }}>
+          <MetricLineChart
+            metricField={"cumulativeTime"}
+            metric={"embeddings"}
+            heading={"Embeddings"}
+          />
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ p: 1 }}>
+          <MetricLineChart
+            metricField={"cumulativeTime"}
             metric={"generate_prompt"}
             heading={"Generate Prompt"}
           />
         </Grid>
         <Grid item xs={12} md={6} sx={{ p: 1 }}>
           <MetricLineChart
+            metricField={"cumulativeTime"}
             metric={"load_llm_config"}
             heading={"Load LLM Config"}
           />
         </Grid>
         <Grid item xs={12} md={6} sx={{ p: 1 }}>
           <MetricLineChart
+            metricField={"cumulativeTime"}
             metric={"llm_gateway_response"}
             heading={"LLM Gateway Response"}
           />
@@ -61,16 +79,18 @@ export default Analytics;
 
 const MetricLineChart = ({
   metric,
+  metricField,
   heading,
 }: {
   metric: string;
+  metricField: string;
   heading: string;
 }) => {
   const [stats, setStats] = useState<any>({});
 
   api.log.getAnalytics.useQuery(
     {
-      fieldName: "cumulativeTime",
+      fieldName: metricField,
       nestedKey: metric,
     },
     {

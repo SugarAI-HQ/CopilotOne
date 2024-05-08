@@ -226,6 +226,7 @@ model PromptLog {
   id                String            @id @default(uuid())
   userId            String
   inputId           String?
+  copilotId         String?
   environment       PromptEnvironment @default(DEV)
   version           String
   prompt            String
