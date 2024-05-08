@@ -84,18 +84,20 @@ const MetricLineChart = ({
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        {stats && Object.keys(stats).length > 0 && (
-          <LineChart
-            width={500}
-            height={300}
-            series={[
-              { data: stats.average, label: "Average" },
-              { data: stats.p95, label: "P95" },
-              { data: stats.p50, label: "P50" },
-            ]}
-            xAxis={[{ scaleType: "point", data: stats.date }]}
-          />
-        )}
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          {stats && Object.keys(stats).length > 0 && (
+            <LineChart
+              width={500}
+              height={300}
+              series={[
+                { data: stats.average, label: "Average" },
+                { data: stats.p95, label: "P95" },
+                { data: stats.p50, label: "P50" },
+              ]}
+              xAxis={[{ scaleType: "point", data: stats.date }]}
+            />
+          )}
+        </Box>
       </Grid>
       <Grid item xs={12}>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
