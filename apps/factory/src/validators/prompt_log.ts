@@ -116,6 +116,14 @@ export const logListOutput = z.object({
 });
 export type LogListOutput = z.infer<typeof logListOutput>;
 
+export const getAnalyticsInput = z
+  .object({
+    fieldName: z.string(),
+    nestedKey: z.string(),
+    pNumber: z.number().optional(),
+  })
+  .strict();
+
 // const dd = {
 //     "id": "clmq7ranr0001sgpp3l6qou92",
 //     "userId": "clmpdlyre0000sgj58t3yilf8",

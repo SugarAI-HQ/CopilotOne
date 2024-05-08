@@ -1,10 +1,15 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import {
   getLogsInput,
   logListOutput,
   updateLabel,
   getLogInput,
   logOutput,
+  getAnalyticsInput,
 } from "~/validators/prompt_log";
 
 export const logRouter = createTRPCRouter({
@@ -124,6 +129,97 @@ export const logRouter = createTRPCRouter({
 
       return pL;
     }),
+  getAnalytics: protectedProcedure
+    .input(getAnalyticsInput)
+    .query(async ({ ctx, input }) => {
+      const { fieldName, nestedKey } = input;
+
+      const average = await lookupAverage(ctx, nestedKey, fieldName);
+      const p95 = await lookupP95(ctx, nestedKey, fieldName);
+      const p50 = await lookupP50(ctx, nestedKey, fieldName);
+
+      // return {
+      //   average,
+      //   p95,
+      //   p50,
+      // };
+      const mergeArrays = (arr: any[]) =>
+        arr.reduce(
+          (acc, item) => {
+            if (item && item.data !== undefined && item.data !== null) {
+              acc.data.push(item.data);
+            }
+            if (
+              item &&
+              item.date !== undefined &&
+              item.date !== null &&
+              !acc.date.includes(item.date)
+            ) {
+              acc.date.push(item.date);
+            }
+            return acc;
+          },
+          { data: [], date: [] },
+        );
+
+      const mergedAverage = mergeArrays(average);
+      const mergedP95 = mergeArrays(p95);
+      const mergedP50 = mergeArrays(p50);
+
+      return {
+        date: mergedAverage.date,
+        average: mergedAverage.data,
+        p95: mergedP95.data,
+        p50: mergedP50.data,
+      };
+    }),
 });
 
 // {"data":{"completion":"This is fake respoonse generated for testing purposes", "v": "1"},"error":null}
+
+export const lookupAverage = async (
+  ctx: any,
+  nestedKey: string,
+  fieldName: string,
+) => {
+  const average = await ctx.prisma.$queryRaw`
+    SELECT
+      DATE_TRUNC('day', "created_at") AS date,
+      AVG((stats->${fieldName}->>${nestedKey})::float) AS data
+    FROM "PromptLog"
+    WHERE
+      stats->${fieldName}->>${nestedKey} IS NOT NULL
+      AND "created_at" >= CURRENT_TIMESTAMP - INTERVAL '30 days'
+    GROUP BY DATE_TRUNC('day', "created_at")
+    ORDER BY date;
+  `;
+  return average;
+};
+
+export const lookupP95 = async (
+  ctx: any,
+  nestedKey: string,
+  fieldName: string,
+  pNumber: number = 0.95,
+) => {
+  const p95 = await ctx.prisma.$queryRaw`
+    SELECT
+      date_trunc('day', created_at) AS date,
+      percentile_cont(${pNumber}) WITHIN GROUP (ORDER BY (stats->${fieldName}->>${nestedKey})::float) AS data
+    FROM "PromptLog"
+    WHERE stats->${fieldName}->>${nestedKey} IS NOT NULL
+    AND created_at >= CURRENT_TIMESTAMP - INTERVAL '30 days'
+    GROUP BY DATE_TRUNC('day', "created_at")
+    ORDER BY date;
+  `;
+  return p95;
+};
+
+export const lookupP50 = async (
+  ctx: any,
+  nestedKey: string,
+  fieldName: string,
+) => {
+  const p50 = await lookupP95(ctx, nestedKey, fieldName, 0.5);
+  return p50;
+};

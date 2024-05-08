@@ -31,7 +31,8 @@ const config = {
       },
     ],
     domains: ["localhost", "*.sugarcaneai.dev", "sugarcaneai.dev"], // add sugarcane host
-  }
+  },
+  transpilePackages: ["@mui/x-charts"],
 };
 
 export default withSentryConfig(
