@@ -113,6 +113,8 @@ export const generateInput = z
     isDevelopment: z.boolean().default(false),
     chat: chatInputScehma,
     copilotId: z.string().optional(),
+    voice: InputJsonValue.optional(),
+    lang: z.string().optional(),
   })
   .merge(getPromptInput)
   .strict();

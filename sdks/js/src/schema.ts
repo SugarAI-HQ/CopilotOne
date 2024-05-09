@@ -78,12 +78,33 @@ export type CopilotSyleButtonType = z.infer<
   typeof copilotStyleVoiceButtonSchema
 >;
 
+export const copilotAssistantVoiceType = z.enum([
+  "auto",
+  "Google हिन्दी",
+  "Lekha",
+  "Nicky",
+]);
+export const copilotAssistantLangType = z.enum([
+  "auto",
+  "hi-IN",
+  "hi-IN",
+  "en-US",
+]);
+
+export type CopilotAssistantVoiceSchema = z.infer<
+  typeof copilotAssistantVoiceType
+>;
+export type copilotAssistantLangSchema = z.infer<
+  typeof copilotAssistantLangType
+>;
+
 export const copilotAiSchema = z.object({
   defaultPromptTemplate: promptTemplateSchema.optional(),
   defaultPromptVariables: z.record(z.any()).optional(),
-
   successResponse: z.string(),
   failureResponse: z.string(),
+  lang: z.string(),
+  voice: z.string(),
 });
 
 export const copilotToolTipSchema = z.object({
@@ -113,6 +134,8 @@ export const copilotAiDefaults: CopilotAiType = {
   defaultPromptVariables: {},
   successResponse: "Done",
   failureResponse: "Something went wrong",
+  lang: "auto",
+  voice: "auto",
 };
 
 export const copilotStyleDefaults: CopilotSytleType = {
