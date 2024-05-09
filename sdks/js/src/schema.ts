@@ -98,8 +98,8 @@ export const copilotAiSchema = z.object({
   defaultPromptVariables: z.record(z.any()).optional(),
   successResponse: z.string(),
   failureResponse: z.string(),
-  lang: z.string(),
-  voice: z.string(),
+  lang: z.string().optional(),
+  voice: z.string().optional(),
 });
 
 export const copilotToolTipSchema = z.object({
