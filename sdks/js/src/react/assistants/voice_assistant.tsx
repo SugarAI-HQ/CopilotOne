@@ -23,6 +23,11 @@ import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 import Voice from "./components/voice";
+import {
+  determinePreferredLang,
+  getGender,
+  getPreferredVoiceAndLang,
+} from "../../voice";
 
 export const VoiceAssistant = ({
   id = null,
@@ -205,8 +210,9 @@ export const VoiceAssistant = ({
   };
 
   function initRecognition(recognition: any) {
+    const lang = determinePreferredLang(currentAiConfig.lang);
     recognition.continuous = false;
-    recognition.lang = "en-US";
+    recognition.lang = lang;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -264,9 +270,33 @@ export const VoiceAssistant = ({
     // }
   }, []);
 
-  const speak = (text) => {
+  const speak = async (text) => {
     const synth = root.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(text);
+    const { voice, lang } = await getPreferredVoiceAndLang(
+      currentAiConfig.voice,
+      currentAiConfig.lang,
+      synth,
+    );
+    console.log("Voice found", voice);
+    console.log("Lang found", lang);
+    utterance.lang = lang;
+    utterance.voice = voice as any;
+    const stopSpeakingOnPageUnload = () => {
+      synth.cancel();
+    };
+    utterance.onend = () => {
+      root.removeEventListener("unload", stopSpeakingOnPageUnload);
+    };
+    root.addEventListener("unload", stopSpeakingOnPageUnload);
+    // const voices = synth.getVoices();
+    // const selectedVoice = voices.find((v) => {
+    //   return v.lang.startsWith(lang) && v.name.includes(voice);
+    // });
+    // if (selectedVoice) {
+    //   utterance.voice = selectedVoice;
+    // }
+
     synth.speak(utterance);
   };
 
@@ -287,10 +317,20 @@ export const VoiceAssistant = ({
 
     setIsprocessing(true);
 
+    const { voice, lang } = await getPreferredVoiceAndLang(
+      currentAiConfig.voice,
+      currentAiConfig.lang,
+      root.speechSynthesis,
+    );
+
     const aiResponse = await textToAction(
       promptTemplate as string,
       input,
-      promptVariables,
+      {
+        ...promptVariables,
+        "#GENDER": getGender(voice!),
+        "#LANGUAGE": lang,
+      },
       newScope,
       actions,
       actionCallbacks,
@@ -299,7 +339,7 @@ export const VoiceAssistant = ({
     });
     if (typeof aiResponse === "string") {
       setAiResponse(aiResponse);
-      isSpeak && speak(aiResponse);
+      isSpeak && (await speak(aiResponse));
       recognition.stop();
     }
   };
