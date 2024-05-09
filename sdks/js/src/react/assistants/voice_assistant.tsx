@@ -328,8 +328,8 @@ export const VoiceAssistant = ({
       input,
       {
         ...promptVariables,
-        "@gender": getGender(voice!),
-        "@language": lang,
+        "#GENDER": getGender(voice!),
+        "#LANGUAGE": lang,
       },
       newScope,
       actions,
