@@ -279,6 +279,13 @@ export const VoiceAssistant = ({
     console.log("Lang found", lang);
     utterance.lang = lang;
     utterance.voice = voice as any;
+    const stopSpeakingOnPageUnload = () => {
+      synth.cancel();
+    };
+    utterance.onend = () => {
+      root.removeEventListener("unload", stopSpeakingOnPageUnload);
+    };
+    root.addEventListener("unload", stopSpeakingOnPageUnload);
     // const voices = synth.getVoices();
     // const selectedVoice = voices.find((v) => {
     //   return v.lang.startsWith(lang) && v.name.includes(voice);
