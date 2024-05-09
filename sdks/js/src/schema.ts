@@ -84,12 +84,7 @@ export const copilotAssistantVoiceType = z.enum([
   "Lekha",
   "Nicky",
 ]);
-export const copilotAssistantLangType = z.enum([
-  "auto",
-  "hi-IN",
-  "hi-IN",
-  "en-US",
-]);
+export const copilotAssistantLangType = z.enum(["auto", "hi-IN", "en-US"]);
 
 export type CopilotAssistantVoiceSchema = z.infer<
   typeof copilotAssistantVoiceType

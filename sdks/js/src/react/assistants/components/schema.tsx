@@ -1,4 +1,5 @@
 import {
+  copilotAssistantLangType,
   copilotAssistantVoiceType,
   type CopilotStylePositionType,
   type CopilotSyleKeyboardPositionSchema,
@@ -58,14 +59,26 @@ export const determinePreferredVoice = async (
   preferredLang,
   synth,
 ) => {
-  if (inputVoice === "auto") {
-    if (preferredLang === "hi-IN") {
+  if (inputVoice === copilotAssistantLangType.enum.auto) {
+    if (preferredLang === copilotAssistantLangType.enum["hi-IN"]) {
       return (
-        (await findAvailableVoice("Google हिन्दी", preferredLang, synth)) ??
-        (await findAvailableVoice("Lekha", preferredLang, synth))
+        (await findAvailableVoice(
+          copilotAssistantVoiceType.enum["Google हिन्दी"],
+          preferredLang,
+          synth,
+        )) ??
+        (await findAvailableVoice(
+          copilotAssistantVoiceType.enum.Lekha,
+          preferredLang,
+          synth,
+        ))
       );
     } else {
-      return await findAvailableVoice("Nicky", preferredLang, synth);
+      return await findAvailableVoice(
+        copilotAssistantVoiceType.enum.Nicky,
+        preferredLang,
+        synth,
+      );
     }
   }
   if (inputVoice) {
@@ -92,9 +105,9 @@ export const determinePreferredVoice = async (
 export const determinePreferredLang = (inputLang) => {
   const defaultLang =
     Intl.DateTimeFormat().resolvedOptions().timeZone === "Asia/Calcutta"
-      ? "hi-IN"
-      : "en-US";
-  if (inputLang === "auto") {
+      ? copilotAssistantLangType.enum["hi-IN"]
+      : copilotAssistantLangType.enum["en-US"];
+  if (inputLang === copilotAssistantLangType.enum.auto) {
     return defaultLang;
   }
   return inputLang || defaultLang;
