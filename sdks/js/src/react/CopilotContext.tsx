@@ -40,8 +40,6 @@ export const CopilotContext = createContext({
     scope: EmbeddingScopeType,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
-    voice: any = {},
-    lang: string = "",
   ) => Promise<string>,
   // ) => Promise<string>,
 });
@@ -120,8 +118,6 @@ export const CopilotProvider = function ({
     scope: EmbeddingScopeWithUserType,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
-    voice: any = {},
-    lang: string = "",
   ): Promise<string> {
     return await nativeTextoAction(
       promptTemplate,
@@ -131,8 +127,6 @@ export const CopilotProvider = function ({
       config,
       { ...uxActions, ...actions },
       { ...uxActionCallbacks, ...actionCallbacks },
-      voice,
-      lang,
       // uxActions.concat(actions),
       // uxActionCallbacks.concat(actionCallbacks),
     );

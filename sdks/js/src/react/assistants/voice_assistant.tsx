@@ -14,8 +14,6 @@ import { StyleSheetManager } from "styled-components";
 
 import { CopilotContainer, KeyboardEmptyContainer } from "./base_styled";
 import {
-  determinePreferredLang,
-  getPreferredVoiceAndLang,
   shouldForwardProp,
   type BaseAssistantProps,
 } from "./components/schema";
@@ -25,6 +23,11 @@ import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 import Voice from "./components/voice";
+import {
+  determinePreferredLang,
+  getGender,
+  getPreferredVoiceAndLang,
+} from "../../voice";
 
 export const VoiceAssistant = ({
   id = null,
@@ -323,12 +326,14 @@ export const VoiceAssistant = ({
     const aiResponse = await textToAction(
       promptTemplate as string,
       input,
-      promptVariables,
+      {
+        ...promptVariables,
+        "@gender": getGender(voice!),
+        "@language": lang,
+      },
       newScope,
       actions,
       actionCallbacks,
-      voice,
-      lang,
     ).finally(() => {
       setIsprocessing(false);
     });

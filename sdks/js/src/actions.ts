@@ -209,8 +209,6 @@ export async function textToAction(
   config,
   actions: Array<Record<string, ActionDefinitionType>> = [],
   actionCallbacks: Array<Record<string, Function>> = [],
-  voice: any = {},
-  lang: string = "",
 ): Promise<string> {
   const { reset, addMarker, observePerformance, getStats } =
     performanceTracker();
@@ -253,8 +251,6 @@ export async function textToAction(
       // messages: messages.slice(-3),
       // @ts-expect-error
       skills: Object.values(actions) as ServiceGenerateRequestSkillsItem[],
-      voice: voice,
-      lang: lang,
     },
   )) as SugarAiApi.LiteServiceGenerateResponse;
   // const c = await makeInference(
