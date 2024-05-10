@@ -22,11 +22,13 @@ export function createUseState(
     initialState: any,
     scope: EmbeddingScopeType,
   ) {
+    scope = { ...scopeDefaults, ...scope };
+
     if (scope.groupId === DEFAULT_GROUP_ID) {
       scope.groupId = defaultGroupId();
     }
 
-    const effectiveScope = { ...scopeDefaults, ...scope };
+    const effectiveScope = scope;
 
     // Call the original useState hook
     const [state, setState] = useStateOriginal(initialState);
