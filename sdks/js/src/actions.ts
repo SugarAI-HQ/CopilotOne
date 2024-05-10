@@ -229,10 +229,10 @@ export async function textToAction(
   console.log("actions", JSON.stringify(actions));
   console.log("actionCallbacks", JSON.stringify(actionCallbacks));
 
-  scope = { ...scopeDefaults, ...scope };
+  const effectiveScope = { ...scopeDefaults, ...scope };
 
-  if (scope.groupId === DEFAULT_GROUP_ID) {
-    scope.groupId = defaultGroupId();
+  if (effectiveScope.groupId === DEFAULT_GROUP_ID) {
+    effectiveScope.groupId = defaultGroupId();
   }
 
   const result = (await apiClient.prompts.liteServiceGenerate(
@@ -242,7 +242,7 @@ export async function textToAction(
     pv,
     {
       variables: promptVariables,
-      scope: scope as SugarAiApi.ServiceGenerateRequestScope,
+      scope: effectiveScope as SugarAiApi.ServiceGenerateRequestScope,
       // messages: messages as ServiceGenerateRequestMessagesItem[],
       chat: {
         id: config.clientUserId,

@@ -140,11 +140,14 @@ export const TextAssistant = ({
     };
 
     setIsprocessing(true);
-
+    const currentPromptVariables = {
+      ...currentAiConfig?.defaultPromptVariables,
+      ...promptVariables,
+    };
     const aiResponse = await textToAction(
       promptTemplate as string,
       input,
-      promptVariables,
+      currentPromptVariables,
       newScope,
       actions,
       actionCallbacks,

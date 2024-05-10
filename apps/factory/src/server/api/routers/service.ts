@@ -188,7 +188,7 @@ export const serviceRouter = createTRPCRouter({
           );
         }
 
-        const variables = replaceDataVariables(input.variables || {});
+        const variables = replaceDataVariables(templateVariables || {});
         trackTime("end");
         // 4.2 Save prompt data to database
         try {
@@ -376,7 +376,7 @@ export const serviceLiteRouter = createTRPCRouter({
           `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
         );
 
-        const variables = replaceDataVariables(input.variables || {});
+        const variables = replaceDataVariables(templateVariables || {});
         trackTime("end");
         // 4.2 Save prompt data to database
         ctx.prisma.promptLog

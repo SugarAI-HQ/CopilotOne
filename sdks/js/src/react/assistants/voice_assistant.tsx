@@ -322,12 +322,15 @@ export const VoiceAssistant = ({
       currentAiConfig.lang,
       root.speechSynthesis,
     );
-
+    const currentPromptVariables = {
+      ...currentAiConfig?.defaultPromptVariables,
+      ...promptVariables,
+    };
     const aiResponse = await textToAction(
       promptTemplate as string,
       input,
       {
-        ...promptVariables,
+        ...currentPromptVariables,
         "#GENDER": getGender(voice!),
         "#LANGUAGE": lang,
       },
