@@ -29,7 +29,7 @@ type CopilotKeyboardButtonPropsType = z.infer<
 >;
 
 const DEVICE_WIDTH = Dimensions.get("window").width;
-const DEVICE_HEIGHT = Dimensions.get("window").height;
+// const DEVICE_HEIGHT = Dimensions.get("window").height;
 
 export const ViewCopilotContainer = styled(View)<{
   container: CopilotSyleContainerType;
@@ -44,13 +44,13 @@ export const ViewCopilotContainer = styled(View)<{
     switch (positions) {
       case "top-left":
         return `
-          top: 70px;
+          top: 25px;
           left: 25px;
         `;
       case "top-right":
         return `
-          top: 70px;
-          right: 75px;
+          top: 25px;
+          right: 25px;
         `;
       case "bottom-left":
         return `
@@ -60,11 +60,11 @@ export const ViewCopilotContainer = styled(View)<{
       case "bottom-right":
         return `
           bottom: 25px;
-          right: 70px;
+          right: 20px;
         `;
       case "top-center":
         return `
-          top: 70px;
+          top: 25px;
           left: 0;
           right: 0;
           align-items: center;
@@ -94,13 +94,11 @@ export const ViewChatMessage = styled(View)<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
 }>`
-  position: relative;
-  width: 300px;
-  max-height: ${DEVICE_HEIGHT - 120}px;
+  position: absolute;
+
+  width: ${DEVICE_WIDTH - 60}px;
   background-color: transparent;
   border-radius: 10px;
-  overflow: hidden;
-  z-index: 1000; /* Ensure the chat window is above most elements */
 
   ${({ container, position }) => {
     const positions =
@@ -110,33 +108,35 @@ export const ViewChatMessage = styled(View)<{
     switch (positions) {
       case "top-left":
         return `
-          top: 70px;
+          top: 60px;
           left: 20px;
         `;
       case "top-right":
         return `
-          top: 70px;
+          top: 60px;
           right: 20px;
         `;
       case "bottom-left":
         return `
-          bottom: 70px;
+          bottom: 60px;
           left: 20px;
         `;
       case "bottom-right":
         return `
-          bottom: 70px;
-
+          bottom: 60px;
+          right: 10px;
         `;
       case "top-center":
         return `
-          top: 70px;
-          left: ${DEVICE_WIDTH / 2 - 150}px;
+          top: 60px;
+          align-items: center;
+          justify-content: center;
         `;
       case "bottom-center":
         return `
-          bottom: 70px;
-          left: ${DEVICE_WIDTH / 2 - 150}px;
+          bottom: 60px;
+          align-items: center;
+          justify-content: center;
         `;
       default:
         return ""; // If no position matches, default to an empty string
@@ -269,6 +269,7 @@ export const ViewTextBoxButton = styled.TouchableOpacity<{
   border: none;
   border-radius: 0 5px 5px 0;
   color: #fff;
+  background-color: transparent;
 
   ${({ iskeyboard }) =>
     iskeyboard === "true" &&

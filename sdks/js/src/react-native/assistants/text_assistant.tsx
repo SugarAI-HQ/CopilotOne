@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  // StyleSheet,
-  // TouchableOpacity,
-  // Animated,
-  // TextInput,
-  Text,
-} from "react-native";
+import { ActivityIndicator } from "react-native";
 
 import {
   ViewChatMessage,
@@ -190,8 +184,6 @@ const ViewTextAssistant = ({
           <ViewKeyboardButton
             style={keyboardButtonStyle}
             button={currentStyle?.keyboardButton}
-            container={currentStyle?.container}
-            position={position}
             onPress={enableKeyboard}
           >
             <Svg width={26} height={26} viewBox={`0 0 26 26`}>
@@ -206,9 +198,9 @@ const ViewTextAssistant = ({
         {(aiResponse || finalOutput) && (
           <ViewChatMessage
             container={currentStyle?.container}
-            style={messageStyle}
             position={position}
             id={`sugar-ai-chat-message-${buttonId}`}
+            style={messageStyle}
           >
             {finalOutput && (
               <ViewMessage
@@ -245,22 +237,34 @@ const ViewTextAssistant = ({
             }}
             onSubmitEditing={startSending}
           />
-          <ViewTextBoxButton iskeyboard={"true"} onPress={enableKeyboard}>
-            {isTyping ? (
-              <Svg
-                width={24}
-                height={21}
-                viewBox={`0 0 24 21`}
-                style={{ top: 5 }}
-                onPress={startSending}
-              >
-                <Path
-                  d="M1.21837 0.0686141C1.05615 0.000421274 0.87718 -0.0174581 0.704674 0.0172948C0.532169 0.0520477 0.374084 0.13783 0.250922 0.263516C0.12776 0.389202 0.0452018 0.548993 0.0139548 0.722168C-0.0172923 0.895343 0.00421333 1.07391 0.0756823 1.23472L3.69692 9.36582H12.5855C12.8184 9.36582 13.0418 9.45833 13.2064 9.62301C13.3711 9.78768 13.4636 10.011 13.4636 10.2439C13.4636 10.4768 13.3711 10.7001 13.2064 10.8648C13.0418 11.0295 12.8184 11.122 12.5855 11.122H3.69692L0.0756823 19.2531C0.00421333 19.4139 -0.0172923 19.5925 0.0139548 19.7657C0.0452018 19.9388 0.12776 20.0986 0.250922 20.2243C0.374084 20.35 0.532169 20.4358 0.704674 20.4705C0.87718 20.5053 1.05615 20.4874 1.21837 20.4192L23.4633 11.0529C23.6224 10.9858 23.7582 10.8732 23.8536 10.7293C23.9491 10.5854 24 10.4166 24 10.2439C24 10.0712 23.9491 9.90238 23.8536 9.75848C23.7582 9.61458 23.6224 9.50203 23.4633 9.4349L1.21837 0.0686141Z"
-                  fill={currentStyle.keyboardButton.bgColor}
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+          <ViewTextBoxButton
+            iskeyboard={"true"}
+            onPress={enableKeyboard}
+            disabled={isprocessing}
+            activeOpacity={1}
+          >
+            {isTyping || isprocessing ? (
+              isprocessing ? (
+                <ActivityIndicator
+                  color={currentStyle.keyboardButton.bgColor}
+                  style={{ top: 5 }}
                 />
-              </Svg>
+              ) : (
+                <Svg
+                  width={24}
+                  height={21}
+                  viewBox={`0 0 24 21`}
+                  style={{ top: 5 }}
+                  onPress={startSending}
+                >
+                  <Path
+                    d="M1.21837 0.0686141C1.05615 0.000421274 0.87718 -0.0174581 0.704674 0.0172948C0.532169 0.0520477 0.374084 0.13783 0.250922 0.263516C0.12776 0.389202 0.0452018 0.548993 0.0139548 0.722168C-0.0172923 0.895343 0.00421333 1.07391 0.0756823 1.23472L3.69692 9.36582H12.5855C12.8184 9.36582 13.0418 9.45833 13.2064 9.62301C13.3711 9.78768 13.4636 10.011 13.4636 10.2439C13.4636 10.4768 13.3711 10.7001 13.2064 10.8648C13.0418 11.0295 12.8184 11.122 12.5855 11.122H3.69692L0.0756823 19.2531C0.00421333 19.4139 -0.0172923 19.5925 0.0139548 19.7657C0.0452018 19.9388 0.12776 20.0986 0.250922 20.2243C0.374084 20.35 0.532169 20.4358 0.704674 20.4705C0.87718 20.5053 1.05615 20.4874 1.21837 20.4192L23.4633 11.0529C23.6224 10.9858 23.7582 10.8732 23.8536 10.7293C23.9491 10.5854 24 10.4166 24 10.2439C24 10.0712 23.9491 9.90238 23.8536 9.75848C23.7582 9.61458 23.6224 9.50203 23.4633 9.4349L1.21837 0.0686141Z"
+                    fill={currentStyle.keyboardButton.bgColor}
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                  />
+                </Svg>
+              )
             ) : (
               <Svg width={26} height={26} viewBox={`0 0 24 26`}>
                 <Path
