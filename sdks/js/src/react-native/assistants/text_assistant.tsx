@@ -21,7 +21,7 @@ import {
 import { useCopilot } from "../../react/CopilotContext";
 import { type BaseAssistantProps } from "../../react/assistants/components/schema";
 
-const ViewTextAssistant = ({
+const TextAssistant = ({
   id = null,
   promptTemplate = null,
   promptVariables = {},
@@ -231,7 +231,7 @@ const ViewTextAssistant = ({
           <ViewTextBox
             placeholder={currentStyle?.keyboardButton?.placeholder}
             defaultValue={textMessage}
-            color={currentStyle?.keyboardButton?.bgColor}
+            bgColor={currentStyle?.keyboardButton?.bgColor}
             onChangeText={(newText) => {
               onTyping(newText);
             }}
@@ -280,4 +280,4 @@ const ViewTextAssistant = ({
   );
 };
 
-export default ViewTextAssistant;
+export default TextAssistant;

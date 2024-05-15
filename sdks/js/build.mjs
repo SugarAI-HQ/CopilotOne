@@ -69,6 +69,30 @@ console.log(
   }),
 );
 
+let nativeResult = await build({
+  ...sharedConfig,
+  // splitting: true,
+  entryPoints: ["src/react-native/index.ts"],
+  outfile: `${outputDir}/rn/index.mjs`,
+  // outdir: `${outputDir}/esm`,
+  // platform: "neutral", // for ESM
+  format: "esm",
+  external: Object.keys(pj.dependencies).concat(
+    Object.keys(pj.peerDependencies),
+  ),
+  // plugins: [nodeExternalsPlugin()],
+});
+
+// console.log(result);
+
+fs.writeFileSync("meta-native.json", JSON.stringify(nativeResult.metafile));
+
+console.log(
+  await analyzeMetafile(nativeResult.metafile, {
+    verbose: false,
+  }),
+);
+
 let jsBuildResult = await build({
   ...sharedConfig,
   entryPoints: ["src/js/index.js"],

@@ -249,9 +249,9 @@ export const ViewTextBoxContainer = styled(View)<{
   }}
 `;
 
-export const ViewTextBox = styled.TextInput<{ color: string }>`
+export const ViewTextBox = styled.TextInput<{ bgColor: string }>`
   padding: 15px 32px 15px 8px;
-  border: 1px solid ${({ color }) => color};
+  border: 1px solid ${({ bgColor }) => bgColor};
   border-radius: 5px;
   outline: none;
   width: 100%;
