@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { styled, css, keyframes } from "styled-components";
+import styled from "styled-components/native";
+import { Animated, View, Dimensions, Text } from "react-native";
 import {
   copilotStyleVoiceButtonSchema,
   type CopilotSyleThemeType,
@@ -9,7 +10,7 @@ import {
   type MessageRoleType,
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
-} from "../../schema";
+} from "../../../schema";
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,
@@ -27,33 +28,14 @@ type CopilotKeyboardButtonPropsType = z.infer<
   typeof copilotKeyboardButtonProps
 >;
 
-export const pulse = keyframes`
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-`;
+const DEVICE_WIDTH = Dimensions.get("window").width;
+// const DEVICE_HEIGHT = Dimensions.get("window").height;
 
-export const sparkle = keyframes`
-  0%, 100% {
-    opacity: 0.5;
-    transform: scale(1.1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }`;
-
-export const CopilotContainer = styled.div<{
+export const ViewCopilotContainer = styled(View)<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
 }>`
-  position: fixed;
+  position: absolute;
   ${({ container, position }) => {
     const positions =
       (position as CopilotStylePositionType) ||
@@ -61,61 +43,62 @@ export const CopilotContainer = styled.div<{
 
     switch (positions) {
       case "top-left":
-        return css`
+        return `
           top: 25px;
           left: 25px;
         `;
       case "top-right":
-        return css`
+        return `
           top: 25px;
           right: 25px;
         `;
       case "bottom-left":
-        return css`
+        return `
           bottom: 25px;
           left: 25px;
         `;
       case "bottom-right":
-        return css`
+        return `
+          bottom: 25px;
+          right: 20px;
+        `;
+      case "top-center":
+        return `
+          top: 25px;
+          left: 0;
+          right: 0;
+          align-items: center;
+          justify-content: center;
+        `;
+      case "bottom-center":
+        return `
+          bottom: 25px;
+          left: 0;
+          right: 0;
+          align-items: center;
+          justify-content: center;
+        `;
+      default:
+        return `
           bottom: 25px;
           right: 25px;
         `;
-      case "top-center":
-        return css`
-          top: 25px;
-          left: 50%;
-          transform: translateX(-50%);
-        `;
-      case "bottom-center":
-        return css`
-          bottom: 25px;
-          left: 50%;
-          transform: translateX(-50%);
-        `;
-      default:
-        return ""; // If no position matches, default to an empty string
     }
   }}
-  margin: ${({ container }) => container?.margin};
-  width: fit-content;
-  height: fit-content;
+  margin: ${({ container }) => container?.margin || "0px"};
+
   z-index: 1000; /* Ensure the widget is above other elements */
 `;
 
-export const ChatMessage = styled.div<{
+export const ViewChatMessage = styled(View)<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
 }>`
-  position: fixed;
-  width: 300px;
-  max-height: calc(100vh - 120px);
+  position: absolute;
+
+  width: ${DEVICE_WIDTH - 60}px;
   background-color: transparent;
   border-radius: 10px;
-  animation-duration: 0.5s;
-  animation-name: d;
-  animation-fill-mode: forwards;
-  overflow-y: auto;
-  z-index: 1000; // Ensure the chat window is above most elements
 
   ${({ container, position }) => {
     const positions =
@@ -124,36 +107,36 @@ export const ChatMessage = styled.div<{
 
     switch (positions) {
       case "top-left":
-        return css`
-          top: 95px;
+        return `
+          top: 60px;
           left: 20px;
         `;
       case "top-right":
-        return css`
-          top: 95px;
+        return `
+          top: 60px;
           right: 20px;
         `;
       case "bottom-left":
-        return css`
-          bottom: 95px;
+        return `
+          bottom: 60px;
           left: 20px;
         `;
       case "bottom-right":
-        return css`
-          bottom: 95px;
-          right: 20px;
+        return `
+          bottom: 60px;
+          right: 10px;
         `;
       case "top-center":
-        return css`
-          top: 70px;
-          left: 50%;
-          transform: translateX(-50%);
+        return `
+          top: 60px;
+          align-items: center;
+          justify-content: center;
         `;
       case "bottom-center":
-        return css`
-          bottom: 70px;
-          left: 50%;
-          transform: translateX(-50%);
+        return `
+          bottom: 60px;
+          align-items: center;
+          justify-content: center;
         `;
       default:
         return ""; // If no position matches, default to an empty string
@@ -161,49 +144,38 @@ export const ChatMessage = styled.div<{
   }}
 `;
 
-export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
+export const ViewVoiceButton = styled(
+  Animated.View,
+)<CopilotVoiceButtonPropsType>`
   background-color: ${({ button }) => button?.bgColor};
   color: ${({ button }) => button?.color};
   border: none;
-  border-radius: 50%;
+  border-radius: 50px;
   width: ${({ button }) => button?.width};
   height: ${({ button }) => button?.height};
-  cursor: pointer;
+  justify-content: center;
+  align-items: center;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
-  text-align: -webkit-center;
-  text-align: -moz-center;
-  cursor: ${({ isprocessing }) =>
-    isprocessing === "true" ? "not-allowed" : "pointer"};
+  cursor: pointer;
   opacity: ${({ isprocessing }) => (isprocessing === "true" ? "0.5" : "1")};
-  ${({ islistening }) =>
-    islistening === "true"
-      ? css`
-          animation: ${pulse} 1s infinite;
-        `
-      : css`
-          // animation: ${sparkle} 3s ease-in-out 4s infinite;
-        `}
 `;
 
-export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
+export const ViewKeyboardButton = styled.TouchableOpacity<CopilotKeyboardButtonPropsType>`
   position: relative;
-  background-color: ${({ button }) => button?.color};
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
+  background-color: ${({ button }) => button?.bgColor};
+  width: 50px;
+  height: 50px;
+  justify-content: center;
+  cursor: "pointer";
+  align-items: center;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
-  text-align: -webkit-center;
-  text-align: -moz-center;
-  border-radius: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  bottom: 5px;
-  border: unset;
+  border-radius: 25px;
+  elevation: 3;
 `;
 
-export const ButtonContainer = styled.div``;
+export const ViewButtonContainer = styled.View``;
 
-export const Message = styled.div<{
+export const ViewMessage = styled(Text)<{
   theme: CopilotSyleThemeType;
   role?: string;
 }>`
@@ -221,27 +193,10 @@ export const Message = styled.div<{
   margin-bottom: 5px;
   border-radius: 10px;
   border: 1px solid #ccc;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+  elevation: 2;
 `;
 
-const fadeInOut = keyframes`
-  0% { opacity: 0; }
-  10% { opacity: 0.25; }
-  20% { opacity: 0.50; }
-  30% { opacity: 0.75; }
-  40% { opacity: 1; }
-  45% { opacity: 1; }
-  50% { opacity: 1; }
-  55% { opacity: 1; }
-  60% { opacity: 1; }
-  65% { opacity: 1; }
-  70% { opacity: 0.75; }
-  80% { opacity: 0.50; }
-  90% { opacity: 0.25; }
-  100% { opacity: 0; }
-`;
-
-export const ToolTipContainer = styled(ChatMessage)<{
+export const ViewToolTipContainer = styled(ViewChatMessage)<{
   config: CopilotSyleTooltipType;
 }>`
   width: 200px;
@@ -249,13 +204,9 @@ export const ToolTipContainer = styled(ChatMessage)<{
   border: 1px solid #ccc;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.2);
   opacity: 0;
-
-  animation: ${fadeInOut} ${(props) => props.config?.duration}s linear forwards;
-  animation-fill-mode: forwards;
-  animation-delay: 0.8s;
 `;
 
-export const TootTipMessage = styled(Message)`
+export const ViewTootTipMessage = styled(ViewMessage)`
   font-weight: 700;
   border: none;
   box-shadow: none;
@@ -263,25 +214,18 @@ export const TootTipMessage = styled(Message)`
 `;
 
 // Wrapper component to contain input box and button
-export const TextBoxContainer = styled.div<{
+export const ViewTextBoxContainer = styled(View)<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
 }>`
-  position: fixed;
+  position: absolute;
   right: 25px;
-
   margin: 0;
   z-index: 1000;
-  // width: -webkit-fill-available;
-  // max-width: 300px; // Adjust this as needed
-  // width: -webkit-fill-available;
-  width: 100%; // Defaults to full width
+  width: 100%;
   padding-left: 20px;
   padding-right: 20px;
-  @media (max-width: 768px) {
-    width: 100%; /* Adjust width for smaller screens */
-    max-width: unset;
-  }
+
   ${({ container, position }) => {
     const positions =
       (position as CopilotStylePositionType) ||
@@ -290,14 +234,14 @@ export const TextBoxContainer = styled.div<{
       case "top-left":
       case "top-right":
       case "top-center":
-        return css`
-          top: 25px;
+        return `
+          top: 20px;
         `;
       case "bottom-right":
       case "bottom-left":
       case "bottom-center":
-        return css`
-          bottom: 25px;
+        return `
+          bottom: 20px;
         `;
       default:
         return ""; // If no position matches, default to an empty string
@@ -305,22 +249,19 @@ export const TextBoxContainer = styled.div<{
   }}
 `;
 
-export const TextBox = styled.input<{ color: string }>`
+export const ViewTextBox = styled.TextInput<{ bgColor: string }>`
   padding: 15px 32px 15px 8px;
-  border: 1px solid ${({ color }) => color};
+  border: 1px solid ${({ bgColor }) => bgColor};
   border-radius: 5px;
   outline: none;
   width: 100%;
-  // width: -webkit-fill-available; // Only on small screens
   margin-left: 25px;
-  @media (max-width: 768px) {
-    width: 100%;
-    margin-left: 25px;
-  }
 `;
 
 // Styled button
-export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
+export const ViewTextBoxButton = styled.TouchableOpacity<{
+  iskeyboard?: string;
+}>`
   position: absolute;
   top: 5px;
   right: 0;
@@ -328,20 +269,19 @@ export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
   border: none;
   border-radius: 0 5px 5px 0;
   color: #fff;
-  cursor: pointer;
-  outline: none;
-  background: unset;
+  background-color: transparent;
+
   ${({ iskeyboard }) =>
     iskeyboard === "true" &&
-    css`
-      top: 13px;
+    `
+      top: 5px;
       right: 5px;
     `}
 `;
 
 // button, voice -> theme -> defaults
 
-export const KeyboardEmptyContainer = styled(KeyboardButton)`
+export const ViewKeyboardEmptyContainer = styled(ViewKeyboardButton)`
   box-shadow: none;
   height: 0px;
   background: unset;

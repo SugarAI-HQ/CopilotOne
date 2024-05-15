@@ -1,8 +1,8 @@
 import { createElement } from "react";
 // import { createRoot } from "react-dom/client";
-import { TextAssistant } from "./react/assistants/text_assistant";
-import { VoiceAssistant } from "./react/assistants/voice_assistant";
-import { CopilotProvider } from "./react/CopilotContext";
+import { TextAssistant } from "./react/web/assistants/text_assistant";
+import { VoiceAssistant } from "./react/web/assistants/voice_assistant";
+import { CopilotProvider } from "./react/common/CopilotContext";
 
 export const predefindedAssistants = [VoiceAssistant, TextAssistant];
 

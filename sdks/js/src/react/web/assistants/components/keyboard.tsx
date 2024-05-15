@@ -1,6 +1,6 @@
 import React from "react";
 import { KeyboardButton } from "../base_styled";
-import KeyboardIcon from "../../icons/keyboard";
+import KeyboardIcon from "../../../icons/keyboard";
 
 const Keyboard = ({ style, currentStyle, enableKeyboard }) => {
   return (

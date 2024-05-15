@@ -1,8 +1,8 @@
 export * from "./schema";
 export * from "./api-client";
 
-export * from "./react/CopilotContext";
-export * from "./react/assistants";
+export * from "./react/common/CopilotContext";
+export * from "./react/web";
 
 export * from "./actions";
 export * from "./assistants";

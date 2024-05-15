@@ -72,7 +72,7 @@ console.log(
 let nativeResult = await build({
   ...sharedConfig,
   // splitting: true,
-  entryPoints: ["src/react-native/index.ts"],
+  entryPoints: ["src/react/native/index.ts"],
   outfile: `${outputDir}/rn/index.mjs`,
   // outdir: `${outputDir}/esm`,
   // platform: "neutral", // for ESM

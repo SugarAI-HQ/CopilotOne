@@ -17,9 +17,11 @@ import {
   copilotStyleDefaults,
   scopeDefaults,
   type EmbeddingScopeWithUserType,
-} from "../../schema";
-import { useCopilot } from "../../react/CopilotContext";
-import { type BaseAssistantProps } from "../../react/assistants/components/schema";
+  type CopilotSytleType,
+} from "../../../schema";
+import { useCopilot } from "../../common/CopilotContext";
+import { type BaseAssistantProps } from "../../common/schema";
+import { loadCurrentConfig } from "../../common/base_config";
 
 const TextAssistant = ({
   id = null,
@@ -47,63 +49,14 @@ const TextAssistant = ({
 
   const { config, clientUserId, textToAction } = useCopilot();
 
-  const currentTheme = {
-    ...copilotStyleDefaults.theme,
-    ...config?.style?.theme,
-  };
+  const { actions, actionCallbacks, currentStyle, currentAiConfig } =
+    loadCurrentConfig(config, actionsFn, actionCallbacksFn);
 
-  console.log("hello text");
-
-  const actions = typeof actionsFn === "function" ? actionsFn() : [];
-  const actionCallbacks =
-    typeof actionCallbacksFn === "function" ? actionCallbacksFn() : [];
-
-  DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
-
-  const currentStyle: CopilotSytleType = {
-    ...copilotStyleDefaults,
-    container: {
-      ...copilotStyleDefaults.container,
-      ...config?.style?.container,
-    },
-    theme: currentTheme,
-    voiceButton: {
-      ...copilotStyleDefaults.voiceButton,
-      ...config?.style?.voiceButton,
-      bgColor: currentTheme.primaryColor,
-      color: currentTheme.secondaryColor,
-    },
-    keyboardButton: {
-      ...copilotStyleDefaults.keyboardButton,
-      ...config?.style?.keyboardButton,
-      bgColor: currentTheme.primaryColor,
-      color: currentTheme.secondaryColor,
-    },
-    toolTip: {
-      ...copilotStyleDefaults.toolTip,
-      ...config?.style?.toolTip,
-    },
-  };
-
-  const currentAiConfig = {
-    ...copilotAiDefaults,
-    ...config?.ai,
-  };
-
-  DEV: console.log(currentAiConfig);
   DEV: console.log(isprocessing);
 
   const [tipMessage, setTipMessage] = useState(
     currentStyle.toolTip.welcomeMessage,
   );
-
-  DEV: console.log(
-    `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
-  );
-
-  DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
-
-  DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(

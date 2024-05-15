@@ -4,7 +4,7 @@ import {
   type EmbeddingScopeType,
   type PromptTemplateType,
   type PromptVariablesType,
-} from "../../../schema";
+} from "../../schema";
 
 export interface BaseAssistantProps {
   id?: string | null;
