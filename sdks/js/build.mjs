@@ -17,6 +17,14 @@ new pkg.Generator({
   tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
 }).generate();
 
+new pkg.Generator({
+  // entryPoints: ["src/react/native/index.ts"],
+  entry: "src/react/native/index.ts",
+  output: `${outputDir}/rn/index.d.ts`,
+  // outdir: `${outputDir}/rn`,
+  tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
+}).generate();
+
 const sharedConfig = {
   entryPoints: ["src/index.ts"],
   bundle: true,
