@@ -4,7 +4,7 @@ import {
   type CopilotStylePositionType,
   copilotStyleDefaults,
   scopeDefaults,
-} from "../../../schema";
+} from "../../../core/schema";
 import { useCopilot } from "../../common/CopilotContext";
 
 import { StyleSheetManager } from "styled-components";

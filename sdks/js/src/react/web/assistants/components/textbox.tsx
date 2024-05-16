@@ -1,5 +1,5 @@
-import Keyboard from "../../../icons/keyboard";
-import Mic from "../../../icons/mic";
+import Keyboard from "../../../common/icons/keyboard";
+import Mic from "../../../common/icons/mic";
 import {
   TextBox as TextBoxStyled,
   TextBoxButton,

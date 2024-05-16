@@ -4,8 +4,8 @@ import {
   type CopilotStylePositionType,
   copilotStyleDefaults,
   scopeDefaults,
-} from "../../../schema";
-import { useCopilot } from "../../common/CopilotContext";
+} from "../../../core/schema";
+import { useCopilot } from "../../common/copilot_context";
 import root from "window-or-global";
 
 import { StyleSheetManager } from "styled-components";
@@ -25,7 +25,7 @@ import {
   determinePreferredLang,
   getGender,
   getPreferredVoiceAndLang,
-} from "../../../voice";
+} from "../../../core/voice";
 import { loadCurrentConfig } from "../../common/base_config";
 
 export const VoiceAssistant = ({

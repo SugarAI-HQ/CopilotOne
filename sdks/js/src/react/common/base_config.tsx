@@ -2,7 +2,7 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   copilotAiDefaults,
-} from "../../schema";
+} from "../../core/schema";
 
 export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
   const currentTheme = {

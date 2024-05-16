@@ -7,16 +7,16 @@ import {
   type EmbeddingScopeWithUserType,
   type CopilotSytleType,
   copilotAiDefaults,
-} from "../../schema";
+} from "../../core/schema";
 import { SugarAiApiClient } from "../../api-client";
 import { createUseState } from "./hooks";
-import { generateUserId } from "../../utils";
+import { generateUserId } from "../../core/utils";
 
 import {
   register,
   unregister,
   textToAction as nativeTextoAction,
-} from "../../actions";
+} from "../../core/actions";
 import { any } from "zod";
 
 export const CopilotContext = createContext({

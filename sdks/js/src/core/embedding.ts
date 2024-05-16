@@ -1,4 +1,4 @@
-import { type SugarAiApiClient } from "./api-client";
+import { type SugarAiApiClient } from "../api-client";
 import {
   type CopilotConfigType,
   type EmbeddingScopeWithUserType,

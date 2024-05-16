@@ -13,13 +13,13 @@ import {
 import Svg, { Path } from "react-native-svg";
 import {
   type CopilotStylePositionType,
+  copilotAiDefaults,
   copilotStyleDefaults,
   scopeDefaults,
   type EmbeddingScopeWithUserType,
-} from "../../../core/schema";
-import { useCopilot } from "../../common/CopilotContext";
-import { type BaseAssistantProps } from "../../common/schema";
-import { loadCurrentConfig } from "../../common/base_config";
+} from "../../core/schema";
+import { useCopilot } from "../../react/common/CopilotContext";
+import { type BaseAssistantProps } from "../../react/assistants/components/schema";
 
 const TextAssistant = ({
   id = null,
@@ -47,14 +47,63 @@ const TextAssistant = ({
 
   const { config, clientUserId, textToAction } = useCopilot();
 
-  const { actions, actionCallbacks, currentStyle, currentAiConfig } =
-    loadCurrentConfig(config, actionsFn, actionCallbacksFn);
+  const currentTheme = {
+    ...copilotStyleDefaults.theme,
+    ...config?.style?.theme,
+  };
 
+  console.log("hello text");
+
+  const actions = typeof actionsFn === "function" ? actionsFn() : [];
+  const actionCallbacks =
+    typeof actionCallbacksFn === "function" ? actionCallbacksFn() : [];
+
+  DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
+
+  const currentStyle: CopilotSytleType = {
+    ...copilotStyleDefaults,
+    container: {
+      ...copilotStyleDefaults.container,
+      ...config?.style?.container,
+    },
+    theme: currentTheme,
+    voiceButton: {
+      ...copilotStyleDefaults.voiceButton,
+      ...config?.style?.voiceButton,
+      bgColor: currentTheme.primaryColor,
+      color: currentTheme.secondaryColor,
+    },
+    keyboardButton: {
+      ...copilotStyleDefaults.keyboardButton,
+      ...config?.style?.keyboardButton,
+      bgColor: currentTheme.primaryColor,
+      color: currentTheme.secondaryColor,
+    },
+    toolTip: {
+      ...copilotStyleDefaults.toolTip,
+      ...config?.style?.toolTip,
+    },
+  };
+
+  const currentAiConfig = {
+    ...copilotAiDefaults,
+    ...config?.ai,
+  };
+
+  DEV: console.log(currentAiConfig);
   DEV: console.log(isprocessing);
 
   const [tipMessage, setTipMessage] = useState(
     currentStyle.toolTip.welcomeMessage,
   );
+
+  DEV: console.log(
+    `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
+  );
+
+  DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
+
+  DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -64,8 +113,6 @@ const TextAssistant = ({
   if (!promptTemplate && config?.ai?.defaultPromptTemplate) {
     promptTemplate = config?.ai?.defaultPromptTemplate;
   }
-
-  console.log(hideToolTip, tipMessage);
 
   useEffect(() => {
     setButtonName(id ?? (position as string));

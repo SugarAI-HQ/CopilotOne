@@ -10,7 +10,7 @@ import {
   type MessageRoleType,
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
-} from "../../../schema";
+} from "../../../core/schema";
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,
@@ -85,7 +85,7 @@ export const ViewCopilotContainer = styled(View)<{
         `;
     }
   }}
-  margin: ${({ container }) => container?.margin || "0px"};
+  margin: ${({ container }) => container?.margin ?? "0px"};
 
   z-index: 1000; /* Ensure the widget is above other elements */
 `;

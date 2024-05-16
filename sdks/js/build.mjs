@@ -85,6 +85,20 @@ let nativeResult = await build({
 
 // console.log(result);
 
+const packageContent = {
+  name: "@sugar-ai/copilot-one-js/rn",
+  private: true,
+  types: "../dist/esm/index.d.ts",
+  main: "./rn/index.mjs",
+  "jsnext:main": "./rn/index.mjs",
+  module: "./rn/index.mjs",
+};
+
+fs.writeFileSync(
+  `${outputDir}/rn/package.json`,
+  JSON.stringify(packageContent, null, 2),
+);
+
 fs.writeFileSync("meta-native.json", JSON.stringify(nativeResult.metafile));
 
 console.log(
