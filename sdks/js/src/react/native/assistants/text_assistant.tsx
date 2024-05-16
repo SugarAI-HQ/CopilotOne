@@ -32,7 +32,7 @@ const TextAssistant = ({
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
   position = copilotStyleDefaults.container.position || "bottom-right",
-  keyboardPostion = copilotStyleDefaults.keyboardButton.position,
+  keyboardPosition = copilotStyleDefaults.keyboardButton.position,
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {
@@ -184,7 +184,7 @@ const TextAssistant = ({
           <ViewTextBox
             placeholder={currentStyle?.keyboardButton?.placeholder}
             defaultValue={textMessage}
-            bgColor={currentStyle?.keyboardButton?.bgColor}
+            bgColor={currentStyle?.keyboardButton?.bgColor as string}
             onChangeText={(newText) => {
               onTyping(newText);
             }}

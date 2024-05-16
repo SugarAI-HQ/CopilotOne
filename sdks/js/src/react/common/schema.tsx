@@ -21,6 +21,7 @@ export interface BaseAssistantProps {
   keyboardPosition?: CopilotSyleKeyboardPositionSchema;
   actionsFn?: Function;
   actionCallbacksFn?: Function;
+  keyboardPostion: string;
 }
 
 export const shouldForwardProp = (prop: string) =>
