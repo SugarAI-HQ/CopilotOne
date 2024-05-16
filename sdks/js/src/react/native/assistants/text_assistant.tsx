@@ -188,6 +188,7 @@ const TextAssistant = ({
             onChangeText={(newText) => {
               onTyping(newText);
             }}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmitEditing={startSending}
           />
           <ViewTextBoxButton
@@ -208,6 +209,7 @@ const TextAssistant = ({
                   height={21}
                   viewBox={`0 0 24 21`}
                   style={{ top: 5 }}
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onPress={startSending}
                 >
                   <Path
