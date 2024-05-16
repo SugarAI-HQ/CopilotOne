@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
-  type CopilotSytleType,
   copilotStyleDefaults,
-  copilotAiDefaults,
   scopeDefaults,
 } from "../../../schema";
 import { useCopilot } from "../../common/CopilotContext";

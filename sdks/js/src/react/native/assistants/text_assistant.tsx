@@ -13,11 +13,9 @@ import {
 import Svg, { Path } from "react-native-svg";
 import {
   type CopilotStylePositionType,
-  copilotAiDefaults,
   copilotStyleDefaults,
   scopeDefaults,
   type EmbeddingScopeWithUserType,
-  type CopilotSytleType,
 } from "../../../schema";
 import { useCopilot } from "../../common/CopilotContext";
 import { type BaseAssistantProps } from "../../common/schema";
