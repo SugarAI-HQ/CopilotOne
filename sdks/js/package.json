@@ -35,7 +35,7 @@
     "test": "echo \"Error: no test specified\"",
     "testx": "jest --config jest.config.js",
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
-    "build:clean": "rm -rf ./dist meta.json",
+    "build:clean": "rm -rf ./dist meta*.json",
     "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
     "build": "npm run build:clean && node build.mjs",
     "prepublishOnly": "npm run build && npm test && npm run lint",
