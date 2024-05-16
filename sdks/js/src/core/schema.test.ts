@@ -5,8 +5,6 @@ import {
   ActionRegistrationType,
 } from "./schema";
 
-import { transformActionRegistrationToDefinition } from "./action";
-
 const location: ActionParameterType = {
   type: "string",
   description: "The city and state, e.g. San Francisco, CA",

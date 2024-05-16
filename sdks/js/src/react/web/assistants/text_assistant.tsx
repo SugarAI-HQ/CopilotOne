@@ -32,7 +32,6 @@ export const TextAssistant = ({
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
   position = copilotStyleDefaults.container.position || "bottom-right",
-  // @ts-ignore
   keyboardPostion = copilotStyleDefaults.keyboardButton.position,
   actionsFn,
   actionCallbacksFn,

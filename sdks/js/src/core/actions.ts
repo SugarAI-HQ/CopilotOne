@@ -68,8 +68,8 @@ export const register = (
   name: string,
   actionDefinition: ActionRegistrationType,
   actionCallback: Function,
-  actions: Record<string, ActionDefinitionType> = {},
-  callbacks: Record<string, Function> = {},
+  actions: Array<Record<string, ActionDefinitionType>> = [],
+  callbacks: Array<Record<string, Function>> = [],
 ) => {
   if (!actionDefinition) {
     throw new Error(`[${name}] Action config is required`);

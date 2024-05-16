@@ -8,22 +8,23 @@ import fs from "node:fs";
 import { nodeExternalsPlugin } from "esbuild-node-externals";
 
 const outputDir = `dist`;
-
 const typesPath = `${outputDir}/esm/index.d.ts`;
+
 new pkg.Generator({
   entryPoints: ["src/**/*.ts", "src/*.ts"],
-  logLevel: "verbose",
   // entry: "src/index.ts",
-  output: typesPath,
-  // outdir: `${outputDir}/esm`,
+  output: `${outputDir}/esm/index.d.ts`,
+  outdir: `${outputDir}/esm`,
   tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
 }).generate();
 
-// Check if the file exists
-if (!fs.existsSync(typesPath)) {
-  console.error(`Types are not generated: ${typesPath}`);
-  process.exit(1); // Exit the script with an error code
-}
+new pkg.Generator({
+  // entryPoints: ["src/react/native/index.ts"],
+  entry: "src/react/native/index.ts",
+  output: `${outputDir}/rn/index.d.ts`,
+  // outdir: `${outputDir}/rn`,
+  tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
+}).generate();
 
 const sharedConfig = {
   entryPoints: ["src/index.ts"],
@@ -77,25 +78,6 @@ console.log(
   }),
 );
 
-//
-// React Native
-//
-const typesPathNative = `${outputDir}/rn/index.d.ts`;
-new pkg.Generator({
-  // entryPoints: ["src/**/*.ts", "src/*.ts"],
-  entry: "src/react/native/index.ts",
-  logLevel: "verbose",
-  output: typesPathNative,
-  // outdir: `${outputDir}/esm`,
-  tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
-}).generate();
-
-// Check if the file exists
-if (!fs.existsSync(typesPathNative)) {
-  console.error(`Types are not generated: ${typesPathNative}`);
-  process.exit(1); // Exit the script with an error code
-}
-
 let nativeResult = await build({
   ...sharedConfig,
   // splitting: true,
@@ -115,7 +97,7 @@ let nativeResult = await build({
 const packageContent = {
   name: "@sugar-ai/copilot-one-js/rn",
   private: true,
-  types: "../dist/esm/index.d.ts",
+  types: "./rn/index.d.ts",
   main: "./rn/index.mjs",
   "jsnext:main": "./rn/index.mjs",
   module: "./rn/index.mjs",
@@ -145,3 +127,8 @@ let jsBuildResult = await build({
 });
 
 fs.writeFileSync("meta-js.json", JSON.stringify(jsBuildResult.metafile));
+
+if (!fs.existsSync(typesPath)) {
+  console.error(`Types are not generated: ${typesPath}`);
+  process.exit(1); // Exit the script with an error code
+}
