@@ -1,7 +1,7 @@
 export * from "./core/schema";
 export * from "./api-client";
 
-export * from "./react/common/CopilotContext";
+export * from "./react/common/copilot_context";
 export * from "./react/web";
 
 export * from "./core/actions";

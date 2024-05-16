@@ -5,7 +5,7 @@ import {
   copilotStyleDefaults,
   scopeDefaults,
 } from "../../../core/schema";
-import { useCopilot } from "../../common/CopilotContext";
+import { useCopilot } from "../../common/copilot_context";
 
 import { StyleSheetManager } from "styled-components";
 

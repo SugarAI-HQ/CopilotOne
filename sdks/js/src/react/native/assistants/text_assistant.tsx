@@ -17,7 +17,7 @@ import {
   scopeDefaults,
   type EmbeddingScopeWithUserType,
 } from "../../../core/schema";
-import { useCopilot } from "../../common/CopilotContext";
+import { useCopilot } from "../../common/copilot_context";
 import { type BaseAssistantProps } from "../../common/schema";
 import { loadCurrentConfig } from "../../common/base_config";
 
