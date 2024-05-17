@@ -89,7 +89,7 @@ let nativeResult = await build({
   external: Object.keys(pj.dependencies).concat(
     Object.keys(pj.peerDependencies),
   ),
-  // plugins: [nodeExternalsPlugin()],
+  plugins: [nodeExternalsPlugin("react-native")],
 });
 
 // console.log(result);

@@ -142,8 +142,9 @@ function VersionRow({
         <TableCell align="right" sx={{ color: "var(--sugarhub-text-color)" }}>
           <PublicUrl
             title={`${pvType} URL`}
-            url={`/${pp?.User
-              ?.username}/${pp?.name}/${pt?.name}/${pvType.toLocaleLowerCase()}`}
+            url={`/${
+              pp?.User?.username
+            }/${pp?.name}/${pt?.name}/${pvType.toLocaleLowerCase()}`}
           />
         </TableCell>
       </TableRow>

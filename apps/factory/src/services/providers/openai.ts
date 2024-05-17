@@ -123,6 +123,7 @@ const dalle: PromptDataSchemaType = {
 export const template = {
   "gpt-3.5-turbo": gpt,
   "gpt-4": gpt,
+  "gpt-4o": gpt,
   "dalle-3": dalle,
 };
 
@@ -133,6 +134,11 @@ export const defaults = {
     base64: false,
   },
   "gpt-4": {
+    url: "",
+    supportFormatType: [],
+    base64: false,
+  },
+  "gpt-4o": {
     url: "",
     supportFormatType: [],
     base64: false,
