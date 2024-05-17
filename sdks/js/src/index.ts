@@ -1,10 +1,10 @@
-export * from "./schema";
+export * from "./core/schema";
 export * from "./api-client";
 
-export * from "./react/CopilotContext";
-export * from "./react/assistants";
+export * from "./react/common/copilot_context";
+export * from "./react/web";
 
-export * from "./actions";
-export * from "./assistants";
+export * from "./core/actions";
+export * from "./core/assistants";
 
 // export as namespace SugarAI;

@@ -5,7 +5,7 @@
 import * as SugarAiApi from "../../..";
 
 export interface LiteServiceGenerateResponseChat {
-  llmResponse?: SugarAiApi.ServiceGenerateResponseChatLlmResponse;
-  chat?: SugarAiApi.ServiceGenerateResponseChatChat;
-  stats?: SugarAiApi.ServiceGenerateResponseChatStats;
+  llmResponse?: SugarAiApi.LiteServiceGenerateResponseChatLlmResponse;
+  chat?: SugarAiApi.LiteServiceGenerateResponseChatChat;
+  stats?: SugarAiApi.LiteServiceGenerateResponseChatStats;
 }

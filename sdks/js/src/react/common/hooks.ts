@@ -6,9 +6,9 @@ import {
   DEFAULT_GROUP_ID,
   type EmbeddingScopeType,
   scopeDefaults,
-} from "../schema";
-import { createOrUpdate } from "../embedding";
-import { type SugarAiApiClient } from "../api-client";
+} from "../../core/schema";
+import { createOrUpdate } from "../../core/embedding";
+import { type SugarAiApiClient } from "../../api-client";
 
 export function createUseState(
   client: SugarAiApiClient,

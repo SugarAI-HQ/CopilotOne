@@ -6,15 +6,15 @@ import * as SugarAiApi from "../../../..";
 
 export interface LiteServiceGenerateRequest {
   variables: Record<string, unknown>;
-  messages?: SugarAiApi.ServiceGenerateRequestMessagesItem[];
+  messages?: SugarAiApi.LiteServiceGenerateRequestMessagesItem[];
   attachments?: Record<string, unknown>;
-  skills?: SugarAiApi.ServiceGenerateRequestSkillsItem[];
-  skillChoice?: SugarAiApi.ServiceGenerateRequestSkillChoice;
-  scope?: SugarAiApi.ServiceGenerateRequestScope;
+  skills?: SugarAiApi.LiteServiceGenerateRequestSkillsItem[];
+  skillChoice?: SugarAiApi.LiteServiceGenerateRequestSkillChoice;
+  scope?: SugarAiApi.LiteServiceGenerateRequestScope;
   isDevelopment?: boolean;
-  chat?: SugarAiApi.ServiceGenerateRequestChat;
+  chat?: SugarAiApi.LiteServiceGenerateRequestChat;
   copilotId?: string;
-  environment?: SugarAiApi.ServiceGenerateRequestEnvironment;
+  environment?: SugarAiApi.LiteServiceGenerateRequestEnvironment;
   version?: string;
   userId?: string;
   promptPackageId?: string;

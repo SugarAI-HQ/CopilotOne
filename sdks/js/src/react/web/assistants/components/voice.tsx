@@ -1,5 +1,5 @@
-import Mic from "../../icons/mic";
-import Spinner from "../../icons/spinner";
+import Mic from "../../../common/icons/mic";
+import Spinner from "../../../common/icons/spinner";
 import { VoiceButton } from "../base_styled";
 
 const Voice = ({

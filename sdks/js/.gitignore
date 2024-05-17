@@ -26,3 +26,4 @@ dist-ssr
 tsconfig.tsbuildinfo
 meta.json
 meta-js.json
+meta-native.json

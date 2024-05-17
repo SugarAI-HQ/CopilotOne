@@ -11,8 +11,8 @@ import {
 } from "./schema";
 import { extractFunctionParams } from "./utils";
 import { performanceTracker } from "./performance";
-import { SugarAiApiClient, type SugarAiApi } from "./api-client";
-import { type ServiceGenerateRequestSkillsItem } from "./api-client/api";
+import { SugarAiApiClient, type SugarAiApi } from "../api-client";
+import { type ServiceGenerateRequestSkillsItem } from "../api-client/api";
 
 export function validate(
   name: string,
@@ -68,8 +68,8 @@ export const register = (
   name: string,
   actionDefinition: ActionRegistrationType,
   actionCallback: Function,
-  actions: Record<string, ActionDefinitionType> = {},
-  callbacks: Record<string, Function> = {},
+  actions: Array<Record<string, ActionDefinitionType>> = [],
+  callbacks: Array<Record<string, Function>> = [],
 ) => {
   if (!actionDefinition) {
     throw new Error(`[${name}] Action config is required`);
@@ -210,8 +210,7 @@ export async function textToAction(
   actions: Array<Record<string, ActionDefinitionType>> = [],
   actionCallbacks: Array<Record<string, Function>> = [],
 ): Promise<string> {
-  const { reset, addMarker, observePerformance, getStats } =
-    performanceTracker();
+  const { reset, addMarker, getStats } = performanceTracker();
   reset();
   addMarker("start");
   const [username, pp, pt, pv] = promptTemplate.split("/");
@@ -295,7 +294,7 @@ export async function textToAction(
     }
   }
   addMarker("end");
-  observePerformance();
+  // observePerformance();
   PROD: console.log("Performance Stats", {
     // @ts-expect-error
     ...result.stats,

@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
-  type CopilotSytleType,
   copilotStyleDefaults,
-  copilotAiDefaults,
   scopeDefaults,
-} from "../../schema";
-import { useCopilot } from "../CopilotContext";
+} from "../../../core/schema";
+import { useCopilot } from "../../common/copilot_context";
 import root from "window-or-global";
 
 import { StyleSheetManager } from "styled-components";
@@ -16,7 +14,7 @@ import { CopilotContainer, KeyboardEmptyContainer } from "./base_styled";
 import {
   shouldForwardProp,
   type BaseAssistantProps,
-} from "./components/schema";
+} from "../../common/schema";
 import { GlobalStyle } from "./reset_css";
 import Keyboard from "./components/keyboard";
 import Message from "./components/message";
@@ -27,7 +25,8 @@ import {
   determinePreferredLang,
   getGender,
   getPreferredVoiceAndLang,
-} from "../../voice";
+} from "../../../core/voice";
+import { loadCurrentConfig } from "../../common/base_config";
 
 export const VoiceAssistant = ({
   id = null,
@@ -60,41 +59,8 @@ export const VoiceAssistant = ({
 
   const { config, clientUserId, textToAction } = useCopilot();
 
-  const currentTheme = {
-    ...copilotStyleDefaults.theme,
-    ...config?.style?.theme,
-  };
-
-  const actions = typeof actionsFn === "function" ? actionsFn() : [];
-  const actionCallbacks =
-    typeof actionCallbacksFn === "function" ? actionCallbacksFn() : [];
-
-  DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
-
-  const currentStyle: CopilotSytleType = {
-    ...copilotStyleDefaults,
-    container: {
-      ...copilotStyleDefaults.container,
-      ...config?.style?.container,
-    },
-    theme: currentTheme,
-    voiceButton: {
-      ...copilotStyleDefaults.voiceButton,
-      ...config?.style?.voiceButton,
-      bgColor: currentTheme.primaryColor,
-      color: currentTheme.secondaryColor,
-    },
-    keyboardButton: {
-      ...copilotStyleDefaults.keyboardButton,
-      ...config?.style?.keyboardButton,
-      bgColor: currentTheme.primaryColor,
-      color: currentTheme.secondaryColor,
-    },
-    toolTip: {
-      ...copilotStyleDefaults.toolTip,
-      ...config?.style?.toolTip,
-    },
-  };
+  const { actions, actionCallbacks, currentStyle, currentAiConfig } =
+    loadCurrentConfig(config, actionsFn, actionCallbacksFn);
 
   const isRightPositioned =
     currentStyle.keyboardButton.position === "right" ||
@@ -106,24 +72,9 @@ export const VoiceAssistant = ({
     ["bottom-center", "top-center"].includes(position) ||
     ["bottom-center", "top-center"].includes(currentStyle.container.position);
 
-  const currentAiConfig = {
-    ...copilotAiDefaults,
-    ...config?.ai,
-  };
-
-  DEV: console.log(currentAiConfig);
-
   const [tipMessage, setTipMessage] = useState(
     currentStyle.toolTip.welcomeMessage,
   );
-
-  DEV: console.log(
-    `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
-  );
-
-  DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
-
-  DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(

@@ -4,7 +4,7 @@ import {
   type EmbeddingScopeType,
   type PromptTemplateType,
   type PromptVariablesType,
-} from "../../../schema";
+} from "../../core/schema";
 
 export interface BaseAssistantProps {
   id?: string | null;
@@ -21,6 +21,7 @@ export interface BaseAssistantProps {
   keyboardPosition?: CopilotSyleKeyboardPositionSchema;
   actionsFn?: Function;
   actionCallbacksFn?: Function;
+  keyboardPostion: string;
 }
 
 export const shouldForwardProp = (prop: string) =>

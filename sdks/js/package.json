@@ -1,20 +1,24 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.28",
+  "version": "0.0.31",
   "description": "Add Siri like features to your react app",
   "files": [
-    "dist/**/*"
+    "dist/**/*",
+    "rn"
   ],
-  "module": "dist/esm/index.mjs",
-  "main": "dist/esm/index.mjs",
-  "types": "dist/esm/index.d.ts",
+  "module": "./dist/esm/index.mjs",
+  "main": "./dist/esm/index.mjs",
+  "types": "./dist/esm/index.d.ts",
+  "react-native": "./dist/rn/index.mjs",
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
       "requirex": "./dist/cjs/index.cjs",
       "import": "./dist/esm/index.mjs",
-      "default": "./dist/esm/index.mjs"
-    }
+      "default": "./dist/esm/index.mjs",
+      "/rn": "./dist/rn/index.mjs"
+    },
+    "./rn": "./dist/rn/index.mjs"
   },
   "homepage": "https://docs.sugarai.dev/",
   "bugs": "https://github.com/SugarAI-HQ/CopilotOne/issues",
@@ -31,7 +35,7 @@
     "test": "echo \"Error: no test specified\"",
     "testx": "jest --config jest.config.js",
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
-    "build:clean": "rm -rf ./dist meta.json",
+    "build:clean": "rm -rf ./dist meta*.json",
     "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
     "build": "npm run build:clean && node build.mjs",
     "prepublishOnly": "npm run build && npm test && npm run lint",
@@ -64,7 +68,7 @@
     "esbuild-node-externals": "^1.13.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-config-love": "^43.0.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
@@ -74,6 +78,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
     "react": "^18.2.0",
+    "react-native": "^0.73.1",
     "typescript": "^5.4.4",
     "zod": "^3.22.4"
   },
@@ -83,6 +88,8 @@
     "form-data": "^4.0.0",
     "js-base64": "^3.7.7",
     "qs": "^6.12.0",
+    "react-dom": "^18.2.0",
+    "react-native-svg": "^15.2.0",
     "styled-components": "^6.1.8",
     "url-join-ts": "^1.0.5",
     "window-or-global": "^1.0.1"

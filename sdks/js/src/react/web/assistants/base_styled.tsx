@@ -9,7 +9,7 @@ import {
   type MessageRoleType,
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
-} from "../../schema";
+} from "../../../core/schema";
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,

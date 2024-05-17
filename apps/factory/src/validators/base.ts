@@ -45,8 +45,8 @@ export const providerModels: ProviderModels = {
   TEXT2TEXT: {
     label: "Text-to-Text",
     enabled: true,
-    defaultProvider: "llama2",
-    defaultModel: "7b",
+    defaultProvider: "openai",
+    defaultModel: "gpt-4o",
     toolEnabled: true,
     providers: [
       {
@@ -98,6 +98,13 @@ export const providerModels: ProviderModels = {
         {
           name: "gpt-4",
           label: "Gpt 4",
+          enabled: true,
+          editorVersion: 1,
+          toolEnabled: true,
+        },
+        {
+          name: "gpt-4o",
+          label: "GPT 4O",
           enabled: true,
           editorVersion: 1,
           toolEnabled: true,
