@@ -14,9 +14,9 @@ import {
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,
-  isprocessing: z.string(),
-  ispermissiongranted: z.string(),
-  islistening: z.string(),
+  isprocessing: z.string().optional(),
+  ispermissiongranted: z.string().optional(),
+  islistening: z.string().optional(),
 });
 
 const copilotKeyboardButtonProps = z.object({
@@ -144,9 +144,7 @@ export const ViewChatMessage = styled(View)<{
   }}
 `;
 
-export const ViewVoiceButton = styled(
-  Animated.View,
-)<CopilotVoiceButtonPropsType>`
+export const ViewVoiceButton = styled.TouchableOpacity<CopilotVoiceButtonPropsType>`
   background-color: ${({ button }) => button?.bgColor};
   color: ${({ button }) => button?.color};
   border: none;

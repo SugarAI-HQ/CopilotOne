@@ -137,7 +137,7 @@ const TextAssistant = ({
           <ViewKeyboardButton
             style={keyboardButtonStyle}
             button={currentStyle?.keyboardButton}
-            onPress={enableKeyboard}
+            onPress={startSending}
           >
             <Svg width={26} height={26} viewBox={`0 0 26 26`}>
               <Path

@@ -12,7 +12,7 @@
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "standard-with-typescript",
+    "eslint-config-love",
     "prettier"
   ],
   "ignorePatterns": [
@@ -21,6 +21,10 @@
     "node_modules/**"
   ],
   "rules": {
+    "@typescript-eslint/promise-function-async": "warn",
+    "@typescript-eslint/unbound-method": "warn",
+    "@typescript-eslint/no-floating-promises": "warn",
+    "@typescript-eslint/no-misused-promises": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/explicit-function-return-type": "warn",
     "@typescript-eslint/no-unsafe-argument": "warn",

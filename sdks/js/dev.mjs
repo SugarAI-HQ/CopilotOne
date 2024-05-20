@@ -2,6 +2,7 @@ import * as esbuild from "esbuild";
 import pkg from "npm-dts";
 import pj from "./package.json" assert { type: "json" };
 import { exec } from "child_process";
+import { nodeExternalsPlugin } from "esbuild-node-externals";
 
 // Generate type definitions before bundling
 new pkg.Generator({
@@ -27,6 +28,7 @@ const sharedConfig = {
     ...Object.keys(pj.dependencies),
     ...Object.keys(pj.peerDependencies),
   ],
+  plugins: [nodeExternalsPlugin("react-native")],
 
   // watch: {
   //   // onRebuildStart({ changes }) {

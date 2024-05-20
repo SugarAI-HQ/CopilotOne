@@ -67,8 +67,8 @@
     "esbuild": "^0.20.2",
     "esbuild-node-externals": "^1.13.0",
     "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
     "eslint-config-love": "^43.0.1",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
@@ -83,6 +83,7 @@
     "zod": "^3.22.4"
   },
   "dependencies": {
+    "@react-native-voice/voice": "^3.2.4",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/easy-speech": "^1.2.4",
     "form-data": "^4.0.0",
@@ -90,6 +91,7 @@
     "qs": "^6.12.0",
     "react-dom": "^18.2.0",
     "react-native-svg": "^15.2.0",
+    "react-native-tts": "^4.1.0",
     "styled-components": "^6.1.8",
     "url-join-ts": "^1.0.5",
     "window-or-global": "^1.0.1"
