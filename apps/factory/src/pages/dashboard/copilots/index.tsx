@@ -167,7 +167,7 @@ const Copilots = ({
 export const clonePrompt = (
   clonePromptMutation: any,
   copilot: CopilotOutput,
-  autoGenerate?: boolean,
+  autoGenerate: boolean = false,
   refetchPrompts?: () => void,
 ) => {
   clonePromptMutation.mutate(

@@ -266,7 +266,7 @@ async function clonePromptPackageWithTemplateAndVersion(
 
     return copilotPrompt;
   } catch (error) {
-    console.error("Error while cloning:", error);
+    console.error("Error while creating clone:", error);
     throw error;
   }
 }
@@ -279,7 +279,7 @@ async function fetchPromptEntities(
   const promptPath = promptPackagePath.split("/");
   const packageName = promptPath[1] as string;
   const templateName = promptPath[2] as string;
-  const versionName = promptPath[3] as string;
+  const versionName = promptPath[3]?.toUpperCase() as string;
   let pt: any = null;
   let pv: any = null;
 
