@@ -1,6 +1,6 @@
 {
   "name": "copilot-one",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Add Siri Like Native AI Assistants to your App",
   "packageManager": "pnpm@9.0.2",
   "engines": {

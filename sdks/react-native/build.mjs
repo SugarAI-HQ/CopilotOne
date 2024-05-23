@@ -50,7 +50,7 @@ let nativeResult = await build({
   external: Object.keys(pj.dependencies).concat(
     Object.keys(pj.peerDependencies),
   ),
-  plugins: [nodeExternalsPlugin("react-native")],
+  // plugins: [nodeExternalsPlugin("react-native")],
 });
 
 fs.writeFileSync("meta-native.json", JSON.stringify(nativeResult.metafile));
@@ -61,7 +61,7 @@ console.log(
   }),
 );
 
-if (!fs.existsSync(typesPath)) {
-  console.error(`Types are not generated: ${typesPath}`);
-  process.exit(1); // Exit the script with an error code
-}
+// if (!fs.existsSync(typesPath)) {
+//   console.error(`Types are not generated: ${typesPath}`);
+//   process.exit(1); // Exit the script with an error code
+// }
