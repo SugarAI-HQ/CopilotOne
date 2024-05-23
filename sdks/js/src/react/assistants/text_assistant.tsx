@@ -6,9 +6,9 @@ import {
   copilotStyleDefaults,
   scopeDefaults,
   shouldForwardProp,
-  loadCurrentConfig
+  loadCurrentConfig,
+  useCopilot,
 } from "@sugar-ai/core";
-
 
 import { StyleSheetManager } from "styled-components";
 
@@ -18,9 +18,6 @@ import Keyboard from "./components/keyboard";
 import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import AssistantTextBox from "./components/textbox";
-import { useCopilot } from "../common/copilot_context";
-
-
 
 export const TextAssistant = ({
   id = null,
@@ -33,7 +30,7 @@ export const TextAssistant = ({
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
   position = copilotStyleDefaults.container.position || "bottom-right",
-  keyboardPostion = copilotStyleDefaults.keyboardButton.position,
+  keyboardPosition = copilotStyleDefaults.keyboardButton.position,
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {

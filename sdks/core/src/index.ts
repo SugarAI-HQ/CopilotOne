@@ -5,3 +5,5 @@ export * from "./embedding";
 export * from "./schema";
 export * from "./utils";
 export * from "./voice";
+export * from "./hooks";
+export * from "./copilot_context";

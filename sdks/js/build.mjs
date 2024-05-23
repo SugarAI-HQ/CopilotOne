@@ -18,7 +18,6 @@ new pkg.Generator({
   tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
 }).generate();
 
-
 const sharedConfig = {
   entryPoints: ["src/index.ts"],
   bundle: true,
@@ -70,7 +69,6 @@ console.log(
     verbose: false,
   }),
 );
-
 
 let jsBuildResult = await build({
   ...sharedConfig,

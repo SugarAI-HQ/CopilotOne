@@ -1,23 +1,24 @@
 import { createContext, useContext } from "react";
+
+import { createUseState } from "./hooks";
+
+import { any } from "zod";
 import {
+  type ActionDefinitionType,
   type ActionRegistrationType,
   type CopilotConfigType,
-  type EmbeddingScopeType,
-  type ActionDefinitionType,
-  type EmbeddingScopeWithUserType,
   type CopilotSytleType,
+  type EmbeddingScopeType,
+  type EmbeddingScopeWithUserType,
   copilotAiDefaults,
-  SugarAiApiClient,
-  generateUserId,
+} from "./schema";
+import { generateUserId } from "./utils";
+import { SugarAiApiClient } from "./api-client";
+import {
   register,
   unregister,
   textToAction as nativeTextoAction,
-} from "@sugar-ai/core";
-import { createUseState } from "./hooks";
-
-
-
-import { any } from "zod";
+} from "./actions";
 
 export const CopilotContext = createContext({
   config: null as CopilotConfigType | null,
@@ -119,7 +120,7 @@ export const CopilotProvider = function ({
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
   ): Promise<string> {
-    return await nativeTextoAction(
+    return nativeTextoAction(
       promptTemplate,
       userQuery,
       promptVariables,

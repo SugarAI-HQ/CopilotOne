@@ -24,8 +24,8 @@ import {
   copilotStyleDefaults,
   scopeDefaults,
   loadCurrentConfig,
+  useCopilot,
 } from "@sugar-ai/core";
-import { useCopilot } from "../common/copilot_context";
 
 const VoiceAssistant = ({
   id = null,

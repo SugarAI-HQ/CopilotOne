@@ -1,6 +1,2 @@
-export * from "./react/common/copilot_context";
+export * from "@sugar-ai/core/src/copilot_context";
 export * from "./react";
-
-
-
-

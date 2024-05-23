@@ -8,7 +8,7 @@ import fs from "node:fs";
 import { nodeExternalsPlugin } from "esbuild-node-externals";
 
 const outputDir = `dist`;
-const typesPath = `${outputDir}/esm/index.d.ts`;
+const typesPath = `${outputDir}/rn/index.d.ts`;
 
 new pkg.Generator({
   entryPoints: ["src/**/*.ts", "src/*.ts"],
@@ -60,3 +60,8 @@ console.log(
     verbose: false,
   }),
 );
+
+if (!fs.existsSync(typesPath)) {
+  console.error(`Types are not generated: ${typesPath}`);
+  process.exit(1); // Exit the script with an error code
+}

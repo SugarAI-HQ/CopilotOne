@@ -18,12 +18,8 @@ import {
   copilotStyleDefaults,
   scopeDefaults,
   loadCurrentConfig,
+  useCopilot,
 } from "@sugar-ai/core";
-import { useCopilot } from "../common/copilot_context";
-// import { useCopilot } from "../../../common/copilot_context";
-// import { type BaseAssistantProps } from "../../../common/schema";
-// import { loadCurrentConfig } from "../../../common/base_config";
-// import { useCopilot } from "../common/copilot_context";
 
 const TextAssistant = ({
   id = null,

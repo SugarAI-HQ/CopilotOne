@@ -8,9 +8,9 @@ import {
   determinePreferredLang,
   getGender,
   getPreferredVoiceAndLang,
-
   shouldForwardProp,
-  loadCurrentConfig
+  loadCurrentConfig,
+  useCopilot,
 } from "@sugar-ai/core";
 
 import root from "window-or-global";
@@ -25,7 +25,6 @@ import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 import Voice from "./components/voice";
-import { useCopilot } from "../common/copilot_context";
 
 export const VoiceAssistant = ({
   id = null,

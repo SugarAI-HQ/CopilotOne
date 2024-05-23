@@ -55,7 +55,7 @@ let result = await build({
   platform: "neutral", // for ESM
   format: "esm",
   external: Object.keys(pj.dependencies).concat(
-    Object.keys(pj.peerDependencies)
+    Object.keys(pj.peerDependencies),
   ),
   // plugins: [nodeExternalsPlugin()],
 });
@@ -67,7 +67,7 @@ fs.writeFileSync("meta.json", JSON.stringify(result.metafile));
 console.log(
   await analyzeMetafile(result.metafile, {
     verbose: false,
-  })
+  }),
 );
 
 // if (!fs.existsSync(typesPath)) {
