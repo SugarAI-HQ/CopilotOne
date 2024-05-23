@@ -1,6 +1,6 @@
 {
   "name": "@sugar-ai/copilot-one-rn",
-  "version": "0.0.33",
+  "version": "0.0.1",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
@@ -16,7 +16,7 @@
       "default": "./dist/rn/index.mjs"
     }
   },
-  "homepage": "https://docs.sugarai.dev/",
+  "homepage": "https://docs.sugarai.dev/integrations/2_react_native/",
   "bugs": "https://github.com/SugarAI-HQ/CopilotOne/issues",
   "repository": {
     "type": "git",
