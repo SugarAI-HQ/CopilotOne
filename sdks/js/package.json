@@ -3,22 +3,18 @@
   "version": "0.0.33",
   "description": "Add Siri like features to your react app",
   "files": [
-    "dist/**/*",
-    "rn"
+    "dist/**/*"
   ],
   "module": "./dist/esm/index.mjs",
   "main": "./dist/esm/index.mjs",
   "types": "./dist/esm/index.d.ts",
-  "react-native": "./dist/rn/index.mjs",
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
       "requirex": "./dist/cjs/index.cjs",
       "import": "./dist/esm/index.mjs",
-      "default": "./dist/esm/index.mjs",
-      "/rn": "./dist/rn/index.mjs"
-    },
-    "./rn": "./dist/rn/index.mjs"
+      "default": "./dist/esm/index.mjs"
+    }
   },
   "homepage": "https://docs.sugarai.dev/",
   "bugs": "https://github.com/SugarAI-HQ/CopilotOne/issues",
@@ -72,29 +68,19 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
-    "fern-api": "^0.19.31",
-    "json2yaml": "^1.1.0",
     "npm-dts": "^1.3.12",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
     "react": "^18.2.0",
-    "react-native": "^0.73.1",
-    "typescript": "^5.4.4",
-    "zod": "^3.22.4"
+    "typescript": "^5.4.4"
   },
   "dependencies": {
     "@sugar-ai/core": "workspace:*",
-    "@react-native-voice/voice": "^3.2.4",
+    "zod": "^3.22.4",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/easy-speech": "^1.2.4",
-    "form-data": "^4.0.0",
-    "js-base64": "^3.7.7",
-    "qs": "^6.12.0",
     "react-dom": "^18.2.0",
-    "react-native-svg": "^15.2.0",
-    "react-native-tts": "^4.1.0",
     "styled-components": "^6.1.8",
-    "url-join-ts": "^1.0.5",
     "window-or-global": "^1.0.1"
   }
 }

@@ -3,22 +3,18 @@
   "version": "0.0.33",
   "description": "Add Siri like features to your react app",
   "files": [
-    "dist/**/*",
-    "rn"
+    "dist/**/*"
   ],
   "module": "./dist/esm/index.mjs",
   "main": "./dist/esm/index.mjs",
   "types": "./dist/esm/index.d.ts",
-  "react-native": "./dist/rn/index.mjs",
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
       "requirex": "./dist/cjs/index.cjs",
       "import": "./dist/esm/index.mjs",
-      "default": "./dist/esm/index.mjs",
-      "/rn": "./dist/rn/index.mjs"
-    },
-    "./rn": "./dist/rn/index.mjs"
+      "default": "./dist/esm/index.mjs"
+    }
   },
   "homepage": "https://docs.sugarai.dev/",
   "bugs": "https://github.com/SugarAI-HQ/CopilotOne/issues",
