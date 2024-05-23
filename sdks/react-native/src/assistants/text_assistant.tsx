@@ -21,7 +21,7 @@ import {
   useCopilot,
 } from "@sugar-ai/core";
 
-const TextAssistant = ({
+export const TextAssistant = ({
   id = null,
   promptTemplate = null,
   promptVariables = {},
@@ -234,5 +234,3 @@ const TextAssistant = ({
     </>
   );
 };
-
-export default TextAssistant;
