@@ -1,6 +1,6 @@
 {
-  "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.37",
+  "name": "@sugar-ai/core",
+  "version": "0.0.2",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
@@ -68,6 +68,8 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.1.1",
+    "fern-api": "^0.19.31",
+    "json2yaml": "^1.1.0",
     "npm-dts": "^1.3.12",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
@@ -75,12 +77,11 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
-    "@sugar-ai/core": "workspace:*",
     "zod": "^3.22.4",
-    "@types/dom-speech-recognition": "^0.0.4",
-    "@types/easy-speech": "^1.2.4",
-    "react-dom": "^18.2.0",
-    "styled-components": "^6.1.8",
+    "form-data": "^4.0.0",
+    "js-base64": "^3.7.7",
+    "qs": "^6.12.0",
+    "url-join-ts": "^1.0.5",
     "window-or-global": "^1.0.1"
   }
 }

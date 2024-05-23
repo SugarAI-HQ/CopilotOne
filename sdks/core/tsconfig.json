@@ -115,11 +115,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
 
-  "include": [
-    "src",
-    "../core/src/base_config.tsx",
-    "../core/src/copilot_context.tsx",
-    "../core/src/hooks.ts"
-  ],
+  "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

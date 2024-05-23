@@ -1,22 +1,22 @@
 {
-  "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.37",
+  "name": "@sugar-ai/copilot-one-rn",
+  "version": "0.0.2",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
   ],
-  "module": "./dist/esm/index.mjs",
-  "main": "./dist/esm/index.mjs",
-  "types": "./dist/esm/index.d.ts",
+  "module": "./dist/rn/index.mjs",
+  "main": "./dist/rn/index.mjs",
+  "types": "./dist/rn/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/esm/index.d.ts",
+      "types": "./dist/rn/index.d.ts",
       "requirex": "./dist/cjs/index.cjs",
-      "import": "./dist/esm/index.mjs",
-      "default": "./dist/esm/index.mjs"
+      "import": "./dist/rn/index.mjs",
+      "default": "./dist/rn/index.mjs"
     }
   },
-  "homepage": "https://docs.sugarai.dev/",
+  "homepage": "https://docs.sugarai.dev/integrations/2_react_native/",
   "bugs": "https://github.com/SugarAI-HQ/CopilotOne/issues",
   "repository": {
     "type": "git",
@@ -40,7 +40,8 @@
     "postversion": "git push && git push --tags"
   },
   "peerDependencies": {
-    "react": ">16.0.0"
+    "react": ">16.0.0",
+    "react-native": ">0.70.0"
   },
   "keywords": [
     "copilot",
@@ -72,15 +73,16 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^3.2.5",
     "react": "^18.2.0",
+    "react-native": "^0.73.1",
     "typescript": "^5.4.4"
   },
   "dependencies": {
     "@sugar-ai/core": "workspace:*",
     "zod": "^3.22.4",
+    "@react-native-voice/voice": "^3.2.4",
     "@types/dom-speech-recognition": "^0.0.4",
-    "@types/easy-speech": "^1.2.4",
-    "react-dom": "^18.2.0",
-    "styled-components": "^6.1.8",
-    "window-or-global": "^1.0.1"
+    "react-native-svg": "^15.2.0",
+    "react-native-tts": "^4.1.0",
+    "styled-components": "^6.1.8"
   }
 }

@@ -70,19 +70,7 @@ console.log(
   }),
 );
 
-let jsBuildResult = await build({
-  ...sharedConfig,
-  entryPoints: ["src/js/index.js"],
-  outfile: `${outputDir}/js/copilot-one.min.js`,
-  bundle: true,
-  minify: true,
-  platform: "browser",
-  format: "iife",
-});
-
-fs.writeFileSync("meta-js.json", JSON.stringify(jsBuildResult.metafile));
-
-if (!fs.existsSync(typesPath)) {
-  console.error(`Types are not generated: ${typesPath}`);
-  process.exit(1); // Exit the script with an error code
-}
+// if (!fs.existsSync(typesPath)) {
+//   console.error(`Types are not generated: ${typesPath}`);
+//   process.exit(1); // Exit the script with an error code
+// }
