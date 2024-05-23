@@ -1,11 +1,12 @@
 import { createRoot } from "react-dom/client";
 import {
-  register,
-  unregister,
   addAssistant,
   removeAssistant,
   App,
-} from "../index";
+} from "./assistants";
+
+import {register, unregister} from "@sugar-ai/core"
+
 
 (function (win) {
   var sai = (win.sai = win.sai || {

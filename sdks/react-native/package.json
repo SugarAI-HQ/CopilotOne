@@ -1,5 +1,5 @@
 {
-  "name": "@sugar-ai/copilot-one-js",
+  "name": "@sugar-ai/copilot-one-rn",
   "version": "0.0.33",
   "description": "Add Siri like features to your react app",
   "files": [

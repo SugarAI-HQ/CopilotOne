@@ -2,7 +2,7 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   copilotAiDefaults,
-} from "@sugar-ai/core";
+} from "./schema";
 
 export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
   const currentTheme = {

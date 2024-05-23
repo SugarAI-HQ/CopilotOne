@@ -18,7 +18,6 @@ new pkg.Generator({
   tsc: `--extendedDiagnostics -p ./tsconfig.types.json`,
 }).generate();
 
-
 const sharedConfig = {
   entryPoints: ["src/index.ts"],
   bundle: true,
@@ -56,7 +55,7 @@ let result = await build({
   platform: "neutral", // for ESM
   format: "esm",
   external: Object.keys(pj.dependencies).concat(
-    Object.keys(pj.peerDependencies),
+    Object.keys(pj.peerDependencies)
   ),
   // plugins: [nodeExternalsPlugin()],
 });
@@ -68,21 +67,8 @@ fs.writeFileSync("meta.json", JSON.stringify(result.metafile));
 console.log(
   await analyzeMetafile(result.metafile, {
     verbose: false,
-  }),
+  })
 );
-
-
-let jsBuildResult = await build({
-  ...sharedConfig,
-  entryPoints: ["src/js/index.js"],
-  outfile: `${outputDir}/js/copilot-one.min.js`,
-  bundle: true,
-  minify: true,
-  platform: "browser",
-  format: "iife",
-});
-
-fs.writeFileSync("meta-js.json", JSON.stringify(jsBuildResult.metafile));
 
 if (!fs.existsSync(typesPath)) {
   console.error(`Types are not generated: ${typesPath}`);

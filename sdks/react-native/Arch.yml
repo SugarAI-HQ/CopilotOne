@@ -1,0 +1,47 @@
+JS
+    - voiceToActions
+    - textToActions
+
+Actions
+    - registerAction [Done]
+    - unregisterAction [Done]
+    - validateAction 
+
+
+React
+    Functions
+        useCopilot
+            - useStateEmbedding() 
+
+            - registerAction [Done]
+            - unregisterAction [Done]
+            
+            - voiceToActions
+            - textToActions
+
+
+    Components
+        - Voice
+            - VoiceAssistant
+                - VoiceToAction
+                - TextToAction
+        - Text
+            - ChatAssistant - Chat UI
+                - TextToAction
+            - TextAssistant - 1 input, 1 response
+                - TextToAction optional history
+
+    
+    
+
+
+- Agent can do multiple actions
+- Super Agent -> which is the central controllers
+
+- Group of Actions which do one 
+
+
+
+Global -  Assistant | colilot ?
+Group Level - Agent 
+Lower - Actions  
