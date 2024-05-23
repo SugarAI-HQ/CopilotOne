@@ -120,7 +120,7 @@ export const CopilotProvider = function ({
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
   ): Promise<string> {
-    return nativeTextoAction(
+    return await nativeTextoAction(
       promptTemplate,
       userQuery,
       promptVariables,
