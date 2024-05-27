@@ -213,7 +213,9 @@ export const VoiceAssistant = ({
             isprocessing={isprocessing.toString()}
             islistening={islistening.toString()}
           >
-            {islistening ? (
+            {isprocessing ? (
+              <ActivityIndicator color={currentStyle.voiceButton.color} />
+            ) : islistening ? (
               <OpenMic
                 // width={26}
                 // height={26}

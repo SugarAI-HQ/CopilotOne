@@ -6,9 +6,14 @@ import { type SvgIconProps } from "./mic";
 // Create an animated version of the Rect component
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-export const OpenMic = (props: SvgIconProps): React.ReactElement => {
-  const newWidth = (props.width ?? props.size) as number;
-  const newHeight = (props.height ?? props.size) as number;
+export const OpenMic: React.FC<SvgIconProps> = ({
+  width,
+  height,
+  color,
+  size = "26",
+}): React.ReactElement => {
+  const newWidth = width ?? parseInt(size);
+  const newHeight = height ?? parseInt(size);
 
   const barWidth = newWidth / 10;
   const barSpacing = barWidth / 2;
@@ -62,7 +67,7 @@ export const OpenMic = (props: SvgIconProps): React.ReactElement => {
             })}
             width={barWidth}
             height={barHeight}
-            fill={props.color}
+            fill={color}
           />
         );
       })}
