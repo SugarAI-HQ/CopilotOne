@@ -62,8 +62,6 @@ export const VoiceAssistant = ({
   const { actions, actionCallbacks, currentStyle, currentAiConfig } =
     loadCurrentConfig(config, actionsFn, actionCallbacksFn);
 
-  DEV: console.log(isprocessing);
-
   const [tipMessage, setTipMessage] = useState(
     currentStyle.toolTip.welcomeMessage,
   );
@@ -77,8 +75,6 @@ export const VoiceAssistant = ({
     promptTemplate = config?.ai?.defaultPromptTemplate;
   }
 
-  // console.log(hideToolTip, tipMessage);
-
   useEffect(() => {
     Voice.onSpeechStart = onSpeechStart;
     Voice.onSpeechRecognized = onSpeechRecognized;
@@ -87,6 +83,7 @@ export const VoiceAssistant = ({
     Voice.onSpeechResults = onSpeechResults;
     Voice.onSpeechPartialResults = onSpeechPartialResults;
 
+    console.log(hideToolTip, tipMessage);
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
