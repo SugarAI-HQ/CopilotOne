@@ -179,8 +179,18 @@ export const VoiceAssistant = ({
       setIsprocessing(false);
     });
     if (typeof aiResponse === "string") {
-      setAiResponse(aiResponse);
-      speak(aiResponse);
+      if (currentAiConfig.successResponse !== aiResponse) {
+        setAiResponse(aiResponse);
+        speak(aiResponse);
+      }
+      if (currentAiConfig.successResponse === aiResponse) {
+        RNSystemSounds.play(
+          Platform.select({
+            android: currentAiConfig.successSound.android,
+            ios: currentAiConfig.successSound.ios,
+          }),
+        );
+      }
     }
   };
 
@@ -188,17 +198,7 @@ export const VoiceAssistant = ({
     console.log("speak: ", text);
     console.log("lang: ", currentAiConfig.lang);
     Tts.setDefaultLanguage(currentAiConfig.lang);
-    if (currentAiConfig.successResponse !== text) {
-      Tts.speak(text);
-    }
-    if (currentAiConfig.successResponse === text) {
-      RNSystemSounds.play(
-        Platform.select({
-          android: currentAiConfig.successSound.android,
-          ios: currentAiConfig.successSound.ios,
-        }),
-      );
-    }
+    Tts.speak(text);
   };
 
   const startSending = async () => {
