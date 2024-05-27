@@ -97,6 +97,7 @@ export const copilotAiSchema = z.object({
   defaultPromptTemplate: promptTemplateSchema.optional(),
   defaultPromptVariables: z.record(z.any()).optional(),
   successResponse: z.string(),
+  successSound: z.object({ android: z.number(), ios: z.number() }),
   failureResponse: z.string(),
   lang: z.string().optional(),
   voice: z.string().optional(),
@@ -128,6 +129,10 @@ export const copilotAiDefaults: CopilotAiType = {
   defaultPromptTemplate: "",
   defaultPromptVariables: {},
   successResponse: "Done",
+  successSound: {
+    android: 24,
+    ios: 1256,
+  },
   failureResponse: "Something went wrong",
   lang: "auto",
   voice: "auto",

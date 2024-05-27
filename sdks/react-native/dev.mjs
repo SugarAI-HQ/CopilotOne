@@ -12,7 +12,7 @@ new pkg.Generator({
 
 const sharedConfig = {
   // entryPoints: ["src/index.ts"],
-  entryPoints: ["src/react/native/index.ts"],
+  entryPoints: ["src/index.ts"],
   outfile: "dist/esm/index.mjs",
   // outdir: 'dist',
   outExtension: { ".js": ".mjs" },
