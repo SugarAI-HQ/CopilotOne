@@ -54,7 +54,7 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
     ...config?.ai,
   };
 
-  DEV: console.log(currentAiConfig);
+  DEV: console.log(`current AI config ---> ${JSON.stringify(currentAiConfig)}`);
 
   return {
     currentTheme,

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 import Voice, {
   type SpeechErrorEvent,
   type SpeechRecognizedEvent,
   type SpeechResultsEvent,
 } from "@react-native-voice/voice";
 import Tts from "react-native-tts";
+import RNSystemSounds from "@dashdoc/react-native-system-sounds";
 
 import {
   ViewChatMessage,
@@ -180,7 +181,17 @@ export const VoiceAssistant = ({
     console.log("speak: ", text);
     console.log("lang: ", currentAiConfig.lang);
     Tts.setDefaultLanguage(currentAiConfig.lang);
-    Tts.speak(text);
+    if (currentAiConfig.successResponse !== text) {
+      Tts.speak(text);
+    }
+    if (currentAiConfig.successResponse === text) {
+      RNSystemSounds.play(
+        Platform.select({
+          android: currentAiConfig.successSound.android,
+          ios: currentAiConfig.successSound.ios,
+        }),
+      );
+    }
   };
 
   const startSending = async () => {

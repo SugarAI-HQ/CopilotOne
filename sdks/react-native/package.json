@@ -77,12 +77,13 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
-    "@sugar-ai/core": "workspace:*",
-    "zod": "^3.22.4",
+    "@dashdoc/react-native-system-sounds": "^1.1.0",
     "@react-native-voice/voice": "^3.2.4",
+    "@sugar-ai/core": "workspace:*",
     "@types/dom-speech-recognition": "^0.0.4",
     "react-native-svg": "^15.2.0",
     "react-native-tts": "^4.1.0",
-    "styled-components": "^6.1.8"
+    "styled-components": "^6.1.8",
+    "zod": "^3.22.4"
   }
 }
