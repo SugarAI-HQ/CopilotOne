@@ -50,6 +50,7 @@ export const VoiceAssistant = ({
   const [islistening, setIslistening] = useState(false);
   const [hideToolTip, setHideToolTip] = useState(true);
   const [isprocessing, setIsprocessing] = useState(false);
+  const [partialOutput, setPartialOutput] = useState<string>("");
   const [finalOutput, setFinalOutput] = useState<string>("");
   const [aiResponse, setAiResponse] = useState<string>("");
   const [hideTextButton, setHideTextButton] = useState(false);
@@ -76,7 +77,7 @@ export const VoiceAssistant = ({
     promptTemplate = config?.ai?.defaultPromptTemplate;
   }
 
-  console.log(hideToolTip, tipMessage);
+  // console.log(hideToolTip, tipMessage);
 
   useEffect(() => {
     Voice.onSpeechStart = onSpeechStart;
@@ -112,12 +113,17 @@ export const VoiceAssistant = ({
   const onSpeechResults = async (e: SpeechResultsEvent) => {
     const text: string = e?.value?.[0] as string;
     console.log("onSpeechResults: ", text);
+    setPartialOutput("");
     setFinalOutput(text);
     await processTextToText(text);
   };
 
-  const onSpeechPartialResults = (e: SpeechResultsEvent) => {
-    console.log("onSpeechPartialResults: ", e);
+  const onSpeechPartialResults = async (e: SpeechResultsEvent) => {
+    const text: string = e?.value?.[0] as string;
+    setPartialOutput((pO) => {
+      return text;
+    });
+    setFinalOutput("");
   };
 
   const _startRecognizing = async () => {
@@ -126,6 +132,7 @@ export const VoiceAssistant = ({
       console.log("called start");
       setTextMessage("");
       setAiResponse("");
+      setPartialOutput("");
       setFinalOutput("");
     } catch (e) {
       console.error(e);
@@ -244,19 +251,19 @@ export const VoiceAssistant = ({
           </ViewVoiceButton>
         )}
 
-        {(aiResponse || finalOutput) && (
+        {(aiResponse || finalOutput || partialOutput) && (
           <ViewChatMessage
             container={currentStyle?.container}
             position={position}
             id={`sugar-ai-chat-message-${buttonId}`}
             style={messageStyle}
           >
-            {finalOutput && (
+            {(partialOutput || finalOutput) && (
               <ViewMessage
                 theme={currentStyle?.theme}
                 id={`sugar-ai-message-${buttonId}`}
               >
-                {finalOutput}
+                {partialOutput || finalOutput}
               </ViewMessage>
             )}
             {aiResponse && (
