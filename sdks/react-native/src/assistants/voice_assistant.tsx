@@ -95,22 +95,22 @@ export const VoiceAssistant = ({
   }, []);
 
   const onSpeechStart = (e: any) => {
-    console.log("onSpeechStart: ", e);
+    DEV: console.log("onSpeechStart: ", e);
     setIslistening(true);
   };
 
   const onSpeechRecognized = (e: SpeechRecognizedEvent) => {
-    console.log("onSpeechRecognized: ", e);
+    DEV: console.log("onSpeechRecognized: ", e);
   };
 
   const onSpeechEnd = (e: any) => {
-    console.log("onSpeechEnd: ", e);
+    DEV: console.log("onSpeechEnd: ", e);
     setIslistening(false);
     setIsprocessing(false);
   };
 
   const onSpeechError = (e: SpeechErrorEvent) => {
-    console.log("onSpeechError: ", e);
+    DEV: console.log("onSpeechError: ", e);
     setIslistening(false);
     setIsprocessing(false);
     setIsDisabled(false);
@@ -131,7 +131,7 @@ export const VoiceAssistant = ({
 
   const onSpeechResults = async (e: SpeechResultsEvent) => {
     const text: string = e?.value?.[0] as string;
-    console.log("onSpeechResults: ", text);
+    DEV: console.log("onSpeechResults: ", text);
     script.current = text;
     if (Platform.OS === "ios") {
       clearTimeout(timeout.current);
@@ -157,7 +157,7 @@ export const VoiceAssistant = ({
     try {
       await Voice.start(currentAiConfig.lang ?? "en-US");
       setIsDisabled(true);
-      console.log("called start");
+      PROD: console.log("called start");
       setTextMessage("");
       setAiResponse("");
       setPartialOutput("");
@@ -257,13 +257,12 @@ export const VoiceAssistant = ({
   });
 
   Tts.addEventListener("tts-finish", (event) => {
-    console.log("tts-finish: ", event);
     setIsDisabled(false);
   });
 
   const speak = (text) => {
-    console.log("speak: ", text);
-    console.log("lang: ", currentAiConfig.lang);
+    DEV: console.log("speak: ", text);
+    DEV: console.log("lang: ", currentAiConfig.lang);
     Tts.setDefaultLanguage(currentAiConfig.lang);
     Tts.speak(text);
   };
@@ -274,7 +273,6 @@ export const VoiceAssistant = ({
     setAiResponse("");
     setIsTyping(false);
     setFinalOutput(newTextMessage);
-    console.log("startSending f0r processTextToText: ", newTextMessage);
     await processTextToText(newTextMessage);
   };
 
