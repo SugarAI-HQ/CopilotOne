@@ -1,6 +1,6 @@
-# Copilot One Web SDK
+# Copilot One React Native
 
-Supercharge your existing Web/React App with a Siri-like AI Assistant.
+Supercharge your existing React Native App with a Siri-like AI Assistant.
 
 ## Key Features
 
@@ -40,7 +40,7 @@ npm install @sugar-ai/copilot-one-js@latest
 |-------------------|-------------------------------------------------|
 | React             | [Add to React/Nextjs App](https://docs.sugarai.dev/integrations/1_react/) |
 | JavaScript        | [Add to any javascript App](https://docs.sugarai.dev/integrations/0_js/) |
-| React Native      | [Coming Soon](https://docs.sugarai.dev/integrations/2_react_native/) |
+| React Native      | [Add to react Native App](https://docs.sugarai.dev/integrations/2_react_native/) |
 | Angular           | [Coming Soon](https://docs.sugarai.dev/integrations/3_angular/) |
 | Vue               | [Coming Soon](https://docs.sugarai.dev/integrations/4_vue/) |
 
