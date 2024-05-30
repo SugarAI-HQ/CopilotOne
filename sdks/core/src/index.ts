@@ -7,3 +7,4 @@ export * from "./utils";
 export * from "./voice";
 export * from "./hooks";
 export * from "./copilot_context";
+export * from "./sound";

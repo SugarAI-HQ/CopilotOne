@@ -87,7 +87,7 @@ export const ViewCopilotContainer = styled(View)<{
   }}
   margin: ${({ container }) => container?.margin ?? "0px"};
 
-  z-index: 1000; /* Ensure the widget is above other elements */
+  z-index: 9999999; /* Ensure the widget is above other elements */
 `;
 
 export const ViewChatMessage = styled(View)<{
@@ -176,6 +176,7 @@ export const ViewButtonContainer = styled.View``;
 export const ViewMessage = styled(Text)<{
   theme: CopilotSyleThemeType;
   role?: string;
+  isfading?: string;
 }>`
   background-color: ${({ theme, role }) =>
     messageRoleEnum.options.includes(role as MessageRoleType)
@@ -190,8 +191,10 @@ export const ViewMessage = styled(Text)<{
   padding: 10px;
   margin-bottom: 5px;
   border-radius: 10px;
-  border: 1px solid #ccc;
-  elevation: 2;
+
+  border: ${({ isfading }) =>
+    isfading === "true" ? "none" : "1px solid #ccc"};
+  elevation: ${({ isfading }) => (isfading === "true" ? 0 : 2)};
 `;
 
 export const ViewToolTipContainer = styled(ViewChatMessage)<{
@@ -219,7 +222,7 @@ export const ViewTextBoxContainer = styled(View)<{
   position: absolute;
   right: 25px;
   margin: 0;
-  z-index: 1000;
+  z-index: 9999999;
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;

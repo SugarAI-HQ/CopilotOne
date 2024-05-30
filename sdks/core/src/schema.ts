@@ -1,5 +1,6 @@
 import * as z from "zod";
 import root from "window-or-global";
+import { AndroidSoundIDs, iOSSoundIDs } from "./sound";
 
 export const promptTemplateSchema = z.string();
 export type PromptTemplateType = z.infer<typeof promptTemplateSchema>;
@@ -97,7 +98,7 @@ export const copilotAiSchema = z.object({
   defaultPromptTemplate: promptTemplateSchema.optional(),
   defaultPromptVariables: z.record(z.any()).optional(),
   successResponse: z.string(),
-  successSound: z.object({ android: z.number(), ios: z.number() }),
+  successSound: z.object({ android: z.number(), ios: z.number() }).optional(),
   failureResponse: z.string(),
   lang: z.string().optional(),
   voice: z.string().optional(),
@@ -130,8 +131,8 @@ export const copilotAiDefaults: CopilotAiType = {
   defaultPromptVariables: {},
   successResponse: "Done",
   successSound: {
-    android: 24,
-    ios: 1256,
+    android: AndroidSoundIDs.TONE_PROP_BEEP,
+    ios: iOSSoundIDs.Headset_AnswerCall,
   },
   failureResponse: "Something went wrong",
   lang: "auto",
