@@ -24,7 +24,8 @@
   },
   "scripts": {
     "devx": "tsc -b ./tsconfig.esm.json ./tsconfig.types.json -w",
-    "dev": "node dev.mjs",
+    "devxx": "node dev.mjs",
+    "dev": "tsup --watch",
     "format": "prettier --write \"src/**/*.ts\"",
     "updateClient": "fern generate && prettier --write \"src/api-client/**/*.ts\"",
     "lint": "eslint --quiet 'src/**'",
