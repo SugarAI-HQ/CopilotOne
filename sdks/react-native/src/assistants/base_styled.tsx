@@ -12,6 +12,8 @@ import {
   copilotStyleKeyboardButtonSchema,
 } from "@sugar-ai/core";
 
+import { type FC } from "react";
+
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,
   isprocessing: z.string().optional(),
@@ -31,10 +33,10 @@ type CopilotKeyboardButtonPropsType = z.infer<
 const DEVICE_WIDTH = Dimensions.get("window").width;
 // const DEVICE_HEIGHT = Dimensions.get("window").height;
 
-export const ViewCopilotContainer = styled(View)<{
+export const ViewCopilotContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+}> = styled(View)`
   position: absolute;
   ${({ container, position }) => {
     const positions =
@@ -90,10 +92,10 @@ export const ViewCopilotContainer = styled(View)<{
   z-index: 9999999; /* Ensure the widget is above other elements */
 `;
 
-export const ViewChatMessage = styled(View)<{
+export const ViewChatMessage: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+}> = styled(View)`
   position: absolute;
 
   width: ${DEVICE_WIDTH - 60}px;
@@ -144,7 +146,7 @@ export const ViewChatMessage = styled(View)<{
   }}
 `;
 
-export const ViewVoiceButton = styled.TouchableOpacity<CopilotVoiceButtonPropsType>`
+export const ViewVoiceButton: FC<CopilotVoiceButtonPropsType> = styled.TouchableOpacity`
   background-color: ${({ button }) => button?.bgColor};
   color: ${({ button }) => button?.color};
   border: none;
@@ -158,7 +160,7 @@ export const ViewVoiceButton = styled.TouchableOpacity<CopilotVoiceButtonPropsTy
   opacity: ${({ isprocessing }) => (isprocessing === "true" ? "0.5" : "1")};
 `;
 
-export const ViewKeyboardButton = styled.TouchableOpacity<CopilotKeyboardButtonPropsType>`
+export const ViewKeyboardButton: FC<CopilotKeyboardButtonPropsType> = styled.TouchableOpacity`
   position: relative;
   background-color: ${({ button }) => button?.bgColor};
   width: 50px;
@@ -173,11 +175,11 @@ export const ViewKeyboardButton = styled.TouchableOpacity<CopilotKeyboardButtonP
 
 export const ViewButtonContainer = styled.View``;
 
-export const ViewMessage = styled(Text)<{
+export const ViewMessage: FC<{
   theme: CopilotSyleThemeType;
   role?: string;
   isfading?: string;
-}>`
+}> = styled(Text)`
   background-color: ${({ theme, role }) =>
     messageRoleEnum.options.includes(role as MessageRoleType)
       ? "white"
@@ -197,9 +199,9 @@ export const ViewMessage = styled(Text)<{
   elevation: ${({ isfading }) => (isfading === "true" ? 0 : 2)};
 `;
 
-export const ViewToolTipContainer = styled(ViewChatMessage)<{
+export const ViewToolTipContainer: FC<{
   config: CopilotSyleTooltipType;
-}>`
+}> = styled(ViewChatMessage)`
   width: 200px;
   text-align: center;
   border: 1px solid #ccc;
@@ -215,10 +217,10 @@ export const ViewTootTipMessage = styled(ViewMessage)`
 `;
 
 // Wrapper component to contain input box and button
-export const ViewTextBoxContainer = styled(View)<{
+export const ViewTextBoxContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+}> = styled(View)`
   position: absolute;
   right: 25px;
   margin: 0;
@@ -250,7 +252,7 @@ export const ViewTextBoxContainer = styled(View)<{
   }}
 `;
 
-export const ViewTextBox = styled.TextInput<{ bgColor: string }>`
+export const ViewTextBox: FC<{ bgColor: string }> = styled.TextInput`
   padding: 15px 32px 15px 8px;
   border: 1px solid ${({ bgColor }) => bgColor};
   border-radius: 5px;
@@ -260,9 +262,9 @@ export const ViewTextBox = styled.TextInput<{ bgColor: string }>`
 `;
 
 // Styled button
-export const ViewTextBoxButton = styled.TouchableOpacity<{
+export const ViewTextBoxButton: FC<{
   iskeyboard?: string;
-}>`
+}> = styled.TouchableOpacity`
   position: absolute;
   top: 5px;
   right: 0;

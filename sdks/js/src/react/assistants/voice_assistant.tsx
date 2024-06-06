@@ -3,6 +3,7 @@ import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
   type BaseAssistantProps,
+  type CopilotSyleContainerType,
   copilotStyleDefaults,
   scopeDefaults,
   determinePreferredLang,
@@ -37,8 +38,8 @@ export const VoiceAssistant = ({
   messageStyle = {},
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
-  position = copilotStyleDefaults.container.position || "bottom-right",
-  keyboardPosition = copilotStyleDefaults.keyboardButton.position,
+  position = copilotStyleDefaults?.container?.position ?? "bottom-right",
+  keyboardPosition = copilotStyleDefaults?.keyboardButton?.position,
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {
@@ -61,17 +62,19 @@ export const VoiceAssistant = ({
     loadCurrentConfig(config, actionsFn, actionCallbacksFn);
 
   const isRightPositioned =
-    currentStyle.keyboardButton.position === "right" ||
+    currentStyle?.keyboardButton?.position === "right" ||
     keyboardPosition === "right";
   const isLeftPositioned =
-    currentStyle.keyboardButton.position === "left" &&
+    currentStyle?.keyboardButton?.position === "left" &&
     keyboardPosition === "left";
   const isCenterPositioned =
     ["bottom-center", "top-center"].includes(position) ||
-    ["bottom-center", "top-center"].includes(currentStyle.container.position);
+    ["bottom-center", "top-center"].includes(
+      currentStyle?.container?.position as CopilotStylePositionType,
+    );
 
   const [tipMessage, setTipMessage] = useState(
-    currentStyle.toolTip.welcomeMessage,
+    currentStyle?.toolTip?.welcomeMessage,
   );
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
@@ -310,7 +313,7 @@ export const VoiceAssistant = ({
       <CopilotContainer
         id={`sugar-ai-copilot-${buttonId}`}
         className="sugar-ai-copilot-container"
-        container={currentStyle?.container}
+        container={currentStyle?.container as CopilotSyleContainerType}
         position={position as CopilotStylePositionType}
         style={style}
       >
@@ -345,7 +348,7 @@ export const VoiceAssistant = ({
                 enableKeyboard={enableKeyboard}
               />
             )}
-            {!hideToolTip && !currentStyle.toolTip.disabled && (
+            {!hideToolTip && !currentStyle?.toolTip?.disabled && (
               <ToolTip
                 currentStyle={currentStyle}
                 position={position}

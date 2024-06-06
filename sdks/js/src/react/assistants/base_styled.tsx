@@ -10,7 +10,7 @@ import {
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
 } from "@sugar-ai/core";
-import { FC } from "react";
+import { type FC } from "react";
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,

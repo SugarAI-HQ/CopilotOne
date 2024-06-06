@@ -3,6 +3,7 @@ import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
   type BaseAssistantProps,
+  type CopilotSyleContainerType,
   copilotStyleDefaults,
   scopeDefaults,
   shouldForwardProp,
@@ -29,8 +30,8 @@ export const TextAssistant = ({
   messageStyle = {},
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
-  position = copilotStyleDefaults.container.position || "bottom-right",
-  keyboardPosition = copilotStyleDefaults.keyboardButton.position,
+  position = copilotStyleDefaults?.container?.position ?? "bottom-right",
+  keyboardPosition = copilotStyleDefaults?.keyboardButton?.position,
   actionsFn,
   actionCallbacksFn,
 }: BaseAssistantProps) => {
@@ -53,7 +54,7 @@ export const TextAssistant = ({
   DEV: console.log(isprocessing);
 
   const [tipMessage, setTipMessage] = useState(
-    currentStyle.toolTip.welcomeMessage,
+    currentStyle?.toolTip?.welcomeMessage,
   );
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
@@ -71,7 +72,7 @@ export const TextAssistant = ({
       setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
     }, currentStyle?.toolTip?.delay);
     setHideToolTip(true);
-    setTipMessage(currentStyle.toolTip.welcomeMessage);
+    setTipMessage(currentStyle?.toolTip?.welcomeMessage);
     return () => {
       clearTimeout(timer);
     };
@@ -123,7 +124,7 @@ export const TextAssistant = ({
       <CopilotContainer
         id={`sugar-ai-copilot-${buttonId}`}
         className="sugar-ai-copilot-container"
-        container={currentStyle?.container}
+        container={currentStyle?.container as CopilotSyleContainerType}
         position={position as CopilotStylePositionType}
         style={style}
       >
@@ -135,7 +136,7 @@ export const TextAssistant = ({
               enableKeyboard={enableKeyboard}
             />
 
-            {!hideToolTip && !currentStyle.toolTip.disabled && (
+            {!hideToolTip && !currentStyle?.toolTip?.disabled && (
               <ToolTip
                 currentStyle={currentStyle}
                 position={position}

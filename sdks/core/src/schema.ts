@@ -114,11 +114,11 @@ export const copilotToolTipSchema = z.object({
 export type CopilotSyleTooltipType = z.infer<typeof copilotToolTipSchema>;
 
 export const copilotSytleSchema = z.object({
-  container: copilotSyleContainerSchema,
-  theme: copilotSyleThemeSchema,
-  voiceButton: copilotStyleVoiceButtonSchema,
-  keyboardButton: copilotStyleKeyboardButtonSchema,
-  toolTip: copilotToolTipSchema,
+  container: copilotSyleContainerSchema.optional(),
+  theme: copilotSyleThemeSchema.optional(),
+  voiceButton: copilotStyleVoiceButtonSchema.optional(),
+  keyboardButton: copilotStyleKeyboardButtonSchema.optional(),
+  toolTip: copilotToolTipSchema.optional(),
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
@@ -209,7 +209,7 @@ export const embeddingScopeSchema = z.object({
   // copilotId: z.string(),
   scope1: z.string().optional().default(""),
   scope2: z.string().optional().default(""),
-  groupId: z.string().default(DEFAULT_GROUP_ID),
+  groupId: z.string().optional().default(DEFAULT_GROUP_ID),
 });
 export type EmbeddingScopeType = z.infer<typeof embeddingScopeSchema>;
 

@@ -7,10 +7,10 @@
   ],
   "module": "./dist/rn/index.mjs",
   "main": "./dist/rn/index.mjs",
-  "types": "./dist/rn/index.d.ts",
+  "types": "./dist/rn/index.d.mts",
   "exports": {
     ".": {
-      "types": "./dist/rn/index.d.ts",
+      "types": "./dist/rn/index.d.mts",
       "requirex": "./dist/cjs/index.cjs",
       "import": "./dist/rn/index.mjs",
       "default": "./dist/rn/index.mjs"
@@ -33,7 +33,7 @@
     "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
     "build:clean": "rm -rf ./dist meta*.json",
     "build:dev": "npm-run-all build:clean compile && node ./scripts/prepare-package-json.js",
-    "build": "npm run build:clean && node build.mjs",
+    "build": "npm run build:clean && tsup",
     "prepublishOnly": "npm run build && npm test && npm run lint",
     "preversion": "npm test && npm run lint",
     "version": "npm run format && git add -A src",
@@ -74,6 +74,7 @@
     "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-native": "^0.73.1",
+    "tsup": "^8.1.0",
     "typescript": "^5.4.4"
   },
   "dependencies": {
