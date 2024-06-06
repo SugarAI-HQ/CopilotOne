@@ -209,7 +209,7 @@ export const embeddingScopeSchema = z.object({
   // copilotId: z.string(),
   scope1: z.string().optional().default(""),
   scope2: z.string().optional().default(""),
-  groupId: z.string().optional().default(DEFAULT_GROUP_ID),
+  groupId: z.string().default(DEFAULT_GROUP_ID).optional(),
 });
 export type EmbeddingScopeType = z.infer<typeof embeddingScopeSchema>;
 

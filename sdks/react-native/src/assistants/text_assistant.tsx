@@ -15,6 +15,8 @@ import {
   type CopilotStylePositionType,
   type EmbeddingScopeWithUserType,
   type BaseAssistantProps,
+  type CopilotSyleContainerType,
+  type CopilotSyleThemeType,
   copilotStyleDefaults,
   scopeDefaults,
   loadCurrentConfig,
@@ -42,7 +44,7 @@ export const TextAssistant = ({
   const [finalOutput, setFinalOutput] = useState<string>("");
   const [aiResponse, setAiResponse] = useState<string>("");
   const [hideTextButton, setHideTextButton] = useState(false);
-  const [textMessage, setTextMessage] = useState("");
+  const [textMessage, setTextMessage] = useState<string>("");
   const [isTyping, setIsTyping] = useState(false);
 
   const { config, clientUserId, textToAction } = useCopilot();
@@ -129,7 +131,7 @@ export const TextAssistant = ({
     <>
       <ViewCopilotContainer
         id={`sugar-ai-copilot-id-${buttonId}`}
-        container={currentStyle?.container}
+        container={currentStyle?.container as CopilotSyleContainerType}
         position={position as CopilotStylePositionType}
         style={style}
       >
@@ -150,14 +152,14 @@ export const TextAssistant = ({
 
         {(aiResponse || finalOutput) && (
           <ViewChatMessage
-            container={currentStyle?.container}
+            container={currentStyle?.container as CopilotSyleContainerType}
             position={position}
             id={`sugar-ai-chat-message-${buttonId}`}
             style={messageStyle}
           >
             {finalOutput && (
               <ViewMessage
-                theme={currentStyle?.theme}
+                theme={currentStyle?.theme as CopilotSyleThemeType}
                 id={`sugar-ai-message-${buttonId}`}
               >
                 {finalOutput}
@@ -165,7 +167,7 @@ export const TextAssistant = ({
             )}
             {aiResponse && (
               <ViewMessage
-                theme={currentStyle?.theme}
+                theme={currentStyle?.theme as CopilotSyleThemeType}
                 id={`sugar-ai-message-${buttonId}`}
                 role="assistant"
               >
@@ -177,12 +179,12 @@ export const TextAssistant = ({
       </ViewCopilotContainer>
       {hideTextButton && (
         <ViewTextBoxContainer
-          container={currentStyle?.container}
+          container={currentStyle?.container as CopilotSyleContainerType}
           position={position}
           id={`sugar-ai-text-box-container-${buttonId}`}
         >
           <ViewTextBox
-            placeholder={currentStyle?.keyboardButton?.placeholder}
+            placeholder={currentStyle?.keyboardButton?.placeholder as string}
             defaultValue={textMessage}
             bgColor={currentStyle?.keyboardButton?.bgColor as string}
             onChangeText={(newText) => {

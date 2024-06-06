@@ -22,6 +22,9 @@ import {
   type CopilotStylePositionType,
   type EmbeddingScopeWithUserType,
   type BaseAssistantProps,
+  type CopilotSyleContainerType,
+  type CopilotSyleButtonType,
+  type CopilotSyleThemeType,
   copilotStyleDefaults,
   scopeDefaults,
   loadCurrentConfig,
@@ -41,7 +44,7 @@ export const VoiceAssistant = ({
   messageStyle = {},
   toolTipContainerStyle = {},
   toolTipMessageStyle = {},
-  position = copilotStyleDefaults?.container?.position || "bottom-right",
+  position = copilotStyleDefaults?.container?.position ?? "bottom-right",
   keyboardPosition = copilotStyleDefaults?.keyboardButton?.position,
   actionsFn,
   actionCallbacksFn,
@@ -285,34 +288,34 @@ export const VoiceAssistant = ({
     <>
       <ViewCopilotContainer
         id={`sugar-ai-copilot-id-${buttonId}`}
-        container={currentStyle?.container}
+        container={currentStyle?.container as CopilotSyleContainerType}
         position={position as CopilotStylePositionType}
         style={style}
       >
         {!hideTextButton && (
           <ViewVoiceButton
             style={voiceButtonStyle}
-            button={currentStyle?.voiceButton}
+            button={currentStyle?.voiceButton as CopilotSyleButtonType}
             onPress={() => _startRecognizing()}
             isprocessing={isprocessing.toString()}
             islistening={islistening.toString()}
             disabled={isDisabled}
           >
             {isprocessing ? (
-              <ActivityIndicator color={currentStyle.voiceButton.color} />
+              <ActivityIndicator color={currentStyle?.voiceButton?.color} />
             ) : islistening ? (
               <OpenMic
                 // width={26}
                 // height={26}
-                size={currentStyle?.voiceButton.iconSize}
-                color={currentStyle?.voiceButton.color}
+                size={currentStyle?.voiceButton?.iconSize}
+                color={currentStyle?.voiceButton?.color}
               />
             ) : (
               <Mic
                 // width={26}
                 // height={26}
-                size={currentStyle?.voiceButton.iconSize}
-                color={currentStyle?.voiceButton.color}
+                size={currentStyle?.voiceButton?.iconSize}
+                color={currentStyle?.voiceButton?.color}
               />
             )}
           </ViewVoiceButton>
@@ -320,7 +323,7 @@ export const VoiceAssistant = ({
 
         {(aiResponse || finalOutput || partialOutput) && (
           <ViewChatMessage
-            container={currentStyle?.container}
+            container={currentStyle?.container as CopilotSyleContainerType}
             position={position}
             id={`sugar-ai-chat-message-${buttonId}`}
             style={messageStyle}
@@ -328,7 +331,7 @@ export const VoiceAssistant = ({
             <Animated.View style={{ opacity: fadeAnim }}>
               {(partialOutput || finalOutput) && (
                 <ViewMessage
-                  theme={currentStyle?.theme}
+                  theme={currentStyle?.theme as CopilotSyleThemeType}
                   id={`sugar-ai-message-${buttonId}`}
                   isfading={isFading.toString()}
                 >
@@ -337,7 +340,7 @@ export const VoiceAssistant = ({
               )}
               {aiResponse && (
                 <ViewMessage
-                  theme={currentStyle?.theme}
+                  theme={currentStyle?.theme as CopilotSyleThemeType}
                   id={`sugar-ai-message-${buttonId}`}
                   role="assistant"
                   isfading={isFading.toString()}
@@ -351,7 +354,7 @@ export const VoiceAssistant = ({
       </ViewCopilotContainer>
       {hideTextButton && (
         <ViewTextBoxContainer
-          container={currentStyle?.container}
+          container={currentStyle?.container as CopilotSyleContainerType}
           position={position}
           id={`sugar-ai-text-box-container-${buttonId}`}
         >

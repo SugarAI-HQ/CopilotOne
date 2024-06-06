@@ -36,6 +36,9 @@ const DEVICE_WIDTH = Dimensions.get("window").width;
 export const ViewCopilotContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
+  children?: React.ReactNode;
+  id: string;
+  style: string;
 }> = styled(View)`
   position: absolute;
   ${({ container, position }) => {
@@ -95,6 +98,9 @@ export const ViewCopilotContainer: FC<{
 export const ViewChatMessage: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
+  style: string;
+  id: string;
+  children?: React.ReactNode;
 }> = styled(View)`
   position: absolute;
 
@@ -146,7 +152,15 @@ export const ViewChatMessage: FC<{
   }}
 `;
 
-export const ViewVoiceButton: FC<CopilotVoiceButtonPropsType> = styled.TouchableOpacity`
+export const ViewVoiceButton: FC<{
+  button: CopilotVoiceButtonPropsType["button"];
+  children?: React.ReactNode;
+  style: string;
+  onPress: () => void;
+  isprocessing: string;
+  islistening: string;
+  disabled?: boolean;
+}> = styled.TouchableOpacity`
   background-color: ${({ button }) => button?.bgColor};
   color: ${({ button }) => button?.color};
   border: none;
@@ -160,7 +174,12 @@ export const ViewVoiceButton: FC<CopilotVoiceButtonPropsType> = styled.Touchable
   opacity: ${({ isprocessing }) => (isprocessing === "true" ? "0.5" : "1")};
 `;
 
-export const ViewKeyboardButton: FC<CopilotKeyboardButtonPropsType> = styled.TouchableOpacity`
+export const ViewKeyboardButton: FC<{
+  button: CopilotKeyboardButtonPropsType["button"];
+  style: string;
+  children?: React.ReactNode;
+  onPress: () => void;
+}> = styled.TouchableOpacity`
   position: relative;
   background-color: ${({ button }) => button?.bgColor};
   width: 50px;
@@ -179,6 +198,8 @@ export const ViewMessage: FC<{
   theme: CopilotSyleThemeType;
   role?: string;
   isfading?: string;
+  id: string;
+  children?: React.ReactNode;
 }> = styled(Text)`
   background-color: ${({ theme, role }) =>
     messageRoleEnum.options.includes(role as MessageRoleType)
@@ -220,6 +241,8 @@ export const ViewTootTipMessage = styled(ViewMessage)`
 export const ViewTextBoxContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
+  id: string;
+  children?: React.ReactNode;
 }> = styled(View)`
   position: absolute;
   right: 25px;
@@ -252,7 +275,14 @@ export const ViewTextBoxContainer: FC<{
   }}
 `;
 
-export const ViewTextBox: FC<{ bgColor: string }> = styled.TextInput`
+export const ViewTextBox: FC<{
+  bgColor: string;
+  children?: React.ReactNode;
+  placeholder?: string;
+  defaultValue: string;
+  onChangeText: (text: string) => void;
+  onSubmitEditing: () => void;
+}> = styled.TextInput`
   padding: 15px 32px 15px 8px;
   border: 1px solid ${({ bgColor }) => bgColor};
   border-radius: 5px;
@@ -264,6 +294,10 @@ export const ViewTextBox: FC<{ bgColor: string }> = styled.TextInput`
 // Styled button
 export const ViewTextBoxButton: FC<{
   iskeyboard?: string;
+  onPress: () => void;
+  children?: React.ReactNode;
+  disabled?: boolean;
+  activeOpacity?: number;
 }> = styled.TouchableOpacity`
   position: absolute;
   top: 5px;
