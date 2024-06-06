@@ -4,7 +4,7 @@ import { TextAssistant } from "../react/assistants/text_assistant";
 import { VoiceAssistant } from "../react/assistants/voice_assistant";
 import { CopilotProvider } from "@sugar-ai/core";
 
-export const predefindedAssistants = [VoiceAssistant, TextAssistant];
+export const predefindedAssistants = { VoiceAssistant, TextAssistant };
 
 export const addAssistant = (
   containerId: string,
@@ -30,9 +30,8 @@ export const removeAssistant = (containerId: string, assistants: [any]) => {
 
 export const App = (assistant, copilotConfig, actions, actionCallbacks) => {
   const { assistant: assistantType, assistantConfig } = assistant;
-  const assistantComponent = predefindedAssistants.find(
-    (assistant) => assistant.name === assistantType,
-  );
+  const assistantComponent = predefindedAssistants[assistantType];
+
   if (assistantComponent) {
     return createElement(CopilotProvider, {
       config: copilotConfig,
