@@ -1,7 +1,5 @@
 import { defineConfig } from "tsup";
 
-// export default defineConfig();
-
 export default defineConfig((options) => {
   return {
     entry: ["src/index.ts"],
@@ -18,6 +16,9 @@ export default defineConfig((options) => {
     dts: true,
 
     metafile: true,
+
+    drop: ["debugger"],
+    dropLabels: ["DEV", "TEST"],
 
     outExtension({ format }) {
       return {

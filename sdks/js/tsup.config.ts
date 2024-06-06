@@ -1,14 +1,12 @@
 import { defineConfig } from "tsup";
 
-// export default defineConfig();
-
 export default defineConfig((options) => {
   return {
-    entry: ["src/index.ts"],
+    entry: ["src/react/index.ts"],
     outDir: "dist/esm",
-    splitting: false,
-    sourcemap: true,
-    treeshake: true,
+    // splitting: false,
+    // sourcemap: true,
+    // treeshake: true,
 
     clean: true,
     minify: !options.watch,
@@ -17,7 +15,10 @@ export default defineConfig((options) => {
 
     dts: true,
 
-    metafile: true,
+    // metafile: true,
+
+    drop: ["debugger"],
+    dropLabels: ["DEV", "TEST"],
 
     outExtension({ format }) {
       return {
