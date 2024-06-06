@@ -16,7 +16,7 @@ export default defineConfig((options) => {
 
     dts: true,
 
-    // metafile: true,
+    metafile: true,
 
     drop: ["debugger"],
     dropLabels: ["DEV", "TEST"],

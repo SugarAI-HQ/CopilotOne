@@ -1,19 +1,19 @@
 {
   "name": "@sugar-ai/copilot-one-rn",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
   ],
-  "module": "./dist/rn/index.mjs",
-  "main": "./dist/rn/index.mjs",
-  "types": "./dist/rn/index.d.mts",
+  "module": "./dist/esm/index.mjs",
+  "main": "./dist/esm/index.mjs",
+  "types": "./dist/esm/index.d.mts",
   "exports": {
     ".": {
-      "types": "./dist/rn/index.d.mts",
+      "types": "./dist/esm/index.d.mts",
       "requirex": "./dist/cjs/index.cjs",
-      "import": "./dist/rn/index.mjs",
-      "default": "./dist/rn/index.mjs"
+      "import": "./dist/esm/index.mjs",
+      "default": "./dist/esm/index.mjs"
     }
   },
   "homepage": "https://docs.sugarai.dev/integrations/2_react_native/",
@@ -24,7 +24,8 @@
   },
   "scripts": {
     "devx": "tsc -b ./tsconfig.esm.json ./tsconfig.types.json -w",
-    "dev": "node dev.mjs",
+    "devxx": "node dev.mjs",
+    "dev": "tsup --watch",
     "format": "prettier --write \"src/**/*.ts\"",
     "updateClient": "fern generate && prettier --write \"src/api-client/**/*.ts\"",
     "lint": "eslint --quiet 'src/**'",
