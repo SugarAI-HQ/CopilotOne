@@ -10,6 +10,7 @@ import {
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
 } from "@sugar-ai/core";
+import { FC } from "react";
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,
@@ -49,10 +50,19 @@ export const sparkle = keyframes`
     transform: scale(1.2);
   }`;
 
-export const CopilotContainer = styled.div<{
+// export const CopilotContainer = styled.div<{
+//   container: CopilotSyleContainerType;
+//   position: CopilotStylePositionType;
+// }>`
+
+export const CopilotContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+  children?: React.ReactNode;
+  id: string;
+  className: string;
+  style: string;
+}> = styled.div`
   position: fixed;
   ${({ container, position }) => {
     const positions =
@@ -102,10 +112,10 @@ export const CopilotContainer = styled.div<{
   z-index: 1000; /* Ensure the widget is above other elements */
 `;
 
-export const ChatMessage = styled.div<{
+export const ChatMessage: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+}> = styled.div`
   position: fixed;
   width: 300px;
   max-height: calc(100vh - 120px);
@@ -161,7 +171,7 @@ export const ChatMessage = styled.div<{
   }}
 `;
 
-export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
+export const VoiceButton: FC<CopilotVoiceButtonPropsType> = styled.button`
   background-color: ${({ button }) => button?.bgColor};
   color: ${({ button }) => button?.color};
   border: none;
@@ -185,7 +195,7 @@ export const VoiceButton = styled.button<CopilotVoiceButtonPropsType>`
         `}
 `;
 
-export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
+export const KeyboardButton: FC<CopilotKeyboardButtonPropsType> = styled.button`
   position: relative;
   background-color: ${({ button }) => button?.color};
   width: 40px;
@@ -201,12 +211,12 @@ export const KeyboardButton = styled.button<CopilotKeyboardButtonPropsType>`
   border: unset;
 `;
 
-export const ButtonContainer = styled.div``;
+export const ButtonContainer: FC = styled.div``;
 
-export const Message = styled.div<{
+export const Message: FC<{
   theme: CopilotSyleThemeType;
   role?: string;
-}>`
+}> = styled.div`
   background-color: ${({ theme, role }) =>
     messageRoleEnum.options.includes(role as MessageRoleType)
       ? "white"
@@ -263,10 +273,10 @@ export const TootTipMessage = styled(Message)`
 `;
 
 // Wrapper component to contain input box and button
-export const TextBoxContainer = styled.div<{
+export const TextBoxContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-}>`
+}> = styled.div`
   position: fixed;
   right: 25px;
 
@@ -305,7 +315,7 @@ export const TextBoxContainer = styled.div<{
   }}
 `;
 
-export const TextBox = styled.input<{ color: string }>`
+export const TextBox: FC<{ color: string }> = styled.input`
   padding: 15px 32px 15px 8px;
   border: 1px solid ${({ color }) => color};
   border-radius: 5px;
@@ -320,7 +330,7 @@ export const TextBox = styled.input<{ color: string }>`
 `;
 
 // Styled button
-export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
+export const TextBoxButton: FC<{ iskeyboard?: string }> = styled.button`
   position: absolute;
   top: 5px;
   right: 0;
@@ -341,7 +351,7 @@ export const TextBoxButton = styled.button<{ iskeyboard?: string }>`
 
 // button, voice -> theme -> defaults
 
-export const KeyboardEmptyContainer = styled(KeyboardButton)`
+export const KeyboardEmptyContainer: FC = styled(KeyboardButton)`
   box-shadow: none;
   height: 0px;
   background: unset;
