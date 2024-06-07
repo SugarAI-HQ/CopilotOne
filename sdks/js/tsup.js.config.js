@@ -19,8 +19,16 @@ export default defineConfig((options) => {
     platform: "browser",
     dts: true,
     metafile: true,
-    drop: ["debugger"],
-    dropLabels: ["DEV", "TEST"],
+    // drop: ["debugger"],
+    // dropLabels: ["DEV", "TEST"],
+
+    esbuildOptions(options, context) {
+      return {
+        ...options,
+        drop: ["debugger"],
+        dropLabels: ["DEV", "TEST"],
+      };
+    },
 
     async onSuccess() {
       try {

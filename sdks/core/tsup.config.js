@@ -18,8 +18,16 @@ export default defineConfig((options) => {
 
     metafile: true,
 
-    drop: ["debugger"],
-    dropLabels: ["DEV", "TEST"],
+    esbuildOptions(options, context) {
+      return {
+        ...options,
+        drop: ["debugger"],
+        dropLabels: ["DEV", "TEST"],
+      };
+    },
+
+    // drop: ["debugger"],
+    // dropLabels: ["DEV", "TEST"],
 
     outExtension({ format }) {
       return {

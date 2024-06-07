@@ -71,6 +71,7 @@ export const CopilotProvider = function ({
   // 1. Setup userId
   const clientUserId: string = generateUserId(config?.client?.userId ?? null);
   DEV: console.log(`clientUserId: ${clientUserId}`);
+  config.clientUserId = clientUserId;
 
   // 2. Setup User Auth
   // 3. Setup API Client
