@@ -17,7 +17,7 @@ import { type ServiceGenerateRequestSkillsItem } from "./api-client/api";
 export function validate(
   name: string,
   registrationSchema: ActionRegistrationType,
-  func: Function
+  func: Function,
 ): string[] {
   const errors: string[] = [];
 
@@ -57,7 +57,7 @@ export function validate(
 
       if (param.name !== paramName) {
         console.warn(
-          `[${name}] Mismatached parameter name expected ${param.name} got: ${paramName}`
+          `[${name}] Mismatached parameter name expected ${param.name} got: ${paramName}`,
         );
       }
     });
@@ -71,7 +71,7 @@ export const register = (
   actionDefinition: ActionRegistrationType,
   actionCallback: Function,
   actions: Array<Record<string, ActionDefinitionType>> = [],
-  callbacks: Array<Record<string, Function>> = []
+  callbacks: Array<Record<string, Function>> = [],
 ) => {
   if (!actionDefinition) {
     throw new Error(`[${name}] Action config is required`);
@@ -84,7 +84,7 @@ export const register = (
   const errors = validate(name, actionDefinition, actionCallback);
   if (errors.length > 0) {
     throw new Error(
-      `[${name}] Invalid action definition: ${errors.join(", ")}`
+      `[${name}] Invalid action definition: ${errors.join(", ")}`,
     );
   }
 
@@ -94,13 +94,13 @@ export const register = (
   callbacks[name] = actionCallback;
 
   PROD: console.log(
-    `[${name}] Action Registered ${JSON.stringify(actions[name])}`
+    `[${name}] Action Registered ${JSON.stringify(actions[name])}`,
   );
 };
 export const unregister = (
   name: string,
   actions: Array<Record<string, ActionDefinitionType>>,
-  callbacks: Array<Record<string, Function>>
+  callbacks: Array<Record<string, Function>>,
 ) => {
   // Assuming actions is defined somewhere globally or in the scope
   DEV: console.log(`Unregistering Actions ${name}`);
@@ -116,7 +116,7 @@ export const unregister = (
 };
 
 export function transformActionRegistrationToDefinition(
-  registration: ActionRegistrationType
+  registration: ActionRegistrationType,
 ): ActionDefinitionType {
   const actionDefinition: ActionDefinitionType = {
     type: "function",
@@ -182,7 +182,7 @@ TEST: setTimeout(() => {
 
 export const executeAction = async function executeAction(
   actions,
-  actionCallbacks
+  actionCallbacks,
 ) {
   for (const index in actions) {
     // Access each action object
@@ -196,7 +196,7 @@ export const executeAction = async function executeAction(
     // actionCallbacks[actionName].call(null, actionArgs);
     // actionCallbacks[actionName].apply(null, actionArgs);
     PROD: console.log(
-      `[${actionName}] Calling action ----> ${actionName}(${action.function.arguments})`
+      `[${actionName}] Calling action ----> ${actionName}(${action.function.arguments})`,
     );
 
     actionCallbacks[actionName](...Object.values(actionArgs));
@@ -210,7 +210,7 @@ export async function textToAction(
   scope: EmbeddingScopeWithUserType,
   config,
   actions: Array<Record<string, ActionDefinitionType>> = [],
-  actionCallbacks: Array<Record<string, Function>> = []
+  actionCallbacks: Array<Record<string, Function>> = [],
 ): Promise<string> {
   const { reset, addMarker, getStats } = performanceTracker();
   reset();
@@ -248,11 +248,12 @@ export async function textToAction(
       chat: {
         id: config.clientUserId,
         message: msg,
+        historyChat: 4,
       },
       // messages: messages.slice(-3),
       // @ts-expect-error
       skills: Object.values(actions) as ServiceGenerateRequestSkillsItem[],
-    }
+    },
   )) as SugarAiApi.LiteServiceGenerateResponse;
   // const c = await makeInference(
   //   promptTemplate,
