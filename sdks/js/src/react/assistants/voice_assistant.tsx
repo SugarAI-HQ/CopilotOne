@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
@@ -55,11 +55,17 @@ export const VoiceAssistant = ({
   const [hideVoiceButton, setHideVoiceButton] = useState(false);
   const [textMessage, setTextMessage] = useState("");
   const [isUserEngaged, setIsUserEngaged] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { config, clientUserId, textToAction } = useCopilot();
 
-  const { actions, actionCallbacks, currentStyle, currentAiConfig } =
-    loadCurrentConfig(config, actionsFn, actionCallbacksFn);
+  const {
+    actions,
+    actionCallbacks,
+    currentStyle,
+    currentAiConfig,
+    currentNudgeConfig,
+  } = loadCurrentConfig(config, actionsFn, actionCallbacksFn);
 
   const isRightPositioned =
     currentStyle?.keyboardButton?.position === "right" ||
@@ -73,9 +79,7 @@ export const VoiceAssistant = ({
       currentStyle?.container?.position as CopilotStylePositionType,
     );
 
-  const [tipMessage, setTipMessage] = useState(
-    currentStyle?.toolTip?.welcomeMessage,
-  );
+  const [tipMessage, setTipMessage] = useState(currentNudgeConfig.welcome.text);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -89,10 +93,11 @@ export const VoiceAssistant = ({
   useEffect(() => {
     void checkIfAudioPermissionGranted();
     setButtonName(id ?? (position as string));
-    const timer = setTimeout(() => {
-      setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
-    }, currentStyle?.toolTip?.delay);
-    setHideToolTip(true);
+    setHideToolTip(false);
+    const timer = setTimeout(async () => {
+      currentNudgeConfig?.welcome?.voiceEnabled && (await speak(tipMessage));
+    }, currentNudgeConfig?.welcome?.delay * 1000);
+    // setHideToolTip(true);
     return () => {
       clearTimeout(timer);
     };
@@ -307,6 +312,40 @@ export const VoiceAssistant = ({
     await processSpeechToText(newTextMessage, false);
   };
 
+  const idleNudge = async () => {
+    setHideToolTip(false);
+    setTipMessage(currentNudgeConfig.idle.text);
+    console.log(hideToolTip, tipMessage);
+    DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
+    currentNudgeConfig?.idle?.voiceEnabled &&
+      (await speak(currentNudgeConfig.idle.text));
+  };
+
+  const resetTimer = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(
+      idleNudge,
+      currentNudgeConfig.idle.timeout * 1000,
+    );
+  };
+
+  useEffect(() => {
+    root.addEventListener("mousemove", resetTimer);
+    root.addEventListener("keydown", resetTimer);
+    return () => {
+      root.removeEventListener("mousemove", resetTimer);
+      root.removeEventListener("keydown", resetTimer);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  console.log(hideToolTip, tipMessage);
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <GlobalStyle />
@@ -348,7 +387,7 @@ export const VoiceAssistant = ({
                 enableKeyboard={enableKeyboard}
               />
             )}
-            {!hideToolTip && !currentStyle?.toolTip?.disabled && (
+            {!hideToolTip && (
               <ToolTip
                 currentStyle={currentStyle}
                 position={position}
@@ -356,8 +395,20 @@ export const VoiceAssistant = ({
                 toolTipContainerStyle={toolTipContainerStyle}
                 toolTipMessageStyle={toolTipMessageStyle}
                 tipMessage={tipMessage}
+                config={currentNudgeConfig?.welcome}
               />
             )}
+            {/* {!hideToolTip && currentNudgeConfig?.idle?.enabled && (
+              <ToolTip
+                currentStyle={currentStyle}
+                position={position}
+                buttonId={buttonId}
+                toolTipContainerStyle={toolTipContainerStyle}
+                toolTipMessageStyle={toolTipMessageStyle}
+                tipMessage={tipMessage}
+                config={currentNudgeConfig?.welcome}
+              />
+            )} */}
           </>
         )}
 

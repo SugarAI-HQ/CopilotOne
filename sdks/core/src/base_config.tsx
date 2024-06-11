@@ -2,6 +2,7 @@ import {
   type CopilotSytleType,
   copilotStyleDefaults,
   copilotAiDefaults,
+  copilotNudgeDefaults,
 } from "./schema";
 
 export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
@@ -35,10 +36,10 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
       bgColor: currentTheme.primaryColor,
       color: currentTheme.secondaryColor,
     },
-    toolTip: {
-      ...copilotStyleDefaults.toolTip,
-      ...config?.style?.toolTip,
-    },
+    // toolTip: {
+    //   ...copilotStyleDefaults.toolTip,
+    //   ...config?.style?.toolTip,
+    // },
   };
 
   DEV: console.log(
@@ -56,11 +57,21 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
 
   DEV: console.log(`current AI config ---> ${JSON.stringify(currentAiConfig)}`);
 
+  const currentNudgeConfig = {
+    ...copilotNudgeDefaults,
+    ...config?.nudges,
+  };
+
+  DEV: console.log(
+    `current voice nudge config ---> ${JSON.stringify(currentNudgeConfig)}`,
+  );
+
   return {
     currentTheme,
     actions,
     actionCallbacks,
     currentStyle,
     currentAiConfig,
+    currentNudgeConfig,
   };
 };

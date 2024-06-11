@@ -48,14 +48,17 @@ export const TextAssistant = ({
 
   const { config, clientUserId, textToAction } = useCopilot();
 
-  const { actions, actionCallbacks, currentStyle, currentAiConfig } =
-    loadCurrentConfig(config, actionsFn, actionCallbacksFn);
+  const {
+    actions,
+    actionCallbacks,
+    currentStyle,
+    currentAiConfig,
+    currentNudgeConfig,
+  } = loadCurrentConfig(config, actionsFn, actionCallbacksFn);
 
   DEV: console.log(isprocessing);
 
-  const [tipMessage, setTipMessage] = useState(
-    currentStyle?.toolTip?.welcomeMessage,
-  );
+  const [tipMessage, setTipMessage] = useState(currentAiConfig.welcome.text);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -70,9 +73,9 @@ export const TextAssistant = ({
     setButtonName(id ?? (position as string));
     const timer = setTimeout(() => {
       setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
-    }, currentStyle?.toolTip?.delay);
+    }, currentNudgeConfig?.welcome?.delay);
     setHideToolTip(true);
-    setTipMessage(currentStyle?.toolTip?.welcomeMessage);
+    setTipMessage(currentNudgeConfig?.welcome?.text);
     return () => {
       clearTimeout(timer);
     };
@@ -136,7 +139,7 @@ export const TextAssistant = ({
               enableKeyboard={enableKeyboard}
             />
 
-            {!hideToolTip && !currentStyle?.toolTip?.disabled && (
+            {!hideToolTip && currentNudgeConfig?.welcome?.enabled && (
               <ToolTip
                 currentStyle={currentStyle}
                 position={position}
@@ -144,6 +147,7 @@ export const TextAssistant = ({
                 toolTipContainerStyle={toolTipContainerStyle}
                 toolTipMessageStyle={toolTipMessageStyle}
                 tipMessage={tipMessage}
+                config={currentNudgeConfig?.welcome}
               />
             )}
           </>

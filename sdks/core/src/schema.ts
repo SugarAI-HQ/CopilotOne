@@ -109,6 +109,7 @@ export const copilotToolTipSchema = z.object({
   delay: z.number().optional(),
   duration: z.number().optional(),
   disabled: z.boolean(),
+  enabled: z.boolean(),
 });
 
 export type CopilotSyleTooltipType = z.infer<typeof copilotToolTipSchema>;
@@ -118,11 +119,38 @@ export const copilotSytleSchema = z.object({
   theme: copilotSyleThemeSchema.optional(),
   voiceButton: copilotStyleVoiceButtonSchema.optional(),
   keyboardButton: copilotStyleKeyboardButtonSchema.optional(),
-  toolTip: copilotToolTipSchema.optional(),
+  // toolTip: copilotToolTipSchema.optional(),
+});
+
+export const nudgeSchema = z.object({
+  welcome: z.object({
+    text: stringOptional,
+    delay: z.number().optional(),
+    duration: z.number().optional(),
+    enabled: z.boolean().optional(),
+    voiceEnabled: z.boolean().optional(),
+  }),
+  idle: z.object({
+    text: stringOptional,
+    timeout: z.number().optional(),
+    enabled: z.boolean().optional(),
+    voiceEnabled: z.boolean().optional(),
+  }),
+  exit: z.object({
+    text: stringOptional,
+    enabled: z.boolean().optional(),
+    voiceEnabled: z.boolean().optional(),
+  }),
+  success: z.object({
+    text: stringOptional,
+    enabled: z.boolean().optional(),
+    voiceEnabled: z.boolean().optional(),
+  }),
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
 export type CopilotAiType = z.infer<typeof copilotAiSchema>;
+export type NudgesType = z.infer<typeof nudgeSchema>;
 // export type CopilotContainerPropsType = z.infer<typeof copilotContainerProps>;
 // export type CopilotThemePropsType = z.infer<typeof copilotThemeProps>;
 
@@ -166,11 +194,38 @@ export const copilotStyleDefaults: CopilotSytleType = {
     iconSize: "25",
     placeholder: "Start typing...",
   },
-  toolTip: {
-    welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
-    disabled: true,
-    delay: 3000,
+  // toolTip: {
+  //   welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",
+  //   disabled: true,
+  //   delay: 3000,
+  //   duration: 7,
+  //   enabled: false,
+  // },
+};
+
+export const copilotNudgeDefaults: NudgesType = {
+  welcome: {
+    text: "Tap & Speak: Let AI Guide Your Journey!",
+    delay: 3,
     duration: 7,
+    enabled: true,
+    voiceEnabled: false,
+  },
+  idle: {
+    text: "You have been idle, how can i HELP?",
+    timeout: 30,
+    enabled: true,
+    voiceEnabled: false,
+  },
+  exit: {
+    text: "I have an offer for you!",
+    enabled: true,
+    voiceEnabled: false,
+  },
+  success: {
+    text: "You might like this!",
+    enabled: true,
+    voiceEnabled: false,
   },
 };
 
@@ -193,6 +248,7 @@ export const copilotConfigSchema = z.object({
       userId: z.string().or(z.null()),
     })
     .optional(),
+  nudges: nudgeSchema.default(copilotNudgeDefaults).optional(),
 });
 
 export type CopilotConfigType = z.infer<typeof copilotConfigSchema>;
