@@ -5,7 +5,7 @@ import {
 } from "./schema";
 import { isObjectEmpty } from "./utils";
 
-export const createOrUpdate = async ({
+export const createOrUpdateEmbedding = async ({
   config,
   client,
   scope,

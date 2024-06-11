@@ -9,7 +9,7 @@ import {
   scopeDefaults,
 } from "./schema";
 
-import { createOrUpdate } from "./embedding";
+import { createOrUpdateEmbedding } from "./embedding";
 
 export function createUseState(
   client: SugarAiApiClient,
@@ -46,12 +46,15 @@ export function createUseState(
           ...effectiveScope,
         };
         // Avoid using async here, handle promise inside the function
-        createOrUpdate({ config, client, scope, payload: state }).catch(
-          (error) => {
-            // Handle any errors from the createOrUpdate function
-            PROD: console.error("Error in createOrUpdate:", error);
-          },
-        );
+        createOrUpdateEmbedding({
+          config,
+          client,
+          scope,
+          payload: state,
+        }).catch((error) => {
+          // Handle any errors from the createOrUpdateEmbedding function
+          PROD: console.error("Error in createOrUpdateEmbedding:", error);
+        });
       }, 3000);
 
       return () => {

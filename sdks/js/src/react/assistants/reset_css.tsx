@@ -24,7 +24,7 @@ export const GlobalStyle: React.FC = createGlobalStyle`
     margin: 0;
     padding: 0;
     border: 0 solid;
-    font: inherit;
+    // font: inherit;
     vertical-align: baseline;
   }
 
@@ -87,7 +87,7 @@ export const GlobalStyle: React.FC = createGlobalStyle`
 
   /* Button and form elements */
   button, input, optgroup, select, textarea, ::file-selector-button {
-    font: inherit;
+    // font: inherit;
     color: inherit;
     background: transparent;
     border: none;

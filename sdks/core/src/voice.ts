@@ -189,10 +189,10 @@ export const getPreferredVoiceAndLang = async (
 };
 
 export const getGender = (voice: SpeechSynthesisVoice) => {
-  if (voices.female.includes(voice.name)) {
+  if (voice && voices.female.includes(voice.name)) {
     return "female";
   }
-  if (voices.male.includes(voice.name)) {
+  if (voice && voices.male.includes(voice.name)) {
     return "male";
   }
   return "unknown";
