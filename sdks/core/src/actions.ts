@@ -209,6 +209,7 @@ export async function textToAction(
   promptVariables,
   scope: EmbeddingScopeWithUserType,
   config,
+  isAssitant: boolean = false,
   actions: Array<Record<string, ActionDefinitionType>> = [],
   actionCallbacks: Array<Record<string, Function>> = [],
 ): Promise<string> {
@@ -217,7 +218,7 @@ export async function textToAction(
   addMarker("start");
   const [username, pp, pt, pv] = promptTemplate.split("/");
   const msg: SugarAiApi.ServiceGenerateRequestChatMessage = {
-    role: "user",
+    role: isAssitant ? "assistant" : "user",
     content: userQuery,
   };
 

@@ -317,6 +317,38 @@ export const VoiceAssistant = ({
     }
   };
 
+  const processNudgeToText = async (input: string) => {
+    const newScope: EmbeddingScopeWithUserType = {
+      clientUserId: clientUserId!,
+      ...scope,
+    };
+
+    const { voice, lang } = await getPreferredVoiceAndLang(
+      currentAiConfig.voice,
+      currentAiConfig.lang,
+      root.speechSynthesis,
+    );
+    const currentPromptVariables = {
+      ...currentAiConfig?.defaultPromptVariables,
+      ...promptVariables,
+    };
+    await textToAction(
+      promptTemplate as string,
+      input,
+      {
+        ...currentPromptVariables,
+        "#GENDER": getGender(voice!),
+        "#LANGUAGE": lang,
+      },
+      newScope,
+      true,
+      actions,
+      actionCallbacks,
+    ).finally(() => {
+      setIsprocessing(false);
+    });
+  };
+
   const startSending = async () => {
     const newTextMessage = textMessage;
     setTextMessage("");
@@ -349,6 +381,7 @@ export const VoiceAssistant = ({
       text: config?.text,
       duration: config?.duration,
     });
+    await processNudgeToText(config?.text);
     config?.voiceEnabled && (await speak(config?.text));
   };
 
