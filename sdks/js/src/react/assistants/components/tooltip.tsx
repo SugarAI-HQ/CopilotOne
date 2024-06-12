@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ToolTipContainer, TootTipMessage } from "../base_styled";
 
 const ToolTip = ({
@@ -10,13 +10,6 @@ const ToolTip = ({
   toolTipMessageStyle,
   tipMessage,
 }) => {
-  const [animationKey, setAnimationKey] = useState<number>(Date.now());
-
-  useEffect(() => {
-    setAnimationKey(Date.now());
-  }, []);
-
-  console.log("animationKey", animationKey);
   return (
     <ToolTipContainer
       key={Date.now()}

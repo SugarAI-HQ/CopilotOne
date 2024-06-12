@@ -56,6 +56,11 @@ export const VoiceAssistant = ({
   const [textMessage, setTextMessage] = useState("");
   const [isUserEngaged, setIsUserEngaged] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [tipConfig, setTipConfig] = useState({
+    isEnabled: false,
+    text: "",
+    duration: 7,
+  });
 
   const { config, clientUserId, textToAction } = useCopilot();
 
@@ -79,8 +84,6 @@ export const VoiceAssistant = ({
       currentStyle?.container?.position as CopilotStylePositionType,
     );
 
-  const [tipMessage, setTipMessage] = useState(currentNudgeConfig.welcome.text);
-
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
       "Both promptTemplate and config.prompt.defaultTemmplate are null. Set atleast one of them",
@@ -93,11 +96,17 @@ export const VoiceAssistant = ({
   useEffect(() => {
     void checkIfAudioPermissionGranted();
     setButtonName(id ?? (position as string));
-    setHideToolTip(false);
     const timer = setTimeout(async () => {
-      currentNudgeConfig?.welcome?.voiceEnabled && (await speak(tipMessage));
+      setHideToolTip(false);
+      currentNudgeConfig?.welcome?.voiceEnabled &&
+        (await speak(currentNudgeConfig.welcome.text));
     }, currentNudgeConfig?.welcome?.delay * 1000);
-    // setHideToolTip(true);
+    setHideToolTip(true);
+    setTipConfig({
+      isEnabled: currentNudgeConfig?.welcome?.enabled,
+      text: currentNudgeConfig?.welcome?.text,
+      duration: currentNudgeConfig?.welcome?.duration,
+    });
     return () => {
       clearTimeout(timer);
     };
@@ -143,7 +152,11 @@ export const VoiceAssistant = ({
     if (!haveMicPermission) {
       // TODO: Show error tooltip with message
       PROD: console.warn("[Audio] haven't got mic permissions");
-      setTipMessage("Please enable Mic permission");
+      setTipConfig({
+        isEnabled: currentNudgeConfig?.welcome?.enabled,
+        text: "Please enable Mic permission",
+        duration: currentNudgeConfig?.welcome?.duration,
+      });
       return;
     }
 
@@ -313,12 +326,30 @@ export const VoiceAssistant = ({
   };
 
   const idleNudge = async () => {
-    setHideToolTip(false);
-    setTipMessage(currentNudgeConfig.idle.text);
-    console.log(hideToolTip, tipMessage);
     DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
-    currentNudgeConfig?.idle?.voiceEnabled &&
-      (await speak(currentNudgeConfig.idle.text));
+    await triggerNudge(currentNudgeConfig?.idle);
+    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
+  };
+
+  const exitNudge = async () => {
+    DEV: console.log("exit nudge message", currentNudgeConfig.exit.text);
+    await triggerNudge(currentNudgeConfig?.exit);
+    // await processSpeechToText(currentNudgeConfig?.exit?.text, false, true);
+  };
+
+  const successNudge = async () => {
+    DEV: console.log("success nudge message", currentNudgeConfig.success.text);
+    await triggerNudge(currentNudgeConfig?.success);
+  };
+
+  const triggerNudge = async (config: any) => {
+    setHideToolTip(false);
+    setTipConfig({
+      isEnabled: config?.enabled,
+      text: config?.text,
+      duration: config?.duration,
+    });
+    config?.voiceEnabled && (await speak(config?.text));
   };
 
   const resetTimer = () => {
@@ -344,7 +375,47 @@ export const VoiceAssistant = ({
     };
   }, []);
 
-  console.log(hideToolTip, tipMessage);
+  const handleBeforeUnload = async (event) => {
+    await exitNudge();
+    const message =
+      "Are you sure you want to leave? Changes you made may not be saved.";
+    event.returnValue = message; // Standard message for all modern browsers
+    return message; // Some older browsers require this return statement
+  };
+
+  useEffect(() => {
+    root.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      root.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   const handleBooleanChange = () => {
+  //     if (currentNudgeConfig?.success?.voiceEnabled) {
+  //       console.log("Boolean is true, perform actions here.");
+
+  //       const event = new Event("booleanTrue");
+  //       root.dispatchEvent(event);
+  //     }
+  //   };
+
+  //   handleBooleanChange();
+  // }, [currentNudgeConfig?.success?.voiceEnabled]);
+
+  // useEffect(() => {
+  //   const handleBooleanTrue = () => {
+  //     console.log("Event: Boolean became true");
+  //     successNudge();
+  //   };
+
+  //   root.addEventListener("booleanTrue", handleBooleanTrue);
+
+  //   return () => {
+  //     root.removeEventListener("booleanTrue", handleBooleanTrue);
+  //   };
+  // }, []);
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
@@ -387,28 +458,17 @@ export const VoiceAssistant = ({
                 enableKeyboard={enableKeyboard}
               />
             )}
-            {!hideToolTip && (
+            {!hideToolTip && tipConfig?.isEnabled && (
               <ToolTip
                 currentStyle={currentStyle}
                 position={position}
                 buttonId={buttonId}
                 toolTipContainerStyle={toolTipContainerStyle}
                 toolTipMessageStyle={toolTipMessageStyle}
-                tipMessage={tipMessage}
-                config={currentNudgeConfig?.welcome}
+                tipMessage={tipConfig?.text}
+                config={tipConfig}
               />
             )}
-            {/* {!hideToolTip && currentNudgeConfig?.idle?.enabled && (
-              <ToolTip
-                currentStyle={currentStyle}
-                position={position}
-                buttonId={buttonId}
-                toolTipContainerStyle={toolTipContainerStyle}
-                toolTipMessageStyle={toolTipMessageStyle}
-                tipMessage={tipMessage}
-                config={currentNudgeConfig?.welcome}
-              />
-            )} */}
           </>
         )}
 

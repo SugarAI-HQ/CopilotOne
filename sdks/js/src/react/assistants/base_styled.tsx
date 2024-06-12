@@ -236,18 +236,8 @@ export const Message: FC<{
 
 const fadeInOut = keyframes`
   0% { opacity: 0; }
-  10% { opacity: 0.25; }
-  20% { opacity: 0.50; }
-  30% { opacity: 0.75; }
-  40% { opacity: 1; }
-  45% { opacity: 1; }
-  50% { opacity: 1; }
-  55% { opacity: 1; }
-  60% { opacity: 1; }
-  65% { opacity: 1; }
-  70% { opacity: 0.75; }
-  80% { opacity: 0.50; }
-  90% { opacity: 0.25; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
   100% { opacity: 0; }
 `;
 

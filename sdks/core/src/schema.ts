@@ -133,17 +133,20 @@ export const nudgeSchema = z.object({
   idle: z.object({
     text: stringOptional,
     timeout: z.number().optional(),
+    duration: z.number().optional(),
     enabled: z.boolean().optional(),
     voiceEnabled: z.boolean().optional(),
   }),
   exit: z.object({
     text: stringOptional,
     enabled: z.boolean().optional(),
+    duration: z.number().optional(),
     voiceEnabled: z.boolean().optional(),
   }),
   success: z.object({
     text: stringOptional,
     enabled: z.boolean().optional(),
+    duration: z.number().optional(),
     voiceEnabled: z.boolean().optional(),
   }),
 });
@@ -214,16 +217,19 @@ export const copilotNudgeDefaults: NudgesType = {
   idle: {
     text: "You have been idle, how can i HELP?",
     timeout: 30,
+    duration: 7,
     enabled: true,
     voiceEnabled: false,
   },
   exit: {
     text: "I have an offer for you!",
+    duration: 7,
     enabled: true,
     voiceEnabled: false,
   },
   success: {
     text: "You might like this!",
+    duration: 7,
     enabled: true,
     voiceEnabled: false,
   },
