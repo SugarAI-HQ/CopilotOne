@@ -97,16 +97,10 @@ export const VoiceAssistant = ({
     void checkIfAudioPermissionGranted();
     setButtonName(id ?? (position as string));
     const timer = setTimeout(async () => {
-      setHideToolTip(false);
-      currentNudgeConfig?.welcome?.voiceEnabled &&
-        (await speak(currentNudgeConfig.welcome.text));
+      await welcomeNudge();
     }, currentNudgeConfig?.welcome?.delay * 1000);
     setHideToolTip(true);
-    setTipConfig({
-      isEnabled: currentNudgeConfig?.welcome?.enabled,
-      text: currentNudgeConfig?.welcome?.text,
-      duration: currentNudgeConfig?.welcome?.duration,
-    });
+
     return () => {
       clearTimeout(timer);
     };
@@ -358,6 +352,12 @@ export const VoiceAssistant = ({
     await processSpeechToText(newTextMessage, false);
   };
 
+  const welcomeNudge = async () => {
+    DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
+    await triggerNudge(currentNudgeConfig?.welcome);
+    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
+  };
+
   const idleNudge = async () => {
     DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
     await triggerNudge(currentNudgeConfig?.idle);
@@ -397,17 +397,21 @@ export const VoiceAssistant = ({
   };
 
   useEffect(() => {
-    root.addEventListener("mousemove", resetTimer);
-    root.addEventListener("keydown", resetTimer);
+    if (currentNudgeConfig?.idle?.enabled) {
+      root.addEventListener("mousemove", resetTimer);
+      root.addEventListener("keydown", resetTimer);
+    }
     return () => {
-      root.removeEventListener("mousemove", resetTimer);
-      root.removeEventListener("keydown", resetTimer);
+      if (currentNudgeConfig?.idle?.enabled) {
+        root.removeEventListener("mousemove", resetTimer);
+        root.removeEventListener("keydown", resetTimer);
+      }
 
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, []);
+  }, [currentNudgeConfig?.idle?.enabled]);
 
   const handleBeforeUnload = async (event) => {
     await exitNudge();
@@ -418,16 +422,20 @@ export const VoiceAssistant = ({
   };
 
   useEffect(() => {
-    root.addEventListener("beforeunload", handleBeforeUnload);
+    if (currentNudgeConfig?.exit?.enabled) {
+      root.addEventListener("beforeunload", handleBeforeUnload);
+    }
 
     return () => {
-      root.removeEventListener("beforeunload", handleBeforeUnload);
+      if (currentNudgeConfig?.exit?.enabled) {
+        root.removeEventListener("beforeunload", handleBeforeUnload);
+      }
     };
-  }, []);
+  }, [currentNudgeConfig?.exit?.enabled]);
 
   // useEffect(() => {
   //   const handleBooleanChange = () => {
-  //     if (currentNudgeConfig?.success?.voiceEnabled) {
+  //     if (currentNudgeConfig?.exit?.enabled) {
   //       console.log("Boolean is true, perform actions here.");
 
   //       const event = new Event("booleanTrue");
@@ -436,7 +444,7 @@ export const VoiceAssistant = ({
   //   };
 
   //   handleBooleanChange();
-  // }, [currentNudgeConfig?.success?.voiceEnabled]);
+  // }, [currentNudgeConfig?.exit?.enabled]);
 
   // useEffect(() => {
   //   const handleBooleanTrue = () => {
