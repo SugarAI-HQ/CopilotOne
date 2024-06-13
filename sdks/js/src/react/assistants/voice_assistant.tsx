@@ -305,6 +305,7 @@ export const VoiceAssistant = ({
         "#LANGUAGE": lang,
       },
       newScope,
+      false,
       actions,
       actionCallbacks,
     ).finally(() => {
