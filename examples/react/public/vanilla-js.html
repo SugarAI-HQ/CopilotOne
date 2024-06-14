@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      name="robots"
+    />
+    <meta
+      content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no"
+      name="viewport"
+    />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+    <meta
+      content="SDK to enable integration of copilot experiences into your app using in-house APIs or pre-built skills from Sugar marketplace"
+      name="description"
+    />
+    <meta content="Copilot One Experience" name="keywords" />
+    <meta content="en_US" property="og:locale" />
+    <meta content="website" property="og:type" />
+    <meta
+      content="SugarAI: Build In-App Copilots with Universal Skills"
+      property="og:title"
+    />
+    <meta
+      content="SDK to enable integration of copilot experiences into your app using in-house APIs or pre-built skills from Sugar marketplace"
+      property="og:description"
+    />
+    <meta
+      content="https://copilot.sugarcaneai.dev/images/copilot_one.jpeg"
+      property="og:image"
+    />
+    <meta content="200" property="og:image:width" />
+    <meta content="https://copilot.sugarcaneai.dev/" property="og:url" />
+    <meta content="SugarAI Copilot" property="og:site_name" />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="@sugarcaneai" name="twitter:site" />
+    <meta content="Copilot One Logo" name="twitter:image:alt" />
+    <title>SugarAI: Build In-App Copilots with Universal Skills</title>
+    <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      async
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <style>
+      .div {
+        background-color: #04aa6d; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+      }
+      svg,
+      button {
+        background-color: #04aa6d; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        padding: 50px;
+      }
+    </style>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-MF3WH37JM8"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-MF3WH37JM8");
+    </script>
+    <script>
+      var gWindow = window;
+    </script>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@sugar-ai/copilot-one-js@0.0.40/dist/js/copilot-one.min.js"
+      async
+    ></script>
+    <div href="https://sugarai.dev" id="copilot-one"></div>
+    <div href="https://sugarai.dev" id="copilot-second"></div>
+    <div id="copilot-voice"></div>
+    <div id="copilot-text"></div>
+    <script>
+      const addTodo = (task) => {
+        console.log("task", task);
+      };
+
+      window.saiData = window.saiData || [];
+      function saiAsync() {
+        saiData.push(arguments);
+      }
+
+      // saiAsync('addAssistant', 'copilot-text', 'TextAssistant', {});
+      // saiAsync('addAssistant', 'copilot-text', 'TextAssistant', {});
+
+      // saiAsync('removeAssistant', 'copilot-text');
+
+      saiAsync("setConfig", {
+        copilotId: "da82abb5-cf74-448b-b94d-7e17245cc5d9",
+        server: {
+          endpoint: "https://play.sugarcaneai.dev/api",
+          token: "pk-m0j6E8CfMkedk0orAk0gXyALpOZULs3rSiYulaPFXd2rPlin",
+        },
+
+        ai: {
+          defaultPromptTemplate: "sugar/copilotexample/todoexample/0.0.3",
+          defaultPromptVariables: {
+            "#AGENT_NAME": "Tudy",
+          },
+          successResponse: "Task Done",
+          failureResponse: "I am not able to do this",
+          voice: "",
+          lang: "hi-IN",
+        },
+        style: {
+          container: { position: "bottom-right" },
+          theme: { primaryColor: "#3b83f6" },
+          toolTip: {
+            welcomeMessage: "Hi, I am John. How may I help you today?",
+            delay: 1,
+            disabled: false,
+          },
+
+          voiceButton: {},
+        },
+      });
+
+      saiAsync("addAssistant", "copilot-voice", "VoiceAssistant", {
+        id: "heelo",
+        position: "bottom-center",
+        keyboardPosition: "right",
+      });
+
+      saiAsync(
+        "register",
+        "addTodo",
+        {
+          name: "addTodo",
+          description: "Add a new todo",
+          parameters: [
+            {
+              name: "task",
+              type: "string",
+              description: "Task description",
+              required: true,
+            },
+          ],
+        },
+        addTodo
+      );
+    </script>
+  </body>
+</html>

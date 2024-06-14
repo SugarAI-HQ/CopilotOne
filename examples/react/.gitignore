@@ -1,0 +1,9 @@
+node_modules
+.next/*
+
+.yalc/
+yalc.lock
+
+videos/
+
+.DS_Store
