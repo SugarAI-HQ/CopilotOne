@@ -123,32 +123,40 @@ export const copilotSytleSchema = z.object({
 });
 
 export const nudgeSchema = z.object({
-  welcome: z.object({
-    text: stringOptional,
-    delay: z.number().optional(),
-    duration: z.number().optional(),
-    enabled: z.boolean().optional(),
-    voiceEnabled: z.boolean().optional(),
-  }),
-  idle: z.object({
-    text: stringOptional,
-    timeout: z.number().optional(),
-    duration: z.number().optional(),
-    enabled: z.boolean().optional(),
-    voiceEnabled: z.boolean().optional(),
-  }),
-  exit: z.object({
-    text: stringOptional,
-    enabled: z.boolean().optional(),
-    duration: z.number().optional(),
-    voiceEnabled: z.boolean().optional(),
-  }),
-  success: z.object({
-    text: stringOptional,
-    enabled: z.boolean().optional(),
-    duration: z.number().optional(),
-    voiceEnabled: z.boolean().optional(),
-  }),
+  welcome: z
+    .object({
+      text: stringOptional,
+      delay: z.number().optional(),
+      duration: z.number().optional(),
+      enabled: z.boolean().optional(),
+      voiceEnabled: z.boolean().optional(),
+    })
+    .optional(),
+  idle: z
+    .object({
+      text: stringOptional,
+      timeout: z.number().optional(),
+      duration: z.number().optional(),
+      enabled: z.boolean().optional(),
+      voiceEnabled: z.boolean().optional(),
+    })
+    .optional(),
+  exit: z
+    .object({
+      text: stringOptional,
+      enabled: z.boolean().optional(),
+      duration: z.number().optional(),
+      voiceEnabled: z.boolean().optional(),
+    })
+    .optional(),
+  success: z
+    .object({
+      text: stringOptional,
+      enabled: z.boolean().optional(),
+      duration: z.number().optional(),
+      voiceEnabled: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
