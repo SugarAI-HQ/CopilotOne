@@ -68,7 +68,7 @@ import {
           text += node.textContent.trim();
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // If the node is an element node, traverse its children
-          for (let childNode of node.childNodes) {
+          for (const childNode of node.childNodes) {
             text += extractText(childNode);
           }
         }

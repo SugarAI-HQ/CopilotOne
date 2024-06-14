@@ -370,10 +370,10 @@ export const VoiceAssistant = ({
     // await processSpeechToText(currentNudgeConfig?.exit?.text, false, true);
   };
 
-  const successNudge = async () => {
-    DEV: console.log("success nudge message", currentNudgeConfig.success.text);
-    await triggerNudge(currentNudgeConfig?.success);
-  };
+  // const successNudge = async () => {
+  //   DEV: console.log("success nudge message", currentNudgeConfig.success.text);
+  //   await triggerNudge(currentNudgeConfig?.success);
+  // };
 
   const triggerNudge = async (config: any) => {
     setHideToolTip(false);
