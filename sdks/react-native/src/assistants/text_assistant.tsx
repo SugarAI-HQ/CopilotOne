@@ -54,9 +54,7 @@ export const TextAssistant = ({
 
   DEV: console.log(isprocessing);
 
-  const [tipMessage, setTipMessage] = useState(
-    currentStyle?.toolTip?.welcomeMessage,
-  );
+  const [tipMessage, setTipMessage] = useState(config?.nudges?.welcome?.text);
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -73,9 +71,9 @@ export const TextAssistant = ({
     setButtonName(id ?? (position as string));
     const timer = setTimeout(() => {
       setHideToolTip(false);
-    }, currentStyle?.toolTip?.delay);
+    }, config?.nudges?.welcome?.delay);
     setHideToolTip(true);
-    setTipMessage(currentStyle?.toolTip?.welcomeMessage);
+    setTipMessage(config?.nudges?.welcome?.text);
     return () => {
       clearTimeout(timer);
     };
