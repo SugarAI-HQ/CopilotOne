@@ -82,7 +82,6 @@
     "@dashdoc/react-native-system-sounds": "^1.1.0",
     "@react-native-voice/voice": "^3.2.4",
     "@sugar-ai/core": "workspace:*",
-    "@types/dom-speech-recognition": "^0.0.4",
     "build": "^0.1.4",
     "react-native-svg": "^15.2.0",
     "react-native-tts": "^4.1.0",
