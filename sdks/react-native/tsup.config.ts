@@ -30,6 +30,10 @@ export default defineConfig((options) => {
       // Start some long running task
       // Like a server
 
+      if (!options.watch) {
+        return;
+      }
+
       const cmd = `yalc publish --push --changed  --no-scripts  --sig`;
       console.log("publishing");
       exec(cmd, (error, stdout, stderr) => {
