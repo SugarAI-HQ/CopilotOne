@@ -12,6 +12,7 @@
   "dependencies": {
     "@sugar-ai/copilot-one-js": "workspace:*",
     "@sugar-ai/core": "workspace:*",
+    "build": "^0.1.4",
     "next": "14.2.1",
     "next-themes": "^0.3.0",
     "react": "18.2.0",

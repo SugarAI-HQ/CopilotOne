@@ -85,6 +85,7 @@
     "@sugar-ai/core": "workspace:*",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/easy-speech": "^1.2.4",
+    "build": "^0.1.4",
     "react-dom": "^18.2.0",
     "styled-components": "^6.1.8",
     "window-or-global": "^1.0.1",
