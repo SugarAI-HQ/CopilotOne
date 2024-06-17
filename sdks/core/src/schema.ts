@@ -141,6 +141,15 @@ export const nudgeSchema = z.object({
       voiceEnabled: z.boolean().optional(),
     })
     .optional(),
+  stuck: z
+    .object({
+      text: stringOptional,
+      timeout: z.number().optional(),
+      duration: z.number().optional(),
+      enabled: z.boolean().optional(),
+      voiceEnabled: z.boolean().optional(),
+    })
+    .optional(),
   exit: z
     .object({
       text: stringOptional,
