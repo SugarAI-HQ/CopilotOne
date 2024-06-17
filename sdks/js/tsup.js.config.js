@@ -1,6 +1,6 @@
 import { defineConfig } from "tsup";
 import { rename } from "fs/promises";
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 
@@ -32,9 +32,11 @@ export default defineConfig((options) => {
 
     async onSuccess() {
       try {
+        // Always do it
         await rename("dist/js/index.global.js", "dist/js/copilot-one.min.js");
         console.log("Output file successfully renamed");
 
+        // Serve the js file
         const certDir = "certs/";
         const certFile = path.join(certDir, "fullchain.pem");
         const keyFile = path.join(certDir, "privkey.pem");
@@ -47,11 +49,11 @@ export default defineConfig((options) => {
           fs.existsSync(keyFile)
         ) {
           try {
-            const pid = execSync(`sudo lsof -t -i :${port}`).toString().trim();
-            if (pid) {
-              console.log(
-                `Port ${port} is already in use by process ${pid}. Skipping server start.`,
-              );
+            const output = execSync(`lsof -nP -i :${port} | grep "LISTEN"`)
+              .toString()
+              .trim();
+            if (output) {
+              // console.log(`Port ${port} is already in use. \n ${output}.`);
             }
           } catch (error) {
             console.log(`Port ${port} is free. Starting HTTPS server.`);
