@@ -40,6 +40,7 @@ export const CopilotContext = createContext({
     promptVariables: any,
     scope: EmbeddingScopeType,
     isAssitant: boolean = false,
+    chatHistorySize: number = 4,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
   ) => Promise<string>,
@@ -120,6 +121,7 @@ export const CopilotProvider = function ({
     promptVariables,
     scope: EmbeddingScopeWithUserType,
     isAssitant: boolean = false,
+    chatHistorySize: number = 4,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
   ): Promise<string> {
@@ -130,6 +132,7 @@ export const CopilotProvider = function ({
       scope,
       config,
       isAssitant,
+      chatHistorySize,
       { ...uxActions, ...actions },
       { ...uxActionCallbacks, ...actionCallbacks },
       // uxActions.concat(actions),

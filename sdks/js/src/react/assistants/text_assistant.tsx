@@ -103,6 +103,8 @@ export const TextAssistant = ({
       input,
       currentPromptVariables,
       newScope,
+      false,
+      4,
       actions,
       actionCallbacks,
     ).finally(() => {

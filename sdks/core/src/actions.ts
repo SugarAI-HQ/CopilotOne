@@ -205,11 +205,12 @@ export const executeAction = async function executeAction(
 
 export async function textToAction(
   promptTemplate,
-  userQuery,
+  userQuery: string | null,
   promptVariables,
   scope: EmbeddingScopeWithUserType,
   config,
   isAssitant: boolean = false,
+  chatHistorySize: number = 4,
   actions: Array<Record<string, ActionDefinitionType>> = [],
   actionCallbacks: Array<Record<string, Function>> = [],
 ): Promise<string> {
@@ -219,7 +220,7 @@ export async function textToAction(
   const [username, pp, pt, pv] = promptTemplate.split("/");
   const msg: SugarAiApi.ServiceGenerateRequestChatMessage = {
     role: isAssitant ? "assistant" : "user",
-    content: userQuery,
+    content: userQuery as string,
   };
 
   const apiClient = new SugarAiApiClient({
@@ -249,7 +250,7 @@ export async function textToAction(
       chat: {
         id: config.clientUserId,
         message: msg,
-        historyChat: 4,
+        historyChat: chatHistorySize,
       },
       // messages: messages.slice(-3),
       // @ts-expect-error

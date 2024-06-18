@@ -148,7 +148,7 @@ export const logSchema = z.object({
 });
 
 export const logLiteSchema = z.object({
-  llmResponse: InputJsonValue.nullable(),
+  llmResponse: InputJsonValue.nullable().optional(),
   chat: InputJsonValue.optional(),
   stats: InputJsonValue.nullable().optional(),
 });

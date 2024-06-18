@@ -93,16 +93,17 @@ export const VoiceAssistant = ({
     promptTemplate = config?.ai?.defaultPromptTemplate;
   }
 
+  // welcome
   useEffect(() => {
     void checkIfAudioPermissionGranted();
     setButtonName(id ?? (position as string));
-    const timer = setTimeout(async () => {
+    const welcomeTimer = setTimeout(async () => {
       await welcomeNudge();
     }, currentNudgeConfig?.welcome?.delay * 1000);
     setHideToolTip(true);
 
     return () => {
-      clearTimeout(timer);
+      clearTimeout(welcomeTimer);
     };
   }, []);
 
@@ -242,17 +243,25 @@ export const VoiceAssistant = ({
       currentAiConfig.lang,
       synth,
     );
-    console.log("Voice found", voice);
-    console.log("Lang found", lang);
-    utterance.lang = lang;
+    console.log(`[nudge] ${voice?.name} speaking in ${lang}: ${text}`);
+
+    // set lang and voice
+    // utterance.lang = lang;
     utterance.voice = voice as any;
+
     const stopSpeakingOnPageUnload = () => {
       synth.cancel();
     };
-    utterance.onend = () => {
-      root.removeEventListener("unload", stopSpeakingOnPageUnload);
+
+    utterance.onerror = (event) => {
+      PROD: console.error(`[nudge] utterance.onerror ${JSON.stringify(event)}`);
     };
-    root.addEventListener("unload", stopSpeakingOnPageUnload);
+
+    utterance.onend = () => {
+      root.removeEventListener("beforeunload", stopSpeakingOnPageUnload);
+    };
+
+    root.addEventListener("beforeunload", stopSpeakingOnPageUnload);
     // const voices = synth.getVoices();
     // const selectedVoice = voices.find((v) => {
     //   return v.lang.startsWith(lang) && v.name.includes(voice);
@@ -260,8 +269,10 @@ export const VoiceAssistant = ({
     // if (selectedVoice) {
     //   utterance.voice = selectedVoice;
     // }
-
     synth.speak(utterance);
+    console.log(
+      `[nudge] ${voice?.name} paused:${synth.paused}, pending:${synth.pending}, speaking:${synth.speaking}`,
+    );
   };
 
   const enableKeyboard = () => {
@@ -269,6 +280,51 @@ export const VoiceAssistant = ({
   };
 
   scope = { ...scopeDefaults, ...scope };
+
+  const upsertNudgeText = async (
+    action: string,
+    nudgeConfig: any,
+    create: boolean,
+  ): Promise<string | boolean> => {
+    const newScope: EmbeddingScopeWithUserType = {
+      clientUserId: clientUserId!,
+      ...scope,
+    };
+
+    const { voice, lang } = await getPreferredVoiceAndLang(
+      currentAiConfig.voice,
+      currentAiConfig.lang,
+      root.speechSynthesis,
+    );
+    const currentPromptVariables = {
+      ...currentAiConfig?.defaultPromptVariables,
+      ...promptVariables,
+      ...nudgeConfig.promptVariables,
+    };
+    const aiResponse = await textToAction(
+      (nudgeConfig.promptTemplate || promptTemplate) as string,
+      create ? "" : nudgeConfig.text,
+      {
+        ...currentPromptVariables,
+        "#GENDER": getGender(voice!),
+        "#LANGUAGE": lang,
+        "#ACTION": action,
+      },
+      newScope,
+      true,
+      nudgeConfig.chatHistorySize,
+      actions,
+      actionCallbacks,
+    ).finally(() => {
+      setIsprocessing(false);
+    });
+
+    if (typeof aiResponse === "string") {
+      return aiResponse;
+    } else {
+      return false;
+    }
+  };
 
   const processSpeechToText = async (
     input: string,
@@ -300,14 +356,18 @@ export const VoiceAssistant = ({
       },
       newScope,
       false,
+      4,
       actions,
       actionCallbacks,
     ).finally(() => {
       setIsprocessing(false);
     });
+
     if (typeof aiResponse === "string") {
       setAiResponse(aiResponse);
-      isSpeak && (await speak(aiResponse));
+      if (isSpeak) {
+        await speak(aiResponse);
+      }
       recognition.stop();
     }
   };
@@ -337,6 +397,7 @@ export const VoiceAssistant = ({
       },
       newScope,
       true,
+      0,
       actions,
       actionCallbacks,
     ).finally(() => {
@@ -425,16 +486,23 @@ export const VoiceAssistant = ({
 
   const triggerNudgeOncePerSession = async (action, config) => {
     const actionKey = `last${action}NudgeAt`;
-    DEV: console.log(`${action} nudge message`, config.text);
 
-    if (!getKeyInSession(actionKey)) {
-      // Perform the action
-      await triggerNudge(config);
-      // Set the flag in local storage
-      setKeyInSession(actionKey, Date.now());
-    } else {
-      console.log(`Already shown ${action} nudge.`);
+    if (!config.enabled) {
+      console.log(`[nudge] ${action} Not enabled`);
+      return;
     }
+
+    const isAlreadyShown = !!getKeyInSession(actionKey);
+
+    if (isAlreadyShown) {
+      console.log(`[nudge ] ${action} Already shown`);
+      return;
+    }
+
+    // Perform the action
+    await triggerNudge(action, config);
+    // Set the flag in local storage
+    // setKeyInSession(actionKey, Date.now().toString());
   };
 
   const welcomeNudge = async () => {
@@ -453,7 +521,11 @@ export const VoiceAssistant = ({
   };
 
   const exitNudge = async () => {
-    triggerNudgeOncePerSession("Exit", currentNudgeConfig?.exit);
+    console.log("[nudge] called exit nudge");
+
+    // triggerNudgeOncePerSession("Exit", currentNudgeConfig?.exit);
+    triggerNudge("Exit", currentNudgeConfig?.exit);
+
     // await triggerNudge(currentNudgeConfig?.exit);
     // await processSpeechToText(currentNudgeConfig?.exit?.text, false, true);
   };
@@ -470,7 +542,7 @@ export const VoiceAssistant = ({
   //   return window.location.pathname;
   // }
 
-  let timeSpentTimer: number | null = null;
+  let timeSpentTimer: any | null = null;
   let startTime: number = Date.now();
   let elapsedTime: number = 0;
 
@@ -502,7 +574,6 @@ export const VoiceAssistant = ({
           }
         }, threshold);
       } else {
-        debugger;
         if (timeSpentTimer !== null) {
           clearTimeout(timeSpentTimer);
           timeSpentTimer = null;
@@ -519,15 +590,41 @@ export const VoiceAssistant = ({
   //   await triggerNudge(currentNudgeConfig?.success);
   // };
 
-  const triggerNudge = async (config: any) => {
+  const triggerNudge = async (action: string, config: any) => {
+    if (!config.enabled) {
+      DEV: console.log(`[nudge] ${action} not enabled`);
+      return;
+    }
+
+    let nudgeText = config?.text;
+
+    // Load text if in "ai" mode
+    if (config?.textMode === "ai") {
+      const aiNudgeText = await upsertNudgeText(action, config, true);
+
+      // only override if able to generate response, else fallback to manual
+      if (aiNudgeText) {
+        nudgeText = aiNudgeText;
+      }
+    } else {
+      await upsertNudgeText(action, config, false);
+    }
+
+    DEV: console.log(`[nudge] ${action} message:`, nudgeText);
+    // Speak
+
+    if (config?.voiceEnabled) {
+      return speak(nudgeText);
+    }
+
     setHideToolTip(false);
+
+    // Set tooltip
     setTipConfig({
       isEnabled: config?.enabled,
-      text: config?.text,
+      text: nudgeText,
       duration: config?.duration,
     });
-    await processNudgeToText(config?.text);
-    config?.voiceEnabled && (await speak(config?.text));
   };
 
   const trackIdle = () => {
@@ -557,7 +654,48 @@ export const VoiceAssistant = ({
     };
   }, [currentNudgeConfig?.idle?.enabled]);
 
+  function beforeUnloadHandler(event) {
+    // Cancel the event
+    event.preventDefault();
+
+    // Prompt the user with a confirmation message
+    event.returnValue = "Are you sure you want to leave?";
+
+    // Create a speech message
+    var message = new SpeechSynthesisUtterance(
+      "Please wait, your message is being spoken.",
+    );
+
+    // Once the message has finished, remove the event listener to allow the page to be closed
+    message.onend = function () {
+      // Remove the event listener to allow the page to unload
+      window.removeEventListener("beforeunload", beforeUnloadHandler);
+
+      // Allow the page to be unloaded by triggering the unload process again
+      window.location.href = window.location.href;
+    };
+
+    // Speak the message
+    speechSynthesis.speak(message);
+
+    // Return false to keep the page from being unloaded
+    return false;
+  }
+
   const handleBeforeUnload = async (event) => {
+    // Recommended
+    event.preventDefault();
+    const message =
+      "Hola, Are you sure you want to leave? Changes you made may not be saved.";
+    event.returnValue = message; // Standard message for all modern browsers
+
+    // Included for legacy support, e.g. Chrome/Edge < 119
+    // event.returnValue = true;
+
+    if (currentNudgeConfig?.exit?.enabled) {
+      exitNudge();
+    }
+
     // trackTimeSpentOnPage();
     if (timeSpentTimer !== null) {
       clearTimeout(timeSpentTimer);
@@ -565,18 +703,15 @@ export const VoiceAssistant = ({
     }
     // onStuck(window.location.pathname);
 
-    currentNudgeConfig?.exit?.enabled && (await exitNudge());
+    // // Clear timespent timer
+    // if (timeSpentTimer !== null) {
+    //   DEV: console.log(`clearing timeSpentTimer: ${timeSpentTimer}`);
+    //   clearTimeout(timeSpentTimer);
+    // }
 
-    // Clear timespent timer
-    if (timeSpentTimer !== null) {
-      DEV: console.log(`clearing timeSpentTimer: ${timeSpentTimer}`);
-      clearTimeout(timeSpentTimer);
-    }
-
-    const message =
-      "Are you sure you want to leave? Changes you made may not be saved.";
-    event.returnValue = message; // Standard message for all modern browsers
-    return message; // Some older browsers require this return statement
+    // return message; // Some older browsers require this return statement
+    // Return false to keep the page from being unloaded
+    return false;
   };
 
   const handleVisibilityChanged = async (event) => {
@@ -589,7 +724,9 @@ export const VoiceAssistant = ({
   };
 
   useEffect(() => {
-    root.addEventListener("load", trackTimeSpentOnPage);
+    // resetSession();
+    // root.addEventListener("load", trackTimeSpentOnPage);
+    trackTimeSpentOnPage();
     root.document.addEventListener("visibilitychange", handleVisibilityChanged);
 
     if (
@@ -597,18 +734,22 @@ export const VoiceAssistant = ({
       currentNudgeConfig?.stuck?.enabled
     ) {
       root.addEventListener("beforeunload", handleBeforeUnload);
+
+      // root.addEventListener("beforeunload", beforeUnloadHandler);
+
       root.addEventListener("visibilitychange", handleVisibilityChanged);
     }
 
     return () => {
       root.removeEventListener("load", trackTimeSpentOnPage);
 
-      if (
-        currentNudgeConfig?.exit?.enabled ||
-        currentNudgeConfig?.stuck?.enabled
-      ) {
-        root.removeEventListener("beforeunload", handleBeforeUnload);
-      }
+      // if (
+      //   currentNudgeConfig?.exit?.enabled ||
+      //   currentNudgeConfig?.stuck?.enabled
+      // ) {
+      //   // Disabling this
+      //   // root.removeEventListener("beforeunload", handleBeforeUnload);
+      // }
     };
   }, [currentNudgeConfig?.exit?.enabled, currentNudgeConfig?.stuck?.enabled]);
 

@@ -202,6 +202,7 @@ export const VoiceAssistant = ({
       input,
       currentPromptVariables,
       newScope,
+      false,
       actions,
       actionCallbacks,
     ).finally(() => {

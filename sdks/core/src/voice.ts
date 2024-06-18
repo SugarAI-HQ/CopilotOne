@@ -90,7 +90,7 @@ const voices = {
 };
 
 export const findAvailableVoice = async (
-  voiceName: string,
+  preferedVoiceName: string,
   lang: string,
   synth: SpeechSynthesis,
 ) => {
@@ -110,9 +110,18 @@ export const findAvailableVoice = async (
     synth.onvoiceschanged = voiceschanged;
   });
 
-  return voices.find(
-    (voice) => voice.lang.startsWith(lang) && voice.name.includes(voiceName),
-  );
+  const langVoices = voices.filter((voice) => voice.lang.startsWith(lang));
+
+  if (langVoices.length == 1) {
+    return langVoices[0];
+  }
+
+  if (langVoices.length > 1) {
+    const preferedLangVoices = langVoices.filter((voice) =>
+      voice.name.includes(preferedVoiceName),
+    );
+    preferedLangVoices.length > 0 ? preferedLangVoices[0] : langVoices[0];
+  }
 };
 
 export const determinePreferredVoice = async (

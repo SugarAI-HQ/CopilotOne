@@ -8,6 +8,9 @@ export type PromptTemplateType = z.infer<typeof promptTemplateSchema>;
 export const primaryColor = "#8000FF";
 export const secondaryColor = "#FFFFFF";
 
+export const promptVariablesSchema = z.record(z.any()).default({});
+export type PromptVariablesType = z.infer<typeof promptVariablesSchema>;
+
 export const copilotSylePositionSchema = z.enum([
   "top-left",
   "top-right",
@@ -122,50 +125,35 @@ export const copilotSytleSchema = z.object({
   // toolTip: copilotToolTipSchema.optional(),
 });
 
+export const nudgeTextMode = z.enum(["manual", "ai"]);
+
+const nudgeSectionSchema = z
+  .object({
+    textMode: nudgeTextMode.default("manual"),
+    text: stringOptional,
+    delay: z.number().optional(),
+    timeout: z.number().optional(),
+    duration: z.number().optional(),
+    enabled: z.boolean().optional(),
+    voiceEnabled: z.boolean().optional(),
+    promptTemplate: promptTemplateSchema.optional(),
+    promptVariables: promptVariablesSchema.optional(),
+    chatHistorySize: z.number().optional().default(0),
+  })
+  .refine(
+    (data) => data.textMode !== "ai" || data.promptTemplate !== undefined,
+    {
+      message: "promptTemplate is required when textMode is 'ai'",
+      path: ["promptTemplate"],
+    },
+  );
+
 export const nudgeSchema = z.object({
-  welcome: z
-    .object({
-      text: stringOptional,
-      delay: z.number().optional(),
-      duration: z.number().optional(),
-      enabled: z.boolean().optional(),
-      voiceEnabled: z.boolean().optional(),
-    })
-    .optional(),
-  idle: z
-    .object({
-      text: stringOptional,
-      timeout: z.number().optional(),
-      duration: z.number().optional(),
-      enabled: z.boolean().optional(),
-      voiceEnabled: z.boolean().optional(),
-    })
-    .optional(),
-  stuck: z
-    .object({
-      text: stringOptional,
-      timeout: z.number().optional(),
-      duration: z.number().optional(),
-      enabled: z.boolean().optional(),
-      voiceEnabled: z.boolean().optional(),
-    })
-    .optional(),
-  exit: z
-    .object({
-      text: stringOptional,
-      enabled: z.boolean().optional(),
-      duration: z.number().optional(),
-      voiceEnabled: z.boolean().optional(),
-    })
-    .optional(),
-  success: z
-    .object({
-      text: stringOptional,
-      enabled: z.boolean().optional(),
-      duration: z.number().optional(),
-      voiceEnabled: z.boolean().optional(),
-    })
-    .optional(),
+  welcome: nudgeSectionSchema.optional(),
+  idle: nudgeSectionSchema.optional(),
+  stuck: nudgeSectionSchema.optional(),
+  exit: nudgeSectionSchema.optional(),
+  success: nudgeSectionSchema.optional(),
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
@@ -225,30 +213,57 @@ export const copilotStyleDefaults: CopilotSytleType = {
 
 export const copilotNudgeDefaults: NudgesType = {
   welcome: {
-    text: "Tap & Speak: Let AI Guide Your Journey!",
+    text: "Tap & Speak, Let AI Guide Your Journey!",
     delay: 3,
-    duration: 7,
+    duration: 10,
     enabled: true,
-    voiceEnabled: false,
+    voiceEnabled: true,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
   },
   idle: {
     text: "You have been idle, how can i HELP?",
     timeout: 30,
     duration: 7,
+    enabled: false,
+    voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
+  },
+  stuck: {
+    text: "Seems you are stuck, how can I help?",
+    timeout: 30,
+    duration: 7,
     enabled: true,
     voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
   },
   exit: {
     text: "I have an offer for you!",
     duration: 7,
-    enabled: true,
+    enabled: false,
     voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
   },
   success: {
     text: "You might like this!",
     duration: 7,
-    enabled: true,
+    enabled: false,
     voiceEnabled: false,
+    textMode: "manual",
+    promptTemplate: "",
+    promptVariables: {},
+    chatHistorySize: 0,
   },
 };
 
@@ -308,9 +323,6 @@ export type EmbeddingScopeWithUserType = z.infer<
 //   clientUserId?: string; // Optional string
 //   identifier: string;
 // }
-
-export const promptVariablesSchema = z.record(z.any());
-export type PromptVariablesType = z.infer<typeof promptVariablesSchema>;
 
 export const actionParameterDataTypeSchema = z.enum([
   "boolean",

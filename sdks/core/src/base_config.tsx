@@ -11,7 +11,7 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
     ...config?.style?.theme,
   };
 
-  DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
+  // DEV: console.log(`currentTheme ---> ${JSON.stringify(currentTheme)}`);
 
   const actions = typeof actionsFn === "function" ? actionsFn() : [];
   const actionCallbacks =
@@ -42,13 +42,11 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
     // },
   };
 
-  DEV: console.log(
-    `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
-  );
-
-  DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
-
-  DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
+  // DEV: console.log(
+  //   `copilotStyleDefaults ---> ${JSON.stringify(copilotStyleDefaults)}`,
+  // );
+  // DEV: console.log(`config?.style ---> ${JSON.stringify(config?.style)}`);
+  // DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   const currentAiConfig = {
     ...copilotAiDefaults,
@@ -62,9 +60,9 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
     ...config?.nudges,
   };
 
-  DEV: console.log(
-    `current voice nudge config ---> ${JSON.stringify(currentNudgeConfig)}`,
-  );
+  // DEV: console.log(
+  //   `current voice nudge config ---> ${JSON.stringify(currentNudgeConfig)}`,
+  // );
 
   return {
     currentTheme,

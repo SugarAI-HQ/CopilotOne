@@ -256,6 +256,9 @@ export const serviceLiteRouter = createTRPCRouter({
       trackTime("start");
       let userId = ctx.jwt?.id as string;
 
+      const isNudge = input.chat?.message.role == "assistant";
+      const nudgeText = isNudge ? input.chat?.message?.content : "";
+
       let copilotId = input?.copilotId as string;
       let pl;
 
@@ -287,7 +290,7 @@ export const serviceLiteRouter = createTRPCRouter({
         trackTime("load_chat");
 
         // 1.3 Extract user query from last message
-        if (input.messages && input.messages?.length > 0) {
+        if (!isNudge && input.messages && input.messages?.length > 0) {
           const lastMessage = input.messages[input.messages?.length - 1];
           userQuery = lastMessage?.content as string;
         }
@@ -299,7 +302,7 @@ export const serviceLiteRouter = createTRPCRouter({
         let embeddingVariables: any = {};
         let matches: any = [];
 
-        if (input.scope && userQuery) {
+        if (!isNudge && input.scope && userQuery) {
           // Check prompt version have any variables related to context or not
           const contextVars = (pv.variables as TemplateVariablesType).filter(
             (v) => v.type + v.key == "$VIEW_CONTEXT",
@@ -327,95 +330,101 @@ export const serviceLiteRouter = createTRPCRouter({
           ...embeddingVariables, //$
         };
 
+        // Define response
+        let rr: any | null = null;
+
         // 2.3 Generate Prompt using template
-        let prompt: Prompt = "";
-        if (hasImageModels(modelType)) {
-          prompt = generatePrompt(pv.template, input.variables || {});
-        } else {
-          // here decide whether to take template data or promptData
-          if (getEditorVersion(modelType, pv.llmProvider, pv.llmModel)) {
-            // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
-            prompt = generatePromptFromJson(
-              pv.promptData.data,
-              templateVariables,
-            ) as PromptDataType;
-            // console.log(prompt);
-            // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+        if (!isNudge || nudgeText == "") {
+          let prompt: Prompt = "";
+          if (hasImageModels(modelType)) {
+            prompt = generatePrompt(pv.template, input.variables || {});
           } else {
-            prompt = generatePrompt(pv.template, templateVariables);
+            // here decide whether to take template data or promptData
+            if (getEditorVersion(modelType, pv.llmProvider, pv.llmModel)) {
+              // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+              prompt = generatePromptFromJson(
+                pv.promptData.data,
+                templateVariables,
+              ) as PromptDataType;
+              // console.log(prompt);
+              // console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+            } else {
+              prompt = generatePrompt(pv.template, templateVariables);
+            }
           }
-        }
-        trackTime("generate_prompt");
+          trackTime("generate_prompt");
+          console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
 
-        console.log(`prompt >>>> ${JSON.stringify(prompt, null, 2)}`);
+          // 3. Get LLM Response
+          // 3.1 Get LLM Config
+          const llmConfig = generateLLmConfig(pv.llmConfig);
+          trackTime("load_llm_config");
 
-        // 3. Get LLM Response
-        // 3.1 Get LLM Config
-        const llmConfig = generateLLmConfig(pv.llmConfig);
-        trackTime("load_llm_config");
-
-        // 3.1 Generate LLM Response
-        const rr = await LlmGateway({
-          prompt,
-          messages: input.messages!,
-          skills: input.skills!,
-          skillChoice: input.skillChoice as SkillChoicesType,
-          llmModel: pv.llmModel,
-          llmProvider: pv.llmProvider,
-          llmConfig: llmConfig,
-          llmModelType: pv.llmModelType,
-          isDevelopment: input.isDevelopment,
-          attachments: input.attachments,
-        });
-        trackTime("llm_gateway_response");
-
-        console.log(
-          `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
-        );
-        console.log(
-          `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
-        );
-
-        const variables = replaceDataVariables(templateVariables || {});
-        trackTime("end");
-        // 4.2 Save prompt data to database
-        ctx.prisma.promptLog
-          .create({
-            data: {
-              userId: userId,
-              promptPackageId: pv.promptPackageId,
-              promptTemplateId: pv.promptTemplateId,
-              promptVersionId: pv.id,
-
-              environment: input.environment,
-
-              version: pv.version,
-              prompt: JSON.stringify(prompt),
-              // completion: rr.data?.completion as string,
-              llmResponse: rr.response,
-
-              llmModelType: pv.llmModelType,
-              llmProvider: pv.llmProvider,
-              llmModel: pv.llmModel,
-              llmConfig: llmConfig,
-              promptVariables: variables,
-              latency: (rr.performance?.latency as number) || 0,
-              prompt_tokens: (rr?.performance?.prompt_tokens as number) || 0,
-              completion_tokens:
-                (rr?.performance?.completion_tokens as number) || 0,
-              total_tokens: (rr?.performance?.total_tokens as number) || 0,
-              extras: rr?.performance?.extra ? rr?.performance?.extra : {},
-              stats: { ...getStats(), ...{ llmStats: rr.performance } },
-              copilotId: copilotId,
-            },
-          })
-          .then(() => {
-            trackTime("save_prompt_data");
-          })
-          .catch((error) => {
-            trackTime("save_prompt_data_failed");
-            console.error("Error creating promptLog:", error);
+          // 3.1 Generate LLM Response
+          rr = await LlmGateway({
+            prompt,
+            messages: input.messages!,
+            skills: input.skills!,
+            skillChoice: input.skillChoice as SkillChoicesType,
+            llmModel: pv.llmModel,
+            llmProvider: pv.llmProvider,
+            llmConfig: llmConfig,
+            llmModelType: pv.llmModelType,
+            isDevelopment: input.isDevelopment,
+            attachments: input.attachments,
           });
+          trackTime("llm_gateway_response");
+
+          console.log(
+            `llm response >>>> ${JSON.stringify(rr.response, null, 2)}`,
+          );
+          console.log(
+            `llm performance >>>> ${JSON.stringify(rr.performance, null, 2)}`,
+          );
+
+          const variables = replaceDataVariables(templateVariables || {});
+          trackTime("end");
+          // 4.2 Save prompt data to database
+          ctx.prisma.promptLog
+            .create({
+              data: {
+                userId: userId,
+                promptPackageId: pv.promptPackageId,
+                promptTemplateId: pv.promptTemplateId,
+                promptVersionId: pv.id,
+
+                environment: input.environment,
+
+                version: pv.version,
+                prompt: JSON.stringify(prompt),
+                // completion: rr.data?.completion as string,
+                llmResponse: rr.response,
+
+                llmModelType: pv.llmModelType,
+                llmProvider: pv.llmProvider,
+                llmModel: pv.llmModel,
+                llmConfig: llmConfig,
+                promptVariables: variables,
+                latency: (rr.performance?.latency as number) || 0,
+                prompt_tokens: (rr?.performance?.prompt_tokens as number) || 0,
+                completion_tokens:
+                  (rr?.performance?.completion_tokens as number) || 0,
+                total_tokens: (rr?.performance?.total_tokens as number) || 0,
+                extras: rr?.performance?.extra ? rr?.performance?.extra : {},
+                stats: { ...getStats(), ...{ llmStats: rr.performance } },
+                copilotId: copilotId,
+              },
+            })
+            .then(() => {
+              trackTime("save_prompt_data");
+            })
+            .catch((error) => {
+              trackTime("save_prompt_data_failed");
+              console.error("Error creating promptLog:", error);
+            });
+        }
+
+        // save for nudges as well as regular prompts
         if (input.chat?.message && copilotId) {
           await saveChatMessages(
             ctx,
@@ -425,13 +434,14 @@ export const serviceLiteRouter = createTRPCRouter({
             input,
             rr,
             trackTime,
+            isNudge,
+            nudgeText,
           );
         }
-        if (chatId) {
-          pl = { llmResponse: rr.response, chat: { id: chatId as string } };
+        if (chatId && rr != null) {
+          pl = { llmResponse: rr?.response, chat: { id: chatId as string } };
         }
       }
-
       pl = { ...pl, stats: getStats() };
       return pl as GenerateLiteOutput;
     }),
@@ -565,30 +575,45 @@ export const saveChatMessages = async (
   input: any,
   rr: any,
   trackTime: Function,
+  isNudge: boolean = false,
+  nudgeText: string = "",
 ) => {
   const saveMessagePromises = [];
-
   // Create promises to save each message
-  saveMessagePromises.push(
-    ctx.prisma.message.create({
-      data: {
-        userId: userId,
-        chatId: chatId,
-        copilotId: copilotId,
-        content: input.chat?.message.content as string,
-        role: input.chat?.message.role,
-      },
-    }),
-    ctx.prisma.message.create({
-      data: {
-        userId: userId,
-        chatId: chatId,
-        copilotId: copilotId,
-        content: rr.response.data.completion[0].message.content ?? "",
-        role: rr.response.data.completion[0].message.role,
-      },
-    }),
-  );
+  if (isNudge) {
+    saveMessagePromises.push(
+      ctx.prisma.message.create({
+        data: {
+          userId: userId,
+          chatId: chatId,
+          copilotId: copilotId,
+          content: rr?.response.data.completion[0].message.content ?? nudgeText,
+          role: input.chat?.message.role,
+        },
+      }),
+    );
+  } else {
+    saveMessagePromises.push(
+      ctx.prisma.message.create({
+        data: {
+          userId: userId,
+          chatId: chatId,
+          copilotId: copilotId,
+          content: input.chat?.message.content as string,
+          role: input.chat?.message.role,
+        },
+      }),
+      ctx.prisma.message.create({
+        data: {
+          userId: userId,
+          chatId: chatId,
+          copilotId: copilotId,
+          content: rr.response.data.completion[0].message.content ?? "",
+          role: rr.response.data.completion[0].message.role,
+        },
+      }),
+    );
+  }
 
   try {
     // Execute all save operations concurrently
