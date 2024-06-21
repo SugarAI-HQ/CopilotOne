@@ -292,6 +292,8 @@ export async function textToAction(
     } else if (typeof choices === "string") {
       output = choices;
       addMarker("textToAction:success");
+    } else if (isAssitant) {
+      DEV: console.debug(`No choices expected in case of manual mode nudge`);
     } else {
       PROD: console.error(`Unknown response ${JSON.stringify(choices)}`);
       output = config?.ai?.failureResponse as string;
