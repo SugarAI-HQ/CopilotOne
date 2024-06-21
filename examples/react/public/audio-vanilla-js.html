@@ -99,8 +99,9 @@
     ></script>
     <div href="https://sugarai.dev" id="copilot-one"></div>
     <div href="https://sugarai.dev" id="copilot-second"></div>
-    <div id="copilot-voice"></div>
     <div id="copilot-text"></div>
+
+
     <script>
       const addTodo = (task) => {
         console.log("task", task);
@@ -110,11 +111,6 @@
       function saiAsync() {
         saiData.push(arguments);
       }
-
-      // saiAsync('addAssistant', 'copilot-text', 'TextAssistant', {});
-      // saiAsync('addAssistant', 'copilot-text', 'TextAssistant', {});
-
-      // saiAsync('removeAssistant', 'copilot-text');
 
       saiAsync("setConfig", {
         copilotId: "da82abb5-cf74-448b-b94d-7e17245cc5d9",
@@ -136,17 +132,39 @@
         style: {
           container: { position: "bottom-right" },
           theme: { primaryColor: "#3b83f6" },
-          toolTip: {
-            welcomeMessage: "Hi, I am John. How may I help you today?",
-            delay: 1,
-            disabled: false,
-          },
-
           voiceButton: {},
+        },
+        nudges: {
+          welcome: {
+            text: "Tap & Speak: Let AI Guide Your Journey!",
+            delay: 3,
+            duration: 10,
+            enabled: true,
+            voiceEnabled: false,
+          },
+          idle: {
+            text: "You have preappraoved loans offers",
+            duration: 10,
+            timeout: 5,
+            enabled: false,
+            voiceEnabled: false,
+          },
+          exit: {
+            text: "I have an offer for you!",
+            duration: 10,
+            enabled: false,
+            voiceEnabled: false,
+          },
+          success: {
+            text: "You might like this!",
+            duration: 7,
+            enabled: true,
+            voiceEnabled: false,
+          },
         },
       });
 
-      saiAsync("addAssistant", "copilot-voice", "VoiceAssistant", {
+      saiAsync("addAssistant", "copilot-text", "TextAssistant", {
         id: "heelo",
         position: "bottom-center",
         keyboardPosition: "right",

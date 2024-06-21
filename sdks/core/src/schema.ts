@@ -68,6 +68,7 @@ export const copilotStyleVoiceButtonSchema = z.object({
   width: stringOptional,
   height: stringOptional,
   iconSize: stringOptional,
+  audio: stringOptional,
 });
 
 export const copilotStyleKeyboardButtonSchema = z.object({
@@ -76,6 +77,8 @@ export const copilotStyleKeyboardButtonSchema = z.object({
   position: copilotSyleKeyboardPositionSchema,
   iconSize: stringOptional,
   placeholder: stringOptional,
+  width: stringOptional,
+  height: stringOptional,
 });
 
 export type CopilotSyleButtonType = z.infer<
@@ -194,6 +197,8 @@ export const copilotStyleDefaults: CopilotSytleType = {
     width: "60px",
     height: "60px",
     iconSize: "25",
+    audio:
+      "https://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg",
   },
   keyboardButton: {
     bgColor: primaryColor,
@@ -201,6 +206,8 @@ export const copilotStyleDefaults: CopilotSytleType = {
     position: "left",
     iconSize: "25",
     placeholder: "Start typing...",
+    width: "60px",
+    height: "60px",
   },
   // toolTip: {
   //   welcomeMessage: "Tap & Speak: Let AI Guide Your Journey!",

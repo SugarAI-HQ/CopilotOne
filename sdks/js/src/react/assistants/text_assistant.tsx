@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   type EmbeddingScopeWithUserType,
   type CopilotStylePositionType,
@@ -18,7 +18,9 @@ import { GlobalStyle } from "./reset_css";
 import Keyboard from "./components/keyboard";
 import Message from "./components/message";
 import ToolTip from "./components/tooltip";
-import AssistantTextBox from "./components/textbox";
+import TextBox from "./components/textbox";
+
+import root from "window-or-global";
 
 export const TextAssistant = ({
   id = null,
@@ -55,10 +57,12 @@ export const TextAssistant = ({
     currentAiConfig,
     currentNudgeConfig,
   } = loadCurrentConfig(config, actionsFn, actionCallbacksFn);
-
-  DEV: console.log(isprocessing);
-
-  const [tipMessage, setTipMessage] = useState(currentAiConfig.welcome.text);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [tipConfig, setTipConfig] = useState({
+    isEnabled: false,
+    text: "",
+    duration: 7,
+  });
 
   if (promptTemplate == null && config?.ai?.defaultPromptTemplate == null) {
     throw new Error(
@@ -71,11 +75,10 @@ export const TextAssistant = ({
 
   useEffect(() => {
     setButtonName(id ?? (position as string));
-    const timer = setTimeout(() => {
-      setHideToolTip(false); // Hide the tooltip after 5000 ms (5 seconds)
-    }, currentNudgeConfig?.welcome?.delay);
+    const timer = setTimeout(async () => {
+      await welcomeNudge();
+    }, currentNudgeConfig?.welcome?.delay * 1000);
     setHideToolTip(true);
-    setTipMessage(currentNudgeConfig?.welcome?.text);
     return () => {
       clearTimeout(timer);
     };
@@ -123,6 +126,87 @@ export const TextAssistant = ({
     await processTextToText(newTextMessage);
   };
 
+  const welcomeNudge = async () => {
+    DEV: console.log("welcome nudge message", currentNudgeConfig.welcome.text);
+    await triggerNudge(currentNudgeConfig?.welcome);
+  };
+
+  const idleNudge = async () => {
+    DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
+    await triggerNudge(currentNudgeConfig?.idle);
+  };
+
+  const exitNudge = async () => {
+    DEV: console.log("exit nudge message", currentNudgeConfig.exit.text);
+    await triggerNudge(currentNudgeConfig?.exit);
+  };
+
+  // const successNudge = async () => {
+  //   DEV: console.log("success nudge message", currentNudgeConfig.success.text);
+  //   await triggerNudge(currentNudgeConfig?.success);
+  // };
+
+  const triggerNudge = async (config: any) => {
+    setHideToolTip(false);
+    setTipConfig({
+      isEnabled: config?.enabled,
+      text: config?.text,
+      duration: config?.duration,
+    });
+    await processNudgeToText(config?.text);
+  };
+
+  const resetTimer = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(
+      idleNudge,
+      currentNudgeConfig.idle.timeout * 1000,
+    );
+  };
+
+  useEffect(() => {
+    if (currentNudgeConfig?.idle?.enabled) {
+      root.addEventListener("mousemove", resetTimer);
+      root.addEventListener("keydown", resetTimer);
+    }
+    return () => {
+      if (currentNudgeConfig?.idle?.enabled) {
+        root.removeEventListener("mousemove", resetTimer);
+        root.removeEventListener("keydown", resetTimer);
+      }
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [currentNudgeConfig?.idle?.enabled]);
+
+  const processNudgeToText = async (input: string) => {
+    const newScope: EmbeddingScopeWithUserType = {
+      clientUserId: clientUserId!,
+      ...scope,
+    };
+
+    setIsprocessing(true);
+    const currentPromptVariables = {
+      ...currentAiConfig?.defaultPromptVariables,
+      ...promptVariables,
+    };
+    await textToAction(
+      promptTemplate as string,
+      input,
+      currentPromptVariables,
+      newScope,
+      false,
+      actions,
+      actionCallbacks,
+    ).finally(() => {
+      setIsprocessing(false);
+    });
+  };
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <GlobalStyle />
@@ -141,15 +225,15 @@ export const TextAssistant = ({
               enableKeyboard={enableKeyboard}
             />
 
-            {!hideToolTip && currentNudgeConfig?.welcome?.enabled && (
+            {!hideToolTip && tipConfig?.isEnabled && (
               <ToolTip
                 currentStyle={currentStyle}
                 position={position}
                 buttonId={buttonId}
                 toolTipContainerStyle={toolTipContainerStyle}
                 toolTipMessageStyle={toolTipMessageStyle}
-                tipMessage={tipMessage}
-                config={currentNudgeConfig?.welcome}
+                tipMessage={tipConfig?.text}
+                config={tipConfig}
               />
             )}
           </>
@@ -167,7 +251,7 @@ export const TextAssistant = ({
         )}
       </CopilotContainer>
       {hideTextButton && (
-        <AssistantTextBox
+        <TextBox
           currentStyle={currentStyle}
           position={position}
           buttonId={buttonId}
@@ -175,6 +259,7 @@ export const TextAssistant = ({
           textMessage={textMessage}
           startSending={startSending}
           enableKeyboard={enableKeyboard}
+          isprocessing={isprocessing}
           iskeyboard={true}
         />
       )}

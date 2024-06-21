@@ -41,9 +41,9 @@ export default defineConfig((options) => {
       if (!options.watch) {
         return;
       }
-
-      const cmd = `yalc publish --push --changed  --no-scripts  --sig`;
       console.log("publishing");
+      const cmd = `yalc publish --push --changed  --no-scripts  --sig`;
+
       exec(cmd, (error, stdout, stderr) => {
         console.log(stdout);
         if (error) {

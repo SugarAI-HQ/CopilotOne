@@ -284,6 +284,7 @@ export const ViewTextBox: FC<{
   onSubmitEditing: () => void;
 }> = styled.TextInput`
   padding: 15px 32px 15px 8px;
+  background: #fff;
   border: 1px solid ${({ bgColor }) => bgColor};
   border-radius: 5px;
   outline: none;

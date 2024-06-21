@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
 import React, { useState, useEffect, useRef } from "react";
 import {
   type EmbeddingScopeWithUserType,
@@ -45,6 +46,7 @@ export const VoiceAssistant = ({
 }: BaseAssistantProps) => {
   const [buttonId, setButtonName] = useState<string>(position as string);
   const [islistening, setIslistening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [hideToolTip, setHideToolTip] = useState(true);
   const [isprocessing, setIsprocessing] = useState(false);
   const [ispermissiongranted, setIspermissiongranted] = useState(false);
@@ -128,6 +130,7 @@ export const VoiceAssistant = ({
   };
 
   const startListening = async (e: any) => {
+    recognition.stop();
     let haveMicPermission = false;
     setIsUserEngaged(true);
     if (!ispermissiongranted) {
@@ -259,6 +262,8 @@ export const VoiceAssistant = ({
 
     utterance.onend = () => {
       root.removeEventListener("beforeunload", stopSpeakingOnPageUnload);
+      recognition?.start();
+      setIsSpeaking(false);
     };
 
     root.addEventListener("beforeunload", stopSpeakingOnPageUnload);
@@ -273,6 +278,14 @@ export const VoiceAssistant = ({
     console.log(
       `[nudge] ${voice?.name} paused:${synth.paused}, pending:${synth.pending}, speaking:${synth.speaking}`,
     );
+
+    setIsSpeaking(true);
+  };
+
+  const stopSpeaking = () => {
+    const synth = root.speechSynthesis;
+    synth.cancel();
+    setIsSpeaking(false);
   };
 
   const enableKeyboard = () => {
@@ -364,11 +377,25 @@ export const VoiceAssistant = ({
     });
 
     if (typeof aiResponse === "string") {
-      setAiResponse(aiResponse);
-      if (isSpeak) {
-        await speak(aiResponse);
+      if (currentAiConfig.successResponse !== aiResponse) {
+        setAiResponse(aiResponse);
+        isSpeak && (await speak(aiResponse));
+      } else {
+        await playAudio(currentStyle.voiceButton?.audio as string);
       }
       recognition.stop();
+    }
+  };
+
+  const playAudio = async (url: string) => {
+    try {
+      const audio = new Audio(url);
+      await audio.play();
+      audio.addEventListener("error", (e) => {
+        console.error("Audio playback error:", e);
+      });
+    } catch (error) {
+      console.error("Error initializing audio:", error);
     }
   };
 
@@ -796,6 +823,7 @@ export const VoiceAssistant = ({
                 style={keyboardButtonStyle}
                 currentStyle={currentStyle?.keyboardButton}
                 enableKeyboard={enableKeyboard}
+                withvoice={"true"}
               />
             )}
             {isUserEngaged && isRightPositioned && isCenterPositioned && (
@@ -809,6 +837,8 @@ export const VoiceAssistant = ({
               ispermissiongranted={ispermissiongranted}
               isprocessing={isprocessing}
               islistening={islistening}
+              isSpeaking={isSpeaking}
+              stopSpeaking={stopSpeaking}
             />
             {isUserEngaged && isLeftPositioned && isCenterPositioned && (
               <KeyboardEmptyContainer></KeyboardEmptyContainer>
@@ -818,6 +848,7 @@ export const VoiceAssistant = ({
                 style={keyboardButtonStyle}
                 currentStyle={currentStyle?.keyboardButton}
                 enableKeyboard={enableKeyboard}
+                withvoice={"true"}
               />
             )}
             {!hideToolTip && tipConfig?.isEnabled && (
@@ -854,6 +885,7 @@ export const VoiceAssistant = ({
           textMessage={textMessage}
           startSending={startSending}
           enableKeyboard={enableKeyboard}
+          isprocessing={isprocessing}
           iskeyboard={false}
         />
       )}

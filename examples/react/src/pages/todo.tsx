@@ -15,7 +15,7 @@ import {
 import { FilterType, SettingsType, TodoSchemaType } from "../schema/todoSchema";
 import ThemeSwitcher from "@/ThemeSwitcher";
 import { useTheme } from "next-themes";
-import { VoiceAssistant } from "@sugar-ai/copilot-one-js";
+import { VoiceAssistant, TextAssistant } from "@sugar-ai/copilot-one-js";
 
 enum recurringType {
   none,
@@ -30,6 +30,12 @@ let language = "en-US";
 if (typeof window !== "undefined") {
   const urlParams = new URLSearchParams(window.location.search);
   language = urlParams?.get("lang") || language;
+}
+
+let assistant = "voice";
+if (typeof window !== "undefined") {
+  const urlParams = new URLSearchParams(window.location.search);
+  assistant = urlParams?.get("assistant") || assistant;
 }
 
 const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
@@ -67,6 +73,7 @@ let copilotConfig: CopilotConfigType = {
       text: "Hi, I am John. How may I help you today?",
       delay: 1,
       enabled: true,
+      chatHistorySize: 0,
     },
   },
   style: {
@@ -252,13 +259,30 @@ const TodoApp = () => {
         onClose={handleSettingsToggle}
         highlightedSetting={highlightedSetting}
       />
-      <VoiceAssistant
+      {/* <VoiceAssistant
         id={"preview"}
         promptTemplate={copilotPackage}
         position={"bottom-center"}
         // promptVariables={{ "#AGENT_NAME": "Tudy" }}
         // voiceButtonStyle={{ backgroundColor: "#39f" }}
-      ></VoiceAssistant>
+      ></VoiceAssistant> */}
+      {assistant === "text" ? (
+        <TextAssistant
+          id={"preview"}
+          promptTemplate={copilotPackage}
+          position={"bottom-center"}
+          // promptVariables={{ "#AGENT_NAME": "Tudy" }}
+          // voiceButtonStyle={{ backgroundColor: "#39f" }}
+        ></TextAssistant>
+      ) : (
+        <VoiceAssistant
+          id={"preview"}
+          promptTemplate={copilotPackage}
+          position={"bottom-center"}
+          // promptVariables={{ "#AGENT_NAME": "Tudy" }}
+          // voiceButtonStyle={{ backgroundColor: "#39f" }}
+        ></VoiceAssistant>
+      )}
 
       <h1 className="text-3xl font-bold mb-4">
         Todos ({todos.length}){" "}

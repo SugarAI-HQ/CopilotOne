@@ -109,7 +109,7 @@ export const CopilotContainer: FC<{
   margin: ${({ container }) => container?.margin};
   width: fit-content;
   height: fit-content;
-  z-index: 1000; /* Ensure the widget is above other elements */
+  z-index: 9999999; /* Ensure the widget is above other elements */
 `;
 
 export const ChatMessage: FC<{
@@ -125,7 +125,7 @@ export const ChatMessage: FC<{
   animation-name: d;
   animation-fill-mode: forwards;
   overflow-y: auto;
-  z-index: 1000; // Ensure the chat window is above most elements
+  z-index: 9999999; // Ensure the chat window is above most elements
 
   ${({ container, position }) => {
     const positions =
@@ -195,20 +195,42 @@ export const VoiceButton: FC<CopilotVoiceButtonPropsType> = styled.button`
         `}
 `;
 
-export const KeyboardButton: FC<CopilotKeyboardButtonPropsType> = styled.button`
-  position: relative;
-  background-color: ${({ button }) => button?.color};
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
-  text-align: -webkit-center;
-  text-align: -moz-center;
-  border-radius: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
-  bottom: 5px;
-  border: unset;
+export const KeyboardButton: FC<{
+  button: CopilotKeyboardButtonPropsType["button"];
+  withvoice: string;
+}> = styled.button`
+  ${({ withvoice, button }) => {
+    if (withvoice === "true") {
+      return css`
+        position: relative;
+        background-color: ${button?.color};
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
+        text-align: -webkit-center;
+        text-align: -moz-center;
+        border-radius: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        bottom: 5px;
+        border: unset;
+      `;
+    } else {
+      return css`
+        background-color: ${button?.bgColor};
+        color: ${button?.color};
+        border: none;
+        border-radius: 50%;
+        width: ${button?.width};
+        height: ${button?.height};
+        cursor: pointer;
+        box-shadow: rgba(0, 0, 0, 0.5) 0px 3px 12px;
+        text-align: -webkit-center;
+        text-align: -moz-center;
+      `;
+    }
+  }}
 `;
 
 export const ButtonContainer: FC = styled.div``;
@@ -271,7 +293,7 @@ export const TextBoxContainer: FC<{
   right: 25px;
 
   margin: 0;
-  z-index: 1000;
+  z-index: 9999999;
   // width: -webkit-fill-available;
   // max-width: 300px; // Adjust this as needed
   // width: -webkit-fill-available;
@@ -305,12 +327,13 @@ export const TextBoxContainer: FC<{
   }}
 `;
 
-export const TextBox: FC<{ color: string }> = styled.input`
+export const TextBox: FC<{ color: string; bgColor: string }> = styled.input`
   padding: 15px 32px 15px 8px;
   border: 1px solid ${({ color }) => color};
   border-radius: 5px;
   outline: none;
   width: 100%;
+  background: ${({ bgColor }) => bgColor};
   // width: -webkit-fill-available; // Only on small screens
   margin-left: 25px;
   @media (max-width: 768px) {
@@ -336,6 +359,7 @@ export const TextBoxButton: FC<{ iskeyboard?: string }> = styled.button`
     css`
       top: 13px;
       right: 5px;
+      padding: 0px;
     `}
 `;
 
