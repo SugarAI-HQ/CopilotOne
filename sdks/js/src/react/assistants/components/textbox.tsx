@@ -66,7 +66,7 @@ const TextBox = ({
           onTyping(e.target.value);
         }}
         onKeyUp={(e) => {
-          if (e.key === "Enter") {
+          if (e.key === "Enter" && textMessage.trim() !== "") {
             startSending();
             setIsTyping(false);
           }

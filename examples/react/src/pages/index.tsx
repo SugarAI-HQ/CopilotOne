@@ -92,7 +92,7 @@ const Home = () => {
             </a>
             <a
               className="max-w-sm rounded overflow-hidden shadow-lg"
-              href="/todo?lang=hi-IN&assistant=audio"
+              href="/todo?lang=hi-IN&assistant=text"
             >
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">
@@ -106,7 +106,7 @@ const Home = () => {
 
             <a
               className="max-w-sm rounded overflow-hidden shadow-lg"
-              href="/todo?lang=en-IN&assistant=audio"
+              href="/todo?lang=en-IN&assistant=text"
             >
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">
@@ -119,7 +119,7 @@ const Home = () => {
             </a>
             <a
               className="max-w-sm rounded overflow-hidden shadow-lg"
-              href="/audio-vanilla-js.html"
+              href="/text-vanilla-js.html"
             >
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">
