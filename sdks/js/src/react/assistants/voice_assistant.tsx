@@ -27,6 +27,7 @@ import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 import Voice from "./components/voice";
+import { getKeyInSession, setKeyInSession } from "../session";
 
 export const VoiceAssistant = ({
   id = null,
@@ -399,39 +400,6 @@ export const VoiceAssistant = ({
     }
   };
 
-  const processNudgeToText = async (input: string) => {
-    const newScope: EmbeddingScopeWithUserType = {
-      clientUserId: clientUserId!,
-      ...scope,
-    };
-
-    const { voice, lang } = await getPreferredVoiceAndLang(
-      currentAiConfig.voice,
-      currentAiConfig.lang,
-      root.speechSynthesis,
-    );
-    const currentPromptVariables = {
-      ...currentAiConfig?.defaultPromptVariables,
-      ...promptVariables,
-    };
-    await textToAction(
-      promptTemplate as string,
-      input,
-      {
-        ...currentPromptVariables,
-        "#GENDER": getGender(voice!),
-        "#LANGUAGE": lang,
-      },
-      newScope,
-      true,
-      0,
-      actions,
-      actionCallbacks,
-    ).finally(() => {
-      setIsprocessing(false);
-    });
-  };
-
   const startSending = async () => {
     const newTextMessage = textMessage;
     setTextMessage("");
@@ -439,77 +407,6 @@ export const VoiceAssistant = ({
     setFinalOutput(newTextMessage);
     await processSpeechToText(newTextMessage, false);
   };
-  const sessionKey = "sai_session";
-
-  const getSessionKey = (): string => {
-    const sessionData = localStorage.getItem(sessionKey);
-    let sessionObj: { key: string; timestamp: number } = {
-      key: "",
-      timestamp: 0,
-    };
-
-    // Check if session data exists and not expired
-    if (sessionData) {
-      sessionObj = JSON.parse(sessionData);
-      if (Date.now() - sessionObj.timestamp <= 30 * 60 * 1000) {
-        return sessionObj.key; // Return existing session key if not expired
-      }
-    }
-
-    // Generate new session key
-    const newSessionKey = generateSessionKey();
-    sessionObj = { key: newSessionKey, timestamp: Date.now() };
-    localStorage.setItem(sessionKey, JSON.stringify(sessionObj));
-    return newSessionKey;
-  };
-
-  const generateSessionKey = (): string => {
-    // Generate a random alphanumeric session key
-    const chars =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let key = "";
-    for (let i = 0; i < 10; i++) {
-      key += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return sessionKey + "_" + key;
-  };
-
-  const getKeyInSession = (key: string): string | null => {
-    const sessionKey = getSessionKey();
-    DEV: console.log("sessionKey", sessionKey);
-    const sessionData = localStorage.getItem(sessionKey);
-    if (sessionData) {
-      const sessionObj = JSON.parse(sessionData);
-      return sessionObj[key] || null;
-    }
-    return null;
-  };
-
-  const setKeyInSession = (key: string, value: string): void => {
-    const sessionKey = getSessionKey();
-    DEV: console.log("sessionKey", sessionKey);
-    let sessionObj: { [key: string]: string } = {};
-    const sessionData = localStorage.getItem(sessionKey);
-    if (sessionData) {
-      sessionObj = JSON.parse(sessionData);
-    }
-    sessionObj[key] = value;
-    localStorage.setItem(sessionKey, JSON.stringify(sessionObj));
-  };
-
-  const resetSession = (): void => {
-    localStorage.removeItem(sessionKey);
-  };
-
-  // const setKeyInSession = (key: string, value: string): void => {
-  //   let sessionObj: { [key: string]: string } = {};
-  //   const sessionData = localStorage.getItem(sessionKey);
-  //   if (sessionData) {
-  //     sessionObj = JSON.parse(sessionData);
-  //   }
-  //   sessionObj[key] = value;
-  //   localStorage.setItem(sessionKey, JSON.stringify(sessionObj));
-  // };
 
   const triggerNudgeOncePerSession = async (action, config) => {
     const actionKey = `last${action}NudgeAt`;
@@ -519,7 +416,7 @@ export const VoiceAssistant = ({
       return;
     }
 
-    const isAlreadyShown = !!getKeyInSession(actionKey);
+    const isAlreadyShown = getKeyInSession(actionKey);
 
     if (isAlreadyShown) {
       console.log(`[nudge ] ${action} Already shown`);
@@ -528,8 +425,9 @@ export const VoiceAssistant = ({
 
     // Perform the action
     await triggerNudge(action, config);
+
     // Set the flag in local storage
-    // setKeyInSession(actionKey, Date.now().toString());
+    setKeyInSession(actionKey, Date.now().toString());
   };
 
   const welcomeNudge = async () => {
@@ -556,18 +454,6 @@ export const VoiceAssistant = ({
     // await triggerNudge(currentNudgeConfig?.exit);
     // await processSpeechToText(currentNudgeConfig?.exit?.text, false, true);
   };
-
-  // Define the thresholds for different pages
-  // const pageThresholds: { [key: string]: number } = {
-  //   '/home': 30, // Home page threshold in seconds
-  //   '/about': 45, // About page threshold in seconds
-  //   // Add more pages as needed
-  // };
-
-  // // Function to get the current page path
-  // function getCurrentPagePath(): string {
-  //   return window.location.pathname;
-  // }
 
   let timeSpentTimer: any | null = null;
   let startTime: number = Date.now();
@@ -597,7 +483,7 @@ export const VoiceAssistant = ({
           elapsedTime += (Date.now() - startTime) / 1000;
           console.log(`Time spent on page: ${elapsedTime} seconds`);
           if (elapsedTime * 1000 >= threshold) {
-            onStuck(window.location.pathname);
+            onStuck(root.location.pathname);
           }
         }, threshold);
       } else {
@@ -681,34 +567,6 @@ export const VoiceAssistant = ({
     };
   }, [currentNudgeConfig?.idle?.enabled]);
 
-  function beforeUnloadHandler(event) {
-    // Cancel the event
-    event.preventDefault();
-
-    // Prompt the user with a confirmation message
-    event.returnValue = "Are you sure you want to leave?";
-
-    // Create a speech message
-    var message = new SpeechSynthesisUtterance(
-      "Please wait, your message is being spoken.",
-    );
-
-    // Once the message has finished, remove the event listener to allow the page to be closed
-    message.onend = function () {
-      // Remove the event listener to allow the page to unload
-      window.removeEventListener("beforeunload", beforeUnloadHandler);
-
-      // Allow the page to be unloaded by triggering the unload process again
-      window.location.href = window.location.href;
-    };
-
-    // Speak the message
-    speechSynthesis.speak(message);
-
-    // Return false to keep the page from being unloaded
-    return false;
-  }
-
   const handleBeforeUnload = async (event) => {
     // Recommended
     event.preventDefault();
@@ -728,15 +586,6 @@ export const VoiceAssistant = ({
       clearTimeout(timeSpentTimer);
       elapsedTime += (Date.now() - startTime) / 1000;
     }
-    // onStuck(window.location.pathname);
-
-    // // Clear timespent timer
-    // if (timeSpentTimer !== null) {
-    //   DEV: console.log(`clearing timeSpentTimer: ${timeSpentTimer}`);
-    //   clearTimeout(timeSpentTimer);
-    // }
-
-    // return message; // Some older browsers require this return statement
     // Return false to keep the page from being unloaded
     return false;
   };
@@ -761,50 +610,13 @@ export const VoiceAssistant = ({
       currentNudgeConfig?.stuck?.enabled
     ) {
       root.addEventListener("beforeunload", handleBeforeUnload);
-
-      // root.addEventListener("beforeunload", beforeUnloadHandler);
-
       root.addEventListener("visibilitychange", handleVisibilityChanged);
     }
 
     return () => {
       root.removeEventListener("load", trackTimeSpentOnPage);
-
-      // if (
-      //   currentNudgeConfig?.exit?.enabled ||
-      //   currentNudgeConfig?.stuck?.enabled
-      // ) {
-      //   // Disabling this
-      //   // root.removeEventListener("beforeunload", handleBeforeUnload);
-      // }
     };
   }, [currentNudgeConfig?.exit?.enabled, currentNudgeConfig?.stuck?.enabled]);
-
-  // useEffect(() => {
-  //   const handleBooleanChange = () => {
-  //     if (currentNudgeConfig?.exit?.enabled) {
-  //       console.log("Boolean is true, perform actions here.");
-
-  //       const event = new Event("booleanTrue");
-  //       root.dispatchEvent(event);
-  //     }
-  //   };
-
-  //   handleBooleanChange();
-  // }, [currentNudgeConfig?.exit?.enabled]);
-
-  // useEffect(() => {
-  //   const handleBooleanTrue = () => {
-  //     console.log("Event: Boolean became true");
-  //     successNudge();
-  //   };
-
-  //   root.addEventListener("booleanTrue", handleBooleanTrue);
-
-  //   return () => {
-  //     root.removeEventListener("booleanTrue", handleBooleanTrue);
-  //   };
-  // }, []);
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>

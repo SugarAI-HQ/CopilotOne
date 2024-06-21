@@ -21,6 +21,7 @@ import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 
 import root from "window-or-global";
+import { getKeyInSession, setKeyInSession } from "../session";
 
 export const TextAssistant = ({
   id = null,
@@ -126,19 +127,51 @@ export const TextAssistant = ({
     await processTextToText(newTextMessage);
   };
 
+  const triggerNudgeOncePerSession = async (action, config) => {
+    const actionKey = `last${action}NudgeAt`;
+
+    if (!config.enabled) {
+      console.log(`[nudge] ${action} Not enabled`);
+      return;
+    }
+
+    const isAlreadyShown = getKeyInSession(actionKey);
+
+    if (isAlreadyShown) {
+      console.log(`[nudge ] ${action} Already shown`);
+      return;
+    }
+
+    // Perform the action
+    await triggerNudge(action, config);
+
+    // Set the flag in local storage
+    setKeyInSession(actionKey, Date.now().toString());
+  };
+
   const welcomeNudge = async () => {
-    DEV: console.log("welcome nudge message", currentNudgeConfig.welcome.text);
-    await triggerNudge(currentNudgeConfig?.welcome);
+    triggerNudgeOncePerSession("Welcome", currentNudgeConfig?.welcome);
+    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
   };
 
   const idleNudge = async () => {
-    DEV: console.log("Idle nudge message", currentNudgeConfig.idle.text);
-    await triggerNudge(currentNudgeConfig?.idle);
+    triggerNudgeOncePerSession("Idle", currentNudgeConfig?.idle);
+    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
+  };
+
+  const stuckNudge = async () => {
+    triggerNudgeOncePerSession("Stuck", currentNudgeConfig?.stuck);
+    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
   };
 
   const exitNudge = async () => {
-    DEV: console.log("exit nudge message", currentNudgeConfig.exit.text);
-    await triggerNudge(currentNudgeConfig?.exit);
+    console.log("[nudge] called exit nudge");
+
+    // triggerNudgeOncePerSession("Exit", currentNudgeConfig?.exit);
+    triggerNudge("Exit", currentNudgeConfig?.exit);
+
+    // await triggerNudge(currentNudgeConfig?.exit);
+    // await processSpeechToText(currentNudgeConfig?.exit?.text, false, true);
   };
 
   // const successNudge = async () => {
@@ -146,17 +179,150 @@ export const TextAssistant = ({
   //   await triggerNudge(currentNudgeConfig?.success);
   // };
 
-  const triggerNudge = async (config: any) => {
+  let timeSpentTimer: any | null = null;
+  let startTime: number = Date.now();
+  let elapsedTime: number = 0;
+
+  // Function to handle threshold exceeded
+  function onStuck(page: string): void {
+    console.log(
+      `Time spent on ${page} : ${elapsedTime} exceeded the threshold.`,
+    );
+    triggerNudgeOncePerSession("Stuck", currentNudgeConfig?.stuck);
+    // Add your custom logic here (e.g., send data to server, display message, etc.)
+  }
+  // Function to track time spent on page
+  function trackTimeSpentOnPage(): void {
+    const threshold = currentNudgeConfig?.stuck?.timeout * 1000 || 30000;
+
+    if (threshold === 0) {
+      return; // No threshold set for this page
+    }
+
+    const checkTime = () => {
+      if (document.visibilityState === "visible") {
+        startTime = Date.now();
+        timeSpentTimer = setTimeout(() => {
+          elapsedTime += (Date.now() - startTime) / 1000;
+          console.log(`Time spent on page: ${elapsedTime} seconds`);
+          if (elapsedTime * 1000 >= threshold) {
+            onStuck(root.location.pathname);
+          }
+        }, threshold);
+      } else {
+        if (timeSpentTimer !== null) {
+          clearTimeout(timeSpentTimer);
+          timeSpentTimer = null;
+          elapsedTime += (Date.now() - startTime) / 1000;
+        }
+      }
+    };
+
+    checkTime(); // Initial check
+  }
+
+  const triggerNudge = async (action: string, config: any) => {
+    if (!config.enabled) {
+      DEV: console.log(`[nudge] ${action} not enabled`);
+      return;
+    }
+
+    let nudgeText = config?.text;
+
+    // Load text if in "ai" mode
+    if (config?.textMode === "ai") {
+      const aiNudgeText = await upsertNudgeText(action, config, true);
+
+      // only override if able to generate response, else fallback to manual
+      if (aiNudgeText) {
+        nudgeText = aiNudgeText;
+      }
+    } else {
+      await upsertNudgeText(action, config, false);
+    }
+
+    DEV: console.log(`[nudge] ${action} message:`, nudgeText);
+    // Speak
+
+    // if (config?.voiceEnabled) {
+    //   return speak(nudgeText);
+    // }
+
     setHideToolTip(false);
+
+    // Set tooltip
     setTipConfig({
       isEnabled: config?.enabled,
-      text: config?.text,
+      text: nudgeText,
       duration: config?.duration,
     });
-    await processNudgeToText(config?.text);
   };
 
-  const resetTimer = () => {
+  const upsertNudgeText = async (
+    action: string,
+    nudgeConfig: any,
+    create: boolean,
+  ): Promise<string | boolean> => {
+    const newScope: EmbeddingScopeWithUserType = {
+      clientUserId: clientUserId!,
+      ...scope,
+    };
+
+    setIsprocessing(true);
+
+    const currentPromptVariables = {
+      ...currentAiConfig?.defaultPromptVariables,
+      ...promptVariables,
+      ...nudgeConfig.promptVariables,
+    };
+
+    const aiResponse = await textToAction(
+      (nudgeConfig.promptTemplate || promptTemplate) as string,
+      create ? "" : nudgeConfig.text,
+      {
+        ...currentPromptVariables,
+        "#ACTION": action,
+      },
+      newScope,
+      true,
+      nudgeConfig.chatHistorySize,
+      actions,
+      actionCallbacks,
+    ).finally(() => {
+      setIsprocessing(false);
+    });
+
+    return false;
+  };
+
+  // const resetTimer = () => {
+  //   if (timeoutRef.current) {
+  //     clearTimeout(timeoutRef.current);
+  //   }
+  //   timeoutRef.current = setTimeout(
+  //     idleNudge,
+  //     currentNudgeConfig.idle.timeout * 1000,
+  //   );
+  // };
+
+  // useEffect(() => {
+  //   if (currentNudgeConfig?.idle?.enabled) {
+  //     root.addEventListener("mousemove", resetTimer);
+  //     root.addEventListener("keydown", resetTimer);
+  //   }
+  //   return () => {
+  //     if (currentNudgeConfig?.idle?.enabled) {
+  //       root.removeEventListener("mousemove", resetTimer);
+  //       root.removeEventListener("keydown", resetTimer);
+  //     }
+
+  //     if (timeoutRef.current) {
+  //       clearTimeout(timeoutRef.current);
+  //     }
+  //   };
+  // }, [currentNudgeConfig?.idle?.enabled]);
+
+  const trackIdle = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -168,13 +334,13 @@ export const TextAssistant = ({
 
   useEffect(() => {
     if (currentNudgeConfig?.idle?.enabled) {
-      root.addEventListener("mousemove", resetTimer);
-      root.addEventListener("keydown", resetTimer);
+      root.addEventListener("mousemove", trackIdle);
+      root.addEventListener("keydown", trackIdle);
     }
     return () => {
       if (currentNudgeConfig?.idle?.enabled) {
-        root.removeEventListener("mousemove", resetTimer);
-        root.removeEventListener("keydown", resetTimer);
+        root.removeEventListener("mousemove", trackIdle);
+        root.removeEventListener("keydown", trackIdle);
       }
 
       if (timeoutRef.current) {
@@ -183,29 +349,56 @@ export const TextAssistant = ({
     };
   }, [currentNudgeConfig?.idle?.enabled]);
 
-  const processNudgeToText = async (input: string) => {
-    const newScope: EmbeddingScopeWithUserType = {
-      clientUserId: clientUserId!,
-      ...scope,
-    };
+  const handleBeforeUnload = async (event) => {
+    // Recommended
+    event.preventDefault();
+    const message =
+      "Hola, Are you sure you want to leave? Changes you made may not be saved.";
+    event.returnValue = message; // Standard message for all modern browsers
 
-    setIsprocessing(true);
-    const currentPromptVariables = {
-      ...currentAiConfig?.defaultPromptVariables,
-      ...promptVariables,
-    };
-    await textToAction(
-      promptTemplate as string,
-      input,
-      currentPromptVariables,
-      newScope,
-      false,
-      actions,
-      actionCallbacks,
-    ).finally(() => {
-      setIsprocessing(false);
-    });
+    // Included for legacy support, e.g. Chrome/Edge < 119
+    // event.returnValue = true;
+
+    if (currentNudgeConfig?.exit?.enabled) {
+      exitNudge();
+    }
+
+    // trackTimeSpentOnPage();
+    if (timeSpentTimer !== null) {
+      clearTimeout(timeSpentTimer);
+      elapsedTime += (Date.now() - startTime) / 1000;
+    }
+    // Return false to keep the page from being unloaded
+    return false;
   };
+
+  const handleVisibilityChanged = async (event) => {
+    if (root.document.visibilityState === "hidden" && timeSpentTimer !== null) {
+      clearTimeout(timeSpentTimer);
+      elapsedTime += (Date.now() - startTime) / 1000;
+    } else {
+      trackTimeSpentOnPage();
+    }
+  };
+
+  useEffect(() => {
+    // resetSession();
+    // root.addEventListener("load", trackTimeSpentOnPage);
+    trackTimeSpentOnPage();
+    root.document.addEventListener("visibilitychange", handleVisibilityChanged);
+
+    if (
+      currentNudgeConfig?.exit?.enabled ||
+      currentNudgeConfig?.stuck?.enabled
+    ) {
+      root.addEventListener("beforeunload", handleBeforeUnload);
+      root.addEventListener("visibilitychange", handleVisibilityChanged);
+    }
+
+    return () => {
+      root.removeEventListener("load", trackTimeSpentOnPage);
+    };
+  }, [currentNudgeConfig?.exit?.enabled, currentNudgeConfig?.stuck?.enabled]);
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
