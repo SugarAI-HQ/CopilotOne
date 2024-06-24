@@ -259,13 +259,6 @@ const TodoApp = () => {
         onClose={handleSettingsToggle}
         highlightedSetting={highlightedSetting}
       />
-      {/* <VoiceAssistant
-        id={"preview"}
-        promptTemplate={copilotPackage}
-        position={"bottom-center"}
-        // promptVariables={{ "#AGENT_NAME": "Tudy" }}
-        // voiceButtonStyle={{ backgroundColor: "#39f" }}
-      ></VoiceAssistant> */}
       {assistant === "text" ? (
         <TextAssistant
           id={"preview"}

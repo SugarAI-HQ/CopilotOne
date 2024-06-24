@@ -1,4 +1,6 @@
+import { getUniqueLanguagesAndCountries } from "./lang";
 import { copilotAssistantLangType, copilotAssistantVoiceType } from "./schema";
+import root from "window-or-global";
 
 const voices = {
   male: [
@@ -112,7 +114,7 @@ export const findAvailableVoice = async (
 
   const langVoices = voices.filter((voice) => voice.lang.startsWith(lang));
 
-  if (langVoices.length == 1) {
+  if (langVoices.length === 1) {
     return langVoices[0];
   }
 
@@ -120,8 +122,72 @@ export const findAvailableVoice = async (
     const preferedLangVoices = langVoices.filter((voice) =>
       voice.name.includes(preferedVoiceName),
     );
-    preferedLangVoices.length > 0 ? preferedLangVoices[0] : langVoices[0];
+    return preferedLangVoices.length > 0
+      ? preferedLangVoices[0]
+      : langVoices[0];
   }
+};
+
+export const findAvailableVoiceInOrder = async (
+  preferedVoiceNames: string[],
+  lang: string,
+  synth: SpeechSynthesis,
+) => {
+  let finalVoice: SpeechSynthesisVoice | null = null;
+
+  const avaiableVoices = await new Promise<SpeechSynthesisVoice[]>(
+    (resolve) => {
+      let voices = synth.getVoices();
+
+      if (voices.length) {
+        resolve(voices);
+        return;
+      }
+
+      const voiceschanged = () => {
+        voices = synth.getVoices();
+        resolve(voices);
+      };
+
+      synth.onvoiceschanged = voiceschanged;
+    },
+  );
+  if (preferedVoiceNames.length === 0) {
+    // find best mathcing voice for match
+    const langVoices = avaiableVoices.filter((voice) =>
+      voice.lang.startsWith(lang),
+    );
+    // Pick the first voice
+    if (langVoices.length > 0) {
+      finalVoice = langVoices[0];
+    }
+  } else {
+    // predefined languages specific voices
+
+    const avaiableVoicesName = avaiableVoices.map((voice) => voice.name);
+    const avaiableVoicesSet = new Set(avaiableVoicesName);
+
+    const filteredVoiceNames = preferedVoiceNames.filter((voice) =>
+      avaiableVoicesSet.has(voice),
+    );
+
+    if (filteredVoiceNames.length > 0) {
+      finalVoice = avaiableVoices.find(
+        (voice) => voice.name === filteredVoiceNames[0],
+      ) as SpeechSynthesisVoice;
+    }
+  }
+
+  if (finalVoice == null) {
+    PROD: console.error(
+      "[nudgess] No voice found for lang: ",
+      lang,
+      " and preferred voice names: ",
+      preferedVoiceNames,
+    );
+  }
+
+  return finalVoice;
 };
 
 export const determinePreferredVoice = async (
@@ -129,73 +195,116 @@ export const determinePreferredVoice = async (
   preferredLang,
   synth,
 ) => {
-  if (inputVoice === copilotAssistantLangType.enum.auto) {
-    if (preferredLang === copilotAssistantLangType.enum["hi-IN"]) {
-      return (
-        (await findAvailableVoice(
-          copilotAssistantVoiceType.enum["Google हिन्दी"],
-          preferredLang,
-          synth,
-        )) ??
-        (await findAvailableVoice(
-          copilotAssistantVoiceType.enum.Lekha,
-          preferredLang,
-          synth,
-        ))
-      );
-    } else {
-      return await findAvailableVoice(
-        copilotAssistantVoiceType.enum.Nicky,
-        preferredLang,
-        synth,
-      );
+  const voiceNames: string[] = [];
+
+  const [lang, country] = preferredLang.split("-");
+
+  // Automatically detect
+  if (
+    inputVoice === copilotAssistantLangType.enum.auto &&
+    lang === copilotAssistantLangType.enum.auto
+  ) {
+    const { languages, countries } = getUniqueLanguagesAndCountries();
+
+    // Hindi: जीवन एक यात्रा है, इसका आनंद लें।
+    // English: Life is a journey, enjoy it.
+    // Bengali: জীবন একটি যাত্রা, এটি উপভোগ করুন।
+    // Telugu: జీవితం ఒక ప్రయాణం, దాన్ని ఆనందించండి।
+    // Marathi: जीवन एक प्रवास आहे, त्याचा आनंद घ्या।
+    // Tamil: வாழ்க்கை ஒரு பயணம், அதை மகிழுங்கள்.
+    // Gujarati: જીવન એ એક મુસાફરી છે, તેનો આનંદ માણો.
+    // Kannada: ಜೀವನವು ಒಂದು ಯಾತ್ರೆ, ಇದನ್ನು ಆನಂದಿಸಿ.
+    // Odia: ଜୀବନ ଏକ ଯାତ୍ରା, ଏହାକୁ ଉପଭୋଗ କରନ୍ତୁ।
+    // Malayalam: ജീവിതം ഒരു യാത്രയാണ്, അതില്‍ ആനന്ദം നിറയൂ.
+    // Punjabi: ਜ਼ਿੰਦਗੀ ਇੱਕ ਸਫ਼ਰ ਹੈ, ਇਸ ਦਾ ਆਨੰਦ ਲਓ।
+    if (
+      languages.includes("hi") || // Hindi
+      languages.includes("en") || // English
+      languages.includes("bn") || // Bengali
+      languages.includes("te") || // Telugu
+      languages.includes("mr") || // Marathi
+      languages.includes("ta") || // Tamil
+      languages.includes("gu") || // Gujarati
+      languages.includes("kn") || // Kannada
+      languages.includes("or") || // Odia
+      languages.includes("ml") || // Malayalam
+      languages.includes("pa") || // Punjabi
+      countries.includes("IN") // India
+    ) {
+      voiceNames.push(copilotAssistantVoiceType.enum["Google हिन्दी"]);
+      voiceNames.push(copilotAssistantVoiceType.enum.Lekha);
     }
-  }
-  if (inputVoice) {
-    const preferredVoice = await findAvailableVoice(
-      inputVoice,
-      preferredLang,
-      synth,
-    );
-    if (preferredVoice) {
-      return preferredVoice;
+
+    // for english speakers otherwise
+    if (languages.includes("en")) {
+      voiceNames.push(copilotAssistantVoiceType.enum.Nicky);
     }
+  } else if (
+    // for non auto, indian user use closest to hinglish voice
+    lang !== copilotAssistantLangType.enum.auto
+  ) {
+    if (
+      lang in
+        ["hi", "en", "bn", "te", "mr", "ta", "gu", "kn", "or", "ml", "pa"] ||
+      country === "IN"
+    ) {
+      voiceNames.push(copilotAssistantVoiceType.enum["Google हिन्दी"]);
+      voiceNames.push(copilotAssistantVoiceType.enum.Lekha);
+    }
+    if (lang === "en") {
+      voiceNames.push(copilotAssistantVoiceType.enum.Nicky);
+    }
+  } else {
+    voiceNames.push(inputVoice);
   }
 
-  const defaultVoices = Object.values(copilotAssistantVoiceType.Values);
-  for (const defaultVoice of defaultVoices) {
-    const voice = await findAvailableVoice(defaultVoice, preferredLang, synth);
-    if (voice) {
-      return voice;
-    }
-  }
-  return null; // Return null if no default voice found
+  const fv = await findAvailableVoiceInOrder(voiceNames, preferredLang, synth);
+  return fv;
 };
 
 export const determinePreferredLang = (inputLang) => {
-  const defaultLang =
-    Intl.DateTimeFormat().resolvedOptions().timeZone === "Asia/Calcutta"
-      ? copilotAssistantLangType.enum["hi-IN"]
-      : copilotAssistantLangType.enum["en-US"];
-  if (inputLang === copilotAssistantLangType.enum.auto) {
+  const defaultLang = root.navigator.language;
+  const lang = inputLang.split("-")[0];
+
+  if (copilotAssistantLangType.enum.auto !== lang) {
+    return inputLang;
+  }
+
+  // For auto, indian user use closest to hinglish
+  // For defined lang, go for it right away
+  const { languages, countries } = getUniqueLanguagesAndCountries();
+
+  if (copilotAssistantLangType.enum.auto === lang) {
+    if (countries.includes("IN")) {
+      if (languages.includes("en")) {
+        return copilotAssistantLangType.enum["en-IN"];
+      }
+      if (languages.includes("hi")) {
+        return copilotAssistantLangType.enum["hi-IN"];
+      }
+    }
     return defaultLang;
   }
+  // const defaultLang =
+  //   Intl.DateTimeFormat().resolvedOptions().timeZone === "Asia/Calcutta"
+  //     ? copilotAssistantLangType.enum["hi-IN"]
+  //     : copilotAssistantLangType.enum["en-US"];
   return inputLang || defaultLang;
 };
 
-export const getPreferredVoiceAndLang = async (
-  inputVoice,
-  inputLang,
-  synth,
-) => {
-  const preferredLang = determinePreferredLang(inputLang);
-  const preferredVoice = await determinePreferredVoice(
-    inputVoice,
-    preferredLang,
-    synth,
-  );
-  return { lang: preferredLang, voice: preferredVoice };
-};
+// export const getPreferredVoiceAndLang = async (
+//   inputVoice,
+//   inputLang,
+//   synth,
+// ) => {
+//   const preferredLang = determinePreferredLang(inputLang);
+//   const preferredVoice = await determinePreferredVoice(
+//     inputVoice,
+//     preferredLang,
+//     synth,
+//   );
+//   return { lang: preferredLang, voice: preferredVoice };
+// };
 
 export const getGender = (voice: SpeechSynthesisVoice) => {
   if (voice && voices.female.includes(voice.name)) {

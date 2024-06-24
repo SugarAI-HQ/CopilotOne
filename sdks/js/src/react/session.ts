@@ -47,7 +47,8 @@ export const getKeyInSession = (key: string): string | null => {
 export const setKeyInSession = (key: string, value: string): void => {
   const sessionKey = getSessionKey();
   DEV: console.log("sessionKey", sessionKey);
-  let sessionObj: { [key: string]: string } = {};
+  // let sessionObj: { [key: string]: string } = {};
+  let sessionObj: Record<string, string> = {};
   const sessionData = localStorage.getItem(sessionKey);
   if (sessionData) {
     sessionObj = JSON.parse(sessionData);

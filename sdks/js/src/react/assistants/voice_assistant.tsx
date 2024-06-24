@@ -9,7 +9,7 @@ import {
   scopeDefaults,
   determinePreferredLang,
   getGender,
-  getPreferredVoiceAndLang,
+  determinePreferredVoice,
   shouldForwardProp,
   loadCurrentConfig,
   useCopilot,
@@ -58,7 +58,10 @@ export const VoiceAssistant = ({
   const [hideVoiceButton, setHideVoiceButton] = useState(false);
   const [textMessage, setTextMessage] = useState("");
   const [isUserEngaged, setIsUserEngaged] = useState(false);
+  const [lang, setLang] = useState("");
+  const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const [tipConfig, setTipConfig] = useState({
     isEnabled: false,
     text: "",
@@ -96,8 +99,27 @@ export const VoiceAssistant = ({
     promptTemplate = config?.ai?.defaultPromptTemplate;
   }
 
+  async function setupLangageAndVoice() {
+    // lang
+    const lang = determinePreferredLang(currentAiConfig.lang);
+    setLang(lang);
+
+    // voice
+    const voice = await determinePreferredVoice(
+      currentAiConfig.voice,
+      currentAiConfig.lang,
+      root.speechSynthesis,
+    );
+
+    setVoice(voice);
+
+    PROD: console.log(`[nudge] setup lang: ${lang}, ${voice?.name}`);
+  }
+
   // welcome
   useEffect(() => {
+    setupLangageAndVoice();
+
     void checkIfAudioPermissionGranted();
     setButtonName(id ?? (position as string));
     const welcomeTimer = setTimeout(async () => {
@@ -179,7 +201,7 @@ export const VoiceAssistant = ({
   };
 
   function initRecognition(recognition: any) {
-    const lang = determinePreferredLang(currentAiConfig.lang);
+    // const lang = determinePreferredLang(currentAiConfig.lang);
     recognition.continuous = false;
     recognition.lang = lang;
     recognition.interimResults = true;
@@ -242,16 +264,11 @@ export const VoiceAssistant = ({
   const speak = async (text) => {
     const synth = root.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(text);
-    const { voice, lang } = await getPreferredVoiceAndLang(
-      currentAiConfig.voice,
-      currentAiConfig.lang,
-      synth,
-    );
     console.log(`[nudge] ${voice?.name} speaking in ${lang}: ${text}`);
 
     // set lang and voice
     // utterance.lang = lang;
-    utterance.voice = voice as any;
+    utterance.voice = voice as SpeechSynthesisVoice;
 
     const stopSpeakingOnPageUnload = () => {
       synth.cancel();
@@ -305,11 +322,11 @@ export const VoiceAssistant = ({
       ...scope,
     };
 
-    const { voice, lang } = await getPreferredVoiceAndLang(
-      currentAiConfig.voice,
-      currentAiConfig.lang,
-      root.speechSynthesis,
-    );
+    // const { voice, lang } = await getPreferredVoiceAndLang(
+    //   currentAiConfig.voice,
+    //   currentAiConfig.lang,
+    //   root.speechSynthesis,
+    // );
     const currentPromptVariables = {
       ...currentAiConfig?.defaultPromptVariables,
       ...promptVariables,
@@ -351,11 +368,11 @@ export const VoiceAssistant = ({
 
     setIsprocessing(true);
 
-    const { voice, lang } = await getPreferredVoiceAndLang(
-      currentAiConfig.voice,
-      currentAiConfig.lang,
-      root.speechSynthesis,
-    );
+    // const { voice, lang } = await getPreferredVoiceAndLang(
+    //   currentAiConfig.voice,
+    //   currentAiConfig.lang,
+    //   root.speechSynthesis,
+    // );
     const currentPromptVariables = {
       ...currentAiConfig?.defaultPromptVariables,
       ...promptVariables,
@@ -440,10 +457,10 @@ export const VoiceAssistant = ({
     // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
   };
 
-  const stuckNudge = async () => {
-    triggerNudgeOncePerSession("Stuck", currentNudgeConfig?.stuck);
-    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
-  };
+  // const stuckNudge = async () => {
+  //   triggerNudgeOncePerSession("Stuck", currentNudgeConfig?.stuck);
+  //   // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
+  // };
 
   const exitNudge = async () => {
     console.log("[nudge] called exit nudge");
@@ -527,7 +544,8 @@ export const VoiceAssistant = ({
     // Speak
 
     if (config?.voiceEnabled) {
-      return speak(nudgeText);
+      await speak(nudgeText);
+      return;
     }
 
     setHideToolTip(false);

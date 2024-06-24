@@ -159,10 +159,10 @@ export const TextAssistant = ({
     // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
   };
 
-  const stuckNudge = async () => {
-    triggerNudgeOncePerSession("Stuck", currentNudgeConfig?.stuck);
-    // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
-  };
+  // const stuckNudge = async () => {
+  //   triggerNudgeOncePerSession("Stuck", currentNudgeConfig?.stuck);
+  //   // await processSpeechToText(currentNudgeConfig?.idle?.text, false, true);
+  // };
 
   const exitNudge = async () => {
     console.log("[nudge] called exit nudge");
@@ -276,7 +276,7 @@ export const TextAssistant = ({
       ...nudgeConfig.promptVariables,
     };
 
-    const aiResponse = await textToAction(
+    await textToAction(
       (nudgeConfig.promptTemplate || promptTemplate) as string,
       create ? "" : nudgeConfig.text,
       {
