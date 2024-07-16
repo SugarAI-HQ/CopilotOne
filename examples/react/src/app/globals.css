@@ -34,3 +34,18 @@ body {
 input[type="checkbox"] {
   appearance: revert !important;
 }
+
+
+.blinking-cursor-on {
+  animation: blink 1s step-start infinite;
+}
+.blinking-cursor-off {
+  display: inline
+  /* animation: blink 1s step-start infinite; */
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
