@@ -45,6 +45,7 @@ import {
     },
     loadFaqs: function parseFAQs(selector) {
       const faqs = this.parseFAQs(selector);
+      console.log(`nudges FAQs loaded: ${faqs.length} `, faqs);
       this.upsertEmbedding(faqs, win.location.host, "faqs");
     },
     parseFAQs: function parseFAQs(selector) {

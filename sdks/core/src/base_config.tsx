@@ -3,6 +3,7 @@ import {
   copilotStyleDefaults,
   copilotAiDefaults,
   copilotNudgeDefaults,
+  copilotRouterDefaults,
 } from "./schema";
 
 export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
@@ -49,6 +50,7 @@ export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
   // DEV: console.log(`current Style ---> ${JSON.stringify(currentStyle)}`);
 
   const currentAiConfig = {
+    ...copilotRouterDefaults,
     ...copilotAiDefaults,
     ...config?.ai,
   };

@@ -1,6 +1,17 @@
 import { z } from "zod";
 import { copilotId, stringOpt, userId } from "./base";
 
+export const OPENAI_EMBEDDING_MODELS = [
+  "text-embedding-3-small",
+  "text-embedding-3-large",
+  "text-embedding-ada-002	",
+];
+
+export const INHOUSE_EMBEDDING_MODELS = ["a", "b"];
+
+export const embedding = z.array(z.number());
+export type Embedding = z.infer<typeof embedding>;
+
 export const embeddingScopeSchema = z.object({
   clientUserId: z.string(),
   scope1: stringOpt.default(""),
@@ -47,3 +58,15 @@ export type EmbeddingSchema = z.infer<typeof embeddingSchema>;
 
 export const embeddingsSchema = z.array(embeddingSchema);
 export type EmbeddingsType = z.infer<typeof embeddingsSchema>;
+
+export const embeddingModelSchema = z.object({
+  provider: z.string(),
+  model: z.string(),
+});
+
+export type EmbeddingModel = z.infer<typeof embeddingModelSchema>;
+
+export const EmbeddingModelDefault: EmbeddingModel = {
+  provider: "openai",
+  model: "text-embedding-3-small",
+};

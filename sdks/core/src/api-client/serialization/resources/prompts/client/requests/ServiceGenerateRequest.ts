@@ -10,6 +10,9 @@ export const ServiceGenerateRequest: core.serialization.Schema<
   serializers.ServiceGenerateRequest.Raw,
   SugarAiApi.ServiceGenerateRequest
 > = core.serialization.object({
+  router: core.serialization.lazyObject(
+    async () => (await import("../../../..")).ServiceGenerateRequestRouter,
+  ),
   variables: core.serialization.record(
     core.serialization.string(),
     core.serialization.unknown(),
@@ -66,6 +69,7 @@ export const ServiceGenerateRequest: core.serialization.Schema<
 
 export declare namespace ServiceGenerateRequest {
   interface Raw {
+    router: serializers.ServiceGenerateRequestRouter.Raw;
     variables: Record<string, unknown>;
     messages?: serializers.ServiceGenerateRequestMessagesItem.Raw[] | null;
     attachments?: Record<string, unknown> | null;

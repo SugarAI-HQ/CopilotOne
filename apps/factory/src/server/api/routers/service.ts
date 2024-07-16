@@ -29,6 +29,11 @@ import { TemplateVariablesType } from "~/validators/prompt_log";
 import { TRPCError } from "@trpc/server";
 import { createTrackTime } from "~/utils/performance";
 import { env } from "~/env.mjs";
+import { createEmbeddings } from "~/utils/embeddings";
+import { findSemanticPrompt } from "~/utils/semantic";
+import { Embedding, EmbeddingModelDefault } from "~/validators/embedding";
+
+const DEFAULT_PROMPT_VERSION = "DEFAULT_PROMPT_VERSION";
 
 export const serviceRouter = createTRPCRouter({
   generate: publicProcedure
@@ -110,10 +115,14 @@ export const serviceRouter = createTRPCRouter({
               userQuery,
               input.scope,
             );
+            console.log(`embedding matches >>>> ${JSON.stringify(matches)}`);
           }
 
           embeddingVariables["$VIEW_CONTEXT" as any] =
-            matches.length > 0 ? matches[0]?.doc : "Empty";
+            matches.length > 0
+              ? matches.map((m: any) => m?.doc).join("\n ")
+              : "Empty";
+          // matches.length > 0 ? matches[0]?.doc : "Empty";
 
           embeddingVariables["$USER_QUERY" as any] = userQuery;
           trackTime("embeddings");
@@ -256,25 +265,80 @@ export const serviceLiteRouter = createTRPCRouter({
       trackTime("start");
       let userId = ctx.jwt?.id as string;
 
+      let userQuery: null | string = null;
+      let userQueryEmbedding: null | Embedding = null;
       const isNudge = input.chat?.message.role == "assistant";
       const nudgeText = isNudge ? input.chat?.message?.content : "";
+
+      // Extract user query from last message
+      if (!isNudge && input.chat?.message) {
+        userQuery = input.chat?.message?.content as string;
+      }
 
       let copilotId = input?.copilotId as string;
       let pl;
 
       let errorResponse: LlmErrorResponse | null = null;
+      let pv: any = null;
+      let pt: any = null;
 
-      // 0. Load latest Prompt version
-      let [pv, pt] = await getPv(ctx, input);
-      console.log(`promptVersion >>>> ${JSON.stringify(pv)}`);
+      let chatId = input.chat?.id as string;
+      let promptVersionId: string = DEFAULT_PROMPT_VERSION;
+      let threshold = 0;
+      let score = 0;
+      let promptMatch: string = "default";
+      let promptMatchContent: string = "";
 
+      // 0. Routing
+      // - Manual: Load latest Prompt version
+      // - Auto: Identify the right Prompt and its latest released version.
+      if (!isNudge && input.router.mode == "auto" && userQuery) {
+        const pd = await findSemanticPrompt(
+          userId,
+          copilotId,
+          userQuery,
+          null,
+          promptVersionId,
+          5,
+          EmbeddingModelDefault,
+        );
+        // Update values
+        promptVersionId = pd.promptVersionId;
+        userQueryEmbedding = pd.textEmbedding;
+        score = pd.score;
+        threshold = pd.threshold;
+        promptMatchContent = pd.text;
+      }
+
+      // Load the right prompt version
+      if (promptVersionId === DEFAULT_PROMPT_VERSION) {
+        [pv, pt] = await getPv(ctx, input);
+      } else {
+        promptMatch = "semantic";
+        [pv, pt] = await getPromptVersion(ctx, promptVersionId);
+      }
+
+      const routerData = {
+        mode: input.router.mode,
+        match: promptMatch,
+        prompt: `${input?.username}/${pt?.name}/${pv?.version}`,
+        threshold: threshold,
+        score: score,
+        text: promptMatchContent,
+      };
+
+      console.log(
+        `0. promptVersion >>>> ${routerData.prompt}  ${JSON.stringify(pv)}`,
+      );
+      trackTime("semantic_routing");
+
+      // identified the prompt version
+      // lets execute the prompt
       if (pv && userId && userId != "") {
         const modelType: ModelTypeType = pv.llmModelType;
-        console.log(`data >>>> ${JSON.stringify(input)}`);
+        console.log(`0. data >>>> ${JSON.stringify(input)}`);
 
         // 1. Caching and Data Gathering
-        let chatId = input.chat?.id as string;
-        let userQuery: null | string = null;
 
         // 1.1 Semantic Caching
         // TODO
@@ -290,10 +354,10 @@ export const serviceLiteRouter = createTRPCRouter({
         trackTime("load_chat");
 
         // 1.3 Extract user query from last message
-        if (!isNudge && input.messages && input.messages?.length > 0) {
-          const lastMessage = input.messages[input.messages?.length - 1];
-          userQuery = lastMessage?.content as string;
-        }
+        // if (!isNudge && input.messages && input.messages?.length > 0) {
+        //   const lastMessage = input.messages[input.messages?.length - 1];
+        //   userQuery = lastMessage?.content as string;
+        // }
 
         // 2. Build Prompt
 
@@ -318,7 +382,10 @@ export const serviceLiteRouter = createTRPCRouter({
           }
 
           embeddingVariables["$VIEW_CONTEXT" as any] =
-            matches.length > 0 ? matches[0]?.doc : "Empty";
+            matches.length > 0
+              ? matches.map((m: any) => m?.doc).join("\n ")
+              : "Empty";
+          // matches.length > 0 ? matches[0]?.doc : "Empty";
 
           embeddingVariables["$USER_QUERY" as any] = userQuery;
           trackTime("embeddings");
@@ -384,6 +451,7 @@ export const serviceLiteRouter = createTRPCRouter({
 
           const variables = replaceDataVariables(templateVariables || {});
           trackTime("end");
+
           // 4.2 Save prompt data to database
           ctx.prisma.promptLog
             .create({
@@ -415,8 +483,25 @@ export const serviceLiteRouter = createTRPCRouter({
                 copilotId: copilotId,
               },
             })
-            .then(() => {
+            .then((lpl) => {
               trackTime("save_prompt_data");
+
+              // save for nudges as well as regular prompts
+              if (input.chat?.message && copilotId) {
+                return saveChatMessages(
+                  ctx,
+                  userId,
+                  chatId,
+                  copilotId,
+                  input,
+                  rr,
+                  trackTime,
+                  lpl.id,
+                  isNudge,
+                  nudgeText,
+                  userQueryEmbedding,
+                );
+              }
             })
             .catch((error) => {
               trackTime("save_prompt_data_failed");
@@ -424,25 +509,16 @@ export const serviceLiteRouter = createTRPCRouter({
             });
         }
 
-        // save for nudges as well as regular prompts
-        if (input.chat?.message && copilotId) {
-          await saveChatMessages(
-            ctx,
-            userId,
-            chatId,
-            copilotId,
-            input,
-            rr,
-            trackTime,
-            isNudge,
-            nudgeText,
-          );
-        }
         if (chatId && rr != null) {
           pl = { llmResponse: rr?.response, chat: { id: chatId as string } };
         }
+      } else {
+        console.log(
+          `10. no prompt template found for ${input.promptTemplateId}`,
+        );
       }
-      pl = { ...pl, stats: getStats() };
+
+      pl = { ...pl, stats: getStats(), router: routerData };
       return pl as GenerateLiteOutput;
     }),
 });
@@ -575,8 +651,10 @@ export const saveChatMessages = async (
   input: any,
   rr: any,
   trackTime: Function,
+  logId: string | null = null,
   isNudge: boolean = false,
   nudgeText: string = "",
+  contentEmbedding: any = null,
 ) => {
   const saveMessagePromises = [];
   // Create promises to save each message
@@ -589,20 +667,33 @@ export const saveChatMessages = async (
           copilotId: copilotId,
           content: rr?.response.data.completion[0].message.content ?? nudgeText,
           role: input.chat?.message.role,
+          logId: logId,
         },
       }),
     );
   } else {
+    contentEmbedding =
+      contentEmbedding ??
+      (await createEmbeddings([input.chat?.message.content]))[0];
+
     saveMessagePromises.push(
-      ctx.prisma.message.create({
-        data: {
-          userId: userId,
-          chatId: chatId,
-          copilotId: copilotId,
-          content: input.chat?.message.content as string,
-          role: input.chat?.message.role,
-        },
-      }),
+      // ctx.prisma.message.create({
+      //   data: {
+      //     userId: userId,
+      //     chatId: chatId,
+      //     copilotId: copilotId,
+      //     content: input.chat?.message.content as string,
+      //     embedding: contentEmbedding,
+      //     role: input.chat?.message.role,
+      //   },
+      // }),
+
+      ctx.prisma
+        .$executeRaw`INSERT INTO "Message" ("userId", "chatId", "copilotId", "content", "embedding", "role", "logId")
+      VALUES (${userId}, ${chatId}, ${copilotId}, ${
+        input.chat?.message.content as string
+      }, ${contentEmbedding}, ${input.chat?.message.role}, ${logId})`,
+
       ctx.prisma.message.create({
         data: {
           userId: userId,
@@ -610,6 +701,7 @@ export const saveChatMessages = async (
           copilotId: copilotId,
           content: rr.response.data.completion[0].message.content ?? "",
           role: rr.response.data.completion[0].message.role,
+          logId: logId,
         },
       }),
     );
@@ -625,3 +717,25 @@ export const saveChatMessages = async (
     console.error("Error creating Messages:", error);
   }
 };
+
+async function getPromptVersion(ctx: any, pvId: string) {
+  try {
+    const pv = await ctx.prisma.promptVersion.findFirst({
+      where: {
+        //
+        id: pvId,
+      },
+      include: {
+        promptTemplate: true,
+      },
+    });
+    const pt = pv.promptTemplate;
+
+    return [pv, pt];
+  } catch (ex) {
+    throw new TRPCError({
+      code: "NOT_FOUND",
+      message: "Prompt not found",
+    });
+  }
+}

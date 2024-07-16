@@ -10,6 +10,9 @@ export const LiteServiceGenerateRequest: core.serialization.Schema<
   serializers.LiteServiceGenerateRequest.Raw,
   SugarAiApi.LiteServiceGenerateRequest
 > = core.serialization.object({
+  router: core.serialization.lazyObject(
+    async () => (await import("../../../..")).LiteServiceGenerateRequestRouter,
+  ),
   variables: core.serialization.record(
     core.serialization.string(),
     core.serialization.unknown(),
@@ -66,6 +69,7 @@ export const LiteServiceGenerateRequest: core.serialization.Schema<
 
 export declare namespace LiteServiceGenerateRequest {
   interface Raw {
+    router: serializers.LiteServiceGenerateRequestRouter.Raw;
     variables: Record<string, unknown>;
     messages?: serializers.LiteServiceGenerateRequestMessagesItem.Raw[] | null;
     attachments?: Record<string, unknown> | null;

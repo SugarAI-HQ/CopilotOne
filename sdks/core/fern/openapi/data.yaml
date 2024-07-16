@@ -178,6 +178,19 @@
               schema: 
                 type: "object"
                 properties: 
+                  router: 
+                    type: "object"
+                    properties: 
+                      mode: 
+                        type: "string"
+                        enum: 
+                          - "auto"
+                          - "manual"
+                        default: "manual"
+                      threshold: 
+                        type: "number"
+                        default: 0.5
+                    additionalProperties: false
                   variables: 
                     type: "object"
                     additionalProperties: {}
@@ -337,6 +350,7 @@
                   promptVersionId: 
                     type: "string"
                 required: 
+                  - "router"
                   - "variables"
                 additionalProperties: false
         parameters: 
@@ -527,6 +541,19 @@
               schema: 
                 type: "object"
                 properties: 
+                  router: 
+                    type: "object"
+                    properties: 
+                      mode: 
+                        type: "string"
+                        enum: 
+                          - "auto"
+                          - "manual"
+                        default: "manual"
+                      threshold: 
+                        type: "number"
+                        default: 0.5
+                    additionalProperties: false
                   variables: 
                     type: "object"
                     additionalProperties: {}
@@ -686,6 +713,7 @@
                   promptVersionId: 
                     type: "string"
                 required: 
+                  - "router"
                   - "variables"
                 additionalProperties: false
         parameters: 
@@ -774,8 +802,32 @@
                               additionalProperties: 
                                 nullable: true
                           nullable: true
-                      required: 
-                        - "llmResponse"
+                        router: 
+                          type: "object"
+                          properties: 
+                            mode: 
+                              type: "string"
+                              enum: 
+                                - "auto"
+                                - "manual"
+                            match: 
+                              type: "string"
+                            prompt: 
+                              type: "string"
+                            score: 
+                              type: "number"
+                            threshold: 
+                              type: "number"
+                            text: 
+                              type: "string"
+                          required: 
+                            - "mode"
+                            - "match"
+                            - "prompt"
+                            - "score"
+                            - "threshold"
+                            - "text"
+                          additionalProperties: false
                       additionalProperties: false
                     - 
                       enum: 

@@ -1,8 +1,5 @@
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { findSemanticLogs } from "~/utils/semantic";
 import {
   getLogsInput,
   logListOutput,
@@ -49,15 +46,52 @@ export const logRouter = createTRPCRouter({
       const totalPages = Math.ceil(totalRecords / perPage);
 
       // console.log(`logs 2 -------------- ${JSON.stringify(totalPages)}`);
+      let logs: any = [];
+      const userId = ctx.jwt?.id as string;
 
-      const logs = await ctx.prisma.promptLog.findMany({
-        cursor: cursor ? { id: cursor } : undefined,
-        where: filteredWhere,
-        orderBy: {
-          createdAt: "desc",
-        },
-        take: perPage + 1,
-      });
+      if (input.searchText == undefined || input.searchText == "") {
+        logs = await ctx.prisma.promptLog.findMany({
+          cursor: cursor ? { id: cursor } : undefined,
+          where: filteredWhere,
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: perPage + 1,
+        });
+      } else {
+        const pls = await findSemanticLogs(
+          userId,
+          input?.searchText as string,
+          filteredWhere,
+        );
+
+        console.log(`logs 4 -------------- semantic logs size: ${logs.length}`);
+        // const ids = pls.map((p) => p.id);
+        const ids: string[] = [];
+        let similarities: any = {};
+        let messages: any = {};
+        pls?.forEach((p: any) => {
+          ids.push(p.id);
+          similarities[p.id] = p.similarity;
+          messages[p.id] = p.content;
+        });
+
+        logs = await ctx.prisma.promptLog.findMany({
+          cursor: cursor ? { id: cursor } : undefined,
+          // where: filteredWhere,
+          where: {
+            id: {
+              in: ids,
+            },
+          },
+          take: perPage + 1,
+        });
+
+        logs.forEach((l: any) => {
+          l.similarity = similarities[l.id];
+          l.message = messages[l.id];
+        });
+      }
 
       // console.log(`logs 3 -------------- ${JSON.stringify(logs)}`);
 

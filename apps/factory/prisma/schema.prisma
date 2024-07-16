@@ -332,16 +332,19 @@ model Chat {
 }
 
 model Message {
-  id        String   @id @default(uuid())
+  id        String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   userId    String
   copilotId String
   logId     String?
   content   String
+  embedding Unsupported("vector(1536)")?
   role      String   @default("user")
   chatId    String
+
   createdAt DateTime @default(now())
   metadata  Json     @default("{}")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  // updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 }
 
 model Embedding {

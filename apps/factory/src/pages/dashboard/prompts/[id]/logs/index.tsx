@@ -8,6 +8,7 @@ import {
   TableRow,
   Paper,
   Button,
+  TextField,
 } from "@mui/material";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
@@ -60,6 +61,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
 
   const [promptLogs, setPromptLogs] = useState<LogSchema[]>([]);
   const [searchText, setSearchText] = useState<string>("");
+  const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
 
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     environment: undefined,
@@ -73,6 +75,7 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
       {
         promptPackageId: packageId,
         promptTemplateId: promptTemplateId,
+        searchText: searchText,
         perPage: itemsPerPage,
         ...filterOptions,
       },
@@ -90,9 +93,24 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
     }
   }, [data]);
 
+  // useEffect(() => {
+  //   // Fetch initial page of data
+  //   refetch();
+  // }, [searchText, filterOptions]);
+
   useEffect(() => {
-    // Fetch initial page of data
-    refetch();
+    if (typingTimeout !== null) {
+      clearTimeout(typingTimeout);
+    }
+
+    const timeout = window.setTimeout(() => {
+      refetch();
+    }, 2000);
+
+    setTypingTimeout(timeout);
+
+    // Clean up the timeout when the component unmounts or dependencies change
+    return () => clearTimeout(timeout);
   }, [searchText, filterOptions]);
 
   useEffect(() => {
@@ -127,14 +145,15 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
 
   return (
     <div>
-      {/* <TextField
-        label="Search"
+      <TextField
+        label="Message Text"
         variant="outlined"
         fullWidth
         value={searchText}
+        sx={{ pb: 2 }}
         onChange={(e) => setSearchText(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-      /> */}
+      />
       {logModeMax && (
         <LogSearchFiltering
           filterOptions={filterOptions}
@@ -228,6 +247,15 @@ const PromptLogTable: NextPageWithLayout<PromptLogTableProps> = ({
                       />
                     )}
                     <LlmResponseAction pl={log as LogOutput} />
+                    {log?.message && (
+                      <div>
+                        <p>
+                          Similarity: {log?.similarity}
+                          <br />
+                          Match: {log?.message}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </TableCell>
                 {logModeMax && <TableCell>{log.version}</TableCell>}

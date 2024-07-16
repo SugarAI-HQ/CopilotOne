@@ -11,6 +11,7 @@ import {
   type EmbeddingScopeType,
   type EmbeddingScopeWithUserType,
   copilotAiDefaults,
+  copilotRouterDefaults,
 } from "./schema";
 import { generateUserId } from "./utils";
 import { SugarAiApiClient } from "./api-client";
@@ -62,6 +63,10 @@ export const CopilotProvider = function ({
   // 0. setup config
   config = {
     ...config,
+    router: {
+      ...copilotRouterDefaults,
+      ...config.router,
+    },
     ai: {
       ...copilotAiDefaults,
       ...config.ai,

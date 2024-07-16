@@ -300,6 +300,14 @@ export const promptMiddleware: any = experimental_standaloneMiddleware<{
 
   console.log(`promptMiddleware in ------------ ${JSON.stringify(opts.input)}`);
 
+  // Set mode to manual if not set
+  if (!opts.input.router) {
+    opts.input.router = {
+      mode: "manual",
+      threshold: 0.5,
+    };
+  }
+
   if (opts.input?.username) {
     if (opts.input?.username.toLowerCase() === "demo") {
       opts.input.userId = env.DEMO_USER_ID;

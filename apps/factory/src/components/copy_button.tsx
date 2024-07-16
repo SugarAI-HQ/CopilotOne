@@ -16,7 +16,6 @@ const CopyToClipboardButton: React.FC<CopyToClipboardButtonProps> = ({
   textToDisplay,
   cube,
 }) => {
-  console.log(textToCopy);
   const handleCopy = () => {
     try {
       let text =

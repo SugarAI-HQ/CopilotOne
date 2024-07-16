@@ -28,6 +28,12 @@ export const LiteServiceGenerateResponseChat: core.serialization.ObjectSchema<
         (await import("../../..")).LiteServiceGenerateResponseChatStats,
     )
     .optional(),
+  router: core.serialization
+    .lazyObject(
+      async () =>
+        (await import("../../..")).LiteServiceGenerateResponseChatRouter,
+    )
+    .optional(),
 });
 
 export declare namespace LiteServiceGenerateResponseChat {
@@ -35,5 +41,6 @@ export declare namespace LiteServiceGenerateResponseChat {
     llmResponse?: serializers.LiteServiceGenerateResponseChatLlmResponse.Raw | null;
     chat?: serializers.LiteServiceGenerateResponseChatChat.Raw | null;
     stats?: serializers.LiteServiceGenerateResponseChatStats.Raw | null;
+    router?: serializers.LiteServiceGenerateResponseChatRouter.Raw | null;
   }
 }

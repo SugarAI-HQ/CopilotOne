@@ -5,6 +5,7 @@
 import * as SugarAiApi from "../../../..";
 
 export interface ServiceGenerateRequest {
+  router: SugarAiApi.ServiceGenerateRequestRouter;
   variables: Record<string, unknown>;
   messages?: SugarAiApi.ServiceGenerateRequestMessagesItem[];
   attachments?: Record<string, unknown>;

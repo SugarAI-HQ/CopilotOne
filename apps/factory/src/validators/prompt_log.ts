@@ -16,6 +16,7 @@ export const getLogsInput = z
     promptPackageId: z.string().optional(),
     promptTemplateId: z.string().optional(),
     promptVersionId: z.string().optional(),
+    searchText: z.string().optional(),
     cursor: z.string().optional(),
     perPage: z.number().default(10), // Add a perPage field for pagination
     version: z.string().optional(),
@@ -96,6 +97,9 @@ export const logSchema = z.object({
 
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
+
+  similarity: z.number().optional(),
+  message: z.string().optional(),
 });
 export type LogSchema = z.infer<typeof logSchema>;
 

@@ -110,11 +110,17 @@ export const VoiceAssistant = ({
       currentAiConfig.lang,
       root.speechSynthesis,
     );
-
+    root.saiVoice = voice;
     setVoice(voice);
 
     PROD: console.log(`[nudge] setup lang: ${lang}, ${voice?.name}`);
   }
+  useEffect(() => {
+    DEV: console.log(`[nudge] voice updated ${voice?.name}`);
+  }, [voice]);
+  useEffect(() => {
+    DEV: console.log(`[nudge] lang updated ${lang}`);
+  }, [lang]);
 
   // welcome
   useEffect(() => {
@@ -263,25 +269,34 @@ export const VoiceAssistant = ({
 
   const speak = async (text) => {
     const synth = root.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
-    console.log(`[nudge] ${voice?.name} speaking in ${lang}: ${text}`);
+    const voiceMessage = new SpeechSynthesisUtterance(text);
+
+    const lVoice = voice ?? root.saiVoice;
+    console.log(`[nudge] ${lVoice?.name} speaking in ${lang}: ${text}`);
 
     // set lang and voice
-    // utterance.lang = lang;
-    utterance.voice = voice as SpeechSynthesisVoice;
+    // voiceMessage.lang = lang;
+    voiceMessage.voice = lVoice as SpeechSynthesisVoice;
 
     const stopSpeakingOnPageUnload = () => {
       synth.cancel();
     };
 
-    utterance.onerror = (event) => {
-      PROD: console.error(`[nudge] utterance.onerror ${JSON.stringify(event)}`);
+    const cleanup = () => {
+      setIsSpeaking(false);
+      root.removeEventListener("beforeunload", stopSpeakingOnPageUnload);
     };
 
-    utterance.onend = () => {
-      root.removeEventListener("beforeunload", stopSpeakingOnPageUnload);
-      recognition?.start();
-      setIsSpeaking(false);
+    voiceMessage.onerror = (event) => {
+      cleanup();
+      PROD: console.error(
+        `[nudge] voiceMessage.onerror ${JSON.stringify(event, ["message", "arguments", "type", "name"])}`,
+      );
+    };
+
+    voiceMessage.onend = () => {
+      cleanup();
+      // recognition?.start();
     };
 
     root.addEventListener("beforeunload", stopSpeakingOnPageUnload);
@@ -290,12 +305,13 @@ export const VoiceAssistant = ({
     //   return v.lang.startsWith(lang) && v.name.includes(voice);
     // });
     // if (selectedVoice) {
-    //   utterance.voice = selectedVoice;
+    //   voiceMessage.voice = selectedVoice;
     // }
-    synth.speak(utterance);
+
     console.log(
-      `[nudge] ${voice?.name} paused:${synth.paused}, pending:${synth.pending}, speaking:${synth.speaking}`,
+      `[nudge] ${lVoice?.name} paused:${synth.paused}, pending:${synth.pending}, speaking:${synth.speaking}`,
     );
+    synth.speak(voiceMessage);
 
     setIsSpeaking(true);
   };
@@ -540,22 +556,27 @@ export const VoiceAssistant = ({
       await upsertNudgeText(action, config, false);
     }
 
-    DEV: console.log(`[nudge] ${action} message:`, nudgeText);
-    // Speak
+    DEV: console.log(
+      `[nudge] ${action} voice: ${voice?.name} message:`,
+      nudgeText,
+    );
 
-    if (config?.voiceEnabled) {
-      await speak(nudgeText);
-      return;
-    }
-
-    setHideToolTip(false);
-
-    // Set tooltip
+    // Show tooltip
     setTipConfig({
       isEnabled: config?.enabled,
       text: nudgeText,
       duration: config?.duration,
     });
+
+    // hide
+    setTimeout(() => {
+      setHideToolTip(false);
+    }, config?.duration * 1000);
+
+    // Start Speak in enabled
+    if (config?.voiceEnabled) {
+      speak(nudgeText);
+    }
   };
 
   const trackIdle = () => {

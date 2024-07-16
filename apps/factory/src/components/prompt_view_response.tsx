@@ -11,6 +11,7 @@ const PromptViewResponse = ({
   const lrCompletion =
     lrResponseData.completion as TextResponseVersion["completion"];
 
+  // return <>{JSON.stringify(lrCompletion)}</>;
   return (
     <>
       {lrCompletion instanceof Array &&
@@ -25,6 +26,7 @@ const PromptViewResponse = ({
                   <p>Function: {toolCall.function.name}</p>
                   <p>Arguments:</p>
                   <ul>
+                    {/* Render arguments */}
                     {Object.entries(
                       JSON.parse(toolCall.function.arguments),
                     ).map(([key, value]) => (
@@ -43,9 +45,16 @@ const PromptViewResponse = ({
         <>
           {lrCompletion instanceof Array &&
           lrCompletion.length > 0 &&
-          lrCompletion[0].message.content
-            ? lrCompletion[0].message.content
-            : lrCompletion}
+          lrCompletion[0].message &&
+          (lrCompletion[0].message?.content ||
+            lrCompletion[0].message?.role === "assistant") ? (
+            <span>
+              <span>{lrCompletion[0].message.role}:</span>
+              <span>{lrCompletion[0].message.content}</span>
+            </span>
+          ) : (
+            JSON.stringify(lrCompletion)
+          )}
         </>
       )}
     </>

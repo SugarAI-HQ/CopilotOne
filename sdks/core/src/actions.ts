@@ -237,13 +237,13 @@ export async function textToAction(
   if (effectiveScope.groupId === DEFAULT_GROUP_ID) {
     effectiveScope.groupId = defaultGroupId();
   }
-
   const result = (await apiClient.prompts.liteServiceGenerate(
     username,
     pp,
     pt,
     pv,
     {
+      router: config.router,
       variables: promptVariables,
       scope: effectiveScope as SugarAiApi.ServiceGenerateRequestScope,
       // messages: messages as ServiceGenerateRequestMessagesItem[],

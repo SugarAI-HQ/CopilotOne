@@ -2,6 +2,13 @@ import { prisma } from "~/server/db";
 import OpenAI from "openai";
 import { APIPromise } from "openai/core";
 import { env } from "~/env.mjs";
+import {
+  OPENAI_EMBEDDING_MODELS,
+  INHOUSE_EMBEDDING_MODELS,
+  EmbeddingModel,
+  EmbeddingModelDefault,
+} from "~/validators/embedding";
+import { Embedding } from "~/validators/embedding";
 
 const openai = new OpenAI({
   apiKey: env.OPENAI_API_KEY, // This is the default and can be omitted
@@ -184,11 +191,31 @@ function extractText(doc: any): string {
 //   return shortlisted;
 // }
 
-export async function createEmbeddings(text: string[]) {
-  const embeddings = await openai.embeddings.create({
-    model: "text-embedding-3-small",
-    input: text,
-  });
+export async function createEmbeddings(
+  text: string[],
+  em: EmbeddingModel = EmbeddingModelDefault,
+): Promise<Embedding[]> {
+  let output: Embedding[] = [];
 
-  return embeddings.data.map((e) => e.embedding);
+  if (em.provider === "openai" && OPENAI_EMBEDDING_MODELS.includes(em.model)) {
+    const embeddings = await openai.embeddings.create({
+      model: em.model,
+      input: text,
+    });
+
+    output = embeddings.data.map((e) => e.embedding);
+  }
+
+  if (
+    em.provider === "inhouse" &&
+    INHOUSE_EMBEDDING_MODELS.includes(em.model)
+  ) {
+    // TODO: Implement this, make api call to local embedding models
+    // const embeddings = await inhouse.embeddings.create({
+    //   model: model,
+    //   input: text,
+    // });
+  }
+
+  return output;
 }

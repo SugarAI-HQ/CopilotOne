@@ -435,7 +435,7 @@ export type Chat = z.infer<typeof ChatSchema>
 /////////////////////////////////////////
 
 export const MessageSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   userId: z.string(),
   copilotId: z.string(),
   logId: z.string().nullable(),

@@ -199,7 +199,6 @@ export const lookupEmbedding = async (
     LIMIT 5
   `;
   console.debug(matches);
-
   return matches as EmbeddingsType;
 };
 

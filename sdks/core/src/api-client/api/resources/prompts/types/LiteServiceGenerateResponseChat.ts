@@ -8,4 +8,5 @@ export interface LiteServiceGenerateResponseChat {
   llmResponse?: SugarAiApi.LiteServiceGenerateResponseChatLlmResponse;
   chat?: SugarAiApi.LiteServiceGenerateResponseChatChat;
   stats?: SugarAiApi.LiteServiceGenerateResponseChatStats;
+  router?: SugarAiApi.LiteServiceGenerateResponseChatRouter;
 }

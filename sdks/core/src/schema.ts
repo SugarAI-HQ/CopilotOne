@@ -100,6 +100,14 @@ export type copilotAssistantLangSchema = z.infer<
   typeof copilotAssistantLangType
 >;
 
+export const semanticRouterModes = z.enum(["auto", "manual"]);
+export type SemanticRouterModes = z.infer<typeof semanticRouterModes>;
+
+export const copilotRouterSchema = z.object({
+  mode: semanticRouterModes.optional(),
+  threshold: z.number().optional(),
+});
+
 export const copilotAiSchema = z.object({
   defaultPromptTemplate: promptTemplateSchema.optional(),
   defaultPromptVariables: z.record(z.any()).optional(),
@@ -132,8 +140,8 @@ export const nudgeTextMode = z.enum(["manual", "ai"]);
 
 const nudgeSectionSchema = z
   .object({
-    textMode: nudgeTextMode.default("manual"),
     text: stringOptional,
+    textMode: nudgeTextMode.optional().default("manual"),
     delay: z.number().optional(),
     timeout: z.number().optional(),
     duration: z.number().optional(),
@@ -160,10 +168,16 @@ export const nudgeSchema = z.object({
 });
 
 export type CopilotSytleType = z.infer<typeof copilotSytleSchema>;
+export type CopilotRouterType = z.infer<typeof copilotRouterSchema>;
 export type CopilotAiType = z.infer<typeof copilotAiSchema>;
 export type NudgesType = z.infer<typeof nudgeSchema>;
 // export type CopilotContainerPropsType = z.infer<typeof copilotContainerProps>;
 // export type CopilotThemePropsType = z.infer<typeof copilotThemeProps>;
+
+export const copilotRouterDefaults: CopilotRouterType = {
+  mode: "auto",
+  threshold: 0.5,
+};
 
 export const copilotAiDefaults: CopilotAiType = {
   defaultPromptTemplate: "",
@@ -282,6 +296,8 @@ export const copilotConfigSchema = z.object({
     token: z.string(), // No validation on token itself
     // headers: z.record(z.any()),
   }),
+
+  router: copilotRouterSchema.default(copilotRouterDefaults).optional(),
 
   ai: copilotAiSchema.default(copilotAiDefaults).optional(),
 

@@ -8,6 +8,9 @@ import {
 import { InputJsonValue } from "~/generated/prisma-client-zod.ts";
 import { embeddingScopeSchema } from "./embedding";
 
+export const semanticRouterModes = z.enum(["auto", "manual"]);
+export type SemanticRouterModes = z.infer<typeof semanticRouterModes>;
+
 export const getPromptInput = z.object({
   environment: promptEnvironment.optional(),
 
@@ -102,6 +105,10 @@ export const chatInputScehma = z
 
 export const generateInput = z
   .object({
+    router: z.object({
+      mode: semanticRouterModes.default("manual"),
+      threshold: z.number().default(0.5),
+    }),
     // Template Data
     variables: z.record(z.any()),
     messages: messagesSchema,
@@ -151,6 +158,16 @@ export const logLiteSchema = z.object({
   llmResponse: InputJsonValue.nullable().optional(),
   chat: InputJsonValue.optional(),
   stats: InputJsonValue.nullable().optional(),
+  router: z
+    .object({
+      mode: semanticRouterModes,
+      match: z.string(),
+      prompt: z.string(),
+      score: z.number(),
+      threshold: z.number(),
+      text: z.string(),
+    })
+    .optional(),
 });
 
 export const generateOutput = logSchema.or(z.null());

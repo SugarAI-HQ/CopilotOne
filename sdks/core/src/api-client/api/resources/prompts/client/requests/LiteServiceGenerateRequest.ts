@@ -5,6 +5,7 @@
 import * as SugarAiApi from "../../../..";
 
 export interface LiteServiceGenerateRequest {
+  router: SugarAiApi.LiteServiceGenerateRequestRouter;
   variables: Record<string, unknown>;
   messages?: SugarAiApi.LiteServiceGenerateRequestMessagesItem[];
   attachments?: Record<string, unknown>;
