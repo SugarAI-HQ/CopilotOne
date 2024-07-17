@@ -16,9 +16,10 @@ import { debugPort } from "process";
 
 const VoiceQuestion: React.FC<{
   question: Question;
-  onComplete: () => void;
+  onAnswered: (answer: string) => void;
+  onSkip: () => void;
   voiceConfig: VoiceConfig;
-}> = ({ question, onComplete, voiceConfig }) => {
+}> = ({ question, onAnswered, onSkip, voiceConfig }) => {
   // Depdencies
   const { language, voice } = useLanguage();
   const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
@@ -39,9 +40,8 @@ const VoiceQuestion: React.FC<{
     unhighlightTextField();
 
     console.log(`Answer: ${answer}`);
-    console.log(`transcript : ${transcript}`);
     console.log(`Finaltranscript : ${finalTranscript}`);
-    // handleResponse(answer);
+    evaluateResponse(answer);
   };
 
   const {
@@ -111,7 +111,7 @@ const VoiceQuestion: React.FC<{
 
     // Evaluate answer
     // Submit if fine
-    // onComplete()
+    // onAnswered()
   };
 
   useEffect(() => {
@@ -128,21 +128,27 @@ const VoiceQuestion: React.FC<{
     // }
   };
 
-  const handleResponse = (speechResult: string) => {
-    // const option = question.question_params.options?.find(
-    //   (opt: string) => opt.toLowerCase() === speechResult.toLowerCase()
-    // );
-    // if (option) {
-    //   setSelectedOption(option);
-    //   onComplete();
-    // } else {
-    //   alert("Option not recognized. Please try again.");
-    // }
+  const evaluateResponse = (userResponse: string) => {
+    if (question.question_type === "text") {
+      onAnswered(userResponse);
+    } else if (question.question_type === "multiple_choice") {
+      // evaluateMCQResponse(userResponse);
+      const option = question.question_params.options?.find(
+        (opt: string) => opt.toLowerCase() === userResponse.toLowerCase()
+      );
+
+      if (option) {
+        setSelectedOption(option);
+        onAnswered(userResponse);
+      } else {
+        alert("Option not recognized. Please try again.");
+      }
+    }
   };
 
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);
-    // onComplete();
+    // onAnswered();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -151,7 +157,7 @@ const VoiceQuestion: React.FC<{
 
       e.preventDefault();
       // handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
-      onComplete();
+      onAnswered(e.target.value);
     }
   };
 
@@ -192,7 +198,7 @@ const VoiceQuestion: React.FC<{
           /> */}
           {/* <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={onComplete}
+            onClick={onAnswered}
           >
             Submit
           </button> */}
@@ -243,6 +249,9 @@ const VoiceQuestion: React.FC<{
             <FaMicrophoneSlash className="mic-icon" />
           )}
         </button>
+
+        <button onClick={onSkip}>Skip</button>
+
         <style jsx>{`
           .mic-buttons {
             display: flex;

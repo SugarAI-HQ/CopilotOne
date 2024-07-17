@@ -139,7 +139,13 @@ const Quiz: React.FC<{ voiceConfig: VoiceConfig }> = ({ voiceConfig }) => {
       {step > 0 && step <= questions.length && (
         <VoiceQuestion
           question={questions[step - 1]}
-          onComplete={() =>
+          onAnswered={(answer) =>
+            handleQuestionComplete({
+              question: questions[step - 1],
+              answer: answer,
+            })
+          }
+          onSkip={() =>
             handleQuestionComplete({
               question: questions[step - 1],
               answer: "User Answer",

@@ -49,24 +49,24 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
     recognition.onresult = async (event: SpeechRecognitionEvent) => {
       let interimTranscript = "";
-      let finalTranscript = "";
+      let fTranscript = "";
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
-          finalTranscript = event.results[i][0].transcript;
-          DEV: console.log(`[Audio] Final: ${finalTranscript}`);
+          fTranscript = event.results[i][0].transcript;
+          DEV: console.log(`[Audio] Final: ${fTranscript}`);
 
           // Take care of it
           // setIslistening(false);
-          // setFinalOutput(finalTranscript);
+          // setFinalOutput(fTranscript);
 
-          // await processSpeechToText(finalTranscript);
+          // await processSpeechToText(fTranscript);
         } else {
           interimTranscript += event.results[i][0].transcript;
         }
       }
       setTranscript(interimTranscript);
-      setFinalTranscript(finalTranscript);
+      setFinalTranscript(fTranscript);
     };
 
     recognition.onerror = (event) => {
@@ -76,8 +76,13 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     recognition.onend = () => {
       setIsListening(false);
       // setTranscript("");
+
+      // Send the latest value to the callback
       if (options.onListeningStop) {
-        options.onListeningStop(transcript);
+        setFinalTranscript((ft) => {
+          options.onListeningStop(ft);
+          return ft;
+        });
       }
     };
 
