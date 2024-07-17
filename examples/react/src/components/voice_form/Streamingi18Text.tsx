@@ -20,6 +20,8 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isStarted, setIsStarted] = useState<boolean>(false);
 
+  const elRef = React.useRef<HTMLParagraphElement>(null);
+
   const streamRender = async (text: string, characterPerSec: number = 40) => {
     const characters = text.split("");
     const duration = characters.length / characterPerSec; // Duration per character in milliseconds
@@ -29,19 +31,23 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
         new Promise<void>((resolve) => {
           setTimeout(
             () => {
-              setDisplayedText((prev) => `${prev}${characters[i]}`);
-              resolve();
+              setDisplayedText((prev) => {
+                const next = `${prev}${characters[i]}`;
+                resolve();
+                return next;
+              });
             },
-            i * duration * 300
+            i * duration * 100
           ); // Distribute time evenly
         })
       );
     }
+    // await Promise.all(promises);
+    // return Promise.resolve();
     return Promise.all(promises);
   };
 
   const speakAndRender = async () => {
-    // based on current language extract the text to be displayed
     const [userLang, country] = language.split("-");
     let text = "not found";
 
@@ -59,27 +65,50 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
     setIsSpeaking(true);
 
     return Promise.all([
-      speakMessageAsync(text, language, voice),
-      streamRender(text, voiceConfig?.characterPerSec),
+      streamRender(text, voiceConfig?.characterPerSec).catch((err) =>
+        console.log(err)
+      ),
+      speakMessageAsync(text, language, voice).catch((err) => console.log(err)),
     ]).finally(() => {
       setIsSpeaking(false);
     });
-
-    // setIsSpeaking(false);
   };
 
   const handleStart = async () => {
     if (isStarted) {
       return;
     }
+
     setIsStarted(true);
-    await speakAndRender().catch((err) => {
-      console.log(err);
-    });
+
+    focusElement();
+
+    return speakAndRender()
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        unfocusElement();
+      });
+  };
+
+  const focusElement = () => {
+    if (elRef.current) {
+      elRef.current.focus();
+      elRef.current.classList.add("highlight");
+    }
+  };
+
+  const unfocusElement = () => {
+    if (elRef.current) {
+      elRef.current.classList.remove("highlight");
+    }
   };
 
   useImperativeHandle(ref, () => ({
     startStreaming: handleStart,
+    focusElement: focusElement,
+    unfocusElement: unfocusElement,
   }));
 
   useEffect(() => {
@@ -92,12 +121,38 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
 
   return (
     <div className="streaming-text" onClick={handleStart}>
-      <p className="whitespace-pre-wrap">
+      <p
+        ref={elRef}
+        tabIndex={-1}
+        className={`whitespace-pre-wrap ${false ? "highlight" : ""}`}
+        onFocus={() => elRef.current?.classList.add("highlight")}
+        onBlur={() => elRef.current?.classList.remove("highlight")}
+      >
         {displayedText}
         <span className={`blinking-cursor-${isStarted ? "off" : "on"}`}>|</span>
       </p>
-      {/* {isSpeaking && <p>Speaking...</p>} */}
-      {/* {!isStarted && <p>Click to start</p>} */}
+      <style jsx>{`
+        .highlight {
+          outline: none;
+          border: 2px solid yellow;
+        }
+        .blinking-cursor-on {
+          display: inline;
+          animation: blink 1s step-end infinite;
+        }
+        .blinking-cursor-off {
+          display: none;
+        }
+        @keyframes blink {
+          from,
+          to {
+            color: transparent;
+          }
+          50% {
+            color: black;
+          }
+        }
+      `}</style>
     </div>
   );
 };

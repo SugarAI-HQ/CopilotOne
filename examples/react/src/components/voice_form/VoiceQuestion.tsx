@@ -12,6 +12,7 @@ import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
 import { Mic, Send, SendHorizonal } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import { debugPort } from "process";
 
 const VoiceQuestion: React.FC<{
   question: Question;
@@ -32,13 +33,15 @@ const VoiceQuestion: React.FC<{
 
   // Text Question field
   const [input, setInput] = useState<string>("");
-  const inputRef = React.useRef<HTMLTextAreaElement>(null);
+  const inputRef = React.useRef<HTMLElement>(null);
 
-  const onAnswer = (answer: string) => {
+  const onListeningStop = (answer: string) => {
+    unhighlightTextField();
+
     console.log(`Answer: ${answer}`);
     console.log(`transcript : ${transcript}`);
     console.log(`Finaltranscript : ${finalTranscript}`);
-    handleResponse(answer);
+    // handleResponse(answer);
   };
 
   const {
@@ -49,7 +52,7 @@ const VoiceQuestion: React.FC<{
     stopListening,
   } = useSpeechToText({
     lang: voiceConfig.lang,
-    onCompletion: onAnswer,
+    onListeningStop: onListeningStop,
     continuous: false,
   });
 
@@ -59,7 +62,7 @@ const VoiceQuestion: React.FC<{
     );
   }
 
-  const listen = () => {
+  const listen = async () => {
     isListening ? stopVoiceInput() : startListening();
   };
 
@@ -77,9 +80,16 @@ const VoiceQuestion: React.FC<{
     }
   };
 
-  const activateTextField = () => {
+  const highlightTextField = () => {
     if (inputRef.current) {
       inputRef.current.focus();
+      inputRef.current.classList.add("highlight");
+    }
+  };
+
+  const unhighlightTextField = () => {
+    if (inputRef.current) {
+      inputRef.current.classList.remove("highlight");
     }
   };
 
@@ -92,11 +102,12 @@ const VoiceQuestion: React.FC<{
   const executeWorkflow = async () => {
     // Speak the question
     await renderMCQ(questionRef, optionRefs);
+
     setIsQuestionSpoken(true);
 
     // Prepare for getting answer
+    highlightTextField();
     listen();
-    activateTextField();
 
     // Evaluate answer
     // Submit if fine
@@ -233,10 +244,6 @@ const VoiceQuestion: React.FC<{
           )}
         </button>
         <style jsx>{`
-          textarea:focus,
-          input:focus {
-            background-color: red;
-          }
           .mic-buttons {
             display: flex;
             align-items: center;
@@ -289,7 +296,7 @@ export const renderMCQ = async (
 ): Promise<void> => {
   // Speak the question
   if (qRef.current) {
-    debugger;
+    // qRef.current.focusElement();
     await qRef.current.startStreaming();
   }
 
@@ -297,7 +304,7 @@ export const renderMCQ = async (
   for (let i = 0; i < optionRefs.length; i++) {
     const optionRef = optionRefs[i];
     if (optionRef.current) {
-      optionRef.current.focus();
+      // optionRef.current.focusElement();
       await optionRef.current.startStreaming();
     }
   }

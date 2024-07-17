@@ -18,7 +18,8 @@ const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "Enter your name",
+        // en: "Hi, How are you doing, tell me you your name, I will be used for your quiz.",
+        en: "Tell me your name.",
         hi: "आपका नाम दर्ज करें",
       },
       voice: true,

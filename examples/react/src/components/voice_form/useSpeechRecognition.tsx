@@ -5,7 +5,7 @@ interface SpeechRecognitionOptions {
   interimResults?: boolean;
   lang?: string;
   continuous?: boolean;
-  onCompletion?: (text: string) => void;
+  onListeningStop?: (text: string) => void;
 }
 
 const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
@@ -76,8 +76,8 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     recognition.onend = () => {
       setIsListening(false);
       // setTranscript("");
-      if (options.onCompletion) {
-        options.onCompletion(transcript);
+      if (options.onListeningStop) {
+        options.onListeningStop(transcript);
       }
     };
 

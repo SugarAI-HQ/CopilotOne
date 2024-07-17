@@ -26,7 +26,6 @@ const Onboarding: React.FC<{
   // useEffect(() => {
   //   setTimeout(() => {
   //     console.log(`lang: ${language}, voice ${voice?.name}`);
-  //     debugger;
   //     speakMessage(welcomeMessage, language, voice, () => {
   //       speakMessage("Please give microphone permissions.", language, voice);
   //     });

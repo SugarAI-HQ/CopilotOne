@@ -43,9 +43,20 @@ input[type="checkbox"] {
   display: inline
   /* animation: blink 1s step-start infinite; */
 }
+.textarea:focus, input:focus, *:focus {
+  /* background-color: red; */
+  outline: none;
+  border: 2px solid yellow;
+  }
+.highlight {
+  outline: none;
+  /* background-color: red; */
+  border: 2px solid yellow;
+}
 
 @keyframes blink {
   50% {
     opacity: 0;
   }
 }
+

@@ -45,6 +45,7 @@ export type Streamingi18TextProps = z.infer<typeof streamingi18TextSchema>;
 // Define the Streamingi18TextRef schema
 export const StreamingTextRefSchema = z.object({
   startStreaming: z.function().returns(z.void()),
+  focusElement: z.function().returns(z.void()),
 });
 
 // Define the TypeScript type based on the Zod schema
