@@ -1,5 +1,7 @@
 import { on } from "events";
 import { useState, useRef, useEffect } from "react";
+import { useLanguage } from "./LanguageContext";
+import { speakMessageAsync } from "@/helpers/voice";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
@@ -9,6 +11,8 @@ interface SpeechRecognitionOptions {
 }
 
 const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
+  const { language, voice } = useLanguage();
+  const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [finalTranscript, setFinalTranscript] = useState("");
@@ -108,12 +112,56 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     }
   };
 
+  const ifAudioPermissionGranted = async (): Promise<boolean> => {
+    let granted = false;
+    if (!isMicEnabled) {
+      const result = await navigator.permissions.query({
+        name: "microphone" as PermissionName,
+      });
+      if (result.state === "granted") {
+        granted = true;
+        DEV: console.log("[Audio] Permission already granted");
+        setIsMicEnabled(true);
+      }
+    }
+
+    return granted;
+  };
+
+  const requestMicPermission = async (): Promise<void> => {
+    const alreadyGranted = await ifAudioPermissionGranted();
+    if (alreadyGranted) {
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+      setIsMicEnabled(true);
+      await speakMessageAsync(
+        "Microphone permissions granted. You can now speak.",
+        language,
+        voice
+      );
+    } catch (err) {
+      console.error(err);
+      setIsMicEnabled(false);
+      await speakMessageAsync(
+        "Please try again giving microphone permissions.",
+        language,
+        voice
+      );
+    }
+  };
+
   return {
     isListening,
+    isMicEnabled,
     transcript,
     finalTranscript,
     startListening,
     stopListening,
+    requestMicPermission,
   };
 };
 

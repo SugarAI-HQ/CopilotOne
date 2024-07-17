@@ -9,10 +9,9 @@ import { speakMessageAsync } from "@/helpers/voice";
 import { useLanguage } from "./LanguageContext";
 import Streamingi18Text from "./Streamingi18Text";
 import useSpeechToText from "./useSpeechRecognition";
-import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
+import { FaMicrophoneSlash } from "react-icons/fa";
 import { Mic, Send, SendHorizonal } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
-import { debugPort } from "process";
 
 const VoiceQuestion: React.FC<{
   question: Question;
@@ -132,17 +131,17 @@ const VoiceQuestion: React.FC<{
     if (question.question_type === "text") {
       onAnswered(userResponse);
     } else if (question.question_type === "multiple_choice") {
+      onAnswered(userResponse);
       // evaluateMCQResponse(userResponse);
-      const option = question.question_params.options?.find(
-        (opt: string) => opt.toLowerCase() === userResponse.toLowerCase()
-      );
-
-      if (option) {
-        setSelectedOption(option);
-        onAnswered(userResponse);
-      } else {
-        alert("Option not recognized. Please try again.");
-      }
+      // const option = question.question_params.options?.find(
+      //   (opt: string) => opt.toLowerCase() === userResponse.toLowerCase()
+      // );
+      // if (option) {
+      //   setSelectedOption(option);
+      //   onAnswered(userResponse);
+      // } else {
+      //   alert("Option not recognized. Please try again.");
+      // }
     }
   };
 
@@ -228,7 +227,7 @@ const VoiceQuestion: React.FC<{
       )}
       {isListening && (
         <span className="text-sm text-muted-foreground">
-          Live: {transcript}
+          Answer: {transcript}
         </span>
       )}
       {!isListening && finalTranscript && (
@@ -318,7 +317,6 @@ export const renderMCQ = async (
     }
   }
 };
-
 export const speakMCQ = async (
   question: Question,
   language: string,

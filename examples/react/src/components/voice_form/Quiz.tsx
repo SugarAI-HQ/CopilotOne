@@ -12,102 +12,16 @@ import { speakMessage } from "@/helpers/voice";
 import StreamingText, { StreamingTextRef } from "./StreamingText";
 import Streamingi18Text, { Streamingi18TextRef } from "./Streamingi18Text";
 
-const questions: Question[] = [
-  {
-    question_type: "text",
-    question_text: {
-      mode: "manual",
-      lang: {
-        // en: "Hi, How are you doing, tell me you your name, I will be used for your quiz.",
-        en: "Tell me your name.",
-        hi: "आपका नाम दर्ज करें",
-      },
-      voice: true,
-      output: "none",
-    },
-    question_params: {
-      max_chars: 100,
-    },
-    validation: {},
-  },
-  {
-    question_type: "text",
-    question_text: {
-      mode: "manual",
-      lang: {
-        en: "Enter your age",
-        hi: "आपका उम्र दर्ज करें",
-      },
-      voice: true,
-      output: "none",
-    },
-    question_params: {
-      max_chars: 100,
-    },
-    validation: {},
-  },
-  {
-    question_type: "multiple_choice",
-    question_text: {
-      mode: "manual",
-      lang: {
-        en: "What is the capital of France?",
-        hi: "फ्रांस की राजधानी क्या है?",
-      },
-      voice: true,
-      output: "none",
-    },
-    question_params: {
-      options: [
-        {
-          lang: {
-            en: "Paris",
-            hi: "पारिस",
-          },
-          mode: "manual",
-          voice: true,
-          output: "none",
-        },
-        {
-          lang: {
-            en: "London",
-            hi: "लोंडन",
-          },
-          mode: "manual",
-          voice: true,
-          output: "none",
-        },
-        {
-          lang: {
-            en: "Berlin",
-            hi: "बर्लिन",
-          },
-          mode: "manual",
-          voice: true,
-          output: "none",
-        },
-        {
-          lang: {
-            en: "Madrid",
-            hi: "मद्देश",
-          },
-          mode: "manual",
-          voice: true,
-          output: "none",
-        },
-      ],
-    },
-    validation: {},
-  },
-  // Add more questions as needed
-];
-
-const Quiz: React.FC<{ voiceConfig: VoiceConfig }> = ({ voiceConfig }) => {
+const Quiz: React.FC<{
+  welcomeMessage: i18Message;
+  questions: Question[];
+  voiceConfig: VoiceConfig;
+}> = ({ welcomeMessage, questions, voiceConfig }) => {
   const [step, setStep] = useState<number>(1);
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {
-    setStep(1);
+    setStep(step + 1);
   };
 
   const handleQuestionComplete = (answer: any) => {
@@ -132,28 +46,36 @@ const Quiz: React.FC<{ voiceConfig: VoiceConfig }> = ({ voiceConfig }) => {
     <div className="container mx-auto p-4">
       {step === 0 && (
         <Onboarding
+          showStartButton={true}
           onComplete={() => handleOnboardingComplete}
-          welcomeMessage="Welcome to the quiz!"
-        />
-      )}
-      {step > 0 && step <= questions.length && (
-        <VoiceQuestion
-          question={questions[step - 1]}
-          onAnswered={(answer) =>
-            handleQuestionComplete({
-              question: questions[step - 1],
-              answer: answer,
-            })
-          }
-          onSkip={() =>
-            handleQuestionComplete({
-              question: questions[step - 1],
-              answer: "User Answer",
-            })
-          }
+          welcomeMessage={welcomeMessage}
           voiceConfig={voiceConfig}
         />
       )}
+      {step > 0 &&
+        step <= questions.length &&
+        questions.map(
+          (question, index) =>
+            index == step - 1 && (
+              <VoiceQuestion
+                index={index}
+                question={question}
+                onAnswered={(answer) =>
+                  handleQuestionComplete({
+                    question: questions[step - 1],
+                    answer: answer,
+                  })
+                }
+                onSkip={() =>
+                  handleQuestionComplete({
+                    question: questions[step - 1],
+                    answer: "User Answer",
+                  })
+                }
+                voiceConfig={voiceConfig}
+              />
+            )
+        )}
       {step > questions.length && <Submission answers={answers} />}
     </div>
   );
