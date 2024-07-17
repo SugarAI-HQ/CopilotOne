@@ -14,6 +14,38 @@ import Streamingi18Text, { Streamingi18TextRef } from "./Streamingi18Text";
 
 const questions: Question[] = [
   {
+    question_type: "text",
+    question_text: {
+      mode: "manual",
+      lang: {
+        en: "Enter your name",
+        hi: "आपका नाम दर्ज करें",
+      },
+      voice: true,
+      output: "none",
+    },
+    question_params: {
+      max_chars: 100,
+    },
+    validation: {},
+  },
+  {
+    question_type: "text",
+    question_text: {
+      mode: "manual",
+      lang: {
+        en: "Enter your age",
+        hi: "आपका उम्र दर्ज करें",
+      },
+      voice: true,
+      output: "none",
+    },
+    question_params: {
+      max_chars: 100,
+    },
+    validation: {},
+  },
+  {
     question_type: "multiple_choice",
     question_text: {
       mode: "manual",

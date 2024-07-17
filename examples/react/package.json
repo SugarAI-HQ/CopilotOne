@@ -13,11 +13,13 @@
     "@sugar-ai/copilot-one-js": "workspace:*",
     "@sugar-ai/core": "workspace:*",
     "build": "^0.1.4",
+    "lucide-react": "^0.408.0",
     "next": "14.2.1",
     "next-themes": "^0.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^5.1.0",
+    "react-textarea-autosize": "^8.5.3",
     "react-tooltip": "^5.27.1",
     "zod": "^3.22.4"
   },

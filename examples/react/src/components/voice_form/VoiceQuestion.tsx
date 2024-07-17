@@ -8,20 +8,50 @@ import {
 import { speakMessageAsync } from "@/helpers/voice";
 import { useLanguage } from "./LanguageContext";
 import Streamingi18Text from "./Streamingi18Text";
-import StreamingText, { StreamingTextRef } from "./StreamingText";
+import useSpeechToText from "./useSpeechRecognition";
+import { FaMicrophone, FaMicrophoneSlash } from "react-icons/fa";
+import { Mic, Send, SendHorizonal } from "lucide-react";
+import TextareaAutosize from "react-textarea-autosize";
 
 const VoiceQuestion: React.FC<{
   question: Question;
   onComplete: () => void;
   voiceConfig: VoiceConfig;
 }> = ({ question, onComplete, voiceConfig }) => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  // Depdencies
+  const { language, voice } = useLanguage();
+  const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
+
+  // Create refs for the question and options
   const questionRef: React.RefObject<Streamingi18TextRef> =
     useRef<Streamingi18TextRef>(null);
-  // const optionRefs = useRef<Array<React.RefObject<StreamingTextRef>>>([]);
   const optionRefs: React.RefObject<Streamingi18TextRef>[] = [];
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const { language, voice } = useLanguage();
+
+  // Selected option
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+  // Text Question field
+  const [input, setInput] = useState<string>("");
+  const inputRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const onAnswer = (answer: string) => {
+    console.log(`Answer: ${answer}`);
+    console.log(`transcript : ${transcript}`);
+    console.log(`Finaltranscript : ${finalTranscript}`);
+    handleResponse(answer);
+  };
+
+  const {
+    isListening,
+    transcript,
+    finalTranscript,
+    startListening,
+    stopListening,
+  } = useSpeechToText({
+    lang: voiceConfig.lang,
+    onCompletion: onAnswer,
+    continuous: false,
+  });
 
   if (question?.question_params?.options) {
     question?.question_params?.options.map(() =>
@@ -29,49 +59,89 @@ const VoiceQuestion: React.FC<{
     );
   }
 
+  const listen = () => {
+    isListening ? stopVoiceInput() : startListening();
+  };
+
+  const stopVoiceInput = () => {
+    console.log(`listening stopped: {transcript}`);
+    // setInput(transcript.length ? transcript : "");
+    stopListening();
+  };
+
+  const handleListenClick = () => {
+    if (!isListening) {
+      listen();
+    } else {
+      stopVoiceInput();
+    }
+  };
+
+  const activateTextField = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     stopVoiceInput();
+  //   }
+  // }, [isLoading]);
+
+  const executeWorkflow = async () => {
+    // Speak the question
+    await renderMCQ(questionRef, optionRefs);
+    setIsQuestionSpoken(true);
+
+    // Prepare for getting answer
+    listen();
+    activateTextField();
+
+    // Evaluate answer
+    // Submit if fine
+    // onComplete()
+  };
+
   useEffect(() => {
     if (question && language && voice) {
       setTimeout(() => {
-        renderMCQ(questionRef, optionRefs);
+        executeWorkflow();
       }, 1000);
-    }
-
-    if ("SpeechRecognition" in window || "webkitSpeechRecognition" in window) {
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = "en-US";
-
-      recognitionRef.current.onresult = (event) => {
-        const speechResult = event.results[0][0].transcript.toLowerCase();
-        handleResponse(speechResult);
-      };
     }
   }, [question, language, voice]);
 
   const startRecognition = () => {
-    if (recognitionRef.current) {
-      recognitionRef.current.start();
-    }
+    // if (recognitionRef.current) {
+    //   recognitionRef.current.start();
+    // }
   };
 
   const handleResponse = (speechResult: string) => {
-    const option = question.question_params.options?.find(
-      (opt: string) => opt.toLowerCase() === speechResult
-    );
-    if (option) {
-      setSelectedOption(option);
-      onComplete();
-    } else {
-      alert("Option not recognized. Please try again.");
-    }
+    // const option = question.question_params.options?.find(
+    //   (opt: string) => opt.toLowerCase() === speechResult.toLowerCase()
+    // );
+    // if (option) {
+    //   setSelectedOption(option);
+    //   onComplete();
+    // } else {
+    //   alert("Option not recognized. Please try again.");
+    // }
   };
 
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);
-    onComplete();
+    // onComplete();
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      // if (isLoading) return;
+
+      e.preventDefault();
+      // handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+      onComplete();
+    }
   };
 
   return (
@@ -81,31 +151,132 @@ const VoiceQuestion: React.FC<{
         message={question.question_text}
         voiceConfig={voiceConfig}
       />
+      {/* Text / Number. */}
+      {question.question_type == "text" && (
+        <div className="flex flex-col items-center">
+          <TextareaAutosize
+            autoComplete="off"
+            value={
+              isListening
+                ? transcript.length
+                  ? transcript
+                  : ""
+                : finalTranscript
+            }
+            ref={inputRef}
+            onKeyDown={handleKeyPress}
+            // onChange={(e) => setInput(e.target.value)}
+            name="message"
+            disabled={!isQuestionSpoken}
+            placeholder={!isListening ? "Enter your prompt here" : "Listening"}
+            className=" max-h-24 px-14 bg-accent py-[22px] text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 w-full  rounded-full flex items-center h-16 resize-none overflow-hidden dark:bg-card"
+          />
 
-      <ul>
-        {question.question_params.options?.map(
-          (option: i18Message, index: number) => (
-            <li
-              key={index}
-              className={`p-2 ${
-                selectedOption === option ? "bg-yellow-300" : ""
-              }`}
-            >
-              <Streamingi18Text
-                ref={optionRefs[index]}
-                message={option}
-                voiceConfig={voiceConfig}
-              />
-            </li>
-          )
-        )}
-      </ul>
-      <button
-        className="mt-4 p-2 bg-blue-500 text-white"
-        onClick={startRecognition}
-      >
-        Speak Answer
-      </button>
+          {/* <input
+            type="text"
+            className="border-2 border-gray-300 rounded-md w-full"
+            ref={inputRef}
+            // value={input}
+            // onChange={(e) => setInput(e.target.value)}
+          /> */}
+          {/* <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={onComplete}
+          >
+            Submit
+          </button> */}
+        </div>
+      )}
+      {/* Multiple choice questions only. Render the options. */}
+      {question.question_type == "multiple_choice" && (
+        <ul>
+          {question.question_params.options?.map(
+            (option: i18Message, index: number) => (
+              <li
+                key={index}
+                className={`p-2 ${
+                  selectedOption === option ? "bg-yellow-300" : ""
+                }`}
+                onClick={(e) => handleOptionClick(e.currentTarget.innerText)}
+              >
+                <Streamingi18Text
+                  ref={optionRefs[index]}
+                  message={option}
+                  voiceConfig={voiceConfig}
+                />
+              </li>
+            )
+          )}
+        </ul>
+      )}
+      {isListening && (
+        <span className="text-sm text-muted-foreground">
+          Live: {transcript}
+        </span>
+      )}
+      {!isListening && finalTranscript && (
+        <span className="text-sm text-muted-foreground">
+          Final: {finalTranscript}
+        </span>
+      )}
+
+      <div className="mic-buttons">
+        <button
+          className={`mic-button ${isListening ? "listening" : "disabled"}`}
+          onClick={handleListenClick}
+        >
+          {isListening ? (
+            // <FaMicrophone className="mic-icon" />
+            <Mic className="w-5 h-5 " />
+          ) : (
+            <FaMicrophoneSlash className="mic-icon" />
+          )}
+        </button>
+        <style jsx>{`
+          textarea:focus,
+          input:focus {
+            background-color: red;
+          }
+          .mic-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+          }
+          .mic-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+          }
+          .mic-button.listening {
+            animation: pulse 1s infinite;
+          }
+          .mic-button.disabled {
+            background-color: #6c757d;
+          }
+          .mic-icon {
+            font-size: 24px;
+          }
+          @keyframes pulse {
+            0% {
+              box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            }
+            70% {
+              box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+            }
+            100% {
+              box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+          }
+        `}</style>
+      </div>
     </div>
   );
 };
@@ -118,6 +289,7 @@ export const renderMCQ = async (
 ): Promise<void> => {
   // Speak the question
   if (qRef.current) {
+    debugger;
     await qRef.current.startStreaming();
   }
 
@@ -125,6 +297,7 @@ export const renderMCQ = async (
   for (let i = 0; i < optionRefs.length; i++) {
     const optionRef = optionRefs[i];
     if (optionRef.current) {
+      optionRef.current.focus();
       await optionRef.current.startStreaming();
     }
   }

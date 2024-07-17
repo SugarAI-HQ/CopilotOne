@@ -4,11 +4,7 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import {
-  cancelMessage,
-  speakMessage,
-  speakMessageAsync,
-} from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
+import { cancelMessage, speakMessageAsync } from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
 import { useLanguage } from "./LanguageContext";
 import {
   Streamingi18TextProps,
@@ -61,11 +57,15 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
     }
 
     setIsSpeaking(true);
-    await Promise.all([
+
+    return Promise.all([
       speakMessageAsync(text, language, voice),
       streamRender(text, voiceConfig?.characterPerSec),
-    ]);
-    setIsSpeaking(false);
+    ]).finally(() => {
+      setIsSpeaking(false);
+    });
+
+    // setIsSpeaking(false);
   };
 
   const handleStart = async () => {
@@ -73,7 +73,9 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
       return;
     }
     setIsStarted(true);
-    await speakAndRender();
+    await speakAndRender().catch((err) => {
+      console.log(err);
+    });
   };
 
   useImperativeHandle(ref, () => ({

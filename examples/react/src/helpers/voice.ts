@@ -1,11 +1,12 @@
 let synth: any = null;
+let recognition: any = null;
 
 export const speakMessage = (
   message: string,
   language: string,
   voice: SpeechSynthesisVoice,
   callback?: () => void,
-  failureCallback?: () => void
+  failureCallback?: (event: any) => void
 ) => {
   console.log(`${voice?.name} Speaking in ${language}: ${message}`);
 
@@ -20,7 +21,7 @@ export const speakMessage = (
   };
 
   utterance.onerror = (event) => {
-    if (failureCallback) failureCallback();
+    if (failureCallback) failureCallback(event);
     console.error(`speechSynthesisUtterance.onerror ${JSON.stringify(event)}`);
   };
 
