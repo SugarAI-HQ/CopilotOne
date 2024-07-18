@@ -4,15 +4,16 @@ import Modal from "../Modal";
 import { FaLanguage } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
-const LanguageSelector: React.FC = () => {
+const LanguageSelector: React.FC<{}> = ({}) => {
   const { language, setLanguage, voice, setVoice, voices } = useLanguage();
+
   const [languages, setLanguages] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const userLanguages = Array.from(navigator.languages || []);
-    setLanguages(userLanguages.length > 0 ? userLanguages : ["en"]);
+    setLanguages(userLanguages.length > 0 ? userLanguages : [language]);
   }, []);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -39,6 +40,10 @@ const LanguageSelector: React.FC = () => {
   return (
     <div>
       <div className="relative inline-block ml-auto">
+        <span className="">
+          {voice?.name}({language})
+        </span>
+        <span className=""> </span>
         <FaLanguage
           size={48}
           data-tip="Change Language and Voice Settings"
@@ -61,10 +66,43 @@ const LanguageSelector: React.FC = () => {
               </option>
             ))}
             <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="ja">日本語</option>
+            <option value="es">Español (Spanish)</option>
+            <option value="fr">Français (French)</option>
+            <option value="de">Deutsch (German)</option>
+            <option value="ja">日本語 (Japanese)</option>
+            <option value="zh">中文 (Chinese)</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="gu">ગુજરાતી (Gujarati)</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="ml">മലയാളം (Malayalam)</option>
+            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            <option value="or">ଓଡ଼ିଆ (Odia)</option>
+            <option value="as">অসমীয়া (Assamese)</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="ma">मणिपुरी (Meitei/Manipuri)</option>
+            <option value="ks">کٲشُر (Kashmiri)</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="ru">Русский (Russian)</option>
+            <option value="pt">Português (Portuguese)</option>
+            <option value="it">Italiano (Italian)</option>
+            <option value="ko">한국어 (Korean)</option>
+            <option value="tr">Türkçe (Turkish)</option>
+            <option value="nl">Nederlands (Dutch)</option>
+            <option value="sv">Svenska (Swedish)</option>
+            <option value="pl">Polski (Polish)</option>
+            <option value="da">Dansk (Danish)</option>
+            <option value="fi">Suomi (Finnish)</option>
+            <option value="no">Norsk (Norwegian)</option>
+            <option value="el">Ελληνικά (Greek)</option>
+            <option value="he">עברית (Hebrew)</option>
+            <option value="cs">Čeština (Czech)</option>
+            <option value="hu">Magyar (Hungarian)</option>
+            <option value="th">ไทย (Thai)</option>
+            <option value="vi">Tiếng Việt (Vietnamese)</option>
           </select>
         </div>
         <div className="mb-4">

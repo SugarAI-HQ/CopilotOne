@@ -52,7 +52,7 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "One a scale of 1 - 5 (5 being worst), What is the intensity of your pain?",
+        en: "1 से 5 के पैमाने पर (5 सबसे खराब होने पर), आपके दर्द की तीव्रता कितनी है?",
         hi: "एक स्केल में 1-5 से अधिक (5 या बड़ा) आपकी मृत्यु की गति क्या है?",
       },
       voice: true,
@@ -115,7 +115,7 @@ export const questions: Question[] = [
       mode: "manual",
       lang: {
         en: "How long have you been experiencing the problem",
-        hi: "आपका मृत्यु से समय की संख्या कैसे है?",
+        hi: "आप इस समस्या का अनुभव कब से कर रहे हैं?",
       },
       voice: true,
       output: "none",

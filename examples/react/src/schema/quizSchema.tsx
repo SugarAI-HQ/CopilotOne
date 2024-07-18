@@ -2,15 +2,15 @@ import { z } from "zod";
 
 export const voiceConfig = z.object({
   characterPerSec: z.number().optional().default(40),
-  lang: z.string().optional().default("auto"),
-  defaultLang: z.string().optional().default("en"),
+  // lang: z.string().optional().default("auto"),
+  // defaultLang: z.string().optional().default("en"),
 });
 export type VoiceConfig = z.infer<typeof voiceConfig>;
 
-export const VoiceConfigDefault = {
+export const VoiceConfigDefault: VoiceConfig = {
   characterPerSec: 40,
-  lang: "auto",
-  defaultLang: "en",
+  // lang: "auto",
+  // defaultLang: "en",
 };
 
 export const i18MessageSchema = z.object({

@@ -5,7 +5,6 @@ import { speakMessageAsync } from "@/helpers/voice";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
-  lang?: string;
   continuous?: boolean;
   onListeningStop?: (text: string) => void;
 }
@@ -29,7 +28,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     recognitionRef.current = recognition;
 
     recognition.interimResults = options.interimResults || true;
-    recognition.lang = options.lang || "en-US";
+    recognition.lang = language;
     recognition.continuous = options.continuous || false;
 
     if ("webkitSpeechGrammarList" in window) {

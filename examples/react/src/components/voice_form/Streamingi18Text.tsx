@@ -51,16 +51,18 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
     const [userLang, country] = language.split("-");
     let text = "not found";
 
-    if (voiceConfig?.lang == "auto") {
-      text =
-        message?.lang[language] ??
-        message?.lang[userLang] ??
-        message?.lang[voiceConfig?.defaultLang];
-    } else {
-      text =
-        message?.lang[voiceConfig?.lang] ??
-        message?.lang[voiceConfig?.defaultLang];
-    }
+    text = message?.lang[language] ?? message?.lang[userLang];
+
+    // if (voiceConfig?.lang == "auto") {
+    //   text =
+    //     message?.lang[language] ??
+    //     message?.lang[userLang] ??
+    //     message?.lang[voiceConfig?.defaultLang];
+    // } else {
+    //   text =
+    //     message?.lang[voiceConfig?.lang] ??
+    //     message?.lang[voiceConfig?.defaultLang];
+    // }
 
     setIsSpeaking(true);
 

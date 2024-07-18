@@ -27,25 +27,38 @@ export const useLanguage = () => {
 };
 
 interface LanguageProviderProps {
+  defaultLang: string;
+  defaultVoice: string;
   children: ReactNode;
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
+  defaultLang = "auto",
+  defaultVoice = "auto",
   children,
 }) => {
-  const [language, setLanguage] = useState<string>("en");
+  const [language, setLanguage] = useState<string | null>(null);
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
   useEffect(() => {
+    if (!language) {
+      setLanguage(
+        defaultLang == "auto" ? window.navigator.language : defaultLang
+      );
+    }
+
     const synth = window.speechSynthesis;
     const onVoicesChanged = () => {
       const availableVoices = synth.getVoices();
       setVoices(availableVoices);
-      const defaultVoice =
+      const langVoice =
         availableVoices.find((v) => v.lang.startsWith(language)) ||
         availableVoices[0];
-      setVoice(defaultVoice);
+
+      const filterVoice = defaultVoice == "auto" ? langVoice : defaultVoice;
+
+      setVoice(filterVoice);
     };
     synth.onvoiceschanged = onVoicesChanged;
     onVoicesChanged();

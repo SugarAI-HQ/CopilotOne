@@ -58,7 +58,7 @@ const Quiz: React.FC<{
           (question, index) =>
             index == step - 1 && (
               <VoiceQuestion
-                index={index}
+                key={index}
                 question={question}
                 onAnswered={(answer) =>
                   handleQuestionComplete({

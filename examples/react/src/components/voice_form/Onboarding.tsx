@@ -19,16 +19,7 @@ const Onboarding: React.FC<{
   const { language, voice } = useLanguage();
   const [showStart, setShowStart] = useState<boolean>(showStartButton);
 
-  const {
-    isListening,
-    isMicEnabled,
-    transcript,
-    finalTranscript,
-    startListening,
-    stopListening,
-    requestMicPermission,
-  } = useSpeechToText({
-    lang: voiceConfig.lang,
+  const { isListening, isMicEnabled, requestMicPermission } = useSpeechToText({
     continuous: false,
   });
 

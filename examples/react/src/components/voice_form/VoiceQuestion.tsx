@@ -21,6 +21,7 @@ const VoiceQuestion: React.FC<{
 }> = ({ question, onAnswered, onSkip, voiceConfig }) => {
   // Depdencies
   const { language, voice } = useLanguage();
+  const isWorkflowStartedRef = useRef(false);
   const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
 
   // Create refs for the question and options
@@ -50,7 +51,6 @@ const VoiceQuestion: React.FC<{
     startListening,
     stopListening,
   } = useSpeechToText({
-    lang: voiceConfig.lang,
     onListeningStop: onListeningStop,
     continuous: false,
   });
@@ -99,6 +99,12 @@ const VoiceQuestion: React.FC<{
   // }, [isLoading]);
 
   const executeWorkflow = async () => {
+    if (isWorkflowStartedRef.current) {
+      return;
+    }
+
+    isWorkflowStartedRef.current = true;
+
     // Speak the question
     await renderMCQ(questionRef, optionRefs);
 
@@ -317,6 +323,7 @@ export const renderMCQ = async (
     }
   }
 };
+
 export const speakMCQ = async (
   question: Question,
   language: string,
