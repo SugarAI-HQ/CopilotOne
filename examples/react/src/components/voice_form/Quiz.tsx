@@ -13,10 +13,11 @@ import StreamingText, { StreamingTextRef } from "./StreamingText";
 import Streamingi18Text, { Streamingi18TextRef } from "./Streamingi18Text";
 
 const Quiz: React.FC<{
+  showStartButton: boolean;
   welcomeMessage: i18Message;
   questions: Question[];
   voiceConfig: VoiceConfig;
-}> = ({ welcomeMessage, questions, voiceConfig }) => {
+}> = ({ showStartButton, welcomeMessage, questions, voiceConfig }) => {
   const [step, setStep] = useState<number>(1);
   const [answers, setAnswers] = useState<any[]>([]);
 
@@ -46,7 +47,7 @@ const Quiz: React.FC<{
     <div className="container mx-auto p-4">
       {step === 0 && (
         <Onboarding
-          showStartButton={true}
+          showStartButton={showStartButton}
           onComplete={() => handleOnboardingComplete}
           welcomeMessage={welcomeMessage}
           voiceConfig={voiceConfig}
