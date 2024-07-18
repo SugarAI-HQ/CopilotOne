@@ -90,14 +90,18 @@ const Onboarding: React.FC<{
               beforeSpeak={async () => {
                 return new Promise(async (resolve, reject) => {
                   const granted = await checkIfAudioPermissionGranted();
-                  !granted ? resolve(true) : reject(false);
-                  onComplete();
+                  if (!granted) {
+                    resolve(true);
+                  } else {
+                    reject(false);
+                    onComplete();
+                  }
                 });
               }}
               afterSpeak={async () => {
                 const granted = await requestMicPermission();
+                debugger;
                 if (granted) {
-                  debugger;
                   onComplete();
                 } else {
                   setShowPermissionButton(true);

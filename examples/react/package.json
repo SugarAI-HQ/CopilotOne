@@ -10,6 +10,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.16.4",
     "@sugar-ai/copilot-one-js": "workspace:*",
     "@sugar-ai/core": "workspace:*",
     "build": "^0.1.4",

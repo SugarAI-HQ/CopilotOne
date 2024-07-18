@@ -29,6 +29,7 @@ const Quiz: React.FC<{
   };
 
   const handleQuestionComplete = (answer: any) => {
+    // return;
     setAnswers([...answers, answer]);
     if (step < questions.length) {
       setStep(step + 1);

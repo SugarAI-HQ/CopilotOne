@@ -11,6 +11,7 @@ import {
   Streamingi18TextProps,
   Streamingi18TextRef,
 } from "@/schema/quizSchema";
+// import Button from "@mui/material/Button";
 
 const Streamingi18Text: React.ForwardRefRenderFunction<
   Streamingi18TextRef,
@@ -139,7 +140,7 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
 
   return (
     <div className="streaming-text m-2 block" onClick={handleStart}>
-      <p
+      <h1
         ref={elRef}
         tabIndex={-1}
         className={`whitespace-pre-wrap ${false ? "highlight" : ""}`}
@@ -148,7 +149,7 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
       >
         {displayedText}
         {/* <span className={`blinking-cursor-${isStarted ? "off" : "on"}`}>|</span> */}
-      </p>
+      </h1>
       <style jsx>{`
         .highlight {
           outline: none;

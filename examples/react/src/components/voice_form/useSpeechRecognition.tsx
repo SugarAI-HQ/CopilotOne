@@ -141,44 +141,41 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const requestMicPermission = async (): Promise<boolean> => {
     let granted = false;
     const alreadyGranted = await checkIfAudioPermissionGranted();
+    let endMessage = "Microphone permissions granted. You can now speak.";
+
     if (alreadyGranted) {
       granted = true;
       return granted;
     }
-    try {
-      await navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          // stream.getTracks().forEach((track) => track.stop());
-          setIsMicEnabled(true);
-          granted = true;
-        })
-        .then(() => {
-          console.log("[Audio] Permission granted");
-          // setTimeout(async () => {
-          return speakMessageAsync(
-            "Microphone permissions granted. You can now speak.",
-            language,
-            voice as SpeechSynthesisVoice
-          );
-          // }, 1000);
-        })
-        .catch((err) => {
-          console.error("[Audio] Error requesting microphone permission", err);
-          setIsMicEnabled(false);
-          granted = false;
-        });
-    } catch (err) {
-      console.error(err);
-      setIsMicEnabled(false);
-      await speakMessageAsync(
-        "Please try again by giving microphone permissions.",
-        language,
-        voice as SpeechSynthesisVoice
-      );
-    }
 
-    return granted;
+    return await navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        // stream.getTracks().forEach((track) => track.stop());
+        setIsMicEnabled(true);
+        granted = true;
+        return granted;
+      })
+      .catch((err) => {
+        console.error("[Audio] Error requesting microphone permission", err);
+        granted = false;
+        endMessage = "Please try again by giving microphone permissions.";
+        return granted;
+      })
+      .finally(async () => {
+        setIsMicEnabled(granted);
+
+        return new Promise<boolean>(async (resolve, reject) => {
+          setTimeout(async () => {
+            await speakMessageAsync(
+              endMessage,
+              language,
+              voice as SpeechSynthesisVoice
+            );
+            resolve(granted);
+          }, 1000);
+        });
+      });
   };
 
   return {

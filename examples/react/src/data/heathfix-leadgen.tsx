@@ -3,8 +3,8 @@ import { Question, i18Message } from "@/schema/quizSchema";
 export const welcomeMessage: i18Message = {
   mode: "manual",
   lang: {
-    en: "Welcome to Healthfix, To book the appointment, please help me with the following details.",
-    // en: "Welcome to Healthfix",
+    // en: "Welcome to Healthfix, To book the appointment, please help me with the following details.",
+    en: "Welcome to Healthfix",
     hi: "नमस्ते, आपका स्वागत है, मैं आपका नाम दर्ज करना चाहता हूँ और आपका प्रश्न संपर्क करना चाहता हूँ।",
   },
   voice: true,
