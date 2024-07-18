@@ -60,10 +60,12 @@ const Onboarding: React.FC<{
   return (
     <div>
       {showStart ? (
-        <div className="flex flex-wrap p-4 justify-center">
-          <h3>This is demo of voice forms for lead generation</h3>
+        <div className="flex flex-col p-4 justify-center">
+          <h1 className="text-3xl	justify-center m-4 p-2 text-center">
+            This is demo of voice forms for lead generation
+          </h1>
           <button
-            className="justify-center m-4 p-2 bg-blue-500 text-white text-center"
+            className="justify-center m-4 p-4 bg-blue-500 text-white text-center"
             onClick={() => {
               setShowStart(false);
               setShowStart((k) => {

@@ -4,7 +4,11 @@ import LanguageSelector from "@/components/voice_form/LanguageSelector";
 import Onboarding from "@/components/voice_form/Onboarding";
 import Quiz from "@/components/voice_form/Quiz";
 import { VoiceConfigDefault } from "@/schema/quizSchema";
-import { questions, welcomeMessage } from "@/data/heathfix-leadgen";
+import {
+  postSubmissionMessage,
+  questions,
+  welcomeMessage,
+} from "@/data/heathfix-leadgen";
 
 // 1. Onobarding Steps
 // 1.1: auto detect user language
@@ -29,6 +33,7 @@ const App: React.FC = () => (
       <Quiz
         showStartButton={true}
         welcomeMessage={welcomeMessage}
+        postSubmissionMessage={postSubmissionMessage}
         questions={questions}
         voiceConfig={{
           ...VoiceConfigDefault,

@@ -5,7 +5,17 @@ export const welcomeMessage: i18Message = {
   lang: {
     // en: "Welcome to Healthfix, To book the appointment, please help me with the following details.",
     en: "Welcome to Healthfix",
-    hi: "नमस्ते, आपका स्वागत है, मैं आपका नाम दर्ज करना चाहता हूँ और आपका प्रश्न संपर्क करना चाहता हूँ।",
+    hi: "स्वागत है Healthfix में, अपॉइंटमेंट बुक करने के लिए कृपया निम्नलिखित विवरणों के साथ मेरी सहायता करें।",
+  },
+  voice: true,
+  output: "none",
+};
+
+export const postSubmissionMessage: i18Message = {
+  mode: "manual",
+  lang: {
+    en: "Thank you for details. You appointment is book, you will get details on sms.",
+    hi: "विवरण के लिए धन्यवाद। आपका अपॉइंटमेंट बुक कर लिया गया है, आपको एसएमएस पर विवरण मिलेगा।",
   },
   voice: true,
   output: "none",

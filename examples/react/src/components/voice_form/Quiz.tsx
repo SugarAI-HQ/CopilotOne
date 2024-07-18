@@ -16,9 +16,16 @@ import Streamingi18Text from "./Streamingi18Text";
 const Quiz: React.FC<{
   showStartButton: boolean;
   welcomeMessage: i18Message;
+  postSubmissionMessage: i18Message;
   questions: Question[];
   voiceConfig: VoiceConfig;
-}> = ({ showStartButton, welcomeMessage, questions, voiceConfig }) => {
+}> = ({
+  showStartButton,
+  welcomeMessage,
+  postSubmissionMessage,
+  questions,
+  voiceConfig,
+}) => {
   const [step, setStep] = useState<number>(0);
   const [answers, setAnswers] = useState<any[]>([]);
 
@@ -81,7 +88,13 @@ const Quiz: React.FC<{
               />
             )
         )}
-      {step > questions.length && <Submission answers={answers} />}
+      {step > questions.length && (
+        <Submission
+          postSubmissionMessage={postSubmissionMessage}
+          answers={answers}
+          voiceConfig={voiceConfig}
+        />
+      )}
     </div>
   );
 };

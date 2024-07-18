@@ -143,7 +143,7 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
       <h1
         ref={elRef}
         tabIndex={-1}
-        className={`whitespace-pre-wrap ${false ? "highlight" : ""}`}
+        className={`text-2xl whitespace-pre-wrap ${false ? "highlight" : ""}`}
         onFocus={() => elRef.current?.classList.add("highlight")}
         onBlur={() => elRef.current?.classList.remove("highlight")}
       >
