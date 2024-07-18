@@ -23,7 +23,9 @@ const Quiz: React.FC<{
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {
-    setStep(step + 1);
+    setStep((step) => {
+      return step + 1;
+    });
   };
 
   const handleQuestionComplete = (answer: any) => {
@@ -49,7 +51,7 @@ const Quiz: React.FC<{
       {step === 0 && (
         <Onboarding
           showStartButton={showStartButton}
-          onComplete={() => handleOnboardingComplete}
+          onComplete={handleOnboardingComplete}
           welcomeMessage={welcomeMessage}
           voiceConfig={voiceConfig}
         />

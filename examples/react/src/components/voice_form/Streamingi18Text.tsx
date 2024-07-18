@@ -15,7 +15,7 @@ import {
 const Streamingi18Text: React.ForwardRefRenderFunction<
   Streamingi18TextRef,
   Streamingi18TextProps
-> = ({ message, voiceConfig }, ref) => {
+> = ({ message, voiceConfig, beforeSpeak, afterSpeak }, ref) => {
   const { language, voice } = useLanguage();
   const [displayedText, setDisplayedText] = useState<string>("");
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
@@ -83,6 +83,14 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
     if (isStarted) {
       return;
     }
+    if (beforeSpeak) {
+      try {
+        await beforeSpeak();
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    }
 
     setIsStarted(true);
 
@@ -94,6 +102,11 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
       })
       .finally(() => {
         unfocusElement();
+      })
+      .then(async () => {
+        if (afterSpeak) {
+          await afterSpeak();
+        }
       });
   };
 
@@ -125,7 +138,7 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
   }, []);
 
   return (
-    <div className="streaming-text" onClick={handleStart}>
+    <div className="streaming-text m-2 block" onClick={handleStart}>
       <p
         ref={elRef}
         tabIndex={-1}
@@ -134,7 +147,7 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
         onBlur={() => elRef.current?.classList.remove("highlight")}
       >
         {displayedText}
-        <span className={`blinking-cursor-${isStarted ? "off" : "on"}`}>|</span>
+        {/* <span className={`blinking-cursor-${isStarted ? "off" : "on"}`}>|</span> */}
       </p>
       <style jsx>{`
         .highlight {

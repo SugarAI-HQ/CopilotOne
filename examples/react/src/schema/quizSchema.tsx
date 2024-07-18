@@ -90,6 +90,10 @@ export type Question = z.infer<typeof QuestionSchema>;
 export const streamingi18TextSchema = z.object({
   message: i18MessageSchema,
   voiceConfig: voiceConfig.optional(),
+  // beforeSpeak: z.function().optional(),
+  // afterSpeak: z.function().optional(),
+  beforeSpeak: z.function().args().returns(z.promise(z.any())).optional(),
+  afterSpeak: z.function().args().returns(z.promise(z.any())).optional(),
 });
 export type Streamingi18TextProps = z.infer<typeof streamingi18TextSchema>;
 

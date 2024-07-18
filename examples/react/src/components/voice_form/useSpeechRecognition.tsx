@@ -112,46 +112,73 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     }
   };
 
-  const ifAudioPermissionGranted = async (): Promise<boolean> => {
-    let granted = false;
-    if (!isMicEnabled) {
-      const result = await navigator.permissions.query({
-        name: "microphone" as PermissionName,
-      });
-      if (result.state === "granted") {
-        granted = true;
-        DEV: console.log("[Audio] Permission already granted");
-        setIsMicEnabled(true);
+  const checkIfAudioPermissionGranted = async (): Promise<boolean> => {
+    return new Promise(async (resolve, reject) => {
+      let granted = false;
+      if (!isMicEnabled) {
+        try {
+          const result = await navigator.permissions.query({
+            name: "microphone" as PermissionName,
+          });
+
+          if (result.state === "granted") {
+            granted = true;
+            console.log("[Audio] Permission already granted");
+            setIsMicEnabled(true);
+            resolve(granted);
+          } else {
+            resolve(granted);
+          }
+        } catch (error) {
+          console.error("[Audio] Error checking microphone permission", error);
+          reject(granted);
+        }
+      } else {
+        resolve(granted);
       }
-    }
-
-    return granted;
+    });
   };
-
-  const requestMicPermission = async (): Promise<void> => {
-    const alreadyGranted = await ifAudioPermissionGranted();
+  const requestMicPermission = async (): Promise<boolean> => {
+    let granted = false;
+    const alreadyGranted = await checkIfAudioPermissionGranted();
     if (alreadyGranted) {
-      return;
+      granted = true;
+      return granted;
     }
-
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach((track) => track.stop());
-      setIsMicEnabled(true);
-      await speakMessageAsync(
-        "Microphone permissions granted. You can now speak.",
-        language,
-        voice as SpeechSynthesisVoice
-      );
+      await navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then((stream) => {
+          // stream.getTracks().forEach((track) => track.stop());
+          setIsMicEnabled(true);
+          granted = true;
+        })
+        .then(() => {
+          console.log("[Audio] Permission granted");
+          // setTimeout(async () => {
+          return speakMessageAsync(
+            "Microphone permissions granted. You can now speak.",
+            language,
+            voice as SpeechSynthesisVoice
+          );
+          // }, 1000);
+        })
+        .catch((err) => {
+          console.error("[Audio] Error requesting microphone permission", err);
+          setIsMicEnabled(false);
+          granted = false;
+        });
     } catch (err) {
       console.error(err);
       setIsMicEnabled(false);
       await speakMessageAsync(
-        "Please try again giving microphone permissions.",
+        "Please try again by giving microphone permissions.",
         language,
         voice as SpeechSynthesisVoice
       );
     }
+
+    return granted;
   };
 
   return {
@@ -162,6 +189,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     startListening,
     stopListening,
     requestMicPermission,
+    checkIfAudioPermissionGranted,
   };
 };
 

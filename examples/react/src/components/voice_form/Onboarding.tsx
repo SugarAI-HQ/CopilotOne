@@ -18,8 +18,15 @@ const Onboarding: React.FC<{
 }> = ({ showStartButton, onComplete, welcomeMessage, voiceConfig }) => {
   const { language, voice } = useLanguage();
   const [showStart, setShowStart] = useState<boolean>(showStartButton);
+  const [showPermissionButton, setShowPermissionButton] =
+    useState<boolean>(false);
 
-  const { isListening, isMicEnabled, requestMicPermission } = useSpeechToText({
+  const {
+    isListening,
+    isMicEnabled,
+    requestMicPermission,
+    checkIfAudioPermissionGranted,
+  } = useSpeechToText({
     continuous: false,
   });
 
@@ -32,8 +39,6 @@ const Onboarding: React.FC<{
     workflow.addMessage(requestMicPermissionsRef);
 
     await workflow.run();
-    await requestMicPermission();
-    onComplete();
   };
 
   const requestMicPermissionsMessage: i18Message = {
@@ -71,7 +76,7 @@ const Onboarding: React.FC<{
           </button>
         </div>
       ) : (
-        <div>
+        <div className="p-4 block justify-center">
           <Streamingi18Text
             ref={welcomeMessageRef}
             message={welcomeMessage}
@@ -82,15 +87,31 @@ const Onboarding: React.FC<{
               ref={requestMicPermissionsRef}
               message={requestMicPermissionsMessage}
               voiceConfig={voiceConfig}
+              beforeSpeak={async () => {
+                return new Promise(async (resolve, reject) => {
+                  const granted = await checkIfAudioPermissionGranted();
+                  !granted ? resolve(true) : reject(false);
+                  onComplete();
+                });
+              }}
+              afterSpeak={async () => {
+                const granted = await requestMicPermission();
+                if (granted) {
+                  debugger;
+                  onComplete();
+                } else {
+                  setShowPermissionButton(true);
+                }
+              }}
             />
           )}
 
-          {!isMicEnabled && (
+          {showPermissionButton && (
             <button
-              className="mt-4 p-2 bg-blue-500 text-white"
+              className="mt-4 p-2 bg-blue-500 justify-center text-white"
               onClick={requestMicPermission}
             >
-              Allow Microphone x
+              Allow Microphone
             </button>
           )}
         </div>
