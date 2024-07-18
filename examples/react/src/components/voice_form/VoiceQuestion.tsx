@@ -41,7 +41,7 @@ const VoiceQuestion: React.FC<{
 
     console.log(`Answer: ${answer}`);
     console.log(`Finaltranscript : ${finalTranscript}`);
-    evaluateResponse(answer);
+    // evaluateResponse(answer);
   };
 
   const {
@@ -231,72 +231,76 @@ const VoiceQuestion: React.FC<{
           )}
         </ul>
       )}
-      {isListening && (
-        <span className="text-sm text-muted-foreground">
-          Answer: {transcript}
-        </span>
-      )}
-      {!isListening && finalTranscript && (
-        <span className="text-sm text-muted-foreground">
-          Final: {finalTranscript}
-        </span>
-      )}
+      <div className="space-y-4 p-4 m-4">
+        {isListening && (
+          <p className="text-md text-gray-600">Speak Answer: {transcript}</p>
+        )}
+        {!isListening && (
+          <span className="text-sm text-gray-600">
+            Final Answer : {finalTranscript}
+          </span>
+        )}
 
-      <div className="mic-buttons">
-        <button
-          className={`mic-button ${isListening ? "listening" : "disabled"}`}
-          onClick={handleListenClick}
-        >
-          {isListening ? (
-            // <FaMicrophone className="mic-icon" />
-            <Mic className="w-5 h-5 " />
-          ) : (
-            <FaMicrophoneSlash className="mic-icon" />
-          )}
-        </button>
+        <div className="flex justify-center mic-buttons">
+          {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
+            Centered Button
+          </button> */}
 
-        <button onClick={onSkip}>Skip</button>
+          <button
+            className={`mic-button ${isListening ? "listening" : "disabled"}`}
+            onClick={handleListenClick}
+          >
+            {isListening ? (
+              // <FaMicrophone className="mic-icon" />
+              <Mic className="w-5 h-5 " />
+            ) : (
+              <FaMicrophoneSlash className="mic-icon" />
+            )}
+          </button>
 
-        <style jsx>{`
-          .mic-buttons {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-          }
-          .mic-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-          }
-          .mic-button.listening {
-            animation: pulse 1s infinite;
-          }
-          .mic-button.disabled {
-            background-color: #6c757d;
-          }
-          .mic-icon {
-            font-size: 24px;
-          }
-          @keyframes pulse {
-            0% {
-              box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+          <button onClick={onSkip}>Skip</button>
+
+          <style jsx>{`
+            .mic-buttons {
+              display: flex;
+              align-items: center;
+              gap: 16px;
             }
-            70% {
-              box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+            .mic-button {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 48px;
+              height: 48px;
+              border-radius: 50%;
+              border: none;
+              background-color: #007bff;
+              color: white;
+              cursor: pointer;
+              transition: background-color 0.3s;
             }
-            100% {
-              box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            .mic-button.listening {
+              animation: pulse 1s infinite;
             }
-          }
-        `}</style>
+            .mic-button.disabled {
+              background-color: #6c757d;
+            }
+            .mic-icon {
+              font-size: 24px;
+            }
+            @keyframes pulse {
+              0% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+              }
+              70% {
+                box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+              }
+              100% {
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+              }
+            }
+          `}</style>
+        </div>
       </div>
     </div>
   );

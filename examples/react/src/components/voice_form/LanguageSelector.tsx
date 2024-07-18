@@ -41,7 +41,7 @@ const LanguageSelector: React.FC<{}> = ({}) => {
     <div>
       <div className="relative inline-block ml-auto">
         <span className="">
-          {voice?.name}({language})
+          {voice?.name}({voice?.lang}) ({language})
         </span>
         <span className=""> </span>
         <FaLanguage
