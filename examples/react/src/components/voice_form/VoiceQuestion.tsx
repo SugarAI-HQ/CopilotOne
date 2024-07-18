@@ -42,7 +42,10 @@ const VoiceQuestion: React.FC<{
 
     console.log(`Answer: ${answer}`);
     // console.log(`Finaltranscript : ${finalTranscript}`);
-    // evaluateResponse(answer);
+
+    setTimeout(() => {
+      onAnswered(answer);
+    }, 2000);
   };
 
   const {

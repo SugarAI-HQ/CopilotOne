@@ -43,7 +43,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
   useEffect(() => {
-    if (!language) {
+    if (!language || language == "auto") {
       setLanguage(
         defaultLang == "auto"
           ? (window.navigator.language as LanguageCode)
