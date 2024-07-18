@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  LanguageCode,
   Question,
   Streamingi18TextRef,
   VoiceConfig,
@@ -34,13 +35,13 @@ const VoiceQuestion: React.FC<{
 
   // Text Question field
   const [input, setInput] = useState<string>("");
-  const inputRef = React.useRef<HTMLElement>(null);
+  const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
   const onListeningStop = (answer: string) => {
     unhighlightTextField();
 
     console.log(`Answer: ${answer}`);
-    console.log(`Finaltranscript : ${finalTranscript}`);
+    // console.log(`Finaltranscript : ${finalTranscript}`);
     // evaluateResponse(answer);
   };
 
@@ -162,7 +163,7 @@ const VoiceQuestion: React.FC<{
 
       e.preventDefault();
       // handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
-      onAnswered(e.target.value);
+      // onAnswered(e.target?.value as string);
     }
   };
 
@@ -216,9 +217,11 @@ const VoiceQuestion: React.FC<{
             (option: i18Message, index: number) => (
               <li
                 key={index}
-                className={`p-2 ${
-                  selectedOption === option ? "bg-yellow-300" : ""
-                }`}
+                // className={`p-2 ${
+                //   selectedOption === option?.lang[language]
+                //     ? "bg-yellow-300"
+                //     : ""
+                // }`}
                 onClick={(e) => handleOptionClick(e.currentTarget.innerText)}
               >
                 <Streamingi18Text
@@ -328,21 +331,21 @@ export const renderMCQ = async (
   }
 };
 
-export const speakMCQ = async (
-  question: Question,
-  language: string,
-  voice: SpeechSynthesisVoice
-): Promise<void> => {
-  const lang = language.split("-")[0] || "en";
+// export const speakMCQ = async (
+//   question: Question,
+//   language: string,
+//   voice: SpeechSynthesisVoice
+// ): Promise<void> => {
+//   const lang: LanguageCode = (language.split("-")[0] || "en") as LanguageCode;
 
-  // Speak the question
-  const questionText = question?.question_text?.lang[lang] as string;
-  await speakMessageAsync(questionText, language, voice);
+//   // Speak the question
+//   const questionText = question?.question_text?.lang[lang] as string;
+//   await speakMessageAsync(questionText, language, voice);
 
-  // Speak the options
-  const options = question?.question_params?.options as string[];
-  for (let i = 0; i < options.length; i++) {
-    const option = options[i];
-    await speakMessageAsync(option, language, voice);
-  }
-};
+//   // Speak the options
+//   const options = question?.question_params?.options as i18Message[];
+//   for (let i = 0; i < options.length; i++) {
+//     const option = options[i];
+//     await speakMessageAsync(option, language, voice);
+//   }
+// };

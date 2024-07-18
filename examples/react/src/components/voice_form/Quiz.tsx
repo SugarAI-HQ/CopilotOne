@@ -4,13 +4,14 @@ import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
 import {
   Question,
+  Streamingi18TextRef,
   VoiceConfig,
   VoiceConfigDefault,
   i18Message,
 } from "@/schema/quizSchema";
 import { speakMessage } from "@/helpers/voice";
 import StreamingText, { StreamingTextRef } from "./StreamingText";
-import Streamingi18Text, { Streamingi18TextRef } from "./Streamingi18Text";
+import Streamingi18Text from "./Streamingi18Text";
 
 const Quiz: React.FC<{
   showStartButton: boolean;
@@ -119,6 +120,8 @@ const ParentComponent = () => {
       en: "Hola, welcome to the streaming text and speech synthesis example.",
       hi: "नमस्ते, स्वागत है कि स्ट्रीज और संवाद सीखें।",
     },
+    voice: true,
+    output: "none",
   };
 
   return (

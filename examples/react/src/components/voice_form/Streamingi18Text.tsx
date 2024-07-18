@@ -7,6 +7,7 @@ import React, {
 import { cancelMessage, speakMessageAsync } from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
 import { useLanguage } from "./LanguageContext";
 import {
+  LanguageCode,
   Streamingi18TextProps,
   Streamingi18TextRef,
 } from "@/schema/quizSchema";
@@ -48,10 +49,10 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
   };
 
   const speakAndRender = async () => {
-    const [userLang, country] = language.split("-");
+    const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
     let text = "not found";
 
-    text = message?.lang[language] ?? message?.lang[userLang];
+    text = message?.lang[language] ?? (message?.lang[userLang] as string);
 
     // if (voiceConfig?.lang == "auto") {
     //   text =
@@ -70,7 +71,9 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
       streamRender(text, voiceConfig?.characterPerSec).catch((err) =>
         console.log(err)
       ),
-      speakMessageAsync(text, language, voice).catch((err) => console.log(err)),
+      speakMessageAsync(text, language, voice as SpeechSynthesisVoice).catch(
+        (err) => console.log(err)
+      ),
     ]).finally(() => {
       setIsSpeaking(false);
     });

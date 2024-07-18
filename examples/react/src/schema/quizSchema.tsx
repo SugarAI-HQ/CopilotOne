@@ -1,5 +1,54 @@
 import { z } from "zod";
 
+export const languageCode = z.enum([
+  "en-US",
+  "en-GB",
+  "fr-FR",
+  "fr-CA",
+  "es-ES",
+  "es-MX",
+  "de-DE",
+  "ja-JP",
+  "zh-CN",
+  "zh-TW",
+  "hi-IN",
+  "bn-IN",
+  "ta-IN",
+  "te-IN",
+  "mr-IN",
+  "gu-IN",
+  "kn-IN",
+  "ml-IN",
+  "pa-IN",
+  "or-IN",
+  "as-IN",
+  "ur-IN",
+  "ma-IN",
+  "ks-IN",
+  "en",
+  "hi",
+  "ar",
+  "ru",
+  "pt",
+  "it",
+  "ko",
+  "tr",
+  "nl",
+  "sv",
+  "pl",
+  "da",
+  "fi",
+  "no",
+  "el",
+  "he",
+  "cs",
+  "hu",
+  "th",
+  "vi",
+  "auto",
+]);
+export type LanguageCode = z.infer<typeof languageCode>;
+
 export const voiceConfig = z.object({
   characterPerSec: z.number().optional().default(40),
   // lang: z.string().optional().default("auto"),
@@ -15,13 +64,15 @@ export const VoiceConfigDefault: VoiceConfig = {
 
 export const i18MessageSchema = z.object({
   mode: z.enum(["manual", "ai"]).optional().default("manual"),
-  lang: z.object({
-    en: z.string(),
-    hi: z.string(),
-  }),
+  lang: z.record(languageCode, z.string()),
+  // lang: z.object({
+  //   en: z.string(),
+  //   hi: z.string(),
+  // }),
   voice: z.boolean().optional().default(true),
   output: z.enum(["none", "answer"]).optional().default("none"),
 });
+
 export type i18Message = z.infer<typeof i18MessageSchema>;
 
 export const QuestionSchema = z.object({

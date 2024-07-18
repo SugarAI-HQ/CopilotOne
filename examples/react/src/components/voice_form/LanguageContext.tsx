@@ -1,3 +1,4 @@
+import { LanguageCode } from "@/schema/quizSchema";
 import React, {
   createContext,
   useContext,
@@ -7,8 +8,8 @@ import React, {
 } from "react";
 
 interface LanguageContextType {
-  language: string;
-  setLanguage: (language: string) => void;
+  language: LanguageCode;
+  setLanguage: (language: LanguageCode) => void;
   voice: SpeechSynthesisVoice | null;
   setVoice: (voice: SpeechSynthesisVoice) => void;
   voices: SpeechSynthesisVoice[];
@@ -27,24 +28,26 @@ export const useLanguage = () => {
 };
 
 interface LanguageProviderProps {
-  defaultLang: string;
-  defaultVoice: string;
+  defaultLang: LanguageCode;
+  defaultVoiceLang: LanguageCode;
   children: ReactNode;
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   defaultLang = "auto",
-  defaultVoice = "auto",
+  defaultVoiceLang = "auto",
   children,
 }) => {
-  const [language, setLanguage] = useState<string | null>(null);
+  const [language, setLanguage] = useState<LanguageCode>("auto");
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
 
   useEffect(() => {
     if (!language) {
       setLanguage(
-        defaultLang == "auto" ? window.navigator.language : defaultLang
+        defaultLang == "auto"
+          ? (window.navigator.language as LanguageCode)
+          : defaultLang
       );
     }
 
@@ -52,11 +55,13 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
     const onVoicesChanged = () => {
       const availableVoices = synth.getVoices();
       setVoices(availableVoices);
-      const langVoice =
-        availableVoices.find((v) => v.lang.startsWith(language)) ||
-        availableVoices[0];
 
-      const filterVoice = defaultVoice == "auto" ? langVoice : defaultVoice;
+      const filterLang =
+        defaultVoiceLang == "auto" ? language : defaultVoiceLang;
+
+      const filterVoice =
+        availableVoices.find((v) => v.lang.startsWith(filterLang as string)) ||
+        availableVoices[0];
 
       setVoice(filterVoice);
     };

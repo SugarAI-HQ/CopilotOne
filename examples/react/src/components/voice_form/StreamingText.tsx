@@ -43,7 +43,7 @@ const StreamingText: React.ForwardRefRenderFunction<
     setIsSpeaking(true);
     await Promise.all([
       streamRender(40),
-      speakMessage(message, language, voice),
+      speakMessage(message, language, voice as SpeechSynthesisVoice),
     ]);
     setIsSpeaking(false);
   };

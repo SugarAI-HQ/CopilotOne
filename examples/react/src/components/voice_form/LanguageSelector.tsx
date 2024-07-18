@@ -3,6 +3,7 @@ import { useLanguage } from "./LanguageContext";
 import Modal from "../Modal";
 import { FaLanguage } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
+import { LanguageCode } from "@/schema/quizSchema";
 
 const LanguageSelector: React.FC<{}> = ({}) => {
   const { language, setLanguage, voice, setVoice, voices } = useLanguage();
@@ -17,7 +18,7 @@ const LanguageSelector: React.FC<{}> = ({}) => {
   }, []);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value);
+    setLanguage(e.target.value as LanguageCode);
   };
 
   const handleVoiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -39,7 +40,10 @@ const LanguageSelector: React.FC<{}> = ({}) => {
 
   return (
     <div>
-      <div className="relative inline-block ml-auto">
+      <div
+        className="relative inline-block ml-auto"
+        data-tooltip-id="lang-tooltip"
+      >
         <span className="">
           {voice?.name}({voice?.lang}) ({language})
         </span>
@@ -50,7 +54,7 @@ const LanguageSelector: React.FC<{}> = ({}) => {
           onClick={() => setIsModalOpen(true)}
           className="text-blue-500 cursor-pointer text-2xl"
         />
-        <ReactTooltip place="top" type="dark" effect="solid" />
+        <ReactTooltip id="lang-tooltip" place="top" />
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="mb-4">

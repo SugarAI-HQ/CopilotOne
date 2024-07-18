@@ -60,14 +60,14 @@ const VoiceInteractiveQuiz: React.FC<{ question: Question }> = ({
   };
 
   const handleResponse = (speechResult: string) => {
-    const option = question.question_params.options.find(
-      (opt: string) => opt.toLowerCase() === speechResult
-    );
-    if (option) {
-      setSelectedOption(option);
-    } else {
-      alert("Option not recognized. Please try again.");
-    }
+    // const option = question.question_params.options.find(
+    //   (opt: string) => opt.toLowerCase() === speechResult
+    // );
+    // if (option) {
+    //   setSelectedOption(option);
+    // } else {
+    //   alert("Option not recognized. Please try again.");
+    // }
   };
 
   const handleOptionClick = (option: string) => {
@@ -78,7 +78,7 @@ const VoiceInteractiveQuiz: React.FC<{ question: Question }> = ({
     <div className="p-4">
       <p className="text-lg mb-4">{question.question_text.lang.en}</p>
       <ul>
-        {question.question_params.options.map(
+        {/* {question.question_params.options.map(
           (option: string, index: number) => (
             <li
               key={index}
@@ -90,7 +90,7 @@ const VoiceInteractiveQuiz: React.FC<{ question: Question }> = ({
               {option}
             </li>
           )
-        )}
+        )} */}
       </ul>
       <button
         className="mt-4 p-2 bg-blue-500 text-white"

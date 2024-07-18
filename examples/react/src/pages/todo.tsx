@@ -70,6 +70,7 @@ let copilotConfig: CopilotConfigType = {
   },
   nudges: {
     welcome: {
+      textMode: "manual",
       text: "Hi, I am John. How may I help you today?",
       delay: 1,
       enabled: true,

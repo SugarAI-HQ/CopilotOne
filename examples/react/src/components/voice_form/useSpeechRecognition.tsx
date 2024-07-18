@@ -57,7 +57,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           fTranscript = event.results[i][0].transcript;
-          DEV: console.log(`[Audio] Final: ${fTranscript}`);
+          // DEV: console.log(`[Audio] Final: ${fTranscript}`);
 
           // Take care of it
           // setIslistening(false);
@@ -81,12 +81,13 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       // setTranscript("");
 
       // Send the latest value to the callback
-      if (options.onListeningStop) {
-        setFinalTranscript((ft) => {
+
+      setFinalTranscript((ft) => {
+        if (options.onListeningStop) {
           options.onListeningStop(ft);
-          return ft;
-        });
-      }
+        }
+        return ft;
+      });
     };
 
     return () => {
@@ -140,7 +141,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       await speakMessageAsync(
         "Microphone permissions granted. You can now speak.",
         language,
-        voice
+        voice as SpeechSynthesisVoice
       );
     } catch (err) {
       console.error(err);
@@ -148,7 +149,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       await speakMessageAsync(
         "Please try again giving microphone permissions.",
         language,
-        voice
+        voice as SpeechSynthesisVoice
       );
     }
   };
