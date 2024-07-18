@@ -53,20 +53,23 @@ const Onboarding: React.FC<{
   }, [welcomeMessage, language, voice]);
 
   return (
-    <div className="p-4">
+    <div>
       {showStart ? (
-        <button
-          className="p-2 bg-blue-500 text-white"
-          onClick={() => {
-            setShowStart(false);
-            setShowStart((k) => {
-              setTimeout(() => runWorkflow(), 1000);
-              return k;
-            });
-          }}
-        >
-          Start
-        </button>
+        <div className="flex flex-wrap p-4 justify-center">
+          <h3>This is demo of voice forms for lead generation</h3>
+          <button
+            className="justify-center m-4 p-2 bg-blue-500 text-white text-center"
+            onClick={() => {
+              setShowStart(false);
+              setShowStart((k) => {
+                setTimeout(() => runWorkflow(), 1000);
+                return k;
+              });
+            }}
+          >
+            Book Appointment
+          </button>
+        </div>
       ) : (
         <div>
           <Streamingi18Text

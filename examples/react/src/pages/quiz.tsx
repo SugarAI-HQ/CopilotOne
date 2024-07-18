@@ -23,7 +23,7 @@ import { questions, welcomeMessage } from "@/data/heathfix-leadgen";
 // 3.2 Show success and ending message.
 
 const App: React.FC = () => (
-  <LanguageProvider defaultLang={"hi"} defaultVoiceLang={"auto"}>
+  <LanguageProvider defaultLang={"en"} defaultVoiceLang={"hi-IN"}>
     <div className="container mx-auto p-4">
       <LanguageSelector />
       <Quiz

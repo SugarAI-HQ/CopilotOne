@@ -41,11 +41,11 @@ const LanguageSelector: React.FC<{}> = ({}) => {
   return (
     <div>
       <div
-        className="relative inline-block ml-auto"
+        className="flex flex-inline relative inline-block ml-auto"
         data-tooltip-id="lang-tooltip"
       >
-        <span className="">
-          {voice?.name}({voice?.lang}) ({language})
+        <span className="p-3">
+          Lang: ({language}), Voice: {voice?.name}({voice?.lang})
         </span>
         <span className=""> </span>
         <FaLanguage
