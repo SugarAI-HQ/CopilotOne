@@ -8,6 +8,7 @@ import {
   DEFAULT_GROUP_ID,
   defaultGroupId,
   scopeDefaults,
+  TextToActionResponse,
 } from "./schema";
 import { extractFunctionParams } from "./utils";
 import { performanceTracker } from "./performance";
@@ -152,38 +153,38 @@ export function transformActionRegistrationToDefinition(
   return actionDefinition;
 }
 
-TEST: setTimeout(() => {
-  const registration: ActionRegistrationType = {
-    name: "exampleAction",
-    description: "This is an example action",
-    parameters: [
-      {
-        name: "param1",
-        type: "string",
-        enum: ["value1", "value2"],
-        description: "Description for param1",
-        required: true,
-      },
-      {
-        name: "param2",
-        type: "integer",
-        description: "Description for param2",
-        required: false,
-      },
-    ],
-    // required: ["param1"],
-  };
+// TEST: setTimeout(() => {
+//   const registration: ActionRegistrationType = {
+//     name: "exampleAction",
+//     description: "This is an example action",
+//     parameters: [
+//       {
+//         name: "param1",
+//         type: "string",
+//         enum: ["value1", "value2"],
+//         description: "Description for param1",
+//         required: true,
+//       },
+//       {
+//         name: "param2",
+//         type: "integer",
+//         description: "Description for param2",
+//         required: false,
+//       },
+//     ],
+//     // required: ["param1"],
+//   };
 
-  const definition: ActionDefinitionType =
-    transformActionRegistrationToDefinition(registration);
+//   const definition: ActionDefinitionType =
+//     transformActionRegistrationToDefinition(registration);
 
-  TEST: console.log(definition);
-}, 1000);
+//   TEST: console.log(definition);
+// }, 1000);
 
 export const executeAction = async function executeAction(
   actions,
   actionCallbacks,
-) {
+): Promise<any> {
   for (const index in actions) {
     // Access each action object
     const action = actions[index];
@@ -199,7 +200,10 @@ export const executeAction = async function executeAction(
       `[${actionName}] Calling action ----> ${actionName}(${action.function.arguments})`,
     );
 
-    actionCallbacks[actionName](...Object.values(actionArgs));
+    const actionoutput: any = actionCallbacks[actionName](
+      ...Object.values(actionArgs),
+    );
+    return actionoutput;
   }
 };
 
@@ -213,7 +217,7 @@ export async function textToAction(
   chatHistorySize: number = 4,
   actions: Array<Record<string, ActionDefinitionType>> = [],
   actionCallbacks: Array<Record<string, Function>> = [],
-): Promise<string> {
+): Promise<TextToActionResponse> {
   const { reset, addMarker, getStats } = performanceTracker();
   reset();
   addMarker("start");
@@ -267,6 +271,7 @@ export async function textToAction(
   // );
 
   let output: string = config?.ai?.successResponse as string;
+  let actionOutput: any = null;
 
   addMarker("got_llm_response");
 
@@ -281,7 +286,10 @@ export async function textToAction(
     if (choices instanceof Array) {
       if (choices[0].message?.tool_calls) {
         addMarker("executing_actions");
-        await executeAction(choices[0].message.tool_calls, actionCallbacks);
+        actionOutput = await executeAction(
+          choices[0].message.tool_calls,
+          actionCallbacks,
+        );
         addMarker("executed_actions");
       }
 
@@ -307,5 +315,5 @@ export async function textToAction(
     ...result.stats,
     ...{ clientStats: getStats() },
   });
-  return output;
+  return { output, actionOutput };
 }

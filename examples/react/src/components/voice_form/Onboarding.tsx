@@ -102,7 +102,6 @@ const Onboarding: React.FC<{
               }}
               afterSpeak={async () => {
                 const granted = await requestMicPermission();
-                debugger;
                 if (granted) {
                   onComplete();
                 } else {

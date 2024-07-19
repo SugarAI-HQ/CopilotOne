@@ -6,13 +6,14 @@ import {
   VoiceConfig,
   i18Message,
 } from "@/schema/quizSchema";
-import { speakMessageAsync } from "@/helpers/voice";
+import { speakMessage, speakMessageAsync } from "@/helpers/voice";
 import { useLanguage } from "./LanguageContext";
-import Streamingi18Text from "./Streamingi18Text";
+import Streamingi18Text, { extracti18Text } from "./Streamingi18Text";
 import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { Mic, Send, SendHorizonal } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import { useCopilot, loadCurrentConfig } from "@sugar-ai/core";
 
 const VoiceQuestion: React.FC<{
   question: Question;
@@ -42,10 +43,6 @@ const VoiceQuestion: React.FC<{
 
     console.log(`Answer: ${answer}`);
     // console.log(`Finaltranscript : ${finalTranscript}`);
-
-    setTimeout(() => {
-      onAnswered(answer);
-    }, 2000);
   };
 
   const {
@@ -53,11 +50,15 @@ const VoiceQuestion: React.FC<{
     transcript,
     finalTranscript,
     startListening,
+    startListeningAsync,
     stopListening,
   } = useSpeechToText({
-    onListeningStop: onListeningStop,
+    // onListeningStop: onListeningStop,
     continuous: false,
   });
+
+  const { config, registerAction, unregisterAction, textToAction } =
+    useCopilot();
 
   if (question?.question_params?.options) {
     question?.question_params?.options.map(() =>
@@ -102,7 +103,7 @@ const VoiceQuestion: React.FC<{
   //   }
   // }, [isLoading]);
 
-  const executeWorkflow = async () => {
+  const executeWorkflow = async (language: LanguageCode) => {
     if (isWorkflowStartedRef.current) {
       return;
     }
@@ -116,17 +117,34 @@ const VoiceQuestion: React.FC<{
 
     // Prepare for getting answer
     highlightTextField();
-    listen();
 
-    // Evaluate answer
+    // Start listening
+    let userResponse: string = "";
+    let fq: string | null = "";
+    let attempts = 0;
+    let questionAnswer = "";
+
+    while (fq !== null && attempts < 2) {
+      userResponse = await startListeningAsync();
+
+      const { answer, followupQuestion } = await evaluate(
+        question,
+        userResponse,
+        language
+      );
+      fq = followupQuestion;
+      questionAnswer = answer;
+      attempts = attempts + 1;
+    }
+
     // Submit if fine
-    // onAnswered()
+    onAnswered(questionAnswer);
   };
 
   useEffect(() => {
     if (question && language && voice) {
       setTimeout(() => {
-        executeWorkflow();
+        executeWorkflow(language);
       }, 1000);
     }
   }, [question, language, voice]);
@@ -137,10 +155,120 @@ const VoiceQuestion: React.FC<{
     // }
   };
 
+  const evaluate = async (
+    question: Question,
+    userQuery: string,
+    language: LanguageCode
+  ): Promise<{ answer: string; followupQuestion: string | null }> => {
+    // const promptTemplate = "sugar/voice-forms/evaluate-response";
+    const promptTemplate = "signup.ankur/voice-forms/evaluate-question/0.0.1";
+    console.log(question);
+    let options: string[] = [];
+
+    const pvs: any = {
+      "@language": language,
+      "@question_type": question.question_type,
+      "@question": extracti18Text(question.question_text, language),
+    };
+
+    let action = {
+      name: "evaluateMcqResponse",
+      description:
+        "Evaluate the user's response to a multiple-choice question and return the most likely option.",
+      parameters: [
+        {
+          name: "answer",
+          type: "string",
+          description: "Answer for the question",
+          required: true,
+        },
+        {
+          name: "isQuestionAnswered",
+          type: "string",
+          enum: ["fully", "partially", "no"],
+          description: "Is question answered by the user ?",
+          required: true,
+        },
+        {
+          name: "followupQuestion",
+          type: "string",
+          description:
+            "followup Question to be asked back to the user, this is required when isQuestionAnswered is partially or no",
+          required: true,
+        },
+      ],
+    };
+
+    // Incase of mcq type of questions
+    if (question.question_params?.options) {
+      options = question.question_params?.options?.map((option) =>
+        extracti18Text(option, language)
+      ) as string[];
+
+      pvs["@options"] = options.join(",");
+      action.parameters[0].enum = options;
+    }
+
+    // return new Promise(async (resolve, reject) => {
+    function evaluateMcqResponse(
+      answer: string,
+      isQuestionAnswered: string,
+      followupQuestion: string
+    ) {
+      console.log(
+        `answer: ${answer}, ${isQuestionAnswered}, ${followupQuestion}`
+      );
+
+      debugger;
+
+      if (isQuestionAnswered === "fully") {
+        // return resolve({ answer, followupQuestion: null });
+        return { answer, followupQuestion: null };
+      }
+
+      if (isQuestionAnswered !== "fully" && followupQuestion) {
+        // return resolve({ answer, followupQuestion });
+        return { answer, followupQuestion };
+      }
+
+      // return reject(
+      //   "answer is not clear, and followup question is not provided"
+      // );
+      throw new Error(
+        "answer is not clear, and followup question is not provided"
+      );
+    }
+
+    registerAction("evaluateMcqResponse", action, evaluateMcqResponse);
+
+    const ttaResponse = await textToAction(
+      promptTemplate,
+      userQuery,
+      pvs,
+      {
+        scope1: "",
+        scope2: "",
+        clientUserId: config.clientUserId,
+      },
+      false,
+      0
+    ).catch((err: any) => {
+      console.log(err);
+      // reject(err);
+    });
+    unregisterAction("evaluateMcqResponse");
+    // });
+
+    return ttaResponse?.actionOutput;
+  };
+
   const evaluateResponse = (userResponse: string) => {
     if (question.question_type === "text") {
       onAnswered(userResponse);
     } else if (question.question_type === "multiple_choice") {
+      // 1. Functioncalling to get the best match
+      // 2. Send question, options and user response to AI
+
       onAnswered(userResponse);
       // evaluateMCQResponse(userResponse);
       // const option = question.question_params.options?.find(

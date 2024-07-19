@@ -1,3 +1,5 @@
+import { useLanguage } from "@/components/voice_form/LanguageContext";
+
 let synth: any = null;
 let recognition: any = null;
 

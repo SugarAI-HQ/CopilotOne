@@ -14,7 +14,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
-  const [finalTranscript, setFinalTranscript] = useState("");
+  const [finalTranscript, setFinalTranscript] = useState<string>("");
   const [transcriptLength, setTranscriptLength] = useState(-1);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
@@ -50,46 +50,6 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     //   setTranscript(text.charAt(0).toUpperCase() + text.slice(1));
     // };
 
-    recognition.onresult = async (event: SpeechRecognitionEvent) => {
-      let interimTranscript = "";
-      let fTranscript = "";
-
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          fTranscript = event.results[i][0].transcript;
-          // DEV: console.log(`[Audio] Final: ${fTranscript}`);
-
-          // Take care of it
-          // setIslistening(false);
-          // setFinalOutput(fTranscript);
-
-          // await processSpeechToText(fTranscript);
-        } else {
-          interimTranscript += event.results[i][0].transcript;
-        }
-      }
-      setTranscript(interimTranscript);
-      setFinalTranscript(fTranscript);
-    };
-
-    recognition.onerror = (event) => {
-      console.error(event.error);
-    };
-
-    recognition.onend = () => {
-      setIsListening(false);
-      // setTranscript("");
-
-      // Send the latest value to the callback
-
-      setFinalTranscript((ft) => {
-        if (options.onListeningStop) {
-          options.onListeningStop(ft);
-        }
-        return ft;
-      });
-    };
-
     return () => {
       if (recognitionRef.current) {
         recognitionRef.current.stop();
@@ -103,6 +63,74 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       setIsListening(true);
       setTranscriptLength(length);
     }
+  };
+
+  const startListeningAsync = (length: number = -1): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      if (recognitionRef.current && !isListening) {
+        // recognitionRef.current.onresult = (event) => {
+        //   const transcript = Array.from(event.results)
+        //     .map((result) => result[0])
+        //     .map((result) => result.transcript)
+        //     .join("");
+
+        //   // resolve(transcript);
+        // };
+
+        recognitionRef.current.onresult = async (
+          event: SpeechRecognitionEvent
+        ) => {
+          let interimTranscript = "";
+          let fTranscript = "";
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              fTranscript = event.results[i][0].transcript;
+              // DEV: console.log(`[Audio] Final: ${fTranscript}`);
+
+              // Take care of it
+              // setIslistening(false);
+              // setFinalOutput(fTranscript);
+
+              // await processSpeechToText(fTranscript);
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          setTranscript(interimTranscript);
+          setFinalTranscript(fTranscript);
+        };
+
+        recognitionRef.current.onerror = (event) => {
+          // if (options.onListeningStop) {
+          //   return options.onListeningStop(event);
+          // }
+          reject(event.error);
+        };
+
+        recognitionRef.current.onend = () => {
+          setIsListening(false);
+
+          setFinalTranscript((ft: string) => {
+            if (options.onListeningStop) {
+              options.onListeningStop(ft);
+            }
+            resolve(ft);
+            return ft;
+          });
+        };
+
+        recognitionRef.current.start();
+        setIsListening(true);
+        setTranscriptLength(length);
+      } else {
+        reject(
+          new Error(
+            "Speech recognition is already listening or not initialized."
+          )
+        );
+      }
+    });
   };
 
   const stopListening = () => {
@@ -184,6 +212,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     transcript,
     finalTranscript,
     startListening,
+    startListeningAsync,
     stopListening,
     requestMicPermission,
     checkIfAudioPermissionGranted,

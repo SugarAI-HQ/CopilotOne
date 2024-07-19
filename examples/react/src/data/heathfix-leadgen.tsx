@@ -62,7 +62,7 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "One a scale of 1 - 5 (5 being worst), What is the intensity of your pain?",
+        en: "On a scale of 1 - 5 (5 being worst), What is the intensity of your pain?",
         hi: "1 से 5 के पैमाने पर (5 सबसे खराब होने पर), आपके दर्द की तीव्रता कितनी है?",
       },
       voice: true,

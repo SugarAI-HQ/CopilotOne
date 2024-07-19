@@ -10,6 +10,7 @@ import {
   LanguageCode,
   Streamingi18TextProps,
   Streamingi18TextRef,
+  i18Message,
 } from "@/schema/quizSchema";
 // import Button from "@mui/material/Button";
 
@@ -50,21 +51,7 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
   };
 
   const speakAndRender = async () => {
-    const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
-    let text = "not found";
-
-    text = message?.lang[language] ?? (message?.lang[userLang] as string);
-
-    // if (voiceConfig?.lang == "auto") {
-    //   text =
-    //     message?.lang[language] ??
-    //     message?.lang[userLang] ??
-    //     message?.lang[voiceConfig?.defaultLang];
-    // } else {
-    //   text =
-    //     message?.lang[voiceConfig?.lang] ??
-    //     message?.lang[voiceConfig?.defaultLang];
-    // }
+    const text = extracti18Text(message, language);
 
     setIsSpeaking(true);
 
@@ -177,3 +164,10 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
 };
 
 export default forwardRef(Streamingi18Text);
+
+export const extracti18Text = (message: i18Message, language: LanguageCode) => {
+  const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
+  let text = "not found";
+  text = message?.lang[language] ?? (message?.lang[userLang] as string);
+  return text;
+};

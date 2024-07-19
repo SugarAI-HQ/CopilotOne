@@ -12,6 +12,7 @@ import {
   type EmbeddingScopeWithUserType,
   copilotAiDefaults,
   copilotRouterDefaults,
+  TextToActionResponse,
 } from "./schema";
 import { generateUserId } from "./utils";
 import { SugarAiApiClient } from "./api-client";
@@ -44,8 +45,7 @@ export const CopilotContext = createContext({
     chatHistorySize: number = 4,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
-  ) => Promise<string>,
-  // ) => Promise<string>,
+  ) => Promise<TextToActionResponse>,
 });
 
 // const ActionsDispatchContext = createContext(null)
@@ -129,7 +129,7 @@ export const CopilotProvider = function ({
     chatHistorySize: number = 4,
     actions: Record<string, ActionDefinitionType> = {},
     actionCallbacks: Record<string, Function> = {},
-  ): Promise<string> {
+  ): Promise<TextToActionResponse> {
     return await nativeTextoAction(
       promptTemplate,
       userQuery,
