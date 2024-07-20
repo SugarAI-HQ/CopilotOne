@@ -374,7 +374,7 @@ const VoiceQuestion: React.FC<{
         voiceConfig={voiceConfig}
       />
       {/* Text / Number. */}
-      {question.question_type == "text" && (
+      {isQuestionSpoken && question.question_type == "text" && (
         <div className="flex flex-col items-center">
           <TextareaAutosize
             autoComplete="off"
@@ -391,7 +391,7 @@ const VoiceQuestion: React.FC<{
             name="message"
             disabled={!isQuestionSpoken}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
-            className=" max-h-24 px-14 bg-accent py-[22px] text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 w-full  rounded-full flex items-center h-16 resize-none overflow-hidden dark:bg-card"
+            className=" max-h-24 px-14 bg-accent py-[22px] text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden dark:bg-card"
           />
 
           {/* <input
@@ -421,77 +421,81 @@ const VoiceQuestion: React.FC<{
           selected={answer ? [answer] : []}
         />
       )}
-      <div className="space-y-4 p-4 m-4">
-        {isListening && (
-          <p className="text-md text-gray-600">Speak Answer: {transcript}</p>
-        )}
-        {!isListening && (
-          <span className="text-sm text-gray-600">
-            Final Answer : {finalTranscript}
-          </span>
-        )}
+      {isQuestionSpoken && (
+        <div className="space-y-4 p-4 m-4">
+          {isListening && (
+            <div className="flex justify-center items-center h-full">
+              <p className="text-lg text-gray-600">{transcript}</p>
+            </div>
+          )}
+          {/* {!isListening && (
+            <div className="flex justify-center items-center h-full">
+              <span className="text-sm text-gray-800">{finalTranscript}</span>
+            </div>
+          )} */}
 
-        <div className="flex justify-center mic-buttons">
-          {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
+          <div className="flex justify-center mic-buttons">
+            {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
             Centered Button
           </button> */}
 
-          <button
-            className={`mic-button ${isListening ? "listening" : "disabled"}`}
-            onClick={handleListenClick}
-          >
-            {isListening ? (
-              // <FaMicrophone className="mic-icon" />
-              <Mic className="w-5 h-5 " />
-            ) : (
-              <FaMicrophoneSlash className="mic-icon" />
-            )}
-          </button>
+            <button
+              className={`mic-button ${isListening ? "listening" : "disabled"}`}
+              onClick={handleListenClick}
+            >
+              {isListening ? (
+                // <FaMicrophone className="mic-icon" />
+                <Mic className="w-5 h-5 " />
+              ) : (
+                <FaMicrophoneSlash className="mic-icon" />
+              )}
+            </button>
 
-          <button onClick={onSkip}>Skip</button>
+            <button onClick={onSkip}>Skip</button>
 
-          <style jsx>{`
-            .mic-buttons {
-              display: flex;
-              align-items: center;
-              gap: 16px;
-            }
-            .mic-button {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 48px;
-              height: 48px;
-              border-radius: 50%;
-              border: none;
-              background-color: #007bff;
-              color: white;
-              cursor: pointer;
-              transition: background-color 0.3s;
-            }
-            .mic-button.listening {
-              animation: pulse 1s infinite;
-            }
-            .mic-button.disabled {
-              background-color: #6c757d;
-            }
-            .mic-icon {
-              font-size: 24px;
-            }
-            @keyframes pulse {
-              0% {
-                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+            <style jsx>{`
+              .mic-buttons {
+                display: flex;
+                align-items: center;
+                gap: 16px;
               }
-              70% {
-                box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+              .mic-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                border: none;
+                background-color: #007bff;
+                color: white;
+                cursor: pointer;
+                transition: background-color 0.3s;
               }
-              100% {
-                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+              .mic-button.listening {
+                animation: pulse 1s infinite;
               }
-            }
-          `}</style>
+              .mic-button.disabled {
+                background-color: #6c757d;
+              }
+              .mic-icon {
+                font-size: 24px;
+              }
+              @keyframes pulse {
+                0% {
+                  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+                }
+                70% {
+                  box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+                }
+                100% {
+                  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+                }
+              }
+            `}</style>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
