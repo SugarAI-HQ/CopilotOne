@@ -26,16 +26,20 @@ export const CopilotContext = createContext({
   config: null as CopilotConfigType | null,
   apiClient: null as any,
   clientUserId: null as null | string,
+
   useStateEmbedding: (initialState: any, scope: EmbeddingScopeType) => [
     any,
     Function,
   ],
+
   registerAction: (
     name: string,
     actionDefinition: ActionRegistrationType,
     actioncallback: Function,
   ) => {},
+
   unregisterAction: (name: string) => {},
+
   textToAction: async (
     promptTemplate: string,
     userQuery: string,
@@ -124,7 +128,7 @@ export const CopilotProvider = function ({
     promptTemplate,
     userQuery,
     promptVariables,
-    scope: EmbeddingScopeWithUserType,
+    scope: EmbeddingScopeType,
     isAssitant: boolean = false,
     chatHistorySize: number = 4,
     actions: Record<string, ActionDefinitionType> = {},

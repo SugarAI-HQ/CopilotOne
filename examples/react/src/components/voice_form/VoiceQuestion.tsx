@@ -12,7 +12,13 @@ import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { Mic, Send, SendHorizonal } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
-import { useCopilot, loadCurrentConfig } from "@sugar-ai/core";
+import {
+  useCopilot,
+  loadCurrentConfig,
+  ActionRegistrationType,
+  EmbeddingScopeWithUserType,
+  TextToActionResponse,
+} from "@sugar-ai/core";
 import Streamingi18Text from "./Streamingi18Text";
 
 export const delay = (ms: number) =>
@@ -70,7 +76,7 @@ const VoiceQuestion: React.FC<{
   }
 
   const listen = async () => {
-    isListening ? stopVoiceInput() : startListening();
+    // isListening ? stopVoiceInput() : startListening();
   };
 
   const stopVoiceInput = () => {
@@ -183,7 +189,7 @@ const VoiceQuestion: React.FC<{
 
   const evaluate = async (
     question: Question,
-    userQuery: string,
+    userResponse: string,
     language: LanguageCode
   ): Promise<{ answer: string; followupQuestion: string | null }> => {
     // const promptTemplate = "sugar/voice-forms/evaluate-response";
@@ -197,7 +203,7 @@ const VoiceQuestion: React.FC<{
       "@question": extracti18Text(question.question_text, language),
     };
 
-    let action = {
+    let action: ActionRegistrationType = {
       name: "evaluateMcqResponse",
       description:
         "Evaluate the user's response to a multiple-choice question and return the most likely option.",
@@ -232,10 +238,10 @@ const VoiceQuestion: React.FC<{
       ) as string[];
 
       pvs["@options"] = options.join(",");
-      action.parameters[0].enum = options;
+      if (options?.length > 0) {
+        action.parameters[0].enum = options;
+      }
     }
-
-    // return new Promise(async (resolve, reject) => {
     function evaluateMcqResponse(
       answer: string,
       isQuestionAnswered: string,
@@ -265,23 +271,26 @@ const VoiceQuestion: React.FC<{
 
     registerAction("evaluateMcqResponse", action, evaluateMcqResponse);
 
-    const ttaResponse = await textToAction(
+    const ttaResponse: TextToActionResponse = await textToAction(
       promptTemplate,
-      userQuery,
+      userResponse,
       pvs,
       {
         scope1: "",
         scope2: "",
-        clientUserId: config.clientUserId,
-      },
+      } as EmbeddingScopeWithUserType,
       false,
       0
-    ).catch((err: any) => {
-      console.log(err);
-      // reject(err);
-    });
-    unregisterAction("evaluateMcqResponse");
+    );
+    // .catch((err: any) => {
+    //   console.log(err);
+    //   return {
+    //     output: "error",
+    //     actionOutput: null,
+    //   };
     // });
+
+    unregisterAction("evaluateMcqResponse");
 
     return ttaResponse?.actionOutput;
   };

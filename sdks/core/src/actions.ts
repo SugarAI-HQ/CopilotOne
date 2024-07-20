@@ -9,6 +9,7 @@ import {
   defaultGroupId,
   scopeDefaults,
   TextToActionResponse,
+  EmbeddingScopeType,
 } from "./schema";
 import { extractFunctionParams } from "./utils";
 import { performanceTracker } from "./performance";
@@ -211,7 +212,7 @@ export async function textToAction(
   promptTemplate,
   userQuery: string | null,
   promptVariables,
-  scope: EmbeddingScopeWithUserType,
+  scope: EmbeddingScopeType,
   config,
   isAssitant: boolean = false,
   chatHistorySize: number = 4,
@@ -236,7 +237,11 @@ export async function textToAction(
   console.log("actions", JSON.stringify(actions));
   console.log("actionCallbacks", JSON.stringify(actionCallbacks));
 
-  const effectiveScope = { ...scopeDefaults, ...scope };
+  const effectiveScope = {
+    ...scopeDefaults,
+    ...scope,
+    clientUserId: config.clientUserId,
+  };
 
   if (effectiveScope.groupId === DEFAULT_GROUP_ID) {
     effectiveScope.groupId = defaultGroupId();
