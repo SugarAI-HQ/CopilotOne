@@ -247,7 +247,6 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             options.nudgeAfterAttempts = 0;
           }
         } else {
-          debugger;
           console.error("[Audio] Error getting user response", error);
         }
         return "";
@@ -276,7 +275,7 @@ export default useSpeechToText;
 const noSpeech: i18Message = {
   mode: "manual",
   lang: {
-    en: "Kindly speak out your answer.",
+    en: "Waiting for your answer. Please speak now.",
     hi: "कृपया अपना उत्तर बोलें।",
   },
   voice: true,

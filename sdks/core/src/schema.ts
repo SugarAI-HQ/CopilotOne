@@ -175,7 +175,7 @@ export type NudgesType = z.infer<typeof nudgeSchema>;
 // export type CopilotThemePropsType = z.infer<typeof copilotThemeProps>;
 
 export const copilotRouterDefaults: CopilotRouterType = {
-  mode: "auto",
+  mode: "manual",
   threshold: 0.5,
 };
 
