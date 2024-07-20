@@ -7,3 +7,5 @@ yalc.lock
 videos/
 
 .DS_Store
+
+.env*

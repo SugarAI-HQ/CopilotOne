@@ -36,16 +36,11 @@ const App: React.FC = () => {
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
 
   let copilotConfig: CopilotConfigType = {
-    copilotId: "fd84fb4b-3536-4a1b-a3e3-0d2592d4f58d",
+    copilotId: process.env.NEXT_PUBLIC_COPILOT_ID,
     server: {
-      endpoint: "http://localhost:3000/api",
-      token: "pk-xgP50gfH7h6JoaYeKL2StsQUwY2GEIWBFHqW2PsoVj5qloBZ",
+      endpoint: process.env.NEXT_PUBLIC_COPILOT_ENDPOINT,
+      token: process.env.NEXT_PUBLIC_COPILOT_SECRET,
     },
-    // copilotId: "da82abb5-cf74-448b-b94d-7e17245cc5d9",
-    // server: {
-    //   endpoint: "https://play.sugarcaneai.dev/api",
-    //   token: "pk-m0j6E8CfMkedk0orAk0gXyALpOZULs3rSiYulaPFXd2rPlin",
-    // },
 
     ai: {
       defaultPromptTemplate: copilotPackage,
