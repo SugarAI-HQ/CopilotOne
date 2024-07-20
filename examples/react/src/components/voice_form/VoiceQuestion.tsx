@@ -197,7 +197,8 @@ const VoiceQuestion: React.FC<{
     language: LanguageCode
   ): Promise<EvaluationResponse> => {
     // const promptTemplate = "sugar/voice-forms/evaluate-response/0.0.1";
-    const promptTemplate = process.env.NEXT_PUBLIC_FORM_EVALUATION_PROMPT;
+    const promptTemplate = process.env
+      .NEXT_PUBLIC_FORM_EVALUATION_PROMPT as string;
     console.log(question);
     let options: string[] = [];
 

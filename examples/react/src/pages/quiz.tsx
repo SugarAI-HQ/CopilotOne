@@ -36,10 +36,10 @@ const App: React.FC = () => {
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
 
   let copilotConfig: CopilotConfigType = {
-    copilotId: process.env.NEXT_PUBLIC_COPILOT_ID,
+    copilotId: process.env.NEXT_PUBLIC_COPILOT_ID as string,
     server: {
-      endpoint: process.env.NEXT_PUBLIC_COPILOT_ENDPOINT,
-      token: process.env.NEXT_PUBLIC_COPILOT_SECRET,
+      endpoint: process.env.NEXT_PUBLIC_COPILOT_ENDPOINT as string,
+      token: process.env.NEXT_PUBLIC_COPILOT_SECRET as string,
     },
 
     ai: {
