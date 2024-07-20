@@ -128,7 +128,7 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "How long have you been experiencing the problem",
+        en: "How long have you been experiencing the problem?",
         hi: "आप इस समस्या का अनुभव कब से कर रहे हैं?",
       },
       voice: true,
@@ -147,8 +147,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "15-30 days",
-            hi: "15-30 दिन",
+            en: "15 to 30 days",
+            hi: "15 से 30 दिन",
           },
           mode: "manual",
           voice: true,
@@ -156,8 +156,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "1-6 months",
-            hi: "1-6 महीने",
+            en: "1 to 6 months",
+            hi: "1 से 6 महीने",
           },
           mode: "manual",
           voice: true,
@@ -165,8 +165,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "6-12 months",
-            hi: "6-12 महीने",
+            en: "6 to 12 months",
+            hi: "6 से 12 महीने",
           },
           mode: "manual",
           voice: true,

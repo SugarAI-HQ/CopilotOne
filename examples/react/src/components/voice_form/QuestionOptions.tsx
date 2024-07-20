@@ -27,6 +27,9 @@ export const QuestionOptions: React.FC<{
   selected = [],
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>(selected);
+  const [streamingStarted, setStreamingStarted] = useState<boolean[]>(
+    Array(question.question_params.options?.length).fill(false)
+  );
 
   useEffect(() => {
     handleInputChange(selected[0]);
@@ -43,6 +46,14 @@ export const QuestionOptions: React.FC<{
       );
     }
     handleOptionClick(value);
+  };
+
+  const handleStreamingStart = async (index: number) => {
+    setStreamingStarted((prev) => {
+      const newState = [...prev];
+      newState[index] = true;
+      return newState;
+    });
   };
 
   return (
@@ -68,17 +79,19 @@ export const QuestionOptions: React.FC<{
               }} // Flex container styles
             >
               {/* Conditionally render checkbox or radio button */}
-              <input
-                type={useRadio ? "radio" : "checkbox"}
-                id={`option-${question.id}-${index}`}
-                name={`option-${question.id}`}
-                value={extracti18Text(option, language)}
-                onChange={(e) => handleInputChange(e.currentTarget.value)}
-                checked={selectedOptions.includes(
-                  extracti18Text(option, language)
-                )}
-                style={{ marginRight: "10px" }} // Space between input and label
-              />
+              {streamingStarted[index] && (
+                <input
+                  type={useRadio ? "radio" : "checkbox"}
+                  id={`option-${question.id}-${index}`}
+                  name={`option-${question.id}`}
+                  value={extracti18Text(option, language)}
+                  onChange={(e) => handleInputChange(e.currentTarget.value)}
+                  checked={selectedOptions.includes(
+                    extracti18Text(option, language)
+                  )}
+                  style={{ marginRight: "10px" }} // Space between input and label
+                />
+              )}
               <label
                 htmlFor={`option-${question.id}-${index}`}
                 style={{ display: "flex", alignItems: "center" }}
@@ -87,6 +100,7 @@ export const QuestionOptions: React.FC<{
                   ref={optionRefs[index]}
                   message={option}
                   voiceConfig={voiceConfig}
+                  beforeSpeak={() => handleStreamingStart(index)}
                 />
               </label>
             </li>

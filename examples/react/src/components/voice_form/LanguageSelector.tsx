@@ -41,13 +41,13 @@ const LanguageSelector: React.FC<{}> = ({}) => {
   return (
     <div>
       <div
-        className="flex flex-inline relative inline-block ml-auto"
+        className="fixed bottom-0 left-0 w-full flex justify-center items-center p-3 bg-white border-t border-gray-200 shadow-md"
         data-tooltip-id="lang-tooltip"
       >
         <span className="p-3">
           Lang: ({language}), Voice: {voice?.name}({voice?.lang})
         </span>
-        <span className=""> </span>
+        <span className="mr-2"></span>
         <FaLanguage
           size={48}
           data-tip="Change Language and Voice Settings"

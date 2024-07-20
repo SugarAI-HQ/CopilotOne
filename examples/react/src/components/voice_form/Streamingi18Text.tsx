@@ -16,7 +16,6 @@ import {
   Streamingi18TextRef,
   i18Message,
 } from "@/schema/quizSchema";
-// import Button from "@mui/material/Button";
 
 const Streamingi18Text: React.ForwardRefRenderFunction<
   Streamingi18TextRef,
@@ -49,8 +48,6 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
         })
       );
     }
-    // await Promise.all(promises);
-    // return Promise.resolve();
     return Promise.all(promises);
   };
 
@@ -139,28 +136,11 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
         onBlur={() => elRef.current?.classList.remove("highlight")}
       >
         {displayedText}
-        {/* <span className={`blinking-cursor-${isStarted ? "off" : "on"}`}>|</span> */}
       </h1>
       <style jsx>{`
         .highlight {
           outline: none;
           border: 2px solid yellow;
-        }
-        .blinking-cursor-on {
-          display: inline;
-          animation: blink 1s step-end infinite;
-        }
-        .blinking-cursor-off {
-          display: none;
-        }
-        @keyframes blink {
-          from,
-          to {
-            color: transparent;
-          }
-          50% {
-            color: black;
-          }
         }
       `}</style>
     </div>

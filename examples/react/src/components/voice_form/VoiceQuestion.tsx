@@ -187,34 +187,39 @@ const VoiceQuestion: React.FC<{
         language
       );
 
-      // Show final evaluated answer
-      if (question.question_type == "multiple_choice") {
-        // setAnswer("15-30 days");
-        setAnswer(answer);
-        await speaki18kMessageAsync(
-          selectedAnswer,
-          language,
-          voice as SpeechSynthesisVoice
-        );
-        await speakMessageAsync(answer, language, voice);
-        await delay(3000);
-      } else {
-        await speaki18kMessageAsync(
-          selectedAnswer,
-          language,
-          voice as SpeechSynthesisVoice
-        );
-        await speakMessageAsync(answer, language, voice);
-        await delay(3000);
-      }
-
       fq = followupQuestion;
       questionAnswer = answer;
       attempts = attempts + 1;
-    }
 
-    // Submit if fine
-    onAnswered(questionAnswer);
+      // validateAnswer
+      await validateAnswer(question, answer);
+
+      // Submit if fine
+      onAnswered(questionAnswer);
+    }
+  };
+
+  const validateAnswer = async (question: Question, answer: string) => {
+    // Show final evaluated answer
+    if (question.question_type == "multiple_choice") {
+      // setAnswer("15-30 days");
+      setAnswer(answer);
+      await speaki18kMessageAsync(
+        selectedAnswer,
+        language,
+        voice as SpeechSynthesisVoice
+      );
+      await speakMessageAsync(answer, language, voice);
+      await delay(3000);
+    } else {
+      await speaki18kMessageAsync(
+        selectedAnswer,
+        language,
+        voice as SpeechSynthesisVoice
+      );
+      await speakMessageAsync(answer, language, voice);
+      await delay(3000);
+    }
   };
 
   const startRecognition = () => {
@@ -535,7 +540,7 @@ export const renderMCQ = async (
 const selectedAnswer: i18Message = {
   mode: "manual",
   lang: {
-    en: "Selected Anwer is",
+    en: "Selected Answer is",
     hi: "चयनित उत्तर है",
   },
   voice: true,
