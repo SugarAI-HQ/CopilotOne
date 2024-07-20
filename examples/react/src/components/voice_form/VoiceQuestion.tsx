@@ -7,7 +7,11 @@ import {
   VoiceConfig,
   i18Message,
 } from "@/schema/quizSchema";
-import { extracti18Text, speakMessageAsync } from "@/helpers/voice";
+import {
+  extracti18Text,
+  speakMessageAsync,
+  speaki18kMessageAsync,
+} from "@/helpers/voice";
 import { useLanguage } from "./LanguageContext";
 import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophoneSlash } from "react-icons/fa";
@@ -36,6 +40,8 @@ const VoiceQuestion: React.FC<{
   const isWorkflowStartedRef = useRef(false);
   const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const [answer, setAnswer] = useState<string | null>(null);
 
   // Create refs for the question and options
   const questionRef: React.RefObject<Streamingi18TextRef> =
@@ -165,16 +171,41 @@ const VoiceQuestion: React.FC<{
         await speakMessageAsync(fq, language, voice as SpeechSynthesisVoice);
       }
 
+      // Get user response
       userResponse = await getUserResponse({ nudgeAfterAttempts: 1 });
+
+      // Fill answer in text field in case of text fields
       if (inputRef && inputRef.current) {
         inputRef.current.value = userResponse;
       }
 
+      // Evaluation
       const { answer, followupQuestion } = await evaluate(
         question,
         userResponse,
         language
       );
+
+      // Show final evaluated answer
+      if (question.question_type == "multiple_choice") {
+        // setAnswer("15-30 days");
+        setAnswer(answer);
+        await speaki18kMessageAsync(
+          selectedAnswer,
+          language,
+          voice as SpeechSynthesisVoice
+        );
+        await speakMessageAsync(answer, language, voice);
+        await delay(3000);
+      } else {
+        await speaki18kMessageAsync(
+          selectedAnswer,
+          language,
+          voice as SpeechSynthesisVoice
+        );
+        await speakMessageAsync(answer, language, voice);
+        await delay(3000);
+      }
 
       fq = followupQuestion;
       questionAnswer = answer;
@@ -374,27 +405,15 @@ const VoiceQuestion: React.FC<{
       )}
       {/* Multiple choice questions only. Render the options. */}
       {question.question_type == "multiple_choice" && (
-        <ul>
-          {question.question_params.options?.map(
-            (option: i18Message, index: number) => (
-              <li
-                key={index}
-                // className={`p-2 ${
-                //   selectedOption === option?.lang[language]
-                //     ? "bg-yellow-300"
-                //     : ""
-                // }`}
-                onClick={(e) => handleOptionClick(e.currentTarget.innerText)}
-              >
-                <Streamingi18Text
-                  ref={optionRefs[index]}
-                  message={option}
-                  voiceConfig={voiceConfig}
-                />
-              </li>
-            )
-          )}
-        </ul>
+        <QuestionOptions
+          question={question}
+          language={language}
+          voiceConfig={voiceConfig}
+          optionRefs={optionRefs}
+          handleOptionClick={handleOptionClick}
+          useRadio={true}
+          selected={answer ? [answer] : []}
+        />
       )}
       <div className="space-y-4 p-4 m-4">
         {isListening && (
@@ -511,3 +530,106 @@ export const renderMCQ = async (
 //     await speakMessageAsync(option, language, voice);
 //   }
 // };
+
+export const QuestionOptions: React.FC<{
+  question: Question;
+  language: LanguageCode;
+  voiceConfig: VoiceConfig;
+  optionRefs: React.RefObject<Streamingi18TextRef>[];
+  handleOptionClick: (value: string) => void;
+  useRadio: boolean; // Flag to switch between checkbox and radio button
+  selected: string[];
+}> = ({
+  question,
+  language,
+  voiceConfig,
+  optionRefs,
+  handleOptionClick,
+  useRadio,
+  selected = [],
+}) => {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(selected);
+
+  useEffect(() => {
+    handleInputChange(selected[0]);
+  }, [selected]);
+
+  const handleInputChange = (value: string) => {
+    if (useRadio) {
+      setSelectedOptions([value]);
+    } else {
+      setSelectedOptions((prev) =>
+        prev.includes(value)
+          ? prev.filter((option) => option !== value)
+          : [...prev, value]
+      );
+    }
+    handleOptionClick(value);
+  };
+
+  return (
+    <>
+      <ul>
+        {question.question_params.options?.map(
+          (option: i18Message, index: number) => (
+            <li
+              key={index}
+              onClick={(e) =>
+                handleInputChange(extracti18Text(option, language))
+              }
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "10px",
+                cursor: "pointer", // Add cursor pointer to indicate clickability
+                backgroundColor: selectedOptions.includes(
+                  extracti18Text(option, language)
+                )
+                  ? "#ffff99"
+                  : "transparent", // Highlight selected options
+              }} // Flex container styles
+            >
+              {/* Conditionally render checkbox or radio button */}
+              <input
+                type={useRadio ? "radio" : "checkbox"}
+                id={`option-${question.id}-${index}`}
+                name={`option-${question.id}`}
+                value={extracti18Text(option, language)}
+                onChange={(e) => handleInputChange(e.currentTarget.value)}
+                checked={selectedOptions.includes(
+                  extracti18Text(option, language)
+                )}
+                style={{ marginRight: "10px" }} // Space between input and label
+              />
+              <label
+                htmlFor={`option-${question.id}-${index}`}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <Streamingi18Text
+                  ref={optionRefs[index]}
+                  message={option}
+                  voiceConfig={voiceConfig}
+                />
+              </label>
+            </li>
+          )
+        )}
+      </ul>
+      {/* <p className="text-md text-gray-600">
+        Selected Answer: {JSON.stringify(selected)}
+        <br />
+        Selected Options: {JSON.stringify(selectedOptions)}
+      </p> */}
+    </>
+  );
+};
+
+const selectedAnswer: i18Message = {
+  mode: "manual",
+  lang: {
+    en: "Selected Anwer is",
+    hi: "चयनित उत्तर है",
+  },
+  voice: true,
+  output: "none",
+};

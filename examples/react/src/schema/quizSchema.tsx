@@ -76,6 +76,7 @@ export const i18MessageSchema = z.object({
 export type i18Message = z.infer<typeof i18MessageSchema>;
 
 export const QuestionSchema = z.object({
+  id: z.string(),
   question_type: z.enum(["multiple_choice", "single_choice", "text", "number"]),
   question_text: i18MessageSchema,
   question_params: z

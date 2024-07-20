@@ -23,6 +23,7 @@ export const postSubmissionMessage: i18Message = {
 
 export const questions: Question[] = [
   {
+    id: "1",
     question_type: "text",
     question_text: {
       mode: "manual",
@@ -40,6 +41,7 @@ export const questions: Question[] = [
     validation: {},
   },
   {
+    id: "2",
     question_type: "text",
     question_text: {
       mode: "manual",
@@ -58,6 +60,7 @@ export const questions: Question[] = [
   },
 
   {
+    id: "3",
     question_type: "multiple_choice",
     question_text: {
       mode: "manual",
@@ -120,6 +123,7 @@ export const questions: Question[] = [
     validation: {},
   },
   {
+    id: "4",
     question_type: "multiple_choice",
     question_text: {
       mode: "manual",
@@ -182,6 +186,7 @@ export const questions: Question[] = [
     validation: {},
   },
   {
+    id: "5",
     question_type: "text",
     question_text: {
       mode: "manual",
@@ -198,6 +203,7 @@ export const questions: Question[] = [
     validation: {},
   },
   {
+    id: "6",
     question_type: "text",
     question_text: {
       mode: "manual",
@@ -214,6 +220,7 @@ export const questions: Question[] = [
     validation: {},
   },
   {
+    id: "7",
     question_type: "text",
     question_text: {
       mode: "manual",
