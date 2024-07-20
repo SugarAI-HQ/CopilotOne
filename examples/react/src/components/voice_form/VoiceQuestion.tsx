@@ -209,7 +209,7 @@ const VoiceQuestion: React.FC<{
         language,
         voice as SpeechSynthesisVoice
       );
-      await speakMessageAsync(answer, language, voice);
+      await speakMessageAsync(answer, language, voice as SpeechSynthesisVoice);
       await delay(3000);
     } else {
       await speaki18kMessageAsync(
@@ -217,7 +217,7 @@ const VoiceQuestion: React.FC<{
         language,
         voice as SpeechSynthesisVoice
       );
-      await speakMessageAsync(answer, language, voice);
+      await speakMessageAsync(answer, language, voice as SpeechSynthesisVoice);
       await delay(3000);
     }
   };
