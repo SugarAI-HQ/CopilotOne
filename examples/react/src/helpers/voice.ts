@@ -1,4 +1,5 @@
 import { useLanguage } from "@/components/voice_form/LanguageContext";
+import { LanguageCode, i18Message } from "@/schema/quizSchema";
 
 let synth: any = null;
 let recognition: any = null;
@@ -32,7 +33,7 @@ export const speakMessage = (
 
 export const speakMessageAsync = async (
   message: string,
-  language: string,
+  language: LanguageCode,
   voice: SpeechSynthesisVoice
 ): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -40,7 +41,22 @@ export const speakMessageAsync = async (
   });
 };
 
+export const speaki18kMessageAsync = async (
+  message: i18Message,
+  language: LanguageCode,
+  voice: SpeechSynthesisVoice
+): Promise<void> => {
+  return speakMessageAsync(extracti18Text(message, language), language, voice);
+};
+
 export const cancelMessage = () => {
   if (!synth) return;
   synth.cancel();
+};
+
+export const extracti18Text = (message: i18Message, language: LanguageCode) => {
+  const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
+  let text = "not found";
+  text = message?.lang[language] ?? (message?.lang[userLang] as string);
+  return text;
 };

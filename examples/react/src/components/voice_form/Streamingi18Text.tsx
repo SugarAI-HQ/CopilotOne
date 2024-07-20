@@ -4,7 +4,11 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { cancelMessage, speakMessageAsync } from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
+import {
+  cancelMessage,
+  extracti18Text,
+  speakMessageAsync,
+} from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
 import { useLanguage } from "./LanguageContext";
 import {
   LanguageCode,
@@ -164,10 +168,3 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
 };
 
 export default forwardRef(Streamingi18Text);
-
-export const extracti18Text = (message: i18Message, language: LanguageCode) => {
-  const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
-  let text = "not found";
-  text = message?.lang[language] ?? (message?.lang[userLang] as string);
-  return text;
-};

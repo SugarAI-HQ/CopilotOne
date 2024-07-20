@@ -1,7 +1,8 @@
 import { on } from "events";
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "./LanguageContext";
-import { speakMessageAsync } from "@/helpers/voice";
+import { speakMessageAsync, speaki18kMessageAsync } from "@/helpers/voice";
+import { i18Message } from "@/schema/quizSchema";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
@@ -57,16 +58,28 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     };
   }, []);
 
-  const startListening = (length: number = -1) => {
-    if (recognitionRef.current && !isListening) {
-      recognitionRef.current.start();
-      setIsListening(true);
-      setTranscriptLength(length);
-    }
-  };
+  // const startListening = (length: number = -1) => {
+  //   if (recognitionRef.current && !isListening) {
+  //     recognitionRef.current.start();
+  //     setIsListening(true);
+  //     setTranscriptLength(length);
+  //   }
+  // };
 
   const startListeningAsync = (length: number = -1): Promise<string> => {
     return new Promise((resolve, reject) => {
+      // Stop existing recognition if it is already running
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+
+      // Initialise a new recognition object
+      const recognition = new window.webkitSpeechRecognition();
+      recognitionRef.current = recognition;
+      recognition.interimResults = options.interimResults || true;
+      recognition.lang = language;
+      recognition.continuous = options.continuous || false;
+
       if (recognitionRef.current && !isListening) {
         // recognitionRef.current.onresult = (event) => {
         //   const transcript = Array.from(event.results)
@@ -206,17 +219,66 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       });
   };
 
+  interface GetUserReponseProps {
+    nudgeAfterAttempts?: number;
+  }
+
+  const getUserResponse = async (
+    options: GetUserReponseProps = { nudgeAfterAttempts: 2 }
+  ): Promise<string> => {
+    let userResponse = "";
+    // options.nudgeAfterAttempts = options.nudgeAfterAttempts ?? 2;
+
+    // Get user response
+    while (userResponse === "" && (options?.nudgeAfterAttempts ?? 0) < 2) {
+      userResponse = await startListeningAsync().catch(async (error) => {
+        console.error(error);
+        if (error == "no-speech") {
+          // ignore it
+          options.nudgeAfterAttempts = (options.nudgeAfterAttempts ?? 0) + 1;
+
+          // nudge user to speak
+          if (options.nudgeAfterAttempts == 2) {
+            await speaki18kMessageAsync(
+              noSpeech,
+              language,
+              voice as SpeechSynthesisVoice
+            );
+            options.nudgeAfterAttempts = 0;
+          }
+        } else {
+          debugger;
+          console.error("[Audio] Error getting user response", error);
+        }
+        return "";
+      });
+    }
+
+    return userResponse;
+  };
+
   return {
     isListening,
     isMicEnabled,
     transcript,
     finalTranscript,
-    startListening,
+    // startListening,
     startListeningAsync,
     stopListening,
     requestMicPermission,
     checkIfAudioPermissionGranted,
+    getUserResponse,
   };
 };
 
 export default useSpeechToText;
+
+const noSpeech: i18Message = {
+  mode: "manual",
+  lang: {
+    en: "Kindly speak out your answer.",
+    hi: "कृपया अपना उत्तर बोलें।",
+  },
+  voice: true,
+  output: "none",
+};

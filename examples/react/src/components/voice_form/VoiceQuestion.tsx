@@ -6,14 +6,17 @@ import {
   VoiceConfig,
   i18Message,
 } from "@/schema/quizSchema";
-import { speakMessage, speakMessageAsync } from "@/helpers/voice";
+import { extracti18Text, speakMessageAsync } from "@/helpers/voice";
 import { useLanguage } from "./LanguageContext";
-import Streamingi18Text, { extracti18Text } from "./Streamingi18Text";
 import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { Mic, Send, SendHorizonal } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useCopilot, loadCurrentConfig } from "@sugar-ai/core";
+import Streamingi18Text from "./Streamingi18Text";
+
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 const VoiceQuestion: React.FC<{
   question: Question;
@@ -25,6 +28,7 @@ const VoiceQuestion: React.FC<{
   const { language, voice } = useLanguage();
   const isWorkflowStartedRef = useRef(false);
   const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Create refs for the question and options
   const questionRef: React.RefObject<Streamingi18TextRef> =
@@ -49,9 +53,8 @@ const VoiceQuestion: React.FC<{
     isListening,
     transcript,
     finalTranscript,
-    startListening,
-    startListeningAsync,
     stopListening,
+    getUserResponse,
   } = useSpeechToText({
     // onListeningStop: onListeningStop,
     continuous: false,
@@ -97,13 +100,37 @@ const VoiceQuestion: React.FC<{
     }
   };
 
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     stopVoiceInput();
-  //   }
-  // }, [isLoading]);
+  useEffect(() => {
+    // Ensure the only the latest values of language and voice are used.
 
-  const executeWorkflow = async (language: LanguageCode) => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      console.log(`${language} ${voice?.name}`);
+      start(question, language, voice as SpeechSynthesisVoice);
+    }, 1000); // Adjust the delay as needed
+
+    // Clean up the timeout if the component unmounts or dependencies change
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [question, language, voice]);
+
+  const start = async (
+    question: Question,
+    language: LanguageCode,
+    voice: SpeechSynthesisVoice
+  ) => {
+    if (!question || !language || !voice) {
+      return;
+    }
+
+    await delay(1000);
+
     if (isWorkflowStartedRef.current) {
       return;
     }
@@ -124,14 +151,21 @@ const VoiceQuestion: React.FC<{
     let attempts = 0;
     let questionAnswer = "";
 
+    // Loop until we get a valid answer or number of attempts exceeded
     while (fq !== null && attempts < 2) {
-      userResponse = await startListeningAsync();
+      if (fq !== "") {
+        // Ask the followup question to the user
+        await speakMessageAsync(fq, language, voice as SpeechSynthesisVoice);
+      }
+
+      userResponse = await getUserResponse({ nudgeAfterAttempts: 1 });
 
       const { answer, followupQuestion } = await evaluate(
         question,
         userResponse,
         language
       );
+
       fq = followupQuestion;
       questionAnswer = answer;
       attempts = attempts + 1;
@@ -140,14 +174,6 @@ const VoiceQuestion: React.FC<{
     // Submit if fine
     onAnswered(questionAnswer);
   };
-
-  useEffect(() => {
-    if (question && language && voice) {
-      setTimeout(() => {
-        executeWorkflow(language);
-      }, 1000);
-    }
-  }, [question, language, voice]);
 
   const startRecognition = () => {
     // if (recognitionRef.current) {
@@ -218,8 +244,6 @@ const VoiceQuestion: React.FC<{
       console.log(
         `answer: ${answer}, ${isQuestionAnswered}, ${followupQuestion}`
       );
-
-      debugger;
 
       if (isQuestionAnswered === "fully") {
         // return resolve({ answer, followupQuestion: null });
