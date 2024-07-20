@@ -105,3 +105,10 @@ export const StreamingTextRefSchema = z.object({
 
 // Define the TypeScript type based on the Zod schema
 export type Streamingi18TextRef = z.infer<typeof StreamingTextRefSchema>;
+
+export const evaluationResponse = z.object({
+  answer: z.string(),
+  followupQuestion: z.string().nullable(),
+});
+
+export type EvaluationResponse = z.infer<typeof evaluationResponse>;

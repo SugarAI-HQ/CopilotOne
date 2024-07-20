@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
+  EvaluationResponse,
   LanguageCode,
   Question,
   Streamingi18TextRef,
@@ -165,6 +166,9 @@ const VoiceQuestion: React.FC<{
       }
 
       userResponse = await getUserResponse({ nudgeAfterAttempts: 1 });
+      if (inputRef && inputRef.current) {
+        inputRef.current.value = userResponse;
+      }
 
       const { answer, followupQuestion } = await evaluate(
         question,
@@ -191,7 +195,7 @@ const VoiceQuestion: React.FC<{
     question: Question,
     userResponse: string,
     language: LanguageCode
-  ): Promise<{ answer: string; followupQuestion: string | null }> => {
+  ): Promise<EvaluationResponse> => {
     // const promptTemplate = "sugar/voice-forms/evaluate-response";
     const promptTemplate = "signup.ankur/voice-forms/evaluate-question/0.0.1";
     console.log(question);
@@ -252,18 +256,13 @@ const VoiceQuestion: React.FC<{
       );
 
       if (isQuestionAnswered === "fully") {
-        // return resolve({ answer, followupQuestion: null });
         return { answer, followupQuestion: null };
       }
 
       if (isQuestionAnswered !== "fully" && followupQuestion) {
-        // return resolve({ answer, followupQuestion });
         return { answer, followupQuestion };
       }
 
-      // return reject(
-      //   "answer is not clear, and followup question is not provided"
-      // );
       throw new Error(
         "answer is not clear, and followup question is not provided"
       );
@@ -271,6 +270,7 @@ const VoiceQuestion: React.FC<{
 
     registerAction("evaluateMcqResponse", action, evaluateMcqResponse);
 
+    // @ts-ignore
     const ttaResponse: TextToActionResponse = await textToAction(
       promptTemplate,
       userResponse,
@@ -282,17 +282,13 @@ const VoiceQuestion: React.FC<{
       false,
       0
     );
-    // .catch((err: any) => {
-    //   console.log(err);
-    //   return {
-    //     output: "error",
-    //     actionOutput: null,
-    //   };
-    // });
 
     unregisterAction("evaluateMcqResponse");
+    // if (!ttaResponse || ttaResponse.actionOutput) {
+    //   throw new Error("Failed to get a valid response from textToAction");
+    // }
 
-    return ttaResponse?.actionOutput;
+    return ttaResponse.actionOutput;
   };
 
   const evaluateResponse = (userResponse: string) => {
@@ -323,6 +319,7 @@ const VoiceQuestion: React.FC<{
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
+      debugger;
       // if (isLoading) return;
 
       e.preventDefault();
@@ -343,15 +340,15 @@ const VoiceQuestion: React.FC<{
         <div className="flex flex-col items-center">
           <TextareaAutosize
             autoComplete="off"
-            value={
-              isListening
-                ? transcript.length
-                  ? transcript
-                  : ""
-                : finalTranscript
-            }
+            // value={
+            //   isListening
+            //     ? transcript.length
+            //       ? transcript
+            //       : ""
+            //     : finalTranscript
+            // }
             ref={inputRef}
-            onKeyDown={handleKeyPress}
+            // onKeyDown={handleKeyPress}
             // onChange={(e) => setInput(e.target.value)}
             name="message"
             disabled={!isQuestionSpoken}

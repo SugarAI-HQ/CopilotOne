@@ -303,7 +303,7 @@ export const copilotConfigSchema = z.object({
 
   style: copilotSytleSchema.default(copilotStyleDefaults),
 
-  clientUserId: z.string().nullable(),
+  clientUserId: z.string().nullable().optional(),
   client: z
     .object({
       userId: z.string().or(z.null()),
