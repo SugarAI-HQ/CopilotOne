@@ -6,13 +6,67 @@ const Home = () => {
     <div className="bg-white py-18 sm:py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
-          <h2 className="text-base font-semibold leading-7 text-grey-600">
-            SugarAI
-          </h2>
+          <h1 className="text-4xl font-semibold leading-7 text-grey-600 pb-4">
+            Sugar AI Demos
+          </h1>
+        </div>
+      </div>
+
+      {/* Multilingual  Voice Forms  */}
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl lg:text-center">
+          <p className="mt-2 text-3xl font-bold tracking-tight text-indigo-600 sm:text-4xl">
+            Multilingual Voice Forms
+          </p>
+        </div>
+        <div className="mx-auto mt-16 max-w-2xl sm:mt-12 lg:mt-18 lg:max-w-4xl">
+          <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
+            <a
+              className="max-w-sm rounded overflow-hidden shadow-lg"
+              href="/voice_forms/leadgen"
+            >
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">
+                  Leadgen Form over Voice in{" "}
+                  <span className="text-indigo-600">en</span>
+                  {", "}
+                  <span className="text-indigo-600">hi</span>
+                </div>
+                <p className="text-gray-700 text-base">
+                  Ask questions on voice with 10x simplified experience in
+                  multiple languages.
+                </p>
+              </div>
+            </a>
+            <a
+              className="max-w-sm rounded overflow-hidden shadow-lg"
+              href="/voice_forms/leadgen-embed"
+            >
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">
+                  Voice Ad on a page in{" "}
+                  <span className="text-indigo-600">en</span>
+                  {", "}
+                  <span className="text-indigo-600">hi</span>
+                </div>
+                <p className="text-gray-700 text-base">
+                  Initiate a conversation with the user through a voice nudge
+                  and determine if they qualify as a lead.
+                </p>
+              </div>
+            </a>
+          </dl>
+        </div>
+      </div>
+
+      {/* Voice assistants  */}
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl lg:text-center">
           <p className="mt-2 text-3xl font-bold tracking-tight text-indigo-600 sm:text-4xl">
             Voice Assistant Examples
           </p>
         </div>
+
         <div className="mx-auto mt-16 max-w-2xl sm:mt-12 lg:mt-18 lg:max-w-4xl">
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
             <a
@@ -70,6 +124,7 @@ const Home = () => {
             </a>
           </dl>
         </div>
+        {/* Text assistants  */}
         <div className="mx-auto max-w-2xl lg:text-center mt-10">
           <p className="mt-2 text-3xl font-bold tracking-tight text-indigo-600 sm:text-4xl">
             Text Assistant Examples

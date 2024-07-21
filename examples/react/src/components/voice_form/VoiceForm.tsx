@@ -26,7 +26,7 @@ const VoiceForm: React.FC<{
   questions,
   voiceConfig,
 }) => {
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(0);
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {
