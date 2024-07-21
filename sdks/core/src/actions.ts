@@ -234,8 +234,8 @@ export async function textToAction(
   });
 
   // const messages = [msg];
-  console.log("actions", JSON.stringify(actions));
-  console.log("actionCallbacks", JSON.stringify(actionCallbacks));
+  // console.log("actions", JSON.stringify(actions));
+  // console.log("actionCallbacks", JSON.stringify(actionCallbacks));
 
   const effectiveScope = {
     ...scopeDefaults,

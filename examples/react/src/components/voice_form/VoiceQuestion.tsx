@@ -18,14 +18,15 @@ import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { AudioLines, Hourglass, Loader, Mic } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import Streamingi18Text from "./Streamingi18Text";
+import { QuestionOptions } from "./QuestionOptions";
+
 import {
   useCopilot,
   ActionRegistrationType,
   EmbeddingScopeWithUserType,
   TextToActionResponse,
 } from "@sugar-ai/core";
-import Streamingi18Text from "./Streamingi18Text";
-import { QuestionOptions } from "./QuestionOptions";
 
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
