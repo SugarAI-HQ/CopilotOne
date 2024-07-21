@@ -13,7 +13,7 @@ import { speakMessage } from "@/helpers/voice";
 import StreamingText, { StreamingTextRef } from "./StreamingText";
 import Streamingi18Text from "./Streamingi18Text";
 
-const Quiz: React.FC<{
+const VoiceForm: React.FC<{
   showStartButton: boolean;
   welcomeMessage: i18Message;
   postSubmissionMessage: i18Message;
@@ -99,55 +99,55 @@ const Quiz: React.FC<{
   );
 };
 
-export default Quiz;
+export default VoiceForm;
 
-const ParentComponentx = () => {
-  const streamingTextRef = useRef<StreamingTextRef>(null);
+// const ParentComponentx = () => {
+//   const streamingTextRef = useRef<StreamingTextRef>(null);
 
-  const triggerStreaming = () => {
-    if (streamingTextRef.current) {
-      streamingTextRef.current.startStreaming();
-    }
-  };
+//   const triggerStreaming = () => {
+//     if (streamingTextRef.current) {
+//       streamingTextRef.current.startStreaming();
+//     }
+//   };
 
-  return (
-    <div>
-      <StreamingText
-        ref={streamingTextRef}
-        message="Hello, welcome to the streaming text and speech synthesis example."
-      />
-      <button onClick={triggerStreaming}>Start button</button>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <StreamingText
+//         ref={streamingTextRef}
+//         message="Hello, welcome to the streaming text and speech synthesis example."
+//       />
+//       <button onClick={triggerStreaming}>Start button</button>
+//     </div>
+//   );
+// };
 
-const ParentComponent = () => {
-  const streamingTextRef = useRef<Streamingi18TextRef>(null);
+// const ParentComponent = () => {
+//   const streamingTextRef = useRef<Streamingi18TextRef>(null);
 
-  const triggerStreaming = () => {
-    if (streamingTextRef.current) {
-      streamingTextRef.current.startStreaming();
-    }
-  };
+//   const triggerStreaming = () => {
+//     if (streamingTextRef.current) {
+//       streamingTextRef.current.startStreaming();
+//     }
+//   };
 
-  const msg: i18Message = {
-    mode: "manual",
-    lang: {
-      en: "Hola, welcome to the streaming text and speech synthesis example.",
-      hi: "नमस्ते, स्वागत है कि स्ट्रीज और संवाद सीखें।",
-    },
-    voice: true,
-    output: "none",
-  };
+//   const msg: i18Message = {
+//     mode: "manual",
+//     lang: {
+//       en: "Hola, welcome to the streaming text and speech synthesis example.",
+//       hi: "नमस्ते, स्वागत है कि स्ट्रीज और संवाद सीखें।",
+//     },
+//     voice: true,
+//     output: "none",
+//   };
 
-  return (
-    <div>
-      <Streamingi18Text
-        ref={streamingTextRef}
-        message={msg}
-        voiceConfig={VoiceConfigDefault}
-      />
-      <button onClick={triggerStreaming}>Start button</button>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <Streamingi18Text
+//         ref={streamingTextRef}
+//         message={msg}
+//         voiceConfig={VoiceConfigDefault}
+//       />
+//       <button onClick={triggerStreaming}>Start button</button>
+//     </div>
+//   );
+// };

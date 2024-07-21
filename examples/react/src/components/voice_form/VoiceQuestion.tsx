@@ -15,11 +15,10 @@ import {
 import { useLanguage } from "./LanguageContext";
 import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophoneSlash } from "react-icons/fa";
-import { Mic, Send, SendHorizonal } from "lucide-react";
+import { Hourglass, Loader, Mic } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import {
   useCopilot,
-  loadCurrentConfig,
   ActionRegistrationType,
   EmbeddingScopeWithUserType,
   TextToActionResponse,
@@ -54,6 +53,8 @@ const VoiceQuestion: React.FC<{
 
   // Text Question field
   const [input, setInput] = useState<string>("");
+  const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
+  const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
   const onListeningStop = (answer: string) => {
@@ -124,7 +125,7 @@ const VoiceQuestion: React.FC<{
     debounceTimeout.current = setTimeout(() => {
       console.log(`${language} ${voice?.name}`);
       start(question, language, voice as SpeechSynthesisVoice);
-    }, 1000); // Adjust the delay as needed
+    }, 300); // Adjust the delay as needed
 
     // Clean up the timeout if the component unmounts or dependencies change
     return () => {
@@ -218,7 +219,11 @@ const VoiceQuestion: React.FC<{
         voice as SpeechSynthesisVoice
       );
       await speakMessageAsync(answer, language, voice as SpeechSynthesisVoice);
+
+      // Wait
+      setIsWaiting(true);
       await delay(3000);
+      setIsWaiting(false);
     }
   };
 
@@ -233,7 +238,8 @@ const VoiceQuestion: React.FC<{
     userResponse: string,
     language: LanguageCode
   ): Promise<EvaluationResponse> => {
-    // const promptTemplate = "sugar/voice-forms/evaluate-response/0.0.1";
+    setIsEvaluating(true);
+
     const promptTemplate = process.env
       .NEXT_PUBLIC_FORM_EVALUATION_PROMPT as string;
     console.log(question);
@@ -320,8 +326,10 @@ const VoiceQuestion: React.FC<{
       false,
       0
     );
-
     unregisterAction("evaluateMcqResponse");
+
+    setIsEvaluating(false);
+    // e
     // if (!ttaResponse || ttaResponse.actionOutput) {
     //   throw new Error("Failed to get a valid response from textToAction");
     // }
@@ -440,12 +448,24 @@ const VoiceQuestion: React.FC<{
           </button> */}
 
             <button
-              className={`mic-button ${isListening ? "listening" : "disabled"}`}
+              className={`mic-button  ${
+                isListening
+                  ? "listening"
+                  : isEvaluating
+                  ? "evaluating"
+                  : isWaiting
+                  ? "waiting"
+                  : "disabled"
+              }`}
               onClick={handleListenClick}
             >
               {isListening ? (
                 // <FaMicrophone className="mic-icon" />
-                <Mic className="w-5 h-5 " />
+                <Mic />
+              ) : isEvaluating ? (
+                <Loader />
+              ) : isWaiting ? (
+                <Hourglass />
               ) : (
                 <FaMicrophoneSlash className="mic-icon" />
               )}
@@ -474,6 +494,24 @@ const VoiceQuestion: React.FC<{
               }
               .mic-button.listening {
                 animation: pulse 1s infinite;
+              }
+              .mic-button.evaluating,
+              .mic-button.waiting {
+                border: 5px solid #f3f3f3;
+                -webkit-animation: spin 1s linear infinite;
+                animation: spin 2s linear infinite;
+                border-top: 5px solid #3498db;
+                border-radius: 50%;
+                width: 58px;
+                height: 58px;
+              }
+              @keyframes spin {
+                0% {
+                  transform: rotate(0deg);
+                }
+                100% {
+                  transform: rotate(360deg);
+                }
               }
               .mic-button.disabled {
                 background-color: #6c757d;

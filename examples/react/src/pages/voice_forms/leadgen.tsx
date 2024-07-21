@@ -1,8 +1,7 @@
 import React from "react";
 import { LanguageProvider } from "@/components/voice_form/LanguageContext";
 import LanguageSelector from "@/components/voice_form/LanguageSelector";
-import Onboarding from "@/components/voice_form/Onboarding";
-import Quiz from "@/components/voice_form/Quiz";
+import VoiceForm from "@/components/voice_form/VoiceForm";
 import { VoiceConfigDefault } from "@/schema/quizSchema";
 import {
   postSubmissionMessage,
@@ -71,7 +70,7 @@ const App: React.FC = () => {
       <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
         <div className="container mx-auto p-4">
           <LanguageSelector />
-          <Quiz
+          <VoiceForm
             showStartButton={true}
             welcomeMessage={welcomeMessage}
             postSubmissionMessage={postSubmissionMessage}
