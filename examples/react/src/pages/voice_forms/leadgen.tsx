@@ -2,7 +2,6 @@ import React from "react";
 import { LanguageProvider } from "@/components/voice_form/LanguageContext";
 import LanguageSelector from "@/components/voice_form/LanguageSelector";
 import VoiceForm from "@/components/voice_form/VoiceForm";
-import { VoiceConfigDefault } from "@/schema/voiceFormSchema";
 import {
   postSubmissionMessage,
   questions,
@@ -13,6 +12,7 @@ import {
   type CopilotConfigType,
   CopilotProvider,
 } from "@sugar-ai/core";
+import { VoiceConfigDefault } from "@/schema/voiceFormSchema";
 // import { VoiceAssistant, TextAssistant } from "@sugar-ai/copilot-one-js";
 
 // 1. Onobarding Steps
