@@ -3,7 +3,7 @@ import { useLanguage } from "./LanguageContext";
 import Modal from "../Modal";
 import { FaLanguage } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { LanguageCode } from "@/schema/quizSchema";
+import { LanguageCode } from "@/schema/voiceFormSchema";
 
 const LanguageSelector: React.FC<{}> = ({}) => {
   const { language, setLanguage, voice, setVoice, voices } = useLanguage();

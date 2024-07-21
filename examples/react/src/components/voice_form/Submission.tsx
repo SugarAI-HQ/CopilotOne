@@ -2,7 +2,7 @@ import {
   Streamingi18TextRef,
   VoiceConfig,
   i18Message,
-} from "@/schema/quizSchema";
+} from "@/schema/voiceFormSchema";
 import React, { useEffect, useRef } from "react";
 import Streamingi18Text from "./Streamingi18Text";
 import MessageWorkflow from "./MessageWorkflow";

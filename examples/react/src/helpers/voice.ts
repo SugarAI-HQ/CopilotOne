@@ -1,5 +1,5 @@
 import { useLanguage } from "@/components/voice_form/LanguageContext";
-import { LanguageCode, i18Message } from "@/schema/quizSchema";
+import { LanguageCode, i18Message } from "@/schema/voiceFormSchema";
 
 let synth: any = null;
 let recognition: any = null;

@@ -1,4 +1,4 @@
-import { LanguageCode } from "@/schema/quizSchema";
+import { LanguageCode } from "@/schema/voiceFormSchema";
 import React, {
   createContext,
   useContext,

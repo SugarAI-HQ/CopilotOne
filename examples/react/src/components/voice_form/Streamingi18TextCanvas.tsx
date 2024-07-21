@@ -11,7 +11,7 @@
 //   LanguageCode,
 //   Streamingi18TextProps,
 //   Streamingi18TextRef,
-// } from "@/schema/quizSchema";
+// } from "@/schema/voiceFormSchema";
 
 // const Streamingi18Text: React.ForwardRefRenderFunction<
 //   Streamingi18TextRef,

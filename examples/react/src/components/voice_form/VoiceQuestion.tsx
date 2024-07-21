@@ -5,8 +5,9 @@ import {
   Question,
   Streamingi18TextRef,
   VoiceConfig,
+  VoiceFormStates,
   i18Message,
-} from "@/schema/quizSchema";
+} from "@/schema/voiceFormSchema";
 import {
   extracti18Text,
   speakMessageAsync,
@@ -15,7 +16,7 @@ import {
 import { useLanguage } from "./LanguageContext";
 import useSpeechToText from "./useSpeechRecognition";
 import { FaMicrophoneSlash } from "react-icons/fa";
-import { Hourglass, Loader, Mic } from "lucide-react";
+import { AudioLines, Hourglass, Loader, Mic } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import {
   useCopilot,
@@ -56,6 +57,8 @@ const VoiceQuestion: React.FC<{
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // const [formState, setFormState] = useState<VoiceFormStates>("none");
 
   const onListeningStop = (answer: string) => {
     unhighlightTextField();
@@ -157,8 +160,12 @@ const VoiceQuestion: React.FC<{
 
     setIsQuestionSpoken(true);
 
-    // Prepare for getting answer
-    highlightTextField();
+    setIsQuestionSpoken((v) => {
+      // Prepare for getting answer
+      highlightTextField();
+
+      return v;
+    });
 
     // Start listening
     let userResponse: string = "";
@@ -382,7 +389,7 @@ const VoiceQuestion: React.FC<{
         voiceConfig={voiceConfig}
       />
       {/* Text / Number. */}
-      {isQuestionSpoken && question.question_type == "text" && (
+      {question.question_type == "text" && (
         <div className="flex flex-col items-center">
           <TextareaAutosize
             autoComplete="off"
@@ -399,7 +406,7 @@ const VoiceQuestion: React.FC<{
             name="message"
             disabled={!isQuestionSpoken}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
-            className=" max-h-24 px-14 bg-accent py-[22px] text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden dark:bg-card"
+            className="rounded border-5 border-[#007bff] max-h-24 px-14 bg-accent py-[22px] text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden dark:bg-card"
           />
 
           {/* <input
@@ -446,6 +453,38 @@ const VoiceQuestion: React.FC<{
             {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
             Centered Button
           </button> */}
+
+            {/* <div className="voice-form__controls">
+              <button
+                className="mic-button ${formState} voice-form__control-button"
+                onClick={handleListenClick}
+                disabled={
+                  formState === "evaluating" || formState === "speaking"
+                }
+              >
+                {formState === "listening" ? (
+                  <Mic />
+                ) : formState === "evaluating" ? (
+                  <Loader />
+                ) : formState === "speaking" ? (
+                  <AudioLines />
+                ) : formState === "waiting" ? (
+                  <Hourglass />
+                ) : (
+                  <FaMicrophoneSlash className="mic-icon" />
+                )}
+              </button>
+
+              <button
+                className="voice-form__control-button"
+                onClick={onSkip}
+                disabled={
+                  formState === "listening" || formState === "evaluating"
+                }
+              >
+                Skip
+              </button>
+            </div> */}
 
             <button
               className={`mic-button  ${

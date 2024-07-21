@@ -2,7 +2,7 @@ import React from "react";
 import { LanguageProvider } from "@/components/voice_form/LanguageContext";
 import LanguageSelector from "@/components/voice_form/LanguageSelector";
 import VoiceForm from "@/components/voice_form/VoiceForm";
-import { VoiceConfigDefault } from "@/schema/quizSchema";
+import { VoiceConfigDefault } from "@/schema/voiceFormSchema";
 import {
   postSubmissionMessage,
   questions,

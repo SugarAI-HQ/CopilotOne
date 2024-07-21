@@ -1,4 +1,4 @@
-import { Question, i18Message } from "@/schema/quizSchema";
+import { Question, i18Message } from "@/schema/voiceFormSchema";
 
 export const welcomeMessage: i18Message = {
   mode: "manual",

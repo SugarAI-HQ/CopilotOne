@@ -1,1 +1,1 @@
-import { i18Message } from "@/schema/quizSchema";
+import { i18Message } from "@/schema/voiceFormSchema";

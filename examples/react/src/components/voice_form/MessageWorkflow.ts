@@ -1,5 +1,5 @@
 import React from "react";
-import { Streamingi18TextRef } from "@/schema/quizSchema";
+import { Streamingi18TextRef } from "@/schema/voiceFormSchema";
 
 class MessageWorkflow {
   private messages: React.RefObject<Streamingi18TextRef>[];

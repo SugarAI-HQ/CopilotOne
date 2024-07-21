@@ -8,7 +8,7 @@ import {
   VoiceConfig,
   VoiceConfigDefault,
   i18Message,
-} from "@/schema/quizSchema";
+} from "@/schema/voiceFormSchema";
 import { speakMessage } from "@/helpers/voice";
 import StreamingText, { StreamingTextRef } from "./StreamingText";
 import Streamingi18Text from "./Streamingi18Text";
@@ -26,7 +26,7 @@ const VoiceForm: React.FC<{
   questions,
   voiceConfig,
 }) => {
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(1);
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {
