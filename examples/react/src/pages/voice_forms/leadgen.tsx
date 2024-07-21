@@ -12,7 +12,7 @@ import {
   type CopilotConfigType,
   CopilotProvider,
 } from "@sugar-ai/core";
-import { VoiceConfigDefault } from "@/schema/voiceFormSchema";
+import { VoiceConfigDefault } from "@/schema/formSchema";
 // import { VoiceAssistant, TextAssistant } from "@sugar-ai/copilot-one-js";
 
 // 1. Onobarding Steps

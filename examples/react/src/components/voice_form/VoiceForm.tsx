@@ -8,7 +8,7 @@ import {
   VoiceConfig,
   VoiceConfigDefault,
   i18Message,
-} from "@/schema/voiceFormSchema";
+} from "@/schema/formSchema";
 import { speakMessage } from "@/helpers/voice";
 import StreamingText, { StreamingTextRef } from "./StreamingText";
 import Streamingi18Text from "./Streamingi18Text";

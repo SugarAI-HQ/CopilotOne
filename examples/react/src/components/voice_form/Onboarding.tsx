@@ -7,7 +7,7 @@ import {
   Streamingi18TextRef,
   VoiceConfig,
   i18Message,
-} from "@/schema/voiceFormSchema";
+} from "@/schema/formSchema";
 import MessageWorkflow from "./MessageWorkflow";
 
 const Onboarding: React.FC<{

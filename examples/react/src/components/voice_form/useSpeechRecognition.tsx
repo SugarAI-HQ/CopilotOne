@@ -2,7 +2,7 @@ import { on } from "events";
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "./LanguageContext";
 import { speakMessageAsync, speaki18kMessageAsync } from "@/helpers/voice";
-import { i18Message } from "@/schema/voiceFormSchema";
+import { i18Message } from "@/schema/formSchema";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;

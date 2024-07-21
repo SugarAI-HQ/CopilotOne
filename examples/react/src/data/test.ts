@@ -1,4 +1,4 @@
-import { Question } from "@/schema/voiceFormSchema";
+import { Question } from "@/schema/formSchema";
 
 export const questions: Question[] = [
   {

@@ -15,7 +15,7 @@ import {
   Streamingi18TextProps,
   Streamingi18TextRef,
   i18Message,
-} from "@/schema/voiceFormSchema";
+} from "@/schema/formSchema";
 
 const Streamingi18Text: React.ForwardRefRenderFunction<
   Streamingi18TextRef,

@@ -7,7 +7,7 @@ import {
   VoiceConfig,
   VoiceFormStates,
   i18Message,
-} from "@/schema/voiceFormSchema";
+} from "@/schema/formSchema";
 import {
   extracti18Text,
   speakMessageAsync,
