@@ -6,7 +6,7 @@ import {
   Question,
   Streamingi18TextRef,
   VoiceConfig,
-} from "@/schema/quizSchema";
+} from "@/schema/voiceFormSchema";
 import { extracti18Text } from "@/helpers/voice";
 
 export const QuestionOptions: React.FC<{
