@@ -146,7 +146,7 @@ export const VoiceQuestion: React.FC<{
       return;
     }
 
-    await delay(1000);
+    await delay(300);
 
     if (isWorkflowStartedRef.current) {
       return;
@@ -485,38 +485,6 @@ export const VoiceQuestion: React.FC<{
             Centered Button
           </button> */}
 
-            {/* <div className="voice-form__controls">
-              <button
-                className="mic-button ${formState} voice-form__control-button"
-                onClick={handleListenClick}
-                disabled={
-                  formState === "evaluating" || formState === "speaking"
-                }
-              >
-                {formState === "listening" ? (
-                  <Mic />
-                ) : formState === "evaluating" ? (
-                  <Loader />
-                ) : formState === "speaking" ? (
-                  <AudioLines />
-                ) : formState === "waiting" ? (
-                  <Hourglass />
-                ) : (
-                  <FaMicrophoneSlash className="mic-icon" />
-                )}
-              </button>
-
-              <button
-                className="voice-form__control-button"
-                onClick={onSkip}
-                disabled={
-                  formState === "listening" || formState === "evaluating"
-                }
-              >
-                Skip
-              </button>
-            </div> */}
-
             <button
               className={`mic-button  ${
                 isListening
@@ -541,7 +509,10 @@ export const VoiceQuestion: React.FC<{
               )}
             </button>
 
-            <button onClick={onSkip}>Skip</button>
+            {!isWaiting && <button onClick={onSkip}>Skip</button>}
+            {isWaiting && (
+              <button onClick={() => onAnswered(answer as string)}>Next</button>
+            )}
 
             {/* <style jsx>{`
               .mic-buttons {
