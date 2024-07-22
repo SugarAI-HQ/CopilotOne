@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import { TextToActionResponse } from "~/schema/copilot";
 import "~/react/styles/form.css"; // Adjust the path according to your project structure
-
 import {
   extracti18Text,
   speakMessageAsync,
@@ -188,18 +188,20 @@ export const VoiceQuestion: React.FC<{
       }
 
       // Evaluation
-      const { answer, followupQuestion } = await evaluate(
-        question,
-        userResponse,
-        language,
-      );
+      const evaluationResult = await evaluate(question, userResponse, language);
 
-      fq = followupQuestion;
-      questionAnswer = answer;
+      if (!evaluationResult) {
+        fq = "";
+        questionAnswer = userResponse;
+      } else {
+        fq = evaluationResult.followupQuestion;
+        questionAnswer = evaluationResult.answer;
+      }
+
       attempts = attempts + 1;
 
       // validateAnswer
-      await validateAnswer(question, answer);
+      await validateAnswer(question, questionAnswer);
 
       // Submit if fine
       onAnswered(questionAnswer);

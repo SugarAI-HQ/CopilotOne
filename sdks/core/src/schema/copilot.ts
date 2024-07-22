@@ -439,7 +439,7 @@ export const shouldForwardProp = (prop: string) =>
   prop !== "container" && prop !== "position";
 
 export const textToActionResponse = z.object({
-  output: z.string(),
+  textOutput: z.string(),
   actionOutput: z.any(),
 });
 export type TextToActionResponse = z.infer<typeof textToActionResponse>;

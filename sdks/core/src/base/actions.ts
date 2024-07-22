@@ -275,20 +275,21 @@ export async function textToAction(
   //   dryRun,
   // );
 
-  let output: string = config?.ai?.successResponse as string;
+  let textOutput: string = config?.ai?.successResponse as string;
   let actionOutput: any = null;
 
   addMarker("got_llm_response");
 
   // @ts-expect-error
   if (result.llmResponse?.error) {
-    output = config.ai?.failureResponse as string;
+    textOutput = config.ai?.failureResponse as string;
     addMarker("textToAction:failed");
   } else {
     // @ts-expect-error
     const choices: string | any[] = result.llmResponse?.data?.completion;
 
     if (choices instanceof Array) {
+      // Function calling
       if (choices[0].message?.tool_calls) {
         addMarker("executing_actions");
         actionOutput = await executeAction(
@@ -298,18 +299,19 @@ export async function textToAction(
         addMarker("executed_actions");
       }
 
+      // Only content
       if (choices[0].message?.content) {
-        output = choices[0].message.content as string;
+        textOutput = choices[0].message.content as string;
         addMarker("success");
       }
     } else if (typeof choices === "string") {
-      output = choices;
+      textOutput = choices;
       addMarker("textToAction:success");
     } else if (isAssitant) {
       DEV: console.debug(`No choices expected in case of manual mode nudge`);
     } else {
       PROD: console.error(`Unknown response ${JSON.stringify(choices)}`);
-      output = config?.ai?.failureResponse as string;
+      textOutput = config?.ai?.failureResponse as string;
       addMarker("textToAction:failed");
     }
   }
@@ -320,5 +322,5 @@ export async function textToAction(
     ...result.stats,
     ...{ clientStats: getStats() },
   });
-  return { output, actionOutput };
+  return { textOutput, actionOutput };
 }
