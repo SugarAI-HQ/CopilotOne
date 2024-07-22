@@ -304,8 +304,8 @@ importers:
         specifier: workspace:*
         version: link:../../sdks/js
       '@sugar-ai/core':
-        specifier: workspace:*
-        version: link:../../sdks/core
+        specifier: file:.yalc/@sugar-ai/core
+        version: file:examples/react/.yalc/@sugar-ai/core(@types/react@18.2.78)(react@18.2.0)
       build:
         specifier: ^0.1.4
         version: 0.1.4
@@ -386,6 +386,9 @@ importers:
 
   sdks/core:
     dependencies:
+      '@emotion/react':
+        specifier: ^11.11.1
+        version: 11.11.1(@types/react@18.2.78)(react@18.2.0)
       '@types/dom-speech-recognition':
         specifier: ^0.0.4
         version: 0.0.4
@@ -471,6 +474,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      styled-jsx:
+        specifier: ^5.1.6
+        version: 5.1.6(react@18.2.0)
       tsup:
         specifier: ^8.1.0
         version: 8.1.0(@swc/core@1.3.92(@swc/helpers@0.5.5))(postcss@8.4.31)(typescript@5.4.5)
@@ -3744,6 +3750,11 @@ packages:
   '@storybook/types@7.4.6':
     resolution: {integrity: sha512-6QLXtMVsFZFpzPkdGWsu/iuc8na9dnS67AMOBKm5qCLPwtUJOYkwhMdFRSSeJthLRpzV7JLAL8Kwvl7MFP3QSw==}
 
+  '@sugar-ai/core@file:examples/react/.yalc/@sugar-ai/core':
+    resolution: {directory: examples/react/.yalc/@sugar-ai/core, type: directory}
+    peerDependencies:
+      react: '>16.0.0'
+
   '@swagger-api/apidom-ast@0.99.1':
     resolution: {integrity: sha512-evkKm2JaqNfg3dB2Yk3FWL/Qy2r4csZLMZ9bHMG+xNpti8ulENHMjuCh3Ry4koV1gD7IA54CU2ZjcaTvqJa22Q==}
 
@@ -3896,9 +3907,6 @@ packages:
     peerDependenciesMeta:
       '@swc/helpers':
         optional: true
-
-  '@swc/counter@0.1.2':
-    resolution: {integrity: sha512-9F4ys4C74eSTEUNndnER3VJ15oru2NumfQxS8geE+f3eB5xvfxpWyqE5XlVnxb/R14uoXi6SLbBwwiDSkv+XEw==}
 
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
@@ -9639,6 +9647,19 @@ packages:
       babel-plugin-macros:
         optional: true
 
+  styled-jsx@5.1.6:
+    resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
+    engines: {node: '>= 12.0.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      babel-plugin-macros: '*'
+      react: '>= 16.8.0 || 17.x.x || ^18.0.0-0 || ^19.0.0-0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      babel-plugin-macros:
+        optional: true
+
   stylis@4.2.0:
     resolution: {integrity: sha512-Orov6g6BB1sDfYgzWfTHDOxamtX1bE/zo104Dh9e6fqJ3PooipYyfJ0pUmrZO2wAvO8YbEyeFrkV91XTsGMSrw==}
 
@@ -14398,6 +14419,22 @@ snapshots:
       '@types/express': 4.17.19
       file-system-cache: 2.3.0
 
+  '@sugar-ai/core@file:examples/react/.yalc/@sugar-ai/core(@types/react@18.2.78)(react@18.2.0)':
+    dependencies:
+      '@emotion/react': 11.11.1(@types/react@18.2.78)(react@18.2.0)
+      '@types/dom-speech-recognition': 0.0.4
+      '@types/easy-speech': 1.2.4
+      build: 0.1.4
+      form-data: 4.0.0
+      js-base64: 3.7.7
+      qs: 6.12.0
+      react: 18.2.0
+      url-join-ts: 1.0.5
+      window-or-global: 1.0.1
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - '@types/react'
+
   '@swagger-api/apidom-ast@0.99.1':
     dependencies:
       '@babel/runtime-corejs3': 7.24.4
@@ -14762,7 +14799,7 @@ snapshots:
 
   '@swc/core@1.3.92(@swc/helpers@0.5.5)':
     dependencies:
-      '@swc/counter': 0.1.2
+      '@swc/counter': 0.1.3
       '@swc/types': 0.1.5
     optionalDependencies:
       '@swc/core-darwin-arm64': 1.3.92
@@ -14776,8 +14813,6 @@ snapshots:
       '@swc/core-win32-ia32-msvc': 1.3.92
       '@swc/core-win32-x64-msvc': 1.3.92
       '@swc/helpers': 0.5.5
-
-  '@swc/counter@0.1.2': {}
 
   '@swc/counter@0.1.3': {}
 
@@ -21993,6 +22028,11 @@ snapshots:
       react: 18.2.0
     optionalDependencies:
       '@babel/core': 7.23.0
+
+  styled-jsx@5.1.6(react@18.2.0):
+    dependencies:
+      client-only: 0.0.1
+      react: 18.2.0
 
   stylis@4.2.0: {}
 

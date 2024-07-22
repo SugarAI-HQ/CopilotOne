@@ -1,5 +1,5 @@
 import { useEffect, useState as useStateOriginal } from "react";
-import { type SugarAiApiClient } from "./api-client";
+import { type SugarAiApiClient } from "../../api-client";
 import {
   type CopilotConfigType,
   type EmbeddingScopeType,
@@ -7,11 +7,11 @@ import {
   DEFAULT_GROUP_ID,
   defaultGroupId,
   scopeDefaults,
-} from "./schema";
+} from "../../schema/copilot";
 
-import { createOrUpdateEmbedding } from "./embedding";
+import { createOrUpdateEmbedding } from "../../base/embedding";
 
-export function createUseState(
+export function createUseStateEmbedding(
   client: SugarAiApiClient,
   config: CopilotConfigType,
   clientUserId: string,
@@ -19,7 +19,7 @@ export function createUseState(
 ) {
   let timerId: any = null;
 
-  return function useStateEmbedding(
+  return function useStateEmbeddingHook(
     initialState: any,
     scope: EmbeddingScopeType,
   ) {

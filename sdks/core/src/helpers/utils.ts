@@ -160,3 +160,6 @@ export function extractFunctionParams(name: string, funcString: string) {
   return params;
   // Return an empty array if no parameters found
 }
+
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

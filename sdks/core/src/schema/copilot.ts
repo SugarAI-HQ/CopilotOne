@@ -1,6 +1,6 @@
 import * as z from "zod";
 import root from "window-or-global";
-import { AndroidSoundIDs, iOSSoundIDs } from "./sound";
+import { AndroidSoundIDs, iOSSoundIDs } from "../base/sound";
 
 export const promptTemplateSchema = z.string();
 export type PromptTemplateType = z.infer<typeof promptTemplateSchema>;

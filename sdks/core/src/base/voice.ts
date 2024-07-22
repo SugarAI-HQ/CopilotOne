@@ -1,5 +1,8 @@
 import { getUniqueLanguagesAndCountries } from "./lang";
-import { copilotAssistantLangType, copilotAssistantVoiceType } from "./schema";
+import {
+  copilotAssistantLangType,
+  copilotAssistantVoiceType,
+} from "../schema/copilot";
 import root from "window-or-global";
 
 const voices = {

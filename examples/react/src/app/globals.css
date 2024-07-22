@@ -36,13 +36,7 @@ input[type="checkbox"] {
 }
 
 
-.blinking-cursor-on {
-  animation: blink 1s step-start infinite;
-}
-.blinking-cursor-off {
-  display: inline
-  /* animation: blink 1s step-start infinite; */
-}
+
 .textarea:focus, input:focus, *:focus {
   /* background-color: red; */
   outline: none;

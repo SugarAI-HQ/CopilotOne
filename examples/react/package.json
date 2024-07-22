@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.16.4",
     "@sugar-ai/copilot-one-js": "workspace:*",
-    "@sugar-ai/core": "workspace:*",
+    "@sugar-ai/core": "file:.yalc/@sugar-ai/core",
     "build": "^0.1.4",
     "lucide-react": "^0.408.0",
     "next": "14.2.1",

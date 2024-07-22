@@ -1,7 +1,7 @@
 import React from "react";
-import { LanguageProvider } from "@/components/voice_form/LanguageContext";
-import LanguageSelector from "@/components/voice_form/LanguageSelector";
-import VoiceForm from "@/components/voice_form/VoiceForm";
+// import { LanguageProvider } from "@/components/voice_form/LanguageContext";
+// import LanguageSelector from "@/components/voice_form/LanguageSelector";
+// import VoiceForm from "@/components/voice_form/VoiceForm";
 import {
   postSubmissionMessage,
   questions,
@@ -11,7 +11,12 @@ import {
   useCopilot,
   type CopilotConfigType,
   CopilotProvider,
+  LanguageProvider,
+  VoiceForm,
+  LanguageSelector,
 } from "@sugar-ai/core";
+import "@sugar-ai/core/style";
+
 import { VoiceConfigDefault } from "@/schema/formSchema";
 // import { VoiceAssistant, TextAssistant } from "@sugar-ai/copilot-one-js";
 

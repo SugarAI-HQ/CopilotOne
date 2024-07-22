@@ -10,11 +10,11 @@ import {
   scopeDefaults,
   TextToActionResponse,
   EmbeddingScopeType,
-} from "./schema";
-import { extractFunctionParams } from "./utils";
+} from "../schema/copilot";
+import { extractFunctionParams } from "../helpers/utils";
 import { performanceTracker } from "./performance";
-import { SugarAiApiClient, type SugarAiApi } from "./api-client";
-import { type ServiceGenerateRequestSkillsItem } from "./api-client/api";
+import { SugarAiApiClient, type SugarAiApi } from "../api-client";
+import { type ServiceGenerateRequestSkillsItem } from "../api-client/api";
 
 export function validate(
   name: string,

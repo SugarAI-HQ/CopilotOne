@@ -1,0 +1,65 @@
+/* styles/styles.css */
+
+.mic-buttons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mic-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.mic-button.listening {
+  animation: pulse 1s infinite;
+}
+
+.mic-button.evaluating,
+.mic-button.waiting {
+  border: 5px solid #f3f3f3;
+  -webkit-animation: spin 1s linear infinite;
+  animation: spin 2s linear infinite;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 58px;
+  height: 58px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.mic-button.disabled {
+  background-color: #6c757d;
+}
+
+.mic-icon {
+  font-size: 24px;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}

@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import { createUseState } from "./hooks";
+import { createUseStateEmbedding } from "./hooks/useStateEmbedding";
 
 import { any } from "zod";
 import {
@@ -13,14 +13,14 @@ import {
   copilotAiDefaults,
   copilotRouterDefaults,
   TextToActionResponse,
-} from "./schema";
-import { generateUserId } from "./utils";
-import { SugarAiApiClient } from "./api-client";
+} from "../schema/copilot";
+import { generateUserId } from "../helpers/utils";
+import { SugarAiApiClient } from "../api-client";
 import {
   register,
   unregister,
   textToAction as nativeTextoAction,
-} from "./actions";
+} from "../base/actions";
 
 export const CopilotContext = createContext({
   config: null as CopilotConfigType | null,
@@ -101,7 +101,11 @@ export const CopilotProvider = function ({
   //   groupId: window.location.pathname,
   // };
 
-  const useStateEmbedding = createUseState(apiClient, config, clientUserId);
+  const useStateEmbedding = createUseStateEmbedding(
+    apiClient,
+    config,
+    clientUserId,
+  );
 
   const registerAction = (
     name: string,

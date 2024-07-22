@@ -117,9 +117,9 @@
 
   "include": [
     "src",
-    "../core/src/base_config.tsx",
-    "../core/src/copilot_context.tsx",
-    "../core/src/hooks.ts"
+    "../core/src/base/base_config.tsx",
+    "../core/src/react/copilot_context.tsx",
+    "../core/src/hooks/useStateEmbedding.ts"
   ],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

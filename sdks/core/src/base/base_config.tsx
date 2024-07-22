@@ -4,7 +4,7 @@ import {
   copilotAiDefaults,
   copilotNudgeDefaults,
   copilotRouterDefaults,
-} from "./schema";
+} from "../schema/copilot";
 
 export const loadCurrentConfig = (config, actionsFn, actionCallbacksFn) => {
   const currentTheme = {
