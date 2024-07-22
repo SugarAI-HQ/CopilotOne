@@ -47,6 +47,9 @@ importers:
       '@sentry/nextjs':
         specifier: ^7.92.0
         version: 7.92.0(next@13.4.13(@babel/core@7.23.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(webpack@5.88.2(@swc/core@1.3.92(@swc/helpers@0.5.5))(esbuild@0.18.20))
+      '@sugar-ai/copilot-one-js':
+        specifier: workspace:*
+        version: link:../../sdks/js
       '@t3-oss/env-nextjs':
         specifier: ^0.6.0
         version: 0.6.1(typescript@5.2.2)(zod@3.22.4)
