@@ -232,33 +232,33 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           });
         };
 
-        recognitionRef.current.soundstart = (event) => {
-          console.log("Some Sound is being received", event);
-        };
+        // recognitionRef.current.soundstart = (event) => {
+        //   console.log("Some Sound is being received", event);
+        // };
 
-        recognitionRef.current.soundend = (event) => {
-          console.log("Sound has stopped being received", event);
-        };
+        // recognitionRef.current.soundend = (event) => {
+        //   console.log("Sound has stopped being received", event);
+        // };
 
-        recognitionRef.current.onnomatch = (event) => {
-          console.log(`No Match`, event);
-        };
+        // recognitionRef.current.onnomatch = (event) => {
+        //   console.log(`No Match`, event);
+        // };
 
-        recognitionRef.current.onaudiostart = (event) => {
-          console.log("Audio capturing start", event);
-        };
+        // recognitionRef.current.onaudiostart = (event) => {
+        //   console.log("Audio capturing start", event);
+        // };
 
-        recognitionRef.current.onaudioend = (event) => {
-          console.log("Audio capturing ended", event);
-        };
+        // recognitionRef.current.onaudioend = (event) => {
+        //   console.log("Audio capturing ended", event);
+        // };
 
-        recognitionRef.current.onspeechstart = (event) => {
-          console.log("Speech has been detected", event);
-        };
+        // recognitionRef.current.onspeechstart = (event) => {
+        //   console.log("Speech has been detected", event);
+        // };
 
-        recognitionRef.current.onspeechend = (event) => {
-          console.log("Speech has stopped being detected", event);
-        };
+        // recognitionRef.current.onspeechend = (event) => {
+        //   console.log("Speech has stopped being detected", event);
+        // };
 
         recognitionRef.current.start();
         setIsListening(true);
