@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLanguage } from "./LanguageContext";
 import { FaLanguage } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { LanguageCode } from "~/schema/lang";
+import { LanguageCode, languageCode } from "~/schema/lang";
 import Modal from "../common/Modal";
 
 export const LanguageSelector: React.FC<{ klass: string }> = ({ klass }) => {
@@ -13,8 +13,13 @@ export const LanguageSelector: React.FC<{ klass: string }> = ({ klass }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const userLanguages = Array.from(navigator.languages || []);
-    setLanguages(userLanguages.length > 0 ? userLanguages : [language]);
+    const userLanguages = Array.from(navigator.languages || [language]);
+
+    // const listLangs = userLanguages.length > 0 ? userLanguages :
+    const allLanguages = Array.from(
+      new Set(userLanguages.concat(languageCode._def.values)),
+    );
+    setLanguages(allLanguages);
   }, [language]);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
