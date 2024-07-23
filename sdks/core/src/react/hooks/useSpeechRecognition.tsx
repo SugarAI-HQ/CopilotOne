@@ -1,4 +1,3 @@
-import { on } from "events";
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "..";
 import { speakMessageAsync, speaki18kMessageAsync } from "~/helpers";

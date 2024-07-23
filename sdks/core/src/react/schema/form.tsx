@@ -2,10 +2,10 @@ import { z } from "zod";
 import { i18MessageSchema } from "./message";
 
 export const listenConfig = z.object({
-  maxAnswerLength: z.number().optional().default(-1),
-  userNoSpeechTimeout: z.number().optional().default(30000), // User have not spoken any single word
-  // userNoSpeechNudgeAfter: z.number().optional().default(2), // no of retries in case of no speech
-  userPauseTimeout: z.number().optional().default(5000), // User is speaking but take a pause in between
+  maxAnswerLength: z.number().default(-1),
+  userNoSpeechTimeout: z.number().default(30000), // User have not spoken any single word
+  // userNoSpeechNudgeAfter: z.number().default(2), // no of retries in case of no speech
+  userPauseTimeout: z.number().default(5000), // User is speaking but take a pause in between
 });
 
 export type ListenConfig = z.infer<typeof listenConfig>;
@@ -21,7 +21,7 @@ export const formConfig = z.object({
   characterPerSec: z.number().optional().default(40),
   // lang: z.string().optional().default("auto"),
   // defaultLang: z.string().optional().default("en"),
-  listen: listenConfig.optional(),
+  listen: listenConfig,
 });
 export type FormConfig = z.infer<typeof formConfig>;
 

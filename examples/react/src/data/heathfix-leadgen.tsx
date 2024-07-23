@@ -237,7 +237,7 @@ export const questions: Question[] = [
     },
     question_params: {},
     validation: {
-      max_length: 50,
+      max_length: 200,
     },
   },
   // Add more questions as needed
