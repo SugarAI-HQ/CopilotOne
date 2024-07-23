@@ -478,65 +478,62 @@ export const VoiceQuestion: React.FC<{
           selected={answer ? [answer] : []}
         />
       )}
-      {true ||
-        (isQuestionSpoken && (
-          <div className="space-y-4 p-4 m-4">
-            {isListening && (
-              <div className="flex flex-col justify-center items-center h-full p-4">
-                <div className="w-full max-w-lg p-2 border-t border-gray-300 dark:border-gray-700">
-                  <p className="text-center text-gray-800 dark:text-white">
-                    {transcript}
-                  </p>
-                </div>
+      {isQuestionSpoken && (
+        <div className="space-y-4 p-4 m-4">
+          {isListening && (
+            <div className="flex flex-col justify-center items-center h-full p-4">
+              <div className="w-full max-w-lg p-2 border-t border-gray-300 dark:border-gray-700">
+                <p className="text-center text-gray-800 dark:text-white">
+                  {transcript}
+                </p>
               </div>
-            )}
-            {/* {!isListening && (
+            </div>
+          )}
+          {/* {!isListening && (
             <div className="flex justify-center items-center h-full">
               <span className="text-sm text-gray-800">{finalTranscript}</span>
             </div>
           )} */}
 
-            <div className="flex justify-center mic-buttons">
-              {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
+          <div className="flex justify-center mic-buttons">
+            {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
             Centered Button
           </button> */}
 
-              <span className="text-lg text-gray-800 dark:text-gray-200">
-                {question.validation.max_length - transcript.length}
-              </span>
+            <span className="text-lg text-gray-800 dark:text-gray-200">
+              {question.validation.max_length - transcript.length}
+            </span>
 
-              <button
-                className={`mic-button  ${
-                  isListening
-                    ? "listening"
-                    : isEvaluating
-                      ? "evaluating"
-                      : isWaiting
-                        ? "waiting"
-                        : "disabled"
-                }`}
-                onClick={handleListenClick}
-              >
-                {isListening ? (
-                  // <FaMicrophone className="mic-icon" />
-                  <Mic />
-                ) : isEvaluating ? (
-                  <Loader />
-                ) : isWaiting ? (
-                  <Hourglass />
-                ) : (
-                  <FaMicrophoneSlash className="mic-icon" />
-                )}
-              </button>
-
-              {!isWaiting && <button onClick={onSkip}>Skip</button>}
-              {isWaiting && (
-                <button onClick={() => onAnswered(answer as string)}>
-                  Next
-                </button>
+            <button
+              className={`mic-button  ${
+                isListening
+                  ? "listening"
+                  : isEvaluating
+                    ? "evaluating"
+                    : isWaiting
+                      ? "waiting"
+                      : "disabled"
+              }`}
+              onClick={handleListenClick}
+            >
+              {isListening ? (
+                // <FaMicrophone className="mic-icon" />
+                <Mic />
+              ) : isEvaluating ? (
+                <Loader />
+              ) : isWaiting ? (
+                <Hourglass />
+              ) : (
+                <FaMicrophoneSlash className="mic-icon" />
               )}
+            </button>
 
-              {/* <style jsx>{`
+            {!isWaiting && <button onClick={onSkip}>Skip</button>}
+            {isWaiting && (
+              <button onClick={() => onAnswered(answer as string)}>Next</button>
+            )}
+
+            {/* <style jsx>{`
               .mic-buttons {
                 display: flex;
                 align-items: center;
@@ -594,9 +591,9 @@ export const VoiceQuestion: React.FC<{
                 }
               }
             `}</style> */}
-            </div>
           </div>
-        ))}
+        </div>
+      )}
     </div>
   );
 };

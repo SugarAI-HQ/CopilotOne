@@ -20,7 +20,7 @@ export const VoiceForm: React.FC<{
   formConfig = FormConfigDefaults,
 }) => {
   const currentFromConfig = { ...FormConfigDefaults, ...formConfig };
-  const [step, setStep] = useState<number>(6);
+  const [step, setStep] = useState<number>(0);
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {
