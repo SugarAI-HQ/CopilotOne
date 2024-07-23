@@ -213,11 +213,11 @@ export const VoiceQuestion: React.FC<{
     if (question.question_type == "multiple_choice") {
       // setAnswer("15-30 days");
       setAnswer(answer);
-      await speaki18kMessageAsync(
-        selectedAnswer,
-        language,
-        voice as SpeechSynthesisVoice,
-      );
+      // await speaki18kMessageAsync(
+      //   selectedAnswer,
+      //   language,
+      //   voice as SpeechSynthesisVoice,
+      // );
       await speakMessageAsync(answer, language, voice as SpeechSynthesisVoice);
       await delay(3000);
     } else {

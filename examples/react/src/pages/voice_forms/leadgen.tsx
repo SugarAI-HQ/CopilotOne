@@ -1,7 +1,4 @@
 import React from "react";
-// import { LanguageProvider } from "@/components/voice_form/LanguageContext";
-// import LanguageSelector from "@/components/voice_form/LanguageSelector";
-// import VoiceForm from "@/components/voice_form/VoiceForm";
 import {
   postSubmissionMessage,
   questions,
@@ -73,19 +70,17 @@ const App: React.FC = () => {
   return (
     <CopilotProvider config={copilotConfig}>
       <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
-        <div className="container mx-auto p-4">
-          <LanguageSelector />
-          <VoiceForm
-            showStartButton={true}
-            welcomeMessage={welcomeMessage}
-            postSubmissionMessage={postSubmissionMessage}
-            questions={questions}
-            voiceConfig={{
-              ...VoiceConfigDefault,
-              characterPerSec: 100,
-            }}
-          />
-        </div>
+        <LanguageSelector className="absolute bottom-0 left-0 right-0" />
+        <VoiceForm
+          showStartButton={true}
+          welcomeMessage={welcomeMessage}
+          postSubmissionMessage={postSubmissionMessage}
+          questions={questions}
+          voiceConfig={{
+            ...VoiceConfigDefault,
+            characterPerSec: 100,
+          }}
+        />
       </LanguageProvider>
     </CopilotProvider>
   );

@@ -1,7 +1,7 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+ */
 /* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -31,6 +31,8 @@ body {
     text-wrap: balance;
   }
 } */
+
+/* 
 input[type="checkbox"] {
   appearance: revert !important;
 }
@@ -38,13 +40,11 @@ input[type="checkbox"] {
 
 
 .textarea:focus, input:focus, *:focus {
-  /* background-color: red; */
   outline: none;
   border: 2px solid yellow;
   }
 .highlight {
   outline: none;
-  /* background-color: red; */
   border: 2px solid yellow;
 }
 
@@ -53,4 +53,4 @@ input[type="checkbox"] {
     opacity: 0;
   }
 }
-
+*/

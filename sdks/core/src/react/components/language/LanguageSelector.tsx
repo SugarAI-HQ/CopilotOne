@@ -15,7 +15,7 @@ export const LanguageSelector: React.FC<{}> = ({}) => {
   useEffect(() => {
     const userLanguages = Array.from(navigator.languages || []);
     setLanguages(userLanguages.length > 0 ? userLanguages : [language]);
-  }, []);
+  }, [language]);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value as LanguageCode);
@@ -39,11 +39,8 @@ export const LanguageSelector: React.FC<{}> = ({}) => {
   );
 
   return (
-    <div>
-      <div
-        className="fixed bottom-0 left-0 w-full flex justify-center items-center p-3 bg-white border-t border-gray-200 shadow-md"
-        data-tooltip-id="lang-tooltip"
-      >
+    <div className="absolute bottom-0 left-0 right-0 p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-md">
+      <div className="flex justify-center items-center text-gray-400 dark:text-white-600">
         <span className="p-3">
           Lang: ({language}), Voice: {voice?.name}({voice?.lang})
         </span>
@@ -52,76 +49,42 @@ export const LanguageSelector: React.FC<{}> = ({}) => {
           size={48}
           data-tip="Change Language and Voice Settings"
           onClick={() => setIsModalOpen(true)}
-          className="text-blue-500 cursor-pointer text-2xl"
+          className="text-blue-500 cursor-pointer dark:text-blue-300"
         />
         <ReactTooltip id="lang-tooltip" place="top" />
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="mb-4">
-          <p>Current language: {language}</p>
+          <p className="text-gray-800 dark:text-gray-200">
+            Current language: {language}
+          </p>
           <select
             value={language}
             onChange={handleLanguageChange}
-            className="mt-2 p-1 border rounded w-full"
+            className="mt-2 p-1 border rounded w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           >
             {languages.map((lang) => (
               <option key={lang} value={lang}>
                 {lang}
               </option>
             ))}
-            <option value="en">English</option>
-            <option value="es">Español (Spanish)</option>
-            <option value="fr">Français (French)</option>
-            <option value="de">Deutsch (German)</option>
-            <option value="ja">日本語 (Japanese)</option>
-            <option value="zh">中文 (Chinese)</option>
-            <option value="hi">हिन्दी (Hindi)</option>
-            <option value="bn">বাংলা (Bengali)</option>
-            <option value="ta">தமிழ் (Tamil)</option>
-            <option value="te">తెలుగు (Telugu)</option>
-            <option value="mr">मराठी (Marathi)</option>
-            <option value="gu">ગુજરાતી (Gujarati)</option>
-            <option value="kn">ಕನ್ನಡ (Kannada)</option>
-            <option value="ml">മലയാളം (Malayalam)</option>
-            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
-            <option value="or">ଓଡ଼ିଆ (Odia)</option>
-            <option value="as">অসমীয়া (Assamese)</option>
-            <option value="ur">اردو (Urdu)</option>
-            <option value="ma">मणिपुरी (Meitei/Manipuri)</option>
-            <option value="ks">کٲشُر (Kashmiri)</option>
-            <option value="ar">العربية (Arabic)</option>
-            <option value="ru">Русский (Russian)</option>
-            <option value="pt">Português (Portuguese)</option>
-            <option value="it">Italiano (Italian)</option>
-            <option value="ko">한국어 (Korean)</option>
-            <option value="tr">Türkçe (Turkish)</option>
-            <option value="nl">Nederlands (Dutch)</option>
-            <option value="sv">Svenska (Swedish)</option>
-            <option value="pl">Polski (Polish)</option>
-            <option value="da">Dansk (Danish)</option>
-            <option value="fi">Suomi (Finnish)</option>
-            <option value="no">Norsk (Norwegian)</option>
-            <option value="el">Ελληνικά (Greek)</option>
-            <option value="he">עברית (Hebrew)</option>
-            <option value="cs">Čeština (Czech)</option>
-            <option value="hu">Magyar (Hungarian)</option>
-            <option value="th">ไทย (Thai)</option>
-            <option value="vi">Tiếng Việt (Vietnamese)</option>
           </select>
         </div>
         <div className="mb-4">
-          <p>Current voice: {voice?.name}</p>
+          <p className="text-gray-800 dark:text-gray-200">
+            Current voice: {voice?.name}
+          </p>
           <input
             type="text"
             placeholder="Search voices..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className="mt-2 p-1 border rounded w-full"
+            className="mt-2 p-1 border rounded w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           />
           <select
             value={voice?.name || ""}
             onChange={handleVoiceChange}
-            className="mt-2 p-1 border rounded w-full"
+            className="mt-2 p-1 border rounded w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
           >
             {filteredVoices.map((v) => (
               <option key={v.name} value={v.name}>

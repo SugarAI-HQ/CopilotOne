@@ -1,4 +1,8 @@
-/* styles/styles.css */
+/* src/react/styles/form.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 .mic-buttons {
   display: flex;
@@ -62,4 +66,9 @@
   100% {
     box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
   }
+}
+
+.highlight {
+  outline: none;
+  border: 2px solid yellow;
 }

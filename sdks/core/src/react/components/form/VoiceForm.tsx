@@ -4,6 +4,7 @@ import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
 import { i18Message } from "~/react/schema/message";
 import { Question, VoiceConfig } from "~/react/schema/form";
+import "~/react/styles/form.css";
 
 export const VoiceForm: React.FC<{
   showStartButton: boolean;
