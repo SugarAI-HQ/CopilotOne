@@ -70,7 +70,7 @@ const App: React.FC = () => {
   return (
     <CopilotProvider config={copilotConfig}>
       <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
-        <LanguageSelector className="absolute bottom-0 left-0 right-0" />
+        <LanguageSelector />
         <VoiceForm
           showStartButton={true}
           welcomeMessage={welcomeMessage}

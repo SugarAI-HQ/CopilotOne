@@ -57,12 +57,12 @@ export const Onboarding: React.FC<{
   return (
     <div>
       {showStart ? (
-        <div className="flex flex-col p-4 justify-center">
-          <h1 className="text-3xl	justify-center m-4 p-2 text-center">
+        <div className="flex-col p-2 justify-center">
+          <h1 className="text-2xl	justify-center m-4 p-2 text-center">
             This is demo of voice forms for lead generation
           </h1>
           <button
-            className="justify-center m-4 p-4 bg-blue-500 text-white text-center"
+            className="justify-center w-full m-4 p-4 bg-blue-500 text-white text-center"
             onClick={() => {
               setShowStart(false);
               setShowStart((k) => {
