@@ -46,7 +46,7 @@ export const providerModels: ProviderModels = {
     label: "Text-to-Text",
     enabled: true,
     defaultProvider: "openai",
-    defaultModel: "gpt-4o",
+    defaultModel: "gpt-4o-mini",
     toolEnabled: true,
     providers: [
       {
@@ -104,7 +104,14 @@ export const providerModels: ProviderModels = {
         },
         {
           name: "gpt-4o",
-          label: "GPT 4O",
+          label: "GPT 4o",
+          enabled: true,
+          editorVersion: 1,
+          toolEnabled: true,
+        },
+        {
+          name: "gpt-4o-mini",
+          label: "GPT 4o Mini",
           enabled: true,
           editorVersion: 1,
           toolEnabled: true,
