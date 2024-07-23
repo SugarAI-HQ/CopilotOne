@@ -4,8 +4,8 @@ export const welcomeMessage: i18Message = {
   mode: "manual",
   lang: {
     // en: "Welcome to Healthfix, To book the appointment, please help me with the following details.",
-    en: "Welcome to Healthfix",
-    hi: "स्वागत है Healthfix में, अपॉइंटमेंट बुक करने के लिए कृपया निम्नलिखित विवरणों के साथ मेरी सहायता करें।",
+    en: "Welcome to Healthfix. Please answer the questions to book an appointment",
+    hi: "हेल्थफिक्स में आपका स्वागत है। अपॉइंटमेंट बुक करने के लिए प्रश्नों का उत्तर दें।",
   },
   voice: true,
   output: "none",
@@ -14,7 +14,7 @@ export const welcomeMessage: i18Message = {
 export const postSubmissionMessage: i18Message = {
   mode: "manual",
   lang: {
-    en: "Thank you for details. You appointment is book, you will get details on sms.",
+    en: "Thank you for sharing the details. We will send the details of your appointment on your phone.",
     hi: "विवरण के लिए धन्यवाद। आपका अपॉइंटमेंट बुक कर लिया गया है, आपको एसएमएस पर विवरण मिलेगा।",
   },
   voice: true,
@@ -29,8 +29,8 @@ export const questions: Question[] = [
       mode: "manual",
       lang: {
         // en: "Hi, How are you doing, tell me you your name, I will be used for your quiz.",
-        en: "Tell me your name.",
-        hi: "आपका नाम दर्ज करें",
+        en: "What is your name.",
+        hi: "आपका नाम क्या है?",
       },
       voice: true,
       output: "none",
@@ -48,7 +48,7 @@ export const questions: Question[] = [
       lang: {
         // en: "Hi, How are you doing, tell me you your name, I will be used for your quiz.",
         en: "Tell me your phone number.",
-        hi: "आपका फोन नंबर दर्ज करें",
+        hi: "मुझे अपना फोन नंबर बताएं।",
       },
       voice: true,
       output: "none",
@@ -66,7 +66,7 @@ export const questions: Question[] = [
       mode: "manual",
       lang: {
         en: "On a scale of 1 - 5 (5 being worst), What is the intensity of your pain?",
-        hi: "1 से 5 के पैमाने पर (5 सबसे खराब होने पर), आपके दर्द की तीव्रता कितनी है?",
+        hi: "1 से 5 के पैमाने पर (5 सबसे खराब होने पर), आपको कितना दर्द हो रहा है?",
       },
       voice: true,
       output: "none",
@@ -177,7 +177,7 @@ export const questions: Question[] = [
         {
           lang: {
             en: "More than a year",
-            hi: "1 वर्ष से अधिक",
+            hi: "1 साल से अधिक",
           },
           mode: "manual",
           voice: true,
@@ -195,8 +195,8 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "Enter your age",
-        hi: "आपका उम्र दर्ज करें",
+        en: "What's your age ?",
+        hi: "आपकी उम्र कितने साल है?",
       },
       voice: true,
       output: "none",
@@ -212,8 +212,8 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "Occupation",
-        hi: "व्यवसाय",
+        en: "What is your occupation?",
+        hi: "आप क्या काम करते हैं?",
       },
       voice: true,
       output: "none",
@@ -229,8 +229,8 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        en: "Please describe your current problem",
-        hi: "कृपया अपनी वर्तमान समस्या का वर्णन करें।",
+        en: "Please explain your current problem. Mention the pain, affected areas etc.",
+        hi: "आप अपने दर्द और समस्या के बारे में बताएं",
       },
       voice: true,
       output: "none",
