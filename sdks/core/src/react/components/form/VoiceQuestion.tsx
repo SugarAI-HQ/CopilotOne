@@ -72,6 +72,7 @@ export const VoiceQuestion: React.FC<{
     finalTranscript,
     stopListening,
     getUserResponse,
+    getUserResponseAutoBreak,
     startListeningAsync,
   } = useSpeechToText({
     // onListeningStop: onListeningStop,
@@ -188,7 +189,8 @@ export const VoiceQuestion: React.FC<{
         },
       };
       // userResponse = await startListeningAsync(listenConfig);
-      userResponse = await getUserResponse(listenConfig);
+      // userResponse = await getUserResponse(listenConfig);
+      userResponse = await getUserResponseAutoBreak(listenConfig);
 
       // Fill answer in text field in case of text fields
       if (inputRef && inputRef.current) {
@@ -489,20 +491,26 @@ export const VoiceQuestion: React.FC<{
               </div>
             </div>
           )}
-          {/* {!isListening && (
-            <div className="flex justify-center items-center h-full">
-              <span className="text-sm text-gray-800">{finalTranscript}</span>
+          {!isListening && (
+            <div className="flex flex-col justify-center items-center h-full p-4">
+              <div className="w-full max-w-lg p-2 border-t border-gray-300 dark:border-gray-700">
+                <p className="text-center text-gray-800 dark:text-white">
+                  {finalTranscript}
+                </p>
+              </div>
             </div>
-          )} */}
+          )}
 
           <div className="flex justify-center mic-buttons">
             {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
             Centered Button
           </button> */}
 
-            <span className="text-lg text-gray-800 dark:text-gray-200">
-              {question.validation.max_length - transcript.length}
-            </span>
+            {isListening && (
+              <span className="text-lg text-gray-800 dark:text-gray-200">
+                {question.validation.max_length - transcript.length}
+              </span>
+            )}
 
             <button
               className={`mic-button  ${

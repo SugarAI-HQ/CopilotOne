@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "..";
-import { speakMessageAsync, speaki18kMessageAsync } from "~/helpers";
+import { delay, speakMessageAsync, speaki18kMessageAsync } from "~/helpers";
 import { i18Message } from "../schema/message";
 import { ListenConfigDefaults, ListenConfig } from "../schema/form";
 
@@ -151,7 +151,9 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     });
   };
 
-  const startListeningAsyncOld = (length: number = -1): Promise<string> => {
+  const startListeningAsyncAutoBreak = (
+    length: number = -1,
+  ): Promise<string> => {
     return new Promise((resolve, reject) => {
       // Stop existing recognition if it is already running
       if (recognitionRef.current) {
@@ -162,7 +164,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       recognition.interimResults = options.interimResults || true;
       recognition.lang = language;
       // recognition.continuous = options.continuous || false;
-      recognition.continuous = true;
+      recognition.continuous = false;
       recognition.maxAlternatives = 1;
 
       recognitionRef.current = recognition;
@@ -348,9 +350,11 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     options: ListenConfig = ListenConfigDefaults,
   ): Promise<string> => {
     let userResponse = "";
+    let counter = 0;
 
     // Get user response
     while (userResponse === "") {
+      counter = counter + 1;
       userResponse = await startListeningAsync(options).catch(async (error) => {
         console.error(error);
         if (error == "no-speech") {
@@ -360,12 +364,54 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             language,
             voice as SpeechSynthesisVoice,
           );
+        } else if (error == "aborted") {
+          // india
+          await delay(counter * 2000);
         } else {
-          debugger;
+          await delay(counter * 1000);
           console.error("[Audio] Error getting user response", error);
         }
         return "";
       });
+    }
+
+    return userResponse;
+  };
+
+  const getUserResponseAutoBreak = async (
+    options: ListenConfig = ListenConfigDefaults,
+  ): Promise<string> => {
+    let userResponse = "";
+    let counter = 0;
+
+    let nudgeAfterAttempts = 0;
+
+    // Get user response
+    while (userResponse === "" && (nudgeAfterAttempts ?? 0) < 2) {
+      counter = counter + 1;
+      userResponse = await startListeningAsyncAutoBreak().catch(
+        async (error) => {
+          console.error(error);
+          if (error == "no-speech") {
+            // ignore it
+            nudgeAfterAttempts = (nudgeAfterAttempts ?? 0) + 1;
+
+            // nudge user to speak
+            if (nudgeAfterAttempts == 2) {
+              await speaki18kMessageAsync(
+                noSpeech,
+                language,
+                voice as SpeechSynthesisVoice,
+              );
+              nudgeAfterAttempts = 0;
+            }
+          } else {
+            await delay(counter * 1000);
+            console.error("[Audio] Error getting user response", error);
+          }
+          return "";
+        },
+      );
     }
 
     return userResponse;
@@ -382,6 +428,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     requestMicPermission,
     checkIfAudioPermissionGranted,
     getUserResponse,
+    getUserResponseAutoBreak,
   };
 };
 
