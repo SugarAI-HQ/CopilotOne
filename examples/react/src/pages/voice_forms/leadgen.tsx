@@ -13,6 +13,7 @@ import {
   LanguageProvider,
   VoiceForm,
   LanguageSelector,
+  FormConfigDefaults,
 } from "@sugar-ai/core";
 import "@sugar-ai/core/style";
 
@@ -78,7 +79,7 @@ const App: React.FC = () => {
           welcomeMessage={welcomeMessage}
           postSubmissionMessage={postSubmissionMessage}
           questions={questions}
-          formConfig={{ characterPerSec: 100 }}
+          formConfig={{ ...FormConfigDefaults, ...{ characterPerSec: 100 } }}
         />
       </LanguageProvider>
     </CopilotProvider>
