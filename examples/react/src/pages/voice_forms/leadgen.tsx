@@ -1,3 +1,5 @@
+import dynamic from "next/dynamic";
+
 import React from "react";
 import {
   postSubmissionMessage,
@@ -14,7 +16,6 @@ import {
 } from "@sugar-ai/core";
 import "@sugar-ai/core/style";
 
-import { VoiceConfigDefault } from "@/schema/formSchema";
 // import { VoiceAssistant, TextAssistant } from "@sugar-ai/copilot-one-js";
 
 // 1. Onobarding Steps
@@ -71,15 +72,13 @@ const App: React.FC = () => {
     <CopilotProvider config={copilotConfig}>
       <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
         <LanguageSelector klass="fixed bottom-0 left-0 right-0" />
+
         <VoiceForm
           showStartButton={true}
           welcomeMessage={welcomeMessage}
           postSubmissionMessage={postSubmissionMessage}
           questions={questions}
-          voiceConfig={{
-            ...VoiceConfigDefault,
-            characterPerSec: 100,
-          }}
+          formConfig={{ characterPerSec: 100 }}
         />
       </LanguageProvider>
     </CopilotProvider>

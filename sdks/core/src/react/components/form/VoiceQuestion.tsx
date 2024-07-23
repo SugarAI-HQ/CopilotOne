@@ -15,7 +15,7 @@ import {
   EvaluationResponse,
   Question,
   Streamingi18TextRef,
-  VoiceConfig,
+  FormConfig,
 } from "~/react/schema/form";
 import { useLanguage } from "..";
 import useSpeechToText from "~/react/hooks/useSpeechRecognition";
@@ -33,8 +33,8 @@ export const VoiceQuestion: React.FC<{
   question: Question;
   onAnswered: (answer: string) => void;
   onSkip: () => void;
-  voiceConfig: VoiceConfig;
-}> = ({ question, onAnswered, onSkip, voiceConfig }) => {
+  formConfig: FormConfig;
+}> = ({ question, onAnswered, onSkip, formConfig }) => {
   // Depdencies
   const { language, voice } = useLanguage();
   const isWorkflowStartedRef = useRef(false);
@@ -72,6 +72,7 @@ export const VoiceQuestion: React.FC<{
     finalTranscript,
     stopListening,
     getUserResponse,
+    startListeningAsync,
   } = useSpeechToText({
     // onListeningStop: onListeningStop,
     continuous: false,
@@ -180,7 +181,15 @@ export const VoiceQuestion: React.FC<{
       }
 
       // Get user response
-      userResponse = await getUserResponse({ nudgeAfterAttempts: 1 });
+      const listenConfig = {
+        ...formConfig.listen,
+        ...{
+          maxAnswerLength: question.validation?.max_length,
+          userPauseTimeout: formConfig.listen.userPauseTimeout,
+        },
+      };
+      // userResponse = await startListeningAsync(listenConfig);
+      userResponse = await getUserResponse(listenConfig);
 
       // Fill answer in text field in case of text fields
       if (inputRef && inputRef.current) {
@@ -417,7 +426,7 @@ export const VoiceQuestion: React.FC<{
       <Streamingi18Text
         ref={questionRef}
         message={question.question_text}
-        voiceConfig={voiceConfig}
+        formConfig={formConfig}
       />
       {/* Text / Number. */}
       {question.question_type == "text" && (
@@ -460,7 +469,7 @@ export const VoiceQuestion: React.FC<{
         <QuestionOptions
           question={question}
           language={language}
-          voiceConfig={voiceConfig}
+          formConfig={formConfig}
           optionRefs={optionRefs}
           handleOptionClick={handleOptionClick}
           useRadio={true}
@@ -470,8 +479,12 @@ export const VoiceQuestion: React.FC<{
       {isQuestionSpoken && (
         <div className="space-y-4 p-4 m-4">
           {isListening && (
-            <div className="flex justify-center items-center h-full">
-              <p className="text-lg text-gray-600">{transcript}</p>
+            <div className="flex flex-col justify-center items-center h-full p-4 ">
+              <div className="w-full max-w-lg p-2 border-t border-gray-300 dark:border-gray-700">
+                <p className="text-sm text-gray-800 dark:text-white-500">
+                  {transcript}
+                </p>
+              </div>
             </div>
           )}
           {/* {!isListening && (
@@ -484,6 +497,10 @@ export const VoiceQuestion: React.FC<{
             {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
             Centered Button
           </button> */}
+
+            <span className="text-lg text-gray-800 dark:text-gray-200">
+              {question.validation.max_length - transcript.length}
+            </span>
 
             <button
               className={`mic-button  ${

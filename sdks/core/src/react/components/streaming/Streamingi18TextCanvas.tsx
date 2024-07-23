@@ -16,7 +16,7 @@
 // const Streamingi18Text: React.ForwardRefRenderFunction<
 //   Streamingi18TextRef,
 //   Streamingi18TextProps
-// > = ({ message, voiceConfig }, ref) => {
+// > = ({ message, formConfig }, ref) => {
 //   const { language, voice } = useLanguage();
 //   const canvasRef = useRef<HTMLCanvasElement>(null);
 //   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
@@ -66,7 +66,7 @@
 //     setIsSpeaking(true);
 
 //     return Promise.all([
-//       streamRender(text, voiceConfig?.characterPerSec).catch((err) =>
+//       streamRender(text, formConfig?.characterPerSec).catch((err) =>
 //         console.log(err)
 //       ),
 //       speakMessageAsync(text, language, voice as SpeechSynthesisVoice).catch(

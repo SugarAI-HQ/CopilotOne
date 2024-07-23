@@ -1,4 +1,4 @@
-import { Question, i18Message } from "@/schema/formSchema";
+import { Question, i18Message } from "@sugar-ai/core";
 
 export const welcomeMessage: i18Message = {
   mode: "manual",
@@ -35,14 +35,14 @@ export const questions: Question[] = [
       voice: true,
       output: "none",
     },
-    question_params: {
-      max_chars: 100,
+    question_params: {},
+    validation: {
+      max_length: 100,
     },
-    validation: {},
   },
   {
     id: "2",
-    question_type: "text",
+    question_type: "number",
     question_text: {
       mode: "manual",
       lang: {
@@ -53,10 +53,10 @@ export const questions: Question[] = [
       voice: true,
       output: "none",
     },
-    question_params: {
-      max_chars: 100,
+    question_params: {},
+    validation: {
+      max_length: 20,
     },
-    validation: {},
   },
 
   {
@@ -120,7 +120,9 @@ export const questions: Question[] = [
         },
       ],
     },
-    validation: {},
+    validation: {
+      max_length: 100,
+    },
   },
   {
     id: "4",
@@ -183,7 +185,9 @@ export const questions: Question[] = [
         },
       ],
     },
-    validation: {},
+    validation: {
+      max_length: 50,
+    },
   },
   {
     id: "5",
@@ -197,10 +201,10 @@ export const questions: Question[] = [
       voice: true,
       output: "none",
     },
-    question_params: {
-      max_chars: 100,
+    question_params: {},
+    validation: {
+      max_length: 50,
     },
-    validation: {},
   },
   {
     id: "6",
@@ -214,10 +218,10 @@ export const questions: Question[] = [
       voice: true,
       output: "none",
     },
-    question_params: {
-      max_chars: 100,
+    question_params: {},
+    validation: {
+      max_length: 50,
     },
-    validation: {},
   },
   {
     id: "7",
@@ -231,10 +235,10 @@ export const questions: Question[] = [
       voice: true,
       output: "none",
     },
-    question_params: {
-      max_chars: 120,
+    question_params: {},
+    validation: {
+      max_length: 50,
     },
-    validation: {},
   },
   // Add more questions as needed
 ];

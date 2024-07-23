@@ -3,15 +3,12 @@ import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "..";
 import { speakMessageAsync, speaki18kMessageAsync } from "~/helpers";
 import { i18Message } from "../schema/message";
+import { ListenConfigDefaults, ListenConfig } from "../schema/form";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
   continuous?: boolean;
   onListeningStop?: (text: string) => void;
-}
-
-interface GetUserReponseProps {
-  nudgeAfterAttempts?: number;
 }
 
 const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
@@ -24,42 +21,28 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    if (!("webkitSpeechRecognition" in window)) {
-      console.error("Web Speech API is not supported");
-      return;
-    }
-
-    const recognition = new window.webkitSpeechRecognition();
-    recognitionRef.current = recognition;
-
-    recognition.interimResults = options.interimResults || true;
-    recognition.lang = language;
-    recognition.continuous = options.continuous || false;
-
-    if ("webkitSpeechGrammarList" in window) {
-      const grammar =
-        "#JSGF V1.0; grammar punctuation; public <punc> = . | , | ! | ; | : ;";
-      const speechRecognitionList = new window.webkitSpeechGrammarList();
-      speechRecognitionList.addFromString(grammar, 1);
-      recognition.grammars = speechRecognitionList;
-    }
-
+    // if (!("webkitSpeechRecognition" in window)) {
+    //   console.error("Web Speech API is not supported");
+    //   return;
+    // }
+    // const recognition = new window.webkitSpeechRecognition();
+    // recognitionRef.current = recognition;
+    // recognition.interimResults = options.interimResults || true;
+    // recognition.lang = language;
+    // recognition.continuous = options.continuous || false;
     // recognition.onresult = (event: SpeechRecognitionEvent) => {
     //   let text = "";
-
     //   for (let i = 0; i < event.results.length; i++) {
     //     text += event.results[i][0].transcript;
     //   }
-
     //   // Always capitalize the first letter
     //   setTranscript(text.charAt(0).toUpperCase() + text.slice(1));
     // };
-
-    return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-    };
+    // return () => {
+    //   if (recognitionRef.current) {
+    //     recognitionRef.current.stop();
+    //   }
+    // };
   }, []);
 
   // const startListening = (length: number = -1) => {
@@ -70,19 +53,130 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   //   }
   // };
 
-  const startListeningAsync = (length: number = -1): Promise<string> => {
+  const startListeningAsync = (
+    options: ListenConfig = ListenConfigDefaults,
+  ): Promise<string> => {
     return new Promise((resolve, reject) => {
       // Stop existing recognition if it is already running
       if (recognitionRef.current) {
         recognitionRef.current.stop();
       }
 
+      // Initialize a new recognition object
+      const recognition = new window.webkitSpeechRecognition();
+      recognition.interimResults = true;
+      recognition.lang = language;
+      recognition.continuous = true;
+      recognition.maxAlternatives = 1;
+
+      recognitionRef.current = recognition;
+
+      let finalTranscript = "";
+      let interimTranscript = "";
+      let timeout;
+
+      // Stop recognition on pause or length limit
+      const stopRecognition = () => {
+        if (recognitionRef.current) {
+          setIsListening((il: boolean) => {
+            if (il == true) {
+              recognitionRef.current.stop();
+              resolve(finalTranscript.trim() + interimTranscript.trim());
+            }
+
+            return false;
+          });
+        }
+      };
+
+      // Reset the pause timer
+      const userSpeakingTimout = () => {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+
+        // Usecases
+        // 1. user have not spoken anything, -> keep listening till userNoSpeechTimeout
+        // 2. user have not spoken few words, -> keep listening till userPauseTimeout
+        // 3. if Max answer length have reached, dont wait at all
+
+        const answerLength = finalTranscript.length + interimTranscript.length;
+        if (
+          answerLength >= options.maxAnswerLength &&
+          options.maxAnswerLength > 0
+        ) {
+          stopRecognition();
+        } else {
+          timeout = setTimeout(
+            stopRecognition,
+            answerLength > 0
+              ? options.userPauseTimeout
+              : options.userNoSpeechTimeout,
+          );
+        }
+      };
+
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        interimTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        setTranscript(finalTranscript + interimTranscript);
+        userSpeakingTimout();
+      };
+
+      recognition.onerror = (event) => {
+        reject(event.error);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+        resolve(finalTranscript.trim() + interimTranscript.trim());
+      };
+
+      recognition.onspeechstart = () => {
+        userSpeakingTimout();
+      };
+
+      recognition.onspeechend = () => {
+        userSpeakingTimout();
+      };
+
+      recognition.start();
+      setIsListening(true);
+      userSpeakingTimout();
+    });
+  };
+
+  const startListeningAsyncOld = (length: number = -1): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      // Stop existing recognition if it is already running
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
       // Initialise a new recognition object
       const recognition = new window.webkitSpeechRecognition();
-      recognitionRef.current = recognition;
       recognition.interimResults = options.interimResults || true;
       recognition.lang = language;
-      recognition.continuous = options.continuous || false;
+      // recognition.continuous = options.continuous || false;
+      recognition.continuous = true;
+      recognition.maxAlternatives = 1;
+
+      recognitionRef.current = recognition;
+
+      // if ("webkitSpeechGrammarList" in window) {
+      //   // const grammar =
+      //   //   "#JSGF V1.0; grammar punctuation; public <punc> = . | , | ! | ; | : ;";
+      //   const grammar =
+      //     "#JSGF V1.0; grammar colors; public <color> = aqua | azure | beige | bisque | black | blue | brown | chocolate | coral | crimson | cyan | fuchsia | ghostwhite | gold | goldenrod | gray | green | indigo | ivory | khaki | lavender | lime | linen | magenta | maroon | moccasin | navy | olive | orange | orchid | peru | pink | plum | purple | red | salmon | sienna | silver | snow | tan | teal | thistle | tomato | turquoise | violet | white | yellow ;";
+      //   const speechRecognitionList = new window.webkitSpeechGrammarList();
+      //   speechRecognitionList.addFromString(grammar, 1);
+      //   recognition.grammars = speechRecognitionList;
+      // }
 
       if (recognitionRef.current && !isListening) {
         // recognitionRef.current.onresult = (event) => {
@@ -135,6 +229,34 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             resolve(ft);
             return ft;
           });
+        };
+
+        recognitionRef.current.soundstart = (event) => {
+          console.log("Some Sound is being received", event);
+        };
+
+        recognitionRef.current.soundend = (event) => {
+          console.log("Sound has stopped being received", event);
+        };
+
+        recognitionRef.current.onnomatch = (event) => {
+          console.log(`No Match`, event);
+        };
+
+        recognitionRef.current.onaudiostart = (event) => {
+          console.log("Audio capturing start", event);
+        };
+
+        recognitionRef.current.onaudioend = (event) => {
+          console.log("Audio capturing ended", event);
+        };
+
+        recognitionRef.current.onspeechstart = (event) => {
+          console.log("Speech has been detected", event);
+        };
+
+        recognitionRef.current.onspeechend = (event) => {
+          console.log("Speech has stopped being detected", event);
         };
 
         recognitionRef.current.start();
@@ -224,29 +346,23 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   };
 
   const getUserResponse = async (
-    options: GetUserReponseProps = { nudgeAfterAttempts: 2 },
+    options: ListenConfig = ListenConfigDefaults,
   ): Promise<string> => {
     let userResponse = "";
-    // options.nudgeAfterAttempts = options.nudgeAfterAttempts ?? 2;
 
     // Get user response
-    while (userResponse === "" && (options?.nudgeAfterAttempts ?? 0) < 2) {
-      userResponse = await startListeningAsync().catch(async (error) => {
+    while (userResponse === "") {
+      userResponse = await startListeningAsync(options).catch(async (error) => {
         console.error(error);
         if (error == "no-speech") {
-          // ignore it
-          options.nudgeAfterAttempts = (options.nudgeAfterAttempts ?? 0) + 1;
-
           // nudge user to speak
-          if (options.nudgeAfterAttempts == 2) {
-            await speaki18kMessageAsync(
-              noSpeech,
-              language,
-              voice as SpeechSynthesisVoice,
-            );
-            options.nudgeAfterAttempts = 0;
-          }
+          await speaki18kMessageAsync(
+            noSpeech,
+            language,
+            voice as SpeechSynthesisVoice,
+          );
         } else {
+          debugger;
           console.error("[Audio] Error getting user response", error);
         }
         return "";

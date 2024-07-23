@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Streamingi18TextRef, VoiceConfig } from "~/react/schema/form";
+import { Streamingi18TextRef, FormConfig } from "~/react/schema/form";
 import { i18Message } from "~/react/schema/message";
 
 import useSpeechToText from "~/react/hooks/useSpeechRecognition";
@@ -11,8 +11,8 @@ export const Onboarding: React.FC<{
   showStartButton: boolean;
   onComplete: () => void;
   welcomeMessage: i18Message;
-  voiceConfig: VoiceConfig;
-}> = ({ showStartButton, onComplete, welcomeMessage, voiceConfig }) => {
+  formConfig: FormConfig;
+}> = ({ showStartButton, onComplete, welcomeMessage, formConfig }) => {
   const { language, voice } = useLanguage();
   const [showStart, setShowStart] = useState<boolean>(showStartButton);
   const [showPermissionButton, setShowPermissionButton] =
@@ -79,13 +79,13 @@ export const Onboarding: React.FC<{
           <Streamingi18Text
             ref={welcomeMessageRef}
             message={welcomeMessage}
-            voiceConfig={voiceConfig}
+            formConfig={formConfig}
           />
           {!isMicEnabled && (
             <Streamingi18Text
               ref={requestMicPermissionsRef}
               message={requestMicPermissionsMessage}
-              voiceConfig={voiceConfig}
+              formConfig={formConfig}
               beforeSpeak={async () => {
                 return new Promise(async (resolve, reject) => {
                   const granted = await checkIfAudioPermissionGranted();

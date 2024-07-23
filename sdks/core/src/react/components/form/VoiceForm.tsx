@@ -3,7 +3,7 @@ import Onboarding from "./Onboarding";
 import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
 import { i18Message } from "~/react/schema/message";
-import { Question, VoiceConfig } from "~/react/schema/form";
+import { Question, FormConfig, FormConfigDefaults } from "~/react/schema/form";
 import "~/react/styles/form.css";
 
 export const VoiceForm: React.FC<{
@@ -11,15 +11,16 @@ export const VoiceForm: React.FC<{
   welcomeMessage: i18Message;
   postSubmissionMessage: i18Message;
   questions: Question[];
-  voiceConfig: VoiceConfig;
+  formConfig: FormConfig;
 }> = ({
   showStartButton,
   welcomeMessage,
   postSubmissionMessage,
   questions,
-  voiceConfig,
+  formConfig = FormConfigDefaults,
 }) => {
-  const [step, setStep] = useState<number>(0);
+  const currentFromConfig = { ...FormConfigDefaults, ...formConfig };
+  const [step, setStep] = useState<number>(6);
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {
@@ -54,7 +55,7 @@ export const VoiceForm: React.FC<{
           showStartButton={showStartButton}
           onComplete={handleOnboardingComplete}
           welcomeMessage={welcomeMessage}
-          voiceConfig={voiceConfig}
+          formConfig={currentFromConfig}
         />
       )}
       {step > 0 &&
@@ -77,7 +78,7 @@ export const VoiceForm: React.FC<{
                     answer: "User Answer",
                   })
                 }
-                voiceConfig={voiceConfig}
+                formConfig={currentFromConfig}
               />
             ),
         )}
@@ -85,7 +86,7 @@ export const VoiceForm: React.FC<{
         <Submission
           postSubmissionMessage={postSubmissionMessage}
           answers={answers}
-          voiceConfig={voiceConfig}
+          formConfig={currentFromConfig}
         />
       )}
     </div>
@@ -138,7 +139,7 @@ export default VoiceForm;
 //       <Streamingi18Text
 //         ref={streamingTextRef}
 //         message={msg}
-//         voiceConfig={VoiceConfigDefault}
+//         formConfig={currentFromConfig}
 //       />
 //       <button onClick={triggerStreaming}>Start button</button>
 //     </div>

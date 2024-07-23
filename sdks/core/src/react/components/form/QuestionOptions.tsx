@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Streamingi18Text from "../streaming/Streamingi18Text";
-import {
-  Question,
-  Streamingi18TextRef,
-  VoiceConfig,
-} from "~/react/schema/form";
+import { Question, Streamingi18TextRef, FormConfig } from "~/react/schema/form";
 import { LanguageCode } from "~/schema";
 import { extracti18Text } from "~/helpers";
 import { i18Message } from "~/react/schema/message";
@@ -13,7 +9,7 @@ import { i18Message } from "~/react/schema/message";
 export const QuestionOptions: React.FC<{
   question: Question;
   language: LanguageCode;
-  voiceConfig: VoiceConfig;
+  formConfig: FormConfig;
   optionRefs: React.RefObject<Streamingi18TextRef>[];
   handleOptionClick: (value: string) => void;
   useRadio: boolean; // Flag to switch between checkbox and radio button
@@ -21,7 +17,7 @@ export const QuestionOptions: React.FC<{
 }> = ({
   question,
   language,
-  voiceConfig,
+  formConfig,
   optionRefs,
   handleOptionClick,
   useRadio,
@@ -100,7 +96,7 @@ export const QuestionOptions: React.FC<{
                 <Streamingi18Text
                   ref={optionRefs[index]}
                   message={option}
-                  voiceConfig={voiceConfig}
+                  formConfig={formConfig}
                   beforeSpeak={() => handleStreamingStart(index)}
                 />
               </label>
