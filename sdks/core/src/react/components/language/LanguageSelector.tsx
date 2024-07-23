@@ -39,7 +39,7 @@ export const LanguageSelector: React.FC<{}> = ({}) => {
   );
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-md">
+    <div className="fixed bottom-0 left-0 right-0 p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-md">
       <div className="flex justify-center items-center text-gray-400 dark:text-white-600">
         <span className="p-3">
           Lang: ({language}), Voice: {voice?.name}({voice?.lang})
