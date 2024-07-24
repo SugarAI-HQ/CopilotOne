@@ -2,6 +2,7 @@
 
 import { i18Message } from "~/react/schema/message";
 import { LanguageCode } from "~/schema/lang";
+import root from "window-or-global";
 
 let synth: any = null;
 let recognition: any = null;
@@ -16,7 +17,7 @@ export const speakMessage = (
   console.log(`${voice?.name} Speaking in ${language}: ${message}`);
 
   const utterance = new SpeechSynthesisUtterance(message);
-  synth = synth ?? window.speechSynthesis;
+  synth = synth ?? root.speechSynthesis;
 
   utterance.voice = voice;
   utterance.lang = language;

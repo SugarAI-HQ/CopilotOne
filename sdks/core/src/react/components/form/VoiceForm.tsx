@@ -5,6 +5,7 @@ import Submission from "./Submission";
 import { i18Message } from "~/react/schema/message";
 import { Question, FormConfig, FormConfigDefaults } from "~/react/schema/form";
 import "~/react/styles/form.css";
+import { getQueryParams } from "~/helpers/url";
 
 export const VoiceForm: React.FC<{
   showStartButton: boolean;
@@ -19,8 +20,9 @@ export const VoiceForm: React.FC<{
   questions,
   formConfig = FormConfigDefaults,
 }) => {
+  const initialStep = parseInt(getQueryParams("step") || "0");
   const currentFromConfig = { ...FormConfigDefaults, ...formConfig };
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(initialStep);
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {

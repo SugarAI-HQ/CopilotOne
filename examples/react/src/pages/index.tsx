@@ -23,21 +23,37 @@ const Home = () => {
           <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-10 lg:max-w-none lg:grid-cols-2 lg:gap-y-16">
             <a
               className="max-w-sm rounded overflow-hidden shadow-lg"
-              href="/voice_forms/leadgen"
+              href="/voice_forms/leadgen?lang=en-US"
             >
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">
-                  Leadgen Form over Voice in{" "}
-                  <span className="text-indigo-600">en</span>
-                  {", "}
-                  <span className="text-indigo-600">hi</span>
+                  Voice Form for leadgen in{" "}
+                  <span className="text-indigo-600">English (en)</span>
                 </div>
                 <p className="text-gray-700 text-base">
-                  Ask questions on voice with 10x simplified experience in
-                  multiple languages.
+                  Capture leads by just talking with user in their native
+                  language for high engagement and capturing more information
+                  effortlessly
                 </p>
               </div>
             </a>
+            <a
+              className="max-w-sm rounded overflow-hidden shadow-lg"
+              href="/voice_forms/leadgen?lang=hi"
+            >
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">
+                  Voice Form for leadgen in{" "}
+                  <span className="text-indigo-600">Hindi (hi)</span>
+                </div>
+                <p className="text-gray-700 text-base">
+                  Capture leads by just talking with user in their native
+                  language for high engagement and capturing more information
+                  effortlessly
+                </p>
+              </div>
+            </a>
+
             <a
               className="max-w-sm rounded overflow-hidden shadow-lg"
               href="/voice_forms/leadgen-embed"

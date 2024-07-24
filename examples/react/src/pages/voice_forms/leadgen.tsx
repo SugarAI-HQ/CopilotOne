@@ -1,5 +1,3 @@
-import dynamic from "next/dynamic";
-
 import React from "react";
 import {
   postSubmissionMessage,
@@ -16,6 +14,7 @@ import {
   FormConfigDefaults,
 } from "@sugar-ai/core";
 import "@sugar-ai/core/style";
+import dynamic from "next/dynamic";
 
 // import { VoiceAssistant, TextAssistant } from "@sugar-ai/copilot-one-js";
 
@@ -85,5 +84,6 @@ const App: React.FC = () => {
     </CopilotProvider>
   );
 };
-
-export default App;
+export default dynamic(() => Promise.resolve(App), {
+  ssr: false,
+});

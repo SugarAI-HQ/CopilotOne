@@ -3,6 +3,7 @@ import { useLanguage } from "..";
 import { delay, speakMessageAsync, speaki18kMessageAsync } from "~/helpers";
 import { i18Message } from "../schema/message";
 import { ListenConfigDefaults, ListenConfig } from "../schema/form";
+import root from "window-or-global";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
@@ -24,7 +25,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     //   console.error("Web Speech API is not supported");
     //   return;
     // }
-    // const recognition = new window.webkitSpeechRecognition();
+    // const recognition = new root.webkitSpeechRecognition();
     // recognitionRef.current = recognition;
     // recognition.interimResults = options.interimResults || true;
     // recognition.lang = language;
@@ -62,7 +63,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       }
 
       // Initialize a new recognition object
-      const recognition = new window.webkitSpeechRecognition();
+      const recognition = new root.webkitSpeechRecognition();
       recognition.interimResults = true;
       recognition.lang = language;
       recognition.continuous = true;
@@ -160,7 +161,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         recognitionRef.current.stop();
       }
       // Initialise a new recognition object
-      const recognition = new window.webkitSpeechRecognition();
+      const recognition = new root.webkitSpeechRecognition();
       recognition.interimResults = options.interimResults || true;
       recognition.lang = language;
       // recognition.continuous = options.continuous || false;
@@ -174,7 +175,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       //   //   "#JSGF V1.0; grammar punctuation; public <punc> = . | , | ! | ; | : ;";
       //   const grammar =
       //     "#JSGF V1.0; grammar colors; public <color> = aqua | azure | beige | bisque | black | blue | brown | chocolate | coral | crimson | cyan | fuchsia | ghostwhite | gold | goldenrod | gray | green | indigo | ivory | khaki | lavender | lime | linen | magenta | maroon | moccasin | navy | olive | orange | orchid | peru | pink | plum | purple | red | salmon | sienna | silver | snow | tan | teal | thistle | tomato | turquoise | violet | white | yellow ;";
-      //   const speechRecognitionList = new window.webkitSpeechGrammarList();
+      //   const speechRecognitionList = new root.webkitSpeechGrammarList();
       //   speechRecognitionList.addFromString(grammar, 1);
       //   recognition.grammars = speechRecognitionList;
       // }

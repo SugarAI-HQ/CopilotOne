@@ -434,7 +434,7 @@ export const VoiceQuestion: React.FC<{
       />
       {/* Text / Number. */}
       {question.question_type == "text" && (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-4">
           <TextareaAutosize
             autoComplete="off"
             // value={
