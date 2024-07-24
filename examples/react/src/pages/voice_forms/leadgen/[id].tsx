@@ -1,9 +1,4 @@
-import React from "react";
-import {
-  postSubmissionMessage,
-  questions,
-  welcomeMessage,
-} from "@/data/heathfix-leadgen";
+import React, { useEffect, useState } from "react";
 import {
   useCopilot,
   type CopilotConfigType,
@@ -15,26 +10,22 @@ import {
 } from "@sugar-ai/core";
 import "@sugar-ai/core/style";
 import dynamic from "next/dynamic";
+import { getFormData } from "@/data/leadgen";
+import { useRouter } from "next/router";
+import { NextPage } from "next";
 
-// import { VoiceAssistant, TextAssistant } from "@sugar-ai/copilot-one-js";
+const App: NextPage = () => {
+  const router = useRouter();
+  const { id } = router.query as { id: string };
 
-// 1. Onobarding Steps
-// 1.1: auto detect user language
-// 1.2: welcome message
-// 1.3: Permission to speak
+  const [fd, setFd] = useState<any>(null);
+  useEffect(() => {
+    if (id) {
+      const data = getFormData(id);
+      setFd(data);
+    }
+  }, [id]);
 
-// 2. Form Filling
-// 2.1: Load questions from server
-// 2.2: Speak question with options, while realtime showing it on the screen
-// 2.3: capture answer  and validate
-// 2.4: validate & followup if needed
-// 2.5: when success, go ahead to next question
-
-// 3 Submission
-// 3.1 Submit the anwers to server
-// 3.2 Show success and ending message.
-
-const App: React.FC = () => {
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
 
   let copilotConfig: CopilotConfigType = {
@@ -43,7 +34,6 @@ const App: React.FC = () => {
       endpoint: process.env.NEXT_PUBLIC_COPILOT_ENDPOINT as string,
       token: process.env.NEXT_PUBLIC_COPILOT_SECRET as string,
     },
-
     ai: {
       defaultPromptTemplate: copilotPackage,
       defaultPromptVariables: {
@@ -67,23 +57,33 @@ const App: React.FC = () => {
       voiceButton: {},
     },
   };
-
   return (
     <CopilotProvider config={copilotConfig}>
+      {/* <div>
+        <h1>Leadgen Form</h1>
+      </div> */}
       <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
         <LanguageSelector klass="fixed bottom-0 left-0 right-0" />
 
-        <VoiceForm
-          showStartButton={true}
-          welcomeMessage={welcomeMessage}
-          postSubmissionMessage={postSubmissionMessage}
-          questions={questions}
-          formConfig={{ ...FormConfigDefaults, ...{ characterPerSec: 100 } }}
-        />
+        {fd ? (
+          <VoiceForm
+            showStartButton={true}
+            welcomeMessage={fd.welcomeMessage}
+            postSubmissionMessage={fd.postSubmissionMessage}
+            questions={fd.questions}
+            formConfig={{ ...FormConfigDefaults, ...{ characterPerSec: 100 } }}
+          />
+        ) : (
+          <div>
+            <h1>Not Found</h1>
+          </div>
+        )}
       </LanguageProvider>
     </CopilotProvider>
   );
 };
+
+// Dynamically load the component without server-side rendering
 export default dynamic(() => Promise.resolve(App), {
   ssr: false,
 });
