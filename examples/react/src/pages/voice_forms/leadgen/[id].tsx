@@ -20,11 +20,12 @@ const App: NextPage = () => {
 
   const [fd, setFd] = useState<any>(null);
   useEffect(() => {
+    if (!router.isReady) return;
     if (id) {
       const data = getFormData(id);
       setFd(data);
     }
-  }, [id]);
+  }, [id, router]);
 
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
 
