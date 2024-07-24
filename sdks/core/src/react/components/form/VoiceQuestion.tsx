@@ -386,7 +386,6 @@ export const VoiceQuestion: React.FC<{
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      debugger;
       // if (isLoading) return;
 
       e.preventDefault();

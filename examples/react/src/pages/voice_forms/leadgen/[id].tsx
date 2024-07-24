@@ -61,7 +61,7 @@ const App: NextPage = () => {
   };
   return (
     <CopilotProvider config={copilotConfig}>
-      <UnsupportedBrowser>
+      <UnsupportedBrowser stillAllow={process.env.NODE_ENV !== "development"}>
         {/* <div>
         <h1>Leadgen Form</h1>
       </div> */}
