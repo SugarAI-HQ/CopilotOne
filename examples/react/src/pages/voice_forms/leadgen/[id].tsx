@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import { getFormData } from "@/data/leadgen";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
+import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
 const App: NextPage = () => {
   const router = useRouter();
@@ -60,26 +61,31 @@ const App: NextPage = () => {
   };
   return (
     <CopilotProvider config={copilotConfig}>
-      {/* <div>
+      <UnsupportedBrowser>
+        {/* <div>
         <h1>Leadgen Form</h1>
       </div> */}
-      <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
-        <LanguageSelector klass="fixed bottom-0 left-0 right-0" />
+        <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
+          <LanguageSelector klass="fixed bottom-0 left-0 right-0" />
 
-        {fd ? (
-          <VoiceForm
-            showStartButton={true}
-            welcomeMessage={fd.welcomeMessage}
-            postSubmissionMessage={fd.postSubmissionMessage}
-            questions={fd.questions}
-            formConfig={{ ...FormConfigDefaults, ...{ characterPerSec: 100 } }}
-          />
-        ) : (
-          <div>
-            <h1>Not Found</h1>
-          </div>
-        )}
-      </LanguageProvider>
+          {fd ? (
+            <VoiceForm
+              showStartButton={true}
+              welcomeMessage={fd.welcomeMessage}
+              postSubmissionMessage={fd.postSubmissionMessage}
+              questions={fd.questions}
+              formConfig={{
+                ...FormConfigDefaults,
+                ...{ characterPerSec: 100 },
+              }}
+            />
+          ) : (
+            <div>
+              <h1>Not Found</h1>
+            </div>
+          )}
+        </LanguageProvider>
+      </UnsupportedBrowser>
     </CopilotProvider>
   );
 };
