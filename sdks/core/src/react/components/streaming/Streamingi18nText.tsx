@@ -6,6 +6,8 @@ import React, {
 } from "react";
 // import { css } from "@emotion/react";
 
+const FAST_FORWARD = "fastForward";
+
 import {
   cancelMessage,
   extracti18nText,
@@ -25,26 +27,34 @@ const Streamingi18nText: React.ForwardRefRenderFunction<
   const [displayedText, setDisplayedText] = useState<string>("");
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [isCancelled, setIsCancelled] = useState<boolean>(false);
 
   const elRef = React.useRef<HTMLParagraphElement>(null);
 
-  const streamRender = async (text: string, characterPerSec: number = 40) => {
+  const getRenderData = (
+    text: string,
+    characterPerSec: number = 40,
+  ): { characters: string[]; renderTime: number } => {
     const characters = text.split("");
     const duration = characters.length / characterPerSec; // Duration per character in milliseconds
+
+    const renderTime = duration * 100;
+
+    return { characters, renderTime };
+  };
+
+  const streamRender = async (characters: string[], renderTime) => {
     const promises: Promise<void>[] = [];
     for (let i = 0; i < characters.length; i++) {
       promises.push(
         new Promise<void>((resolve) => {
-          setTimeout(
-            () => {
-              setDisplayedText((prev) => {
-                const next = `${prev}${characters[i]}`;
-                resolve();
-                return next;
-              });
-            },
-            i * duration * 100,
-          ); // Distribute time evenly
+          setTimeout(() => {
+            setDisplayedText((prev) => {
+              const next = `${prev}${characters[i]}`;
+              resolve();
+              return next;
+            });
+          }, i * renderTime); // Distribute time evenly
         }),
       );
     }
@@ -54,17 +64,48 @@ const Streamingi18nText: React.ForwardRefRenderFunction<
   const speakAndRender = async () => {
     const text = extracti18nText(message, language);
 
+    const { characters, renderTime } = getRenderData(
+      text,
+      formConfig?.characterPerSec,
+    );
+
     setIsSpeaking(true);
 
     return Promise.all([
-      streamRender(text, formConfig?.characterPerSec).catch((err) =>
-        console.log(err),
-      ),
+      streamRender(characters, renderTime).catch((err) => console.log(err)),
       speakMessageAsync(text, language, voice as SpeechSynthesisVoice).catch(
         (err) => console.log(err),
       ),
-    ]).finally(() => {
-      setIsSpeaking(false);
+      waitForFastforward(renderTime),
+    ])
+      .catch((e) => {
+        if (e == FAST_FORWARD) {
+          // ignore
+        }
+      })
+      .finally(() => {
+        setIsSpeaking(false);
+      });
+  };
+
+  const waitForFastforward = async (renderTime: number) => {
+    let passedTime = 0;
+    let timeout = renderTime * 30;
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(function () {
+        passedTime = passedTime + 50;
+        if (passedTime >= timeout) {
+          resolve("done");
+          clearInterval(interval);
+        }
+        setIsCancelled((ic) => {
+          if (ic) {
+            reject(FAST_FORWARD);
+            clearInterval(interval);
+          }
+          return false;
+        });
+      }, 50);
     });
   };
 
@@ -126,6 +167,12 @@ const Streamingi18nText: React.ForwardRefRenderFunction<
     };
   }, []);
 
+  const fastForward = (): void => {
+    console.log("fast forwarding");
+    setIsCancelled(true);
+    cancelMessage();
+  };
+
   return (
     <div className="streaming-text m-2 block" onClick={handleStart}>
       <h1
@@ -134,6 +181,7 @@ const Streamingi18nText: React.ForwardRefRenderFunction<
         className={`text-2xl whitespace-pre-wrap ${false ? "highlight" : ""}`}
         onFocus={() => elRef.current?.classList.add("highlight")}
         onBlur={() => elRef.current?.classList.remove("highlight")}
+        onClick={() => fastForward()}
       >
         {displayedText}
       </h1>
@@ -148,3 +196,10 @@ const Streamingi18nText: React.ForwardRefRenderFunction<
 };
 
 export default forwardRef(Streamingi18nText);
+class FastForwardedError extends Error {
+  constructor(message: string = "fast forwarded") {
+    super(message);
+    this.name = "FastForwardedError";
+    Object.setPrototypeOf(this, FastForwardedError.prototype);
+  }
+}

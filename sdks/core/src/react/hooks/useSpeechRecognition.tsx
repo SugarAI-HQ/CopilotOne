@@ -12,6 +12,8 @@ interface SpeechRecognitionOptions {
   onListeningStop?: (text: string) => void;
 }
 
+const noSpeech = geti18nMessage("noSpeech");
+
 const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const { language, voice } = useLanguage();
   const [isMicEnabled, setIsMicEnabled] = useState(false);
@@ -363,7 +365,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         if (error == "no-speech") {
           // nudge user to speak
           await speaki18nMessageAsync(
-            geti18nMessage("noSpeech"),
+            noSpeech,
             language,
             voice as SpeechSynthesisVoice,
           );

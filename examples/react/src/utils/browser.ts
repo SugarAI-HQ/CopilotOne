@@ -67,7 +67,7 @@ export const isUnsupportedBrowser = (): boolean => {
     /Macintosh/.test(navigator.userAgent);
   const isSupportedSafari = isMacSafari;
 
-  const isSupported = isSupportedChrome || isSupportedSafari;
+  const isSupported = isSupportedChrome;
 
   // Return true if browser is not Chrome
   return !isSupported;
