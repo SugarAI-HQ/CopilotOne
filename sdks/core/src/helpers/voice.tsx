@@ -1,6 +1,6 @@
-// import { LanguageCode, i18Message } from "../base/schema/"
+// import { LanguageCode, i18nMessage } from "../base/schema/"
 
-import { i18Message } from "~/react/schema/message";
+import { i18nMessage } from "~/react/schema/message";
 import { LanguageCode } from "~/schema/lang";
 import root from "window-or-global";
 
@@ -44,12 +44,12 @@ export const speakMessageAsync = async (
   });
 };
 
-export const speaki18kMessageAsync = async (
-  message: i18Message,
+export const speaki18nMessageAsync = async (
+  message: i18nMessage,
   language: LanguageCode,
   voice: SpeechSynthesisVoice,
 ): Promise<void> => {
-  return speakMessageAsync(extracti18Text(message, language), language, voice);
+  return speakMessageAsync(extracti18nText(message, language), language, voice);
 };
 
 export const cancelMessage = () => {
@@ -57,7 +57,10 @@ export const cancelMessage = () => {
   synth.cancel();
 };
 
-export const extracti18Text = (message: i18Message, language: LanguageCode) => {
+export const extracti18nText = (
+  message: i18nMessage,
+  language: LanguageCode,
+) => {
   const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
   let text = "not found";
   text = message?.lang[language] ?? (message?.lang[userLang] as string);

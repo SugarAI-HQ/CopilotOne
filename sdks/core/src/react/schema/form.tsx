@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { i18MessageSchema } from "./message";
+import { i18nMessageSchema } from "./message";
 
 export const listenConfig = z.object({
   maxAnswerLength: z.number().default(-1),
@@ -35,10 +35,10 @@ export const FormConfigDefaults: FormConfig = {
 export const QuestionSchema = z.object({
   id: z.string(),
   question_type: z.enum(["multiple_choice", "single_choice", "text", "number"]),
-  question_text: i18MessageSchema,
+  question_text: i18nMessageSchema,
   question_params: z
     .object({
-      options: z.array(i18MessageSchema).optional(),
+      options: z.array(i18nMessageSchema).optional(),
     })
     .passthrough(),
   validation: z
@@ -49,24 +49,24 @@ export const QuestionSchema = z.object({
 });
 export type Question = z.infer<typeof QuestionSchema>;
 
-export const streamingi18TextSchema = z.object({
-  message: i18MessageSchema,
+export const streamingi18nTextSchema = z.object({
+  message: i18nMessageSchema,
   formConfig: formConfig.optional(),
   // beforeSpeak: z.function().optional(),
   // afterSpeak: z.function().optional(),
   beforeSpeak: z.function().args().returns(z.promise(z.any())).optional(),
   afterSpeak: z.function().args().returns(z.promise(z.any())).optional(),
 });
-export type Streamingi18TextProps = z.infer<typeof streamingi18TextSchema>;
+export type Streamingi18nTextProps = z.infer<typeof streamingi18nTextSchema>;
 
-// Define the Streamingi18TextRef schema
+// Define the Streamingi18nTextRef schema
 export const StreamingTextRefSchema = z.object({
   startStreaming: z.function().returns(z.void()),
   focusElement: z.function().returns(z.void()),
 });
 
 // Define the TypeScript type based on the Zod schema
-export type Streamingi18TextRef = z.infer<typeof StreamingTextRefSchema>;
+export type Streamingi18nTextRef = z.infer<typeof StreamingTextRefSchema>;
 
 export const evaluationResponse = z.object({
   answer: z.string(),

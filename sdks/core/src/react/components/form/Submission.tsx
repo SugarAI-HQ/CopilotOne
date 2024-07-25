@@ -1,17 +1,17 @@
-import { Streamingi18TextRef, FormConfig } from "~/react/schema/form";
+import { Streamingi18nTextRef, FormConfig } from "~/react/schema/form";
 import React, { useEffect, useRef } from "react";
-import Streamingi18Text from "../streaming/Streamingi18Text";
-import { i18Message } from "~/react/schema/message";
+import Streamingi18nText from "../streaming/Streamingi18nText";
+import { i18nMessage } from "~/react/schema/message";
 import { useLanguage } from "..";
 import MessageWorkflow from "~/workflow/MessageWorkflow";
 
 export const Submission: React.FC<{
-  postSubmissionMessage: i18Message;
+  postSubmissionMessage: i18nMessage;
   answers: any[];
   formConfig: FormConfig;
 }> = ({ postSubmissionMessage, answers, formConfig }) => {
   const { language, voice } = useLanguage();
-  const postSubmissionMessageRef = useRef<Streamingi18TextRef>(null);
+  const postSubmissionMessageRef = useRef<Streamingi18nTextRef>(null);
 
   const runWorkflow = async () => {
     const workflow = new MessageWorkflow();
@@ -46,7 +46,7 @@ export const Submission: React.FC<{
 
   return (
     <div className="p-4">
-      <Streamingi18Text
+      <Streamingi18nText
         ref={postSubmissionMessageRef}
         message={postSubmissionMessage}
         formConfig={formConfig}

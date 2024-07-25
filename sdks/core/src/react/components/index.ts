@@ -7,4 +7,4 @@ export * from "./form/VoiceQuestion";
 export * from "./language/LanguageContext";
 export * from "./language/LanguageSelector";
 export * from "./streaming/StreamingText";
-export * from "./streaming/Streamingi18Text";
+export * from "./streaming/Streamingi18nText";

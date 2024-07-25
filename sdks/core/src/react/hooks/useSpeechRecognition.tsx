@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "..";
-import { delay, speakMessageAsync, speaki18kMessageAsync } from "~/helpers";
-import { i18Message } from "../schema/message";
+import { delay, speakMessageAsync, speaki18nMessageAsync } from "~/helpers";
+import { i18nMessage } from "../schema/message";
 import { ListenConfigDefaults, ListenConfig } from "../schema/form";
 import root from "window-or-global";
+import { geti18nMessage } from "~/i18n";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
@@ -307,10 +308,11 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       }
     });
   };
+
   const requestMicPermission = async (): Promise<boolean> => {
     let granted = false;
     const alreadyGranted = await checkIfAudioPermissionGranted();
-    let endMessage = "Microphone permissions granted. You can now speak.";
+    let endMessage = geti18nMessage("permissionsGranted");
 
     if (alreadyGranted) {
       granted = true;
@@ -328,7 +330,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       .catch((err) => {
         console.error("[Audio] Error requesting microphone permission", err);
         granted = false;
-        endMessage = "Please try again by giving microphone permissions.";
+        endMessage = geti18nMessage("permissionFailed");
         return granted;
       })
       .finally(async () => {
@@ -336,7 +338,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
         return new Promise<boolean>(async (resolve, reject) => {
           setTimeout(async () => {
-            await speakMessageAsync(
+            await speaki18nMessageAsync(
               endMessage,
               language,
               voice as SpeechSynthesisVoice,
@@ -360,8 +362,8 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         console.error(error);
         if (error == "no-speech") {
           // nudge user to speak
-          await speaki18kMessageAsync(
-            noSpeech,
+          await speaki18nMessageAsync(
+            geti18nMessage("noSpeech"),
             language,
             voice as SpeechSynthesisVoice,
           );
@@ -399,7 +401,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
             // nudge user to speak
             if (nudgeAfterAttempts == 2) {
-              await speaki18kMessageAsync(
+              await speaki18nMessageAsync(
                 noSpeech,
                 language,
                 voice as SpeechSynthesisVoice,
@@ -434,13 +436,3 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 };
 
 export default useSpeechToText;
-
-const noSpeech: i18Message = {
-  mode: "manual",
-  lang: {
-    en: "Waiting for your answer. Please speak now.",
-    hi: "कृपया अपना उत्तर बोलें।",
-  },
-  voice: true,
-  output: "none",
-};

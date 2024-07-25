@@ -71,8 +71,7 @@ const App: NextPage = () => {
           {fd ? (
             <VoiceForm
               showStartButton={true}
-              welcomeMessage={fd.welcomeMessage}
-              postSubmissionMessage={fd.postSubmissionMessage}
+              translations={fd.translations}
               questions={fd.questions}
               formConfig={{
                 ...FormConfigDefaults,

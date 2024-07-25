@@ -9,13 +9,13 @@
 // import { useLanguage } from "./LanguageContext";
 // import {
 //   LanguageCode,
-//   Streamingi18TextProps,
-//   Streamingi18TextRef,
+//   Streamingi18nTextProps,
+//   Streamingi18nTextRef,
 // } from "@/schema/voiceFormSchema";
 
-// const Streamingi18Text: React.ForwardRefRenderFunction<
-//   Streamingi18TextRef,
-//   Streamingi18TextProps
+// const Streamingi18nText: React.ForwardRefRenderFunction<
+//   Streamingi18nTextRef,
+//   Streamingi18nTextProps
 // > = ({ message, formConfig }, ref) => {
 //   const { language, voice } = useLanguage();
 //   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -142,4 +142,4 @@
 //   );
 // };
 
-// export default forwardRef(Streamingi18Text);
+// export default forwardRef(Streamingi18nText);

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 
-import Streamingi18Text from "../streaming/Streamingi18Text";
-import { Question, Streamingi18TextRef, FormConfig } from "~/react/schema/form";
+import Streamingi18nText from "../streaming/Streamingi18nText";
+import {
+  Question,
+  Streamingi18nTextRef,
+  FormConfig,
+} from "~/react/schema/form";
 import { LanguageCode } from "~/schema";
-import { extracti18Text } from "~/helpers";
-import { i18Message } from "~/react/schema/message";
+import { extracti18nText } from "~/helpers";
+import { i18nMessage } from "~/react/schema/message";
 
 export const QuestionOptions: React.FC<{
   question: Question;
   language: LanguageCode;
   formConfig: FormConfig;
-  optionRefs: React.RefObject<Streamingi18TextRef>[];
+  optionRefs: React.RefObject<Streamingi18nTextRef>[];
   handleOptionClick: (value: string) => void;
   useRadio: boolean; // Flag to switch between checkbox and radio button
   selected: string[];
@@ -57,11 +61,11 @@ export const QuestionOptions: React.FC<{
     <>
       <ul>
         {question.question_params.options?.map(
-          (option: i18Message, index: number) => (
+          (option: i18nMessage, index: number) => (
             <li
               key={index}
               onClick={(e) =>
-                handleInputChange(extracti18Text(option, language))
+                handleInputChange(extracti18nText(option, language))
               }
               style={{
                 display: "flex",
@@ -69,7 +73,7 @@ export const QuestionOptions: React.FC<{
                 marginBottom: "10px",
                 cursor: "pointer", // Add cursor pointer to indicate clickability
                 backgroundColor: selectedOptions.includes(
-                  extracti18Text(option, language),
+                  extracti18nText(option, language),
                 )
                   ? "#ffff99"
                   : "transparent", // Highlight selected options
@@ -81,10 +85,10 @@ export const QuestionOptions: React.FC<{
                   type={useRadio ? "radio" : "checkbox"}
                   id={`option-${question.id}-${index}`}
                   name={`option-${question.id}`}
-                  value={extracti18Text(option, language)}
+                  value={extracti18nText(option, language)}
                   onChange={(e) => handleInputChange(e.currentTarget.value)}
                   checked={selectedOptions.includes(
-                    extracti18Text(option, language),
+                    extracti18nText(option, language),
                   )}
                   style={{ marginRight: "10px" }} // Space between input and label
                 />
@@ -93,7 +97,7 @@ export const QuestionOptions: React.FC<{
                 htmlFor={`option-${question.id}-${index}`}
                 style={{ display: "flex", alignItems: "center" }}
               >
-                <Streamingi18Text
+                <Streamingi18nText
                   ref={optionRefs[index]}
                   message={option}
                   formConfig={formConfig}

@@ -2,21 +2,20 @@ import React, { useRef, useState } from "react";
 import Onboarding from "./Onboarding";
 import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
-import { i18Message } from "~/react/schema/message";
+import { Translations, i18nMessage } from "~/react/schema/message";
 import { Question, FormConfig, FormConfigDefaults } from "~/react/schema/form";
 import "~/react/styles/form.css";
 import { getQueryParams } from "~/helpers/url";
+import { geti18nMessage } from "~/i18n";
 
 export const VoiceForm: React.FC<{
   showStartButton: boolean;
-  welcomeMessage: i18Message;
-  postSubmissionMessage: i18Message;
+  translations: Translations;
   questions: Question[];
   formConfig: FormConfig;
 }> = ({
   showStartButton,
-  welcomeMessage,
-  postSubmissionMessage,
+  translations,
   questions,
   formConfig = FormConfigDefaults,
 }) => {
@@ -49,6 +48,9 @@ export const VoiceForm: React.FC<{
   //     //   <StreamingText message={message} />
   //     // </div>
   //   );
+
+  const welcomeMessage = geti18nMessage("welcome", translations);
+  const postSubmissionMessage = geti18nMessage("postSubmission", translations);
 
   return (
     <div className="container mx-auto p-4">
@@ -118,7 +120,7 @@ export default VoiceForm;
 // };
 
 // const ParentComponent = () => {
-//   const streamingTextRef = useRef<Streamingi18TextRef>(null);
+//   const streamingTextRef = useRef<Streamingi18nTextRef>(null);
 
 //   const triggerStreaming = () => {
 //     if (streamingTextRef.current) {
@@ -126,7 +128,7 @@ export default VoiceForm;
 //     }
 //   };
 
-//   const msg: i18Message = {
+//   const msg: i18nMessage = {
 //     mode: "manual",
 //     lang: {
 //       en: "Hola, welcome to the streaming text and speech synthesis example.",
@@ -138,7 +140,7 @@ export default VoiceForm;
 
 //   return (
 //     <div>
-//       <Streamingi18Text
+//       <Streamingi18nText
 //         ref={streamingTextRef}
 //         message={msg}
 //         formConfig={currentFromConfig}

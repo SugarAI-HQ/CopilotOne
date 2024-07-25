@@ -1,24 +1,14 @@
-import { Question, i18Message } from "@sugar-ai/core";
+import { Question, i18nMessage, Translations } from "@sugar-ai/core";
 
-export const welcomeMessage: i18Message = {
-  mode: "manual",
-  lang: {
-    // en: "Welcome to Healthfix, To book the appointment, please help me with the following details.",
+export const translations: Translations = {
+  welcome: {
     en: "Welcome to Healthfix. Please answer the questions to book an appointment",
     hi: "हेल्थफिक्स में आपका स्वागत है। अपॉइंटमेंट बुक करने के लिए प्रश्नों का उत्तर दें।",
   },
-  voice: true,
-  output: "none",
-};
-
-export const postSubmissionMessage: i18Message = {
-  mode: "manual",
-  lang: {
+  postSubmission: {
     en: "Thank you for sharing the details. We will send the details of your appointment on your phone.",
     hi: "विवरण के लिए धन्यवाद। आपका अपॉइंटमेंट बुक कर लिया गया है, आपको एसएमएस पर विवरण मिलेगा।",
   },
-  voice: true,
-  output: "none",
 };
 
 export const questions: Question[] = [

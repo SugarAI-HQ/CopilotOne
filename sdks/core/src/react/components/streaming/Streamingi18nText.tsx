@@ -8,15 +8,18 @@ import React, {
 
 import {
   cancelMessage,
-  extracti18Text,
+  extracti18nText,
   speakMessageAsync,
 } from "../../../helpers/voice"; // Ensure the speakMessage function is properly imported
 import { useLanguage } from "../language/LanguageContext";
-import { Streamingi18TextProps, Streamingi18TextRef } from "../../schema/form";
+import {
+  Streamingi18nTextProps,
+  Streamingi18nTextRef,
+} from "../../schema/form";
 
-const Streamingi18Text: React.ForwardRefRenderFunction<
-  Streamingi18TextRef,
-  Streamingi18TextProps
+const Streamingi18nText: React.ForwardRefRenderFunction<
+  Streamingi18nTextRef,
+  Streamingi18nTextProps
 > = ({ message, formConfig, beforeSpeak, afterSpeak }, ref) => {
   const { language, voice } = useLanguage();
   const [displayedText, setDisplayedText] = useState<string>("");
@@ -49,7 +52,7 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
   };
 
   const speakAndRender = async () => {
-    const text = extracti18Text(message, language);
+    const text = extracti18nText(message, language);
 
     setIsSpeaking(true);
 
@@ -144,4 +147,4 @@ const Streamingi18Text: React.ForwardRefRenderFunction<
   );
 };
 
-export default forwardRef(Streamingi18Text);
+export default forwardRef(Streamingi18nText);

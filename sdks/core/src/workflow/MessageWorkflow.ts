@@ -1,14 +1,14 @@
 import React from "react";
-import { Streamingi18TextRef } from "@/schema/formSchema";
+import { Streamingi18nTextRef } from "@/schema/formSchema";
 
 class MessageWorkflow {
-  private messages: React.RefObject<Streamingi18TextRef>[];
+  private messages: React.RefObject<Streamingi18nTextRef>[];
 
   constructor() {
     this.messages = [];
   }
 
-  addMessage(message: React.RefObject<Streamingi18TextRef>): void {
+  addMessage(message: React.RefObject<Streamingi18nTextRef>): void {
     this.messages.push(message);
   }
 

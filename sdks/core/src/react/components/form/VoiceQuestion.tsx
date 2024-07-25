@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { TextToActionResponse } from "~/schema/copilot";
 import "~/react/styles/form.css"; // Adjust the path according to your project structure
 import {
-  extracti18Text,
+  extracti18nText,
   speakMessageAsync,
-  speaki18kMessageAsync,
+  speaki18nMessageAsync,
 } from "~/helpers/voice";
 
 import { FaMicrophoneSlash } from "react-icons/fa";
@@ -14,7 +14,7 @@ import { QuestionOptions } from "./QuestionOptions";
 import {
   EvaluationResponse,
   Question,
-  Streamingi18TextRef,
+  Streamingi18nTextRef,
   FormConfig,
 } from "~/react/schema/form";
 import { useLanguage } from "..";
@@ -25,8 +25,8 @@ import {
   EmbeddingScopeWithUserType,
   LanguageCode,
 } from "~/schema";
-import Streamingi18Text from "../streaming/Streamingi18Text";
-import { i18Message } from "~/react/schema/message";
+import Streamingi18nText from "../streaming/Streamingi18nText";
+import { i18nMessage } from "~/react/schema/message";
 import { delay } from "~/helpers";
 
 export const VoiceQuestion: React.FC<{
@@ -44,9 +44,9 @@ export const VoiceQuestion: React.FC<{
   const [answer, setAnswer] = useState<string | null>(null);
 
   // Create refs for the question and options
-  const questionRef: React.RefObject<Streamingi18TextRef> =
-    useRef<Streamingi18TextRef>(null);
-  const optionRefs: React.RefObject<Streamingi18TextRef>[] = [];
+  const questionRef: React.RefObject<Streamingi18nTextRef> =
+    useRef<Streamingi18nTextRef>(null);
+  const optionRefs: React.RefObject<Streamingi18nTextRef>[] = [];
 
   // Selected option
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -84,7 +84,7 @@ export const VoiceQuestion: React.FC<{
 
   if (question?.question_params?.options) {
     question?.question_params?.options.map(() =>
-      optionRefs.push(useRef<Streamingi18TextRef>(null)),
+      optionRefs.push(useRef<Streamingi18nTextRef>(null)),
     );
   }
 
@@ -226,7 +226,7 @@ export const VoiceQuestion: React.FC<{
     if (question.question_type == "multiple_choice") {
       // setAnswer("15-30 days");
       setAnswer(answer);
-      // await speaki18kMessageAsync(
+      // await speaki18nMessageAsync(
       //   selectedAnswer,
       //   language,
       //   voice as SpeechSynthesisVoice,
@@ -234,7 +234,7 @@ export const VoiceQuestion: React.FC<{
       await speakMessageAsync(answer, language, voice as SpeechSynthesisVoice);
       await delay(3000);
     } else {
-      // await speaki18kMessageAsync(
+      // await speaki18nMessageAsync(
       //   selectedAnswer,
       //   language,
       //   voice as SpeechSynthesisVoice,
@@ -269,7 +269,7 @@ export const VoiceQuestion: React.FC<{
     const pvs: any = {
       "@language": language,
       "@question_type": question.question_type,
-      "@question": extracti18Text(question.question_text, language),
+      "@question": extracti18nText(question.question_text, language),
     };
 
     let action: ActionRegistrationType = {
@@ -303,7 +303,7 @@ export const VoiceQuestion: React.FC<{
     // Incase of mcq type of questions
     if (question.question_params?.options) {
       options = question.question_params?.options?.map((option) =>
-        extracti18Text(option, language),
+        extracti18nText(option, language),
       ) as string[];
 
       pvs["@options"] = options.join(",");
@@ -395,8 +395,8 @@ export const VoiceQuestion: React.FC<{
   };
 
   const renderMCQ = async (
-    qRef: React.RefObject<Streamingi18TextRef>,
-    optionRefs: React.RefObject<Streamingi18TextRef>[],
+    qRef: React.RefObject<Streamingi18nTextRef>,
+    optionRefs: React.RefObject<Streamingi18nTextRef>[],
   ): Promise<void> => {
     // Speak the question
     if (qRef.current) {
@@ -414,19 +414,9 @@ export const VoiceQuestion: React.FC<{
     }
   };
 
-  const selectedAnswer: i18Message = {
-    mode: "manual",
-    lang: {
-      en: "Selected Answer is",
-      hi: "चयनित उत्तर है",
-    },
-    voice: true,
-    output: "none",
-  };
-
   return (
     <div className="p-4">
-      <Streamingi18Text
+      <Streamingi18nText
         ref={questionRef}
         message={question.question_text}
         formConfig={formConfig}
@@ -619,7 +609,7 @@ export default VoiceQuestion;
 //   await speakMessageAsync(questionText, language, voice);
 
 //   // Speak the options
-//   const options = question?.question_params?.options as i18Message[];
+//   const options = question?.question_params?.options as i18nMessage[];
 //   for (let i = 0; i < options.length; i++) {
 //     const option = options[i];
 //     await speakMessageAsync(option, language, voice);

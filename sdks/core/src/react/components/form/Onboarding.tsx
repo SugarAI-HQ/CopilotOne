@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Streamingi18TextRef, FormConfig } from "~/react/schema/form";
-import { i18Message } from "~/react/schema/message";
+import { Streamingi18nTextRef, FormConfig } from "~/react/schema/form";
+import { i18nMessage } from "~/react/schema/message";
 
 import useSpeechToText from "~/react/hooks/useSpeechRecognition";
 import MessageWorkflow from "~/workflow/MessageWorkflow";
-import Streamingi18Text from "../streaming/Streamingi18Text";
+import Streamingi18nText from "../streaming/Streamingi18nText";
 import { useLanguage } from "../language/LanguageContext";
+import { geti18nMessage } from "~/i18n";
 
 export const Onboarding: React.FC<{
   showStartButton: boolean;
   onComplete: () => void;
-  welcomeMessage: i18Message;
+  welcomeMessage: i18nMessage;
   formConfig: FormConfig;
 }> = ({ showStartButton, onComplete, welcomeMessage, formConfig }) => {
   const { language, voice } = useLanguage();
@@ -27,8 +28,8 @@ export const Onboarding: React.FC<{
     continuous: false,
   });
 
-  const welcomeMessageRef = useRef<Streamingi18TextRef>(null);
-  const requestMicPermissionsRef = useRef<Streamingi18TextRef>(null);
+  const welcomeMessageRef = useRef<Streamingi18nTextRef>(null);
+  const requestMicPermissionsRef = useRef<Streamingi18nTextRef>(null);
 
   const runWorkflow = async () => {
     const workflow = new MessageWorkflow();
@@ -36,16 +37,6 @@ export const Onboarding: React.FC<{
     workflow.addMessage(requestMicPermissionsRef);
 
     await workflow.run();
-  };
-
-  const requestMicPermissionsMessage: i18Message = {
-    mode: "manual",
-    lang: {
-      en: "Please give microphone permissions.",
-      hi: "कृपया माइक्रोफ़ोन की अनुमतियाँ दें।",
-    },
-    voice: true,
-    output: "none",
   };
 
   useEffect(() => {
@@ -76,15 +67,15 @@ export const Onboarding: React.FC<{
         </div>
       ) : (
         <div className="p-4 block justify-center">
-          <Streamingi18Text
+          <Streamingi18nText
             ref={welcomeMessageRef}
             message={welcomeMessage}
             formConfig={formConfig}
           />
           {!isMicEnabled && (
-            <Streamingi18Text
+            <Streamingi18nText
               ref={requestMicPermissionsRef}
-              message={requestMicPermissionsMessage}
+              message={geti18nMessage("requestMicPermissions")}
               formConfig={formConfig}
               beforeSpeak={async () => {
                 return new Promise(async (resolve, reject) => {
