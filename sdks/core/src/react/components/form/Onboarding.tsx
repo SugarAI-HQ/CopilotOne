@@ -31,7 +31,7 @@ export const Onboarding: React.FC<{
   const welcomeMessageRef = useRef<Streamingi18nTextRef>(null);
   const requestMicPermissionsRef = useRef<Streamingi18nTextRef>(null);
 
-  const runWorkflow = async () => {
+  const start = async () => {
     const workflow = new MessageWorkflow();
     workflow.addMessage(welcomeMessageRef);
     workflow.addMessage(requestMicPermissionsRef);
@@ -41,7 +41,7 @@ export const Onboarding: React.FC<{
 
   useEffect(() => {
     if (welcomeMessage && language && voice && !showStart) {
-      setTimeout(() => runWorkflow(), 1000);
+      setTimeout(() => start(), 1000);
     }
   }, [welcomeMessage, language, voice]);
 
@@ -49,7 +49,7 @@ export const Onboarding: React.FC<{
     <div>
       {showStart ? (
         <div className="flex-col p-2 justify-center">
-          <h1 className="text-2xl	justify-center m-4 p-2 text-center">
+          <h1 className="text-2xl p-2	justify-center m-4 text-center">
             This is demo of voice forms for lead generation
           </h1>
           <button
@@ -57,7 +57,7 @@ export const Onboarding: React.FC<{
             onClick={() => {
               setShowStart(false);
               setShowStart((k) => {
-                setTimeout(() => runWorkflow(), 1000);
+                setTimeout(() => start(), 1000);
                 return k;
               });
             }}
