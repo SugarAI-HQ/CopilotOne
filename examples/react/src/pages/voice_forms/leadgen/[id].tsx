@@ -79,7 +79,7 @@ const App: NextPage = () => {
             {showStart && fd && (
               <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
                 <h1 className="text-3xl md:text-4xl lg:text-5xl p-2 m-4 text-center text-gray-800">
-                  This is a demo of voice forms for lead generation
+                  Experience Lead Generation with Our Multilingual Voice Form
                 </h1>
                 <button
                   className="w-full max-w-xs md:max-w-md lg:max-w-lg m-4 p-4 bg-blue-500 hover:bg-blue-600 text-white text-center rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
