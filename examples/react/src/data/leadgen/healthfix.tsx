@@ -55,10 +55,8 @@ export const questions: Question[] = [
     question_text: {
       mode: "manual",
       lang: {
-        // en: "On a scale of 1 - 5 (5 being worst), What is the intensity of your pain?",
-        en: "On a scale of 1 to 5 (5 being worst), how would you rate the intensity of your pain?",
-        // hi: "1 से 5 के पैमाने पर (5 सबसे खराब होने पर), आपको कितना दर्द हो रहा है?",
-        hi: "1 से 5 के पैमाने पर (5 सबसे खराब), आप अपने दर्द की तीव्रता को कैसे रेट करेंगे?",
+        en: "What is the intensity of your pain?",
+        hi: "आप अभी कितना दर्द महसूस कर रहे हैं ?",
       },
       voice: true,
       output: "none",
@@ -94,8 +92,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "Quite Severe",
-            hi: "काफी गंभीर",
+            en: "Severe Pain",
+            hi: "काफ़ी गंभीर दर्द",
           },
           mode: "manual",
           voice: true,
@@ -103,8 +101,8 @@ export const questions: Question[] = [
         },
         {
           lang: {
-            en: "Extremely Severe",
-            hi: "अत्यंत गंभीर",
+            en: "Very Severe Pain",
+            hi: "बहुत ज्यादा गंभीर दर्द",
           },
           mode: "manual",
           voice: true,
