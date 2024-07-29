@@ -17,8 +17,10 @@ export const ListenConfigDefaults = {
   userPauseTimeout: 5000, // User is speaking but take a pause in between
 };
 
+export const CharcterPerSec = 20;
+
 export const formConfig = z.object({
-  characterPerSec: z.number().optional().default(40),
+  characterPerSec: z.number().optional().default(CharcterPerSec),
   // lang: z.string().optional().default("auto"),
   // defaultLang: z.string().optional().default("en"),
   listen: listenConfig,
@@ -26,7 +28,7 @@ export const formConfig = z.object({
 export type FormConfig = z.infer<typeof formConfig>;
 
 export const FormConfigDefaults: FormConfig = {
-  characterPerSec: 40,
+  characterPerSec: CharcterPerSec,
 
   // maxAnswerLength
   listen: ListenConfigDefaults,
@@ -50,7 +52,8 @@ export const QuestionSchema = z.object({
 export type Question = z.infer<typeof QuestionSchema>;
 
 export const streamingi18nTextSchema = z.object({
-  message: i18nMessageSchema,
+  message: i18nMessageSchema.optional(),
+  messageKey: z.string().optional(),
   formConfig: formConfig.optional(),
   // beforeSpeak: z.function().optional(),
   // afterSpeak: z.function().optional(),
@@ -83,3 +86,24 @@ export const voiceFormStates = z.enum([
   "waiting",
 ]);
 export type VoiceFormStates = z.infer<typeof voiceFormStates>;
+
+export const streamingi18nHtmlSchema = z.object({
+  message: i18nMessageSchema,
+  messageKey: z.string().optional(),
+  formConfig: formConfig.optional(),
+  // beforeSpeak: z.function().optional(),
+  // afterSpeak: z.function().optional(),
+  htmlTag: z.string().optional().default("div"),
+  customStyle: z.string().optional().default(""),
+  beforeSpeak: z.function().args().returns(z.promise(z.any())).optional(),
+  afterSpeak: z.function().args().returns(z.promise(z.any())).optional(),
+});
+export type Streamingi18nHtmlProps = z.infer<typeof streamingi18nHtmlSchema>;
+
+// Define the Streamingi18nHtmlRef schema
+export const StreamingHtmlRefSchema = z.object({
+  startStreaming: z.function().returns(z.void()),
+  focusElement: z.function().returns(z.void()),
+});
+
+export type Streamingi18nHtmlRef = z.infer<typeof StreamingHtmlRefSchema>;

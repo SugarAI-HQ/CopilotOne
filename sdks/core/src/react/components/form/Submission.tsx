@@ -17,7 +17,7 @@ export const Submission: React.FC<{
     const workflow = new MessageWorkflow();
     workflow.addMessage(postSubmissionMessageRef);
 
-    await workflow.run();
+    // await workflow.run();
   };
 
   useEffect(() => {

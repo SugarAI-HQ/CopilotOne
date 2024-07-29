@@ -32,11 +32,10 @@ export const Onboarding: React.FC<{
   const requestMicPermissionsRef = useRef<Streamingi18nTextRef>(null);
 
   const start = async () => {
-    const workflow = new MessageWorkflow();
-    workflow.addMessage(welcomeMessageRef);
-    workflow.addMessage(requestMicPermissionsRef);
-
-    await workflow.run();
+    // const workflow = new MessageWorkflow();
+    // workflow.addMessage(welcomeMessageRef);
+    // workflow.addMessage(requestMicPermissionsRef);
+    // await workflow.run();
   };
 
   useEffect(() => {

@@ -304,8 +304,8 @@ importers:
         specifier: workspace:*
         version: link:../../sdks/js
       '@sugar-ai/core':
-        specifier: workspace:*
-        version: link:../../sdks/core
+        specifier: file:.yalc/@sugar-ai/core
+        version: file:examples/react/.yalc/@sugar-ai/core(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)
       build:
         specifier: ^0.1.4
         version: 0.1.4
@@ -395,6 +395,9 @@ importers:
       '@types/easy-speech':
         specifier: ^1.2.4
         version: 1.2.4
+      async-mutex:
+        specifier: ^0.5.0
+        version: 0.5.0
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.16(postcss@8.4.39)
@@ -3766,6 +3769,11 @@ packages:
   '@storybook/types@7.4.6':
     resolution: {integrity: sha512-6QLXtMVsFZFpzPkdGWsu/iuc8na9dnS67AMOBKm5qCLPwtUJOYkwhMdFRSSeJthLRpzV7JLAL8Kwvl7MFP3QSw==}
 
+  '@sugar-ai/core@file:examples/react/.yalc/@sugar-ai/core':
+    resolution: {directory: examples/react/.yalc/@sugar-ai/core, type: directory}
+    peerDependencies:
+      react: '>16.0.0'
+
   '@swagger-api/apidom-ast@0.99.1':
     resolution: {integrity: sha512-evkKm2JaqNfg3dB2Yk3FWL/Qy2r4csZLMZ9bHMG+xNpti8ulENHMjuCh3Ry4koV1gD7IA54CU2ZjcaTvqJa22Q==}
 
@@ -4731,6 +4739,9 @@ packages:
 
   async-limiter@1.0.1:
     resolution: {integrity: sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==}
+
+  async-mutex@0.5.0:
+    resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
 
   async@2.6.4:
     resolution: {integrity: sha512-mzo5dfJYwAn29PeiJ0zvwTo04zj8HDJj0Mn8TD7sno7q12prdbnasKJHhkm2c1LgrhlJ0teaea8860oxi51mGA==}
@@ -14516,6 +14527,29 @@ snapshots:
       '@types/express': 4.17.19
       file-system-cache: 2.3.0
 
+  '@sugar-ai/core@file:examples/react/.yalc/@sugar-ai/core(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)':
+    dependencies:
+      '@emotion/react': 11.11.1(@types/react@18.2.78)(react@18.2.0)
+      '@types/dom-speech-recognition': 0.0.4
+      '@types/easy-speech': 1.2.4
+      autoprefixer: 10.4.16(postcss@8.4.39)
+      build: 0.1.4
+      form-data: 4.0.0
+      js-base64: 3.7.7
+      postcss: 8.4.39
+      postcss-cli: 11.0.0(jiti@1.21.6)(postcss@8.4.39)
+      qs: 6.12.0
+      react: 18.2.0
+      tailwindcss: 3.4.6
+      url-join-ts: 1.0.5
+      window-or-global: 1.0.1
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - '@types/react'
+      - jiti
+      - ts-node
+      - tsx
+
   '@swagger-api/apidom-ast@0.99.1':
     dependencies:
       '@babel/runtime-corejs3': 7.24.4
@@ -15865,6 +15899,10 @@ snapshots:
   astral-regex@1.0.0: {}
 
   async-limiter@1.0.1: {}
+
+  async-mutex@0.5.0:
+    dependencies:
+      tslib: 2.6.2
 
   async@2.6.4:
     dependencies:

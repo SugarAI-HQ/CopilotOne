@@ -8,12 +8,15 @@ import React, {
 import { LanguageCode } from "~/schema/lang";
 import root from "window-or-global";
 import { getQueryParams } from "~/helpers/url";
+import { Translations } from "~/react/schema/message";
 interface LanguageContextType {
   language: LanguageCode;
   setLanguage: (language: LanguageCode) => void;
   voice: SpeechSynthesisVoice | null;
   setVoice: (voice: SpeechSynthesisVoice) => void;
   voices: SpeechSynthesisVoice[];
+  translations: Translations;
+  setTranslations: (translations: Translations) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
@@ -30,19 +33,23 @@ export const useLanguage = () => {
 
 interface LanguageProviderProps {
   defaultLang: LanguageCode;
-  defaultVoiceLang: LanguageCode;
+  defaultVoiceLang?: LanguageCode;
+  defaultTranslations?: Translations;
   children: ReactNode;
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   defaultLang = "auto",
   defaultVoiceLang = "auto",
+  defaultTranslations = {},
   children,
 }) => {
   const initLang = (getQueryParams("lang") as LanguageCode) || defaultLang;
   const [language, setLanguage] = useState<LanguageCode>(initLang);
   const [voice, setVoice] = useState<SpeechSynthesisVoice | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [translations, setTranslations] =
+    useState<Translations>(defaultTranslations);
 
   useEffect(() => {
     if (!language || language == "auto") {
@@ -73,7 +80,15 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 
   return (
     <LanguageContext.Provider
-      value={{ language, setLanguage, voice, setVoice, voices }}
+      value={{
+        language,
+        setLanguage,
+        voice,
+        setVoice,
+        voices,
+        translations,
+        setTranslations,
+      }}
     >
       {children}
     </LanguageContext.Provider>

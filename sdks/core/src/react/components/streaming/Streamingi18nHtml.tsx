@@ -1,14 +1,11 @@
 import React, {
   useEffect,
   useState,
-  useRef,
   useImperativeHandle,
   forwardRef,
+  ElementType,
+  RefObject,
 } from "react";
-// import { css } from "@emotion/react";
-import { geti18nMessage } from "~/i18n";
-
-const FAST_FORWARD = "fastForward";
 
 import {
   cancelMessage,
@@ -18,52 +15,59 @@ import {
 import { useLanguage } from "../language/LanguageContext";
 import {
   CharcterPerSec,
-  Streamingi18nTextProps,
-  Streamingi18nTextRef,
+  Streamingi18nHtmlProps,
+  Streamingi18nHtmlRef,
 } from "../../schema/form";
-import { i18nMessage, useWorkflow } from "~/react";
-import { LanguageCode } from "~/schema";
-import { debug } from "console";
 
-export const Streamingi18nText: React.ForwardRefRenderFunction<
-  Streamingi18nTextRef,
-  Streamingi18nTextProps
-> = ({ message, messageKey, formConfig, beforeSpeak, afterSpeak }, ref) => {
-  const { language, voice, translations } = useLanguage();
-  const { workflow } = useWorkflow();
+const FAST_FORWARD = "fastForward";
+
+// interface ExtendedStreamingi18nHtmlProps extends Streamingi18nHtmlProps {
+//   htmlTag?: ElementType;
+//   customStyle?: React.CSSProperties;
+// }
+
+const Streamingi18nHtml: React.ForwardRefRenderFunction<
+  Streamingi18nHtmlRef,
+  Streamingi18nHtmlProps
+> = (
+  {
+    message,
+    formConfig,
+    beforeSpeak,
+    afterSpeak,
+    htmlTag: CustomTag = "div",
+    customStyle = {},
+  },
+  ref,
+) => {
+  const { language, voice } = useLanguage();
   const [displayedText, setDisplayedText] = useState<string>("");
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isStarted, setIsStarted] = useState<boolean>(false);
   const [isCancelled, setIsCancelled] = useState<boolean>(false);
 
-  const elRef = React.useRef<HTMLParagraphElement>(null);
-  const createRef = (): Streamingi18nTextRef => ({
-    startStreaming: handleStart,
-    focusElement: focusElement,
-    // unfocusElement: unfocusElement,
-  });
-  const selfRef = useRef<Streamingi18nTextRef | null>(null);
+  const elRef = React.useRef<HTMLElement>(null);
 
   const getRenderData = (
     text: string,
-    characterPerSec = CharcterPerSec,
+    characterPerSec: number = CharcterPerSec,
   ): { characters: string[]; renderTime: number } => {
     let characters: string[] = [];
     let renderTime = 0;
 
+    debugger;
     if (!text) {
       return { characters, renderTime };
     }
-
     characters = text.split("");
-    const duration = (characters.length * 1000) / characterPerSec; // Duration per character in milliseconds
+    const duration = characters.length / characterPerSec; // Duration per character in milliseconds
 
-    renderTime = duration;
+    renderTime = duration * 100;
+
     return { characters, renderTime };
   };
 
-  const streamRenderx = async (characters: string[], renderTime) => {
-    debugger;
+  const streamRender = async (characters: string[], renderTime) => {
     const promises: Promise<void>[] = [];
     for (let i = 0; i < characters.length; i++) {
       promises.push(
@@ -80,29 +84,10 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
     }
     return Promise.all(promises);
   };
-  const streamRender = (characters, renderTime) => {
-    const intervalTime = renderTime / characters.length;
-    const promises: Promise<void>[] = [];
 
-    for (let i = 0; i < characters.length; i++) {
-      promises.push(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            setDisplayedText((prev) => {
-              const next = `${prev}${characters[i]}`;
-              resolve();
-              return next;
-            });
-          }, i * intervalTime);
-        }),
-      );
-    }
+  const speakAndRender = async () => {
+    const text = extracti18nText(message, language);
 
-    return Promise.all(promises);
-  };
-
-  const speakAndRender = async (msg: i18nMessage, language: LanguageCode) => {
-    const text = extracti18nText(msg, language);
     const { characters, renderTime } = getRenderData(
       text,
       formConfig?.characterPerSec,
@@ -129,7 +114,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
 
   const waitForFastforward = async (renderTime: number) => {
     let passedTime = 0;
-    let timeout = renderTime;
+    let timeout = renderTime * 30;
     return new Promise((resolve, reject) => {
       const interval = setInterval(function () {
         passedTime = passedTime + 50;
@@ -149,18 +134,8 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   };
 
   const handleStart = async () => {
-    if (!message && !messageKey) {
+    if (!message) {
       return;
-    }
-    let msg: i18nMessage | null = null;
-
-    if (message) {
-      msg = message;
-    }
-
-    // messageKey
-    if (messageKey && !message) {
-      msg = geti18nMessage(messageKey, translations);
     }
 
     if (isStarted) {
@@ -179,7 +154,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
 
     focusElement();
 
-    return speakAndRender(msg as i18nMessage, language)
+    return speakAndRender()
       .catch((err) => {
         console.log(err);
       })
@@ -206,61 +181,45 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
     }
   };
 
-  useImperativeHandle(ref, createRef);
+  useImperativeHandle(ref, () => ({
+    startStreaming: handleStart,
+    focusElement: focusElement,
+    unfocusElement: unfocusElement,
+  }));
 
   useEffect(() => {
-    if ((message || messageKey) && language && language != "auto") {
-      // handleStart();
-    }
-
     return () => {
       cancelMessage();
       setIsSpeaking(false);
       setDisplayedText(""); // Optionally reset displayed text
     };
-  }, [message, language]);
-
-  useEffect(() => {
-    if (workflow) {
-      selfRef.current = createRef();
-      workflow.addMessage(selfRef);
-    }
-
-    return () => {
-      // cancelMessage();
-      // setIsSpeaking(false);
-      // setDisplayedText(""); // Optionally reset displayed text
-    };
-  }, [workflow]);
+  }, []);
 
   const fastForward = (): void => {
+    console.log("fast forwarding");
     setIsCancelled(true);
     cancelMessage();
   };
 
   return (
     <div className="streaming-text m-2 block" onClick={handleStart}>
-      <h1
-        ref={elRef}
+      <CustomTag
+        ref={elRef as RefObject<any>}
         tabIndex={-1}
         className={`text-2xl whitespace-pre-wrap ${false ? "highlight" : ""}`}
         onFocus={() => elRef.current?.classList.add("highlight")}
         onBlur={() => elRef.current?.classList.remove("highlight")}
         onClick={() => fastForward()}
+        style={customStyle}
       >
         {displayedText}
-      </h1>
-      {/* <style jsx>{`
-        .highlight {
-          outline: none;
-          border: 2px solid yellow;
-        }
-      `}</style> */}
+      </CustomTag>
     </div>
   );
 };
 
-export default forwardRef(Streamingi18nText);
+export default forwardRef(Streamingi18nHtml);
+
 class FastForwardedError extends Error {
   constructor(message: string = "fast forwarded") {
     super(message);

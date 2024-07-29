@@ -1,35 +1,53 @@
 import React from "react";
-import { Streamingi18nTextRef } from "@/schema/formSchema";
+import { Streamingi18nTextRef } from "..";
+import { Semaphore } from "async-mutex"; // Make sure to install async-mutex: npm install async-mutex
 
-class MessageWorkflow {
-  private messages: React.RefObject<Streamingi18nTextRef>[];
+export class MessageWorkflow {
+  private queue: React.RefObject<Streamingi18nTextRef>[];
+  private semaphore: Semaphore;
 
   constructor() {
-    this.messages = [];
+    this.queue = [];
+    this.semaphore = new Semaphore(1);
   }
 
   addMessage(message: React.RefObject<Streamingi18nTextRef>): void {
-    this.messages.push(message);
+    this.queue.push(message);
+    this.processQueue();
   }
 
-  removeMessage(index: number): void {
-    if (index >= 0 && index < this.messages.length) {
-      this.messages.splice(index, 1);
+  private async executeMessage(
+    message: React.RefObject<Streamingi18nTextRef>,
+  ): Promise<void> {
+    if (message.current) {
+      await message.current.startStreaming();
     }
+  }
+
+  private async processQueue(): Promise<void> {
+    const [value, release] = await this.semaphore.acquire();
+
+    const nextMessage = this.queue.shift();
+    if (nextMessage) {
+      await this.executeMessage(nextMessage);
+    }
+
+    release();
+
+    // try {
+    //   while (this.queue.length > 0) {
+    //     const nextMessage = this.queue.shift();
+    //     if (nextMessage) {
+    //       await this.executeMessage(nextMessage);
+    //     }
+    //   }
+    // } finally {
+    //   release();
+    // }
   }
 
   clearMessages(): void {
-    this.messages = [];
-  }
-
-  async run(): Promise<void> {
-    console.log("Running workflow");
-    for (let i = 0; i < this.messages.length; i++) {
-      const optionRef = this.messages[i];
-      if (optionRef.current) {
-        await optionRef.current.startStreaming();
-      }
-    }
+    this.queue = [];
   }
 }
 
