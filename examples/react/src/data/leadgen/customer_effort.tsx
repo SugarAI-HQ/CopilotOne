@@ -11,7 +11,7 @@ export const translations: Translations = {
   },
 };
 
-export const survey = [
+export const questions: Question[] = [
   {
     id: "1",
     question_type: "multiple_choice",
@@ -70,7 +70,7 @@ export const survey = [
           mode: "manual",
           voice: true,
           output: "none",
-        }
+        },
       ],
     },
     validation: {
@@ -108,7 +108,7 @@ export const survey = [
           mode: "manual",
           voice: true,
           output: "none",
-        }
+        },
       ],
     },
     validation: {
@@ -133,5 +133,5 @@ export const survey = [
     validation: {
       max_length: 500,
     },
-  }
+  },
 ];

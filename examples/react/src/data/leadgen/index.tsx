@@ -1,9 +1,15 @@
 import * as healthfix from "./healthfix";
 import * as test from "./test";
+import * as nps from "./nps";
+import * as csat from "./csat";
+import * as customer_effort from "./customer_effort";
 
 const formData: Record<string, any> = {
   healthfix: healthfix,
   test: test,
+  nps: nps,
+  csat: csat,
+  customer_effort: customer_effort,
 };
 
 export function getFormData(formName: string) {
