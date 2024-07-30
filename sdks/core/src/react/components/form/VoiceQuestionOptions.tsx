@@ -10,7 +10,8 @@ import { LanguageCode } from "~/schema";
 import { extracti18nText } from "~/helpers";
 import { i18nMessage } from "~/react/schema/message";
 
-export const QuestionOptions: React.FC<{
+export const VoiceQuestionOptions: React.FC<{
+  auto: boolean;
   question: Question;
   language: LanguageCode;
   formConfig: FormConfig;
@@ -19,6 +20,7 @@ export const QuestionOptions: React.FC<{
   useRadio: boolean; // Flag to switch between checkbox and radio button
   selected: string[];
 }> = ({
+  auto,
   question,
   language,
   formConfig,
@@ -98,6 +100,7 @@ export const QuestionOptions: React.FC<{
                 style={{ display: "flex", alignItems: "center" }}
               >
                 <Streamingi18nText
+                  auto={auto}
                   ref={optionRefs[index]}
                   message={option}
                   formConfig={formConfig}

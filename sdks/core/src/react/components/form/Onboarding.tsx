@@ -32,10 +32,9 @@ export const Onboarding: React.FC<{
   const requestMicPermissionsRef = useRef<Streamingi18nTextRef>(null);
 
   const start = async () => {
-    // const workflow = new MessageWorkflow();
-    // workflow.addMessage(welcomeMessageRef);
-    // workflow.addMessage(requestMicPermissionsRef);
-    // await workflow.run();
+    const workflow = new MessageWorkflow();
+    workflow.addMessage(welcomeMessageRef);
+    workflow.addMessage(requestMicPermissionsRef);
   };
 
   useEffect(() => {
@@ -67,12 +66,14 @@ export const Onboarding: React.FC<{
       ) : (
         <div className="p-4 block justify-center">
           <Streamingi18nText
+            auto={false}
             ref={welcomeMessageRef}
             message={welcomeMessage}
             formConfig={formConfig}
           />
           {!isMicEnabled && (
             <Streamingi18nText
+              auto={false}
               ref={requestMicPermissionsRef}
               message={geti18nMessage("requestMicPermissions")}
               formConfig={formConfig}

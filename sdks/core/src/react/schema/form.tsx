@@ -52,6 +52,7 @@ export const QuestionSchema = z.object({
 export type Question = z.infer<typeof QuestionSchema>;
 
 export const streamingi18nTextSchema = z.object({
+  auto: z.boolean().optional(),
   message: i18nMessageSchema.optional(),
   messageKey: z.string().optional(),
   formConfig: formConfig.optional(),

@@ -10,7 +10,7 @@ import {
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { AudioLines, Hourglass, Loader, Mic } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
-import { QuestionOptions } from "./QuestionOptions";
+import { VoiceQuestionOptions } from "./VoiceQuestionOptions";
 import {
   EvaluationResponse,
   Question,
@@ -26,7 +26,6 @@ import {
   LanguageCode,
 } from "~/schema";
 import Streamingi18nText from "../streaming/Streamingi18nText";
-import { i18nMessage } from "~/react/schema/message";
 import { delay } from "~/helpers";
 
 export const VoiceQuestion: React.FC<{
@@ -155,7 +154,6 @@ export const VoiceQuestion: React.FC<{
     }
 
     isWorkflowStartedRef.current = true;
-
     // Speak the question
     await renderMCQ(questionRef, optionRefs);
 
@@ -190,6 +188,7 @@ export const VoiceQuestion: React.FC<{
       };
       // userResponse = await startListeningAsync(listenConfig);
       // userResponse = await getUserResponse(listenConfig);
+
       userResponse = await getUserResponseAutoBreak(listenConfig);
 
       // Fill answer in text field in case of text fields
@@ -358,26 +357,26 @@ export const VoiceQuestion: React.FC<{
     return ttaResponse.actionOutput;
   };
 
-  const evaluateResponse = (userResponse: string) => {
-    if (question.question_type === "text") {
-      onAnswered(userResponse);
-    } else if (question.question_type === "multiple_choice") {
-      // 1. Functioncalling to get the best match
-      // 2. Send question, options and user response to AI
+  // const evaluateResponse = (userResponse: string) => {
+  //   if (question.question_type === "text") {
+  //     onAnswered(userResponse);
+  //   } else if (question.question_type === "multiple_choice") {
+  //     // 1. Functioncalling to get the best match
+  //     // 2. Send question, options and user response to AI
 
-      onAnswered(userResponse);
-      // evaluateMCQResponse(userResponse);
-      // const option = question.question_params.options?.find(
-      //   (opt: string) => opt.toLowerCase() === userResponse.toLowerCase()
-      // );
-      // if (option) {
-      //   setSelectedOption(option);
-      //   onAnswered(userResponse);
-      // } else {
-      //   alert("Option not recognized. Please try again.");
-      // }
-    }
-  };
+  //     onAnswered(userResponse);
+  //     // evaluateMCQResponse(userResponse);
+  //     // const option = question.question_params.options?.find(
+  //     //   (opt: string) => opt.toLowerCase() === userResponse.toLowerCase()
+  //     // );
+  //     // if (option) {
+  //     //   setSelectedOption(option);
+  //     //   onAnswered(userResponse);
+  //     // } else {
+  //     //   alert("Option not recognized. Please try again.");
+  //     // }
+  //   }
+  // };
 
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);
@@ -418,6 +417,7 @@ export const VoiceQuestion: React.FC<{
     <div className="p-4">
       <Streamingi18nText
         ref={questionRef}
+        auto={false}
         message={question.question_text}
         formConfig={formConfig}
       />
@@ -459,7 +459,8 @@ export const VoiceQuestion: React.FC<{
       )}
       {/* Multiple choice questions only. Render the options. */}
       {question.question_type == "multiple_choice" && (
-        <QuestionOptions
+        <VoiceQuestionOptions
+          auto={false}
           question={question}
           language={language}
           formConfig={formConfig}
@@ -514,7 +515,6 @@ export const VoiceQuestion: React.FC<{
               onClick={handleListenClick}
             >
               {isListening ? (
-                // <FaMicrophone className="mic-icon" />
                 <Mic />
               ) : isEvaluating ? (
                 <Loader />
@@ -529,65 +529,6 @@ export const VoiceQuestion: React.FC<{
             {isWaiting && (
               <button onClick={() => onAnswered(answer as string)}>Next</button>
             )}
-
-            {/* <style jsx>{`
-              .mic-buttons {
-                display: flex;
-                align-items: center;
-                gap: 16px;
-              }
-              .mic-button {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                border: none;
-                background-color: #007bff;
-                color: white;
-                cursor: pointer;
-                transition: background-color 0.3s;
-              }
-              .mic-button.listening {
-                animation: pulse 1s infinite;
-              }
-              .mic-button.evaluating,
-              .mic-button.waiting {
-                border: 5px solid #f3f3f3;
-                -webkit-animation: spin 1s linear infinite;
-                animation: spin 2s linear infinite;
-                border-top: 5px solid #3498db;
-                border-radius: 50%;
-                width: 58px;
-                height: 58px;
-              }
-              @keyframes spin {
-                0% {
-                  transform: rotate(0deg);
-                }
-                100% {
-                  transform: rotate(360deg);
-                }
-              }
-              .mic-button.disabled {
-                background-color: #6c757d;
-              }
-              .mic-icon {
-                font-size: 24px;
-              }
-              @keyframes pulse {
-                0% {
-                  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
-                }
-                70% {
-                  box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
-                }
-                100% {
-                  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-                }
-              }
-            `}</style> */}
           </div>
         </div>
       )}

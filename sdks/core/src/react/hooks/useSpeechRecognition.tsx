@@ -133,6 +133,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       };
 
       recognition.onerror = (event) => {
+        setIsListening(false);
         reject(event.error);
       };
 
@@ -157,6 +158,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
   const startListeningAsyncAutoBreak = (
     length: number = -1,
+    counter: number = -1,
   ): Promise<string> => {
     return new Promise((resolve, reject) => {
       // Stop existing recognition if it is already running
@@ -202,7 +204,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           for (let i = event.resultIndex; i < event.results.length; i++) {
             if (event.results[i].isFinal) {
               fTranscript = event.results[i][0].transcript;
-              // DEV: console.log(`[Audio] Final: ${fTranscript}`);
+              // DEV: console.log(`[Listening] Final: ${fTranscript}`);
 
               // Take care of it
               // setIslistening(false);
@@ -221,6 +223,10 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           // if (options.onListeningStop) {
           //   return options.onListeningStop(event);
           // }
+          console.log(
+            `[Listening][${counter}] error in listening: ${event.error}`,
+          );
+          setIsListening(false);
           reject(event.error);
         };
 
@@ -265,7 +271,11 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         // };
 
         recognitionRef.current.start();
-        setIsListening(true);
+        console.log(`[Listening][${counter}] Started listening`);
+        setIsListening((v) => {
+          console.log(`[Listening][${counter}] Updated Speaking`);
+          return true;
+        });
         setTranscriptLength(length);
       } else {
         reject(
@@ -295,14 +305,17 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
           if (result.state === "granted") {
             granted = true;
-            console.log("[Audio] Permission already granted");
+            console.log("[Listening] Permission already granted");
             setIsMicEnabled(true);
             resolve(granted);
           } else {
             resolve(granted);
           }
         } catch (error) {
-          console.error("[Audio] Error checking microphone permission", error);
+          console.error(
+            "[Listening] Error checking microphone permission",
+            error,
+          );
           reject(granted);
         }
       } else {
@@ -330,7 +343,10 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         return granted;
       })
       .catch((err) => {
-        console.error("[Audio] Error requesting microphone permission", err);
+        console.error(
+          "[Listening] Error requesting microphone permission",
+          err,
+        );
         granted = false;
         endMessage = geti18nMessage("permissionFailed");
         return granted;
@@ -374,7 +390,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           await delay(counter * 2000);
         } else {
           await delay(counter * 1000);
-          console.error("[Audio] Error getting user response", error);
+          console.error("[Listening] Error getting user response", error);
         }
         return "";
       });
@@ -392,9 +408,10 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     let nudgeAfterAttempts = 0;
 
     // Get user response
-    while (userResponse === "" && (nudgeAfterAttempts ?? 0) < 2) {
+    // while (userResponse === "" && (nudgeAfterAttempts ?? 0) < 2) {
+    while (userResponse === "") {
       counter = counter + 1;
-      userResponse = await startListeningAsyncAutoBreak().catch(
+      userResponse = await startListeningAsyncAutoBreak(-1, counter).catch(
         async (error) => {
           console.error(error);
           if (error == "no-speech") {
@@ -402,7 +419,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             nudgeAfterAttempts = (nudgeAfterAttempts ?? 0) + 1;
 
             // nudge user to speak
-            if (nudgeAfterAttempts == 2) {
+            if (nudgeAfterAttempts == 1) {
               await speaki18nMessageAsync(
                 noSpeech,
                 language,
@@ -412,13 +429,16 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             }
           } else {
             await delay(counter * 1000);
-            console.error("[Audio] Error getting user response", error);
+            console.error(
+              `[Listening][${counter}] Error getting user response`,
+              error,
+            );
           }
+
           return "";
         },
       );
     }
-
     return userResponse;
   };
 

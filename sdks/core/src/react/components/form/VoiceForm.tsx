@@ -40,15 +40,6 @@ export const VoiceForm: React.FC<{
     }
   };
 
-  //   const message =
-  //     "Hello, welcome to the streaming text and speech synthesis example.";
-  //   return (
-  //     <ParentComponent></ParentComponent>
-  //     // <div className="app">
-  //     //   <StreamingText message={message} />
-  //     // </div>
-  //   );
-
   const welcomeMessage = geti18nMessage("welcome", translations);
   const postSubmissionMessage = geti18nMessage("postSubmission", translations);
 

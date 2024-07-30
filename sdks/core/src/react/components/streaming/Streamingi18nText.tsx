@@ -28,7 +28,10 @@ import { debug } from "console";
 export const Streamingi18nText: React.ForwardRefRenderFunction<
   Streamingi18nTextRef,
   Streamingi18nTextProps
-> = ({ message, messageKey, formConfig, beforeSpeak, afterSpeak }, ref) => {
+> = (
+  { auto, message, messageKey, formConfig, beforeSpeak, afterSpeak },
+  ref,
+) => {
   const { language, voice, translations } = useLanguage();
   const { workflow } = useWorkflow();
   const [displayedText, setDisplayedText] = useState<string>("");
@@ -63,7 +66,6 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   };
 
   const streamRenderx = async (characters: string[], renderTime) => {
-    debugger;
     const promises: Promise<void>[] = [];
     for (let i = 0; i < characters.length; i++) {
       promises.push(
@@ -209,8 +211,8 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   useImperativeHandle(ref, createRef);
 
   useEffect(() => {
-    if ((message || messageKey) && language && language != "auto") {
-      // handleStart();
+    if (auto && (message || messageKey) && language && language != "auto") {
+      handleStart();
     }
 
     return () => {
@@ -221,7 +223,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   }, [message, language]);
 
   useEffect(() => {
-    if (workflow) {
+    if (auto && workflow) {
       selfRef.current = createRef();
       workflow.addMessage(selfRef);
     }

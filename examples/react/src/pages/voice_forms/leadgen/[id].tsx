@@ -86,7 +86,7 @@ const App: NextPage = () => {
                     {fd.translations &&
                       extracti18nText(
                         geti18nMessage("landingText", fd.translations),
-                        lang
+                        lang ?? "en"
                       )}
                   </h1>
                   <button
@@ -98,7 +98,7 @@ const App: NextPage = () => {
                     {fd.translations &&
                       extracti18nText(
                         geti18nMessage("startButton", fd.translations),
-                        lang
+                        lang ?? "en"
                       )}
                   </button>
                 </div>

@@ -55,7 +55,6 @@ const Streamingi18nHtml: React.ForwardRefRenderFunction<
     let characters: string[] = [];
     let renderTime = 0;
 
-    debugger;
     if (!text) {
       return { characters, renderTime };
     }
