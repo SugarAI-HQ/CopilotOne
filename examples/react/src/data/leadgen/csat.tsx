@@ -1,6 +1,14 @@
 import { Question, i18nMessage, Translations } from "@sugar-ai/core";
 
 export const translations: Translations = {
+  landingText: {
+    en: "Experience Customer Satisfaction Survey with Our Multilingual Voice Form",
+    hi: "हमारे बहुभाषी वॉइस फॉर्म के साथ ग्राहक संतुष्टि सर्वेक्षण का अनुभव करें।",
+  },
+  startButton: {
+    en: "Start Survey",
+    hi: "सर्वेक्षण शुरू करें",
+  },
   welcome: {
     en: "Thanks for using our app! Please take a moment to give us your feedback.",
     hi: "हमारे ऐप का इस्तेमाल करने के लिए धन्यवाद! कृपया हमें अपनी प्रतिक्रिया देने के लिए कुछ समय निकालें।",

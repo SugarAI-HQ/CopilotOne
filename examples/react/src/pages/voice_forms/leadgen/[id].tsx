@@ -8,6 +8,9 @@ import {
   VoiceForm,
   LanguageSelector,
   FormConfigDefaults,
+  geti18nMessage,
+  extracti18nText,
+  LanguageCode,
 } from "@sugar-ai/core";
 import "@sugar-ai/core/style";
 import dynamic from "next/dynamic";
@@ -18,7 +21,7 @@ import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
 const App: NextPage = () => {
   const router = useRouter();
-  const { id } = router.query as { id: string };
+  const { id, lang } = router.query as { id: string; lang: LanguageCode };
   const [showStart, setShowStart] = useState<boolean>(true);
 
   const [fd, setFd] = useState<any>(null);
@@ -27,9 +30,13 @@ const App: NextPage = () => {
     if (id) {
       const data = getFormData(id);
       setFd(data);
+
+      const imsg = geti18nMessage("startButton", data.translations);
+      const buttonText = extracti18nText(imsg, lang);
     }
   }, [id, router]);
 
+  // const { language, voice } = useLanguage();
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
 
   let copilotConfig: CopilotConfigType = {
@@ -79,7 +86,11 @@ const App: NextPage = () => {
             {showStart && fd && (
               <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
                 <h1 className="text-3xl md:text-4xl lg:text-5xl p-2 m-4 text-center text-gray-800">
-                  Experience Lead Generation with Our Multilingual Voice Form
+                  {fd.translations &&
+                    extracti18nText(
+                      geti18nMessage("landingText", fd.translations),
+                      lang
+                    )}
                 </h1>
                 <button
                   className="w-full max-w-xs md:max-w-md lg:max-w-lg m-4 p-4 bg-blue-500 hover:bg-blue-600 text-white text-center rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
@@ -87,7 +98,11 @@ const App: NextPage = () => {
                     setShowStart(false);
                   }}
                 >
-                  Book Appointment
+                  {fd.translations &&
+                    extracti18nText(
+                      geti18nMessage("startButton", fd.translations),
+                      lang
+                    )}
                 </button>
               </div>
             )}

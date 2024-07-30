@@ -1,6 +1,14 @@
 import { Question, i18nMessage, Translations } from "@sugar-ai/core";
 
 export const translations: Translations = {
+  landingText: {
+    en: "Experience NPS with Our Multilingual Voice Form",
+    hi: "हमारे बहुभाषी वॉइस फॉर्म के साथ एनपीएस अनुभव करें।",
+  },
+  startButton: {
+    en: "Take NPS Survey",
+    hi: "एनपीएस सर्वे करें",
+  },
   welcome: {
     en: "Thanks for using our service.",
     hi: "हमारी सर्विस यूज़ करने के लिए धन्यवाद! कुछ सवालों का जवाब देकर हमें अपनी राय दें।",

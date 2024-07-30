@@ -27,7 +27,7 @@ const Home = () => {
             >
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">
-                  Voice Form for leadgen in{" "}
+                  Leadgen in{" "}
                   <span className="text-indigo-600">English (en)</span>
                 </div>
                 <p className="text-gray-700 text-base">
@@ -43,11 +43,73 @@ const Home = () => {
             >
               <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">
-                  Voice Form for leadgen in{" "}
-                  <span className="text-indigo-600">Hindi (hi)</span>
+                  Leadgen in <span className="text-indigo-600">Hindi (hi)</span>
                 </div>
                 <p className="text-gray-700 text-base">
                   Capture leads by just talking with user in their native
+                  language for high engagement and capturing more information
+                  effortlessly
+                </p>
+              </div>
+            </a>
+            <a
+              className="max-w-sm rounded overflow-hidden shadow-lg"
+              href="/voice_forms/leadgen/nps?lang=en-US"
+            >
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">
+                  NPS in <span className="text-indigo-600">English (en)</span>
+                </div>
+                <p className="text-gray-700 text-base">
+                  Evaluate NPS by just talking with user in their native
+                  language for high engagement and capturing more information
+                  effortlessly
+                </p>
+              </div>
+            </a>
+
+            <a
+              className="max-w-sm rounded overflow-hidden shadow-lg"
+              href="/voice_forms/leadgen/nps?lang=hi"
+            >
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">
+                  NPS in <span className="text-indigo-600">Hindi (hi)</span>
+                </div>
+                <p className="text-gray-700 text-base">
+                  Evaluate NPS by just talking with user in their native
+                  language for high engagement and capturing more information
+                  effortlessly
+                </p>
+              </div>
+            </a>
+
+            <a
+              className="max-w-sm rounded overflow-hidden shadow-lg"
+              href="/voice_forms/leadgen/csat?lang=en-US"
+            >
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">
+                  CSAT in <span className="text-indigo-600">English (en)</span>
+                </div>
+                <p className="text-gray-700 text-base">
+                  Evaluate CSAT by just talking with user in their native
+                  language for high engagement and capturing more information
+                  effortlessly
+                </p>
+              </div>
+            </a>
+
+            <a
+              className="max-w-sm rounded overflow-hidden shadow-lg"
+              href="/voice_forms/leadgen/csat?lang=hi"
+            >
+              <div className="px-6 py-4">
+                <div className="font-bold text-xl mb-2">
+                  CSAT in <span className="text-indigo-600">Hindi (hi)</span>
+                </div>
+                <p className="text-gray-700 text-base">
+                  Evaluate CSAT by just talking with user in their native
                   language for high engagement and capturing more information
                   effortlessly
                 </p>

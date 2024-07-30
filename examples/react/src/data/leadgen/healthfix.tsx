@@ -1,6 +1,14 @@
 import { Question, i18nMessage, Translations } from "@sugar-ai/core";
 
 export const translations: Translations = {
+  landingText: {
+    en: "Experience Lead Generation with Our Multilingual Voice Form",
+    hi: "हमारे वॉइस फॉर्म से लीड जनरेशन करें।",
+  },
+  startButton: {
+    en: "Book Appointment",
+    hi: "अपॉइंटमेंट बुक करें",
+  },
   welcome: {
     en: "Welcome to Healthfix. Please answer the questions to book an appointment",
     hi: "हेल्थफिक्स में आपका स्वागत है। अपॉइंटमेंट बुक करने के लिए प्रश्नों का उत्तर दें।",
