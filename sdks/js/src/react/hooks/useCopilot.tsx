@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { createUseStateEmbedding } from "./hooks/useStateEmbedding";
+import { createUseStateEmbedding } from "./useStateEmbedding";
 
 import { any } from "zod";
 import {
@@ -12,14 +12,12 @@ import {
   copilotAiDefaults,
   copilotRouterDefaults,
   TextToActionResponse,
-} from "../schema/copilot";
-import { generateUserId } from "../helpers/utils";
-import { SugarAiApiClient } from "../api-client";
-import {
+  generateUserId,
+  SugarAiApiClient,
   register,
   unregister,
   textToAction as nativeTextoAction,
-} from "../base/actions";
+} from "@sugar-ai/core";
 
 export const CopilotContext = createContext({
   config: null as CopilotConfigType | null,

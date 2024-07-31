@@ -1,11 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { TextToActionResponse } from "~/schema/copilot";
 import "~/react/styles/form.css"; // Adjust the path according to your project structure
-import {
-  extracti18nText,
-  speakMessageAsync,
-  speaki18nMessageAsync,
-} from "~/helpers/voice";
 
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { AudioLines, Hourglass, Loader, Mic } from "lucide-react";
@@ -17,16 +11,19 @@ import {
   Streamingi18nTextRef,
   FormConfig,
 } from "~/react/schema/form";
-import { useLanguage } from "..";
 import useSpeechToText from "~/react/hooks/useSpeechRecognition";
 import { useCopilot } from "~/react";
+
+import Streamingi18nText from "../streaming/Streamingi18nText";
 import {
   ActionRegistrationType,
   EmbeddingScopeWithUserType,
   LanguageCode,
-} from "~/schema";
-import Streamingi18nText from "../streaming/Streamingi18nText";
-import { delay } from "~/helpers";
+  delay,
+} from "@sugar-ai/core";
+import useSpeechSynthesis from "~/react/hooks/useSpeechSynthesis";
+import { extracti18nText } from "~/react/helpers/voice";
+import { useLanguage } from "~/react/hooks/useLanguage";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -39,6 +36,13 @@ export const VoiceQuestion: React.FC<{
   const isWorkflowStartedRef = useRef(false);
   const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  // const {
+  //   isSpeaking,
+  //   speakMessage,
+  //   speakMessageAsync,
+  //   speaki18nMessageAsync,
+  //   stopSpeaking,
+  // } = useSpeechSynthesis();
 
   const [answer, setAnswer] = useState<string | null>(null);
 
@@ -73,6 +77,11 @@ export const VoiceQuestion: React.FC<{
     getUserResponse,
     getUserResponseAutoBreak,
     startListeningAsync,
+
+    isSpeaking,
+    speaki18nMessageAsync,
+    speakMessageAsync,
+    stopSpeaking,
   } = useSpeechToText({
     // onListeningStop: onListeningStop,
     continuous: false,
@@ -413,6 +422,11 @@ export const VoiceQuestion: React.FC<{
     }
   };
 
+  const startListening = () => {
+    console.log("Start listening");
+    debugger;
+  };
+
   return (
     <div className="p-4">
       <Streamingi18nText
@@ -502,6 +516,18 @@ export const VoiceQuestion: React.FC<{
               </span>
             )}
 
+            {/* <Voice
+              // currentStyle={currentStyle}
+              // voiceButtonStyle={voiceButtonStyle}
+              startListening={startListening}
+              buttonId={"123"}
+              // ispermissiongranted={ispermissiongranted}
+              isprocessing={isEvaluating}
+              islistening={isListening}
+              isSpeaking={isSpeaking}
+              stopSpeaking={stopSpeaking}
+            /> */}
+
             <button
               className={`mic-button  ${
                 isListening
@@ -524,6 +550,8 @@ export const VoiceQuestion: React.FC<{
                 <FaMicrophoneSlash className="mic-icon" />
               )}
             </button>
+
+            {isSpeaking && <span>Speaking</span>}
 
             {!isWaiting && <button onClick={onSkip}>Skip</button>}
             {isWaiting && (

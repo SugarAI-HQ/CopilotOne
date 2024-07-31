@@ -1,12 +1,12 @@
-export * from "./copilot_context";
+// export * from "../../../js/src/react/hooks/copilot_context";
 
 // schema
-export * from "./schema/form";
-export * from "./schema/message";
+// export * from "../../../js/src/react/schema/form";
+// export * from "../../../js/src/react/schema/message";
 
 // components
-export * from "./components";
+// export * from "../../../js/src/react/components";
 
 // Hooks
-export * from "./hooks/useStateEmbedding";
-export * from "./hooks/useStateEmbedding";
+// export * from "../../../js/src/react/hooks/useStateEmbedding";
+// export * from "../../../js/src/react/hooks/useStateEmbedding";

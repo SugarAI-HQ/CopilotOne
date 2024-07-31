@@ -5,8 +5,8 @@ import Submission from "./Submission";
 import { Translations, i18nMessage } from "~/react/schema/message";
 import { Question, FormConfig, FormConfigDefaults } from "~/react/schema/form";
 import "~/react/styles/form.css";
-import { getQueryParams } from "~/helpers/url";
-import { geti18nMessage } from "~/i18n";
+import { getQueryParams } from "@sugar-ai/core";
+import { geti18nMessage } from "~/react/i18n";
 
 export const VoiceForm: React.FC<{
   showStartButton: boolean;

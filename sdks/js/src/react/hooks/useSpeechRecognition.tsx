@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { useLanguage } from "..";
-import { delay, speakMessageAsync, speaki18nMessageAsync } from "~/helpers";
-import { i18nMessage } from "../schema/message";
+import { delay } from "@sugar-ai/core";
 import { ListenConfigDefaults, ListenConfig } from "../schema/form";
 import root from "window-or-global";
-import { geti18nMessage } from "~/i18n";
+import { geti18nMessage } from "~/react/i18n";
+import { useLanguage } from "./useLanguage";
+import useSpeechSynthesis from "./useSpeechSynthesis";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
@@ -22,6 +22,14 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const [finalTranscript, setFinalTranscript] = useState<string>("");
   const [transcriptLength, setTranscriptLength] = useState(-1);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  const {
+    isSpeaking,
+    speakMessage,
+    speakMessageAsync,
+    speaki18nMessageAsync,
+    stopSpeaking,
+  } = useSpeechSynthesis();
 
   useEffect(() => {
     // if (!("webkitSpeechRecognition" in window)) {
@@ -454,6 +462,11 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     checkIfAudioPermissionGranted,
     getUserResponse,
     getUserResponseAutoBreak,
+
+    isSpeaking,
+    speaki18nMessageAsync,
+    speakMessageAsync,
+    stopSpeaking,
   };
 };
 

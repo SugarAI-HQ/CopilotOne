@@ -6,24 +6,23 @@ import React, {
   forwardRef,
 } from "react";
 // import { css } from "@emotion/react";
-import { geti18nMessage } from "~/i18n";
 
 const FAST_FORWARD = "fastForward";
 
-import {
-  cancelMessage,
-  extracti18nText,
-  speakMessageAsync,
-} from "../../../helpers/voice"; // Ensure the speakMessage function is properly imported
-import { useLanguage } from "../language/LanguageContext";
 import {
   CharcterPerSec,
   Streamingi18nTextProps,
   Streamingi18nTextRef,
 } from "../../schema/form";
 import { i18nMessage, useWorkflow } from "~/react";
-import { LanguageCode } from "~/schema";
-import { debug } from "console";
+import { LanguageCode } from "@sugar-ai/core";
+import { useLanguage } from "~/react/hooks/useLanguage";
+import {
+  extracti18nText,
+  speakMessageAsync,
+  stopSpeaking,
+} from "~/react/helpers/voice";
+import { geti18nMessage } from "~/react/i18n";
 
 export const Streamingi18nText: React.ForwardRefRenderFunction<
   Streamingi18nTextRef,
@@ -216,7 +215,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
     }
 
     return () => {
-      cancelMessage();
+      stopSpeaking();
       setIsSpeaking(false);
       setDisplayedText(""); // Optionally reset displayed text
     };
@@ -237,7 +236,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
 
   const fastForward = (): void => {
     setIsCancelled(true);
-    cancelMessage();
+    stopSpeaking();
   };
 
   return (

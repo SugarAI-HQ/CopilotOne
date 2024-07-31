@@ -12,7 +12,6 @@ import {
   determinePreferredVoice,
   shouldForwardProp,
   loadCurrentConfig,
-  useCopilot,
 } from "@sugar-ai/core";
 
 import root from "window-or-global";
@@ -28,6 +27,7 @@ import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
 import Voice from "./components/voice";
 import { getKeyInSession, setKeyInSession } from "../session";
+import { useCopilot } from "../hooks/useCopilot";
 
 export const VoiceAssistant = ({
   id = null,

@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
+import { type CopilotConfigType, LanguageCode } from "@sugar-ai/core";
+
 import {
-  useCopilot,
-  type CopilotConfigType,
+  extracti18nText,
+  geti18nMessage,
   CopilotProvider,
   LanguageProvider,
   VoiceForm,
   LanguageSelector,
   WorkflowProvider,
   FormConfigDefaults,
-  translations,
-  geti18nMessage,
-  extracti18nText,
-  LanguageCode,
-} from "@sugar-ai/core";
-import "@sugar-ai/core/style";
+} from "@sugar-ai/copilot-one-js";
+
+import "@sugar-ai/copilot-one-js/style";
 import dynamic from "next/dynamic";
 import { getFormData } from "@/data/leadgen";
 import { useRouter } from "next/router";

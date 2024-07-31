@@ -1,7 +1,7 @@
 // import { LanguageCode, i18nMessage } from "../base/schema/"
 
 import { i18nMessage } from "~/react/schema/message";
-import { LanguageCode } from "~/schema/lang";
+import { LanguageCode } from "@sugar-ai/core";
 import root from "window-or-global";
 
 let synth: any = null;
@@ -52,7 +52,7 @@ export const speaki18nMessageAsync = async (
   return speakMessageAsync(extracti18nText(message, language), language, voice);
 };
 
-export const cancelMessage = () => {
+export const stopSpeaking = () => {
   if (!synth) return;
   synth.cancel();
 };

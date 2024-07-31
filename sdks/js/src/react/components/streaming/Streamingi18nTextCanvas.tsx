@@ -5,7 +5,7 @@
 //   forwardRef,
 //   useState,
 // } from "react";
-// import { cancelMessage, speakMessageAsync } from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
+// import { stopSpeaking, speakMessageAsync } from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
 // import { useLanguage } from "./LanguageContext";
 // import {
 //   LanguageCode,
@@ -116,7 +116,7 @@
 
 //   useEffect(() => {
 //     return () => {
-//       cancelMessage();
+//       stopSpeaking();
 //       setIsSpeaking(false);
 //     };
 //   }, []);

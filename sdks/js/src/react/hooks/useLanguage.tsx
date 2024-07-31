@@ -5,9 +5,8 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { LanguageCode } from "~/schema/lang";
+import { LanguageCode, getQueryParams } from "@sugar-ai/core";
 import root from "window-or-global";
-import { getQueryParams } from "~/helpers/url";
 import { Translations } from "~/react/schema/message";
 interface LanguageContextType {
   language: LanguageCode;

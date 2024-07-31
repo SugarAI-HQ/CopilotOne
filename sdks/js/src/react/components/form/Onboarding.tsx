@@ -3,10 +3,11 @@ import { Streamingi18nTextRef, FormConfig } from "~/react/schema/form";
 import { i18nMessage } from "~/react/schema/message";
 
 import useSpeechToText from "~/react/hooks/useSpeechRecognition";
-import MessageWorkflow from "~/workflow/MessageWorkflow";
-import Streamingi18nText from "../streaming/Streamingi18nText";
-import { useLanguage } from "../language/LanguageContext";
-import { geti18nMessage } from "~/i18n";
+// import MessageWorkflow from "~/react/workflow/MessageWorkflow";
+import Streamingi18nText from "~/react/components/streaming/Streamingi18nText";
+import { useLanguage } from "../../hooks/useLanguage";
+import { geti18nMessage } from "~/react/i18n";
+import MessageWorkflow from "../workflow/MessageWorkflow";
 
 export const Onboarding: React.FC<{
   showStartButton: boolean;

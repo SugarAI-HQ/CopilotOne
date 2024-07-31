@@ -8,7 +8,6 @@ import {
   scopeDefaults,
   shouldForwardProp,
   loadCurrentConfig,
-  useCopilot,
 } from "@sugar-ai/core";
 
 import { StyleSheetManager } from "styled-components";
@@ -22,6 +21,7 @@ import TextBox from "./components/textbox";
 
 import root from "window-or-global";
 import { getKeyInSession, setKeyInSession } from "../session";
+import { useCopilot } from "../hooks/useCopilot";
 
 export const TextAssistant = ({
   id = null,

@@ -116,6 +116,6 @@
     
   },
 
-  "include": ["src"],
+  "include": ["src", "../js/src/react/components", "../js/src/react/hooks", "../js/src/react/schema", "../js/src/react/i18n", "../js/src/react/helpers/voice.tsx", "../js/src/react/workflow"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
