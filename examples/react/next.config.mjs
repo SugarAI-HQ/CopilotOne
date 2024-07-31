@@ -31,6 +31,7 @@ const additionalPaths = [
 // };
 
 const nextConfig = {
+  distDir: process.env.NODE_ENV === "development" ? "dist" : ".next",
   webpack: (config, { dev, isServer }) => {
     if (dev) {
       // Add additional directories to Webpack's watch list

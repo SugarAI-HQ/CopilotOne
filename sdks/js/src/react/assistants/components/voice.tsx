@@ -6,7 +6,7 @@ import Spinner from "../../icons/spinner";
 import { VoiceButton } from "../base_styled";
 import { Hourglass } from "lucide-react";
 
-const Voice = ({
+const VoiceButtonWithStates = ({
   startListening,
   ispermissiongranted,
   isprocessing,
@@ -103,4 +103,4 @@ const Voice = ({
   );
 };
 
-export default Voice;
+export default VoiceButtonWithStates;

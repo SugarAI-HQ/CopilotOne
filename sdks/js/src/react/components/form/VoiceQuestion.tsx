@@ -20,7 +20,7 @@ import {
   extracti18nText,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
-import Voice from "~/react/assistants/components/voice";
+import VoiceButtonWithStates from "~/react/assistants/components/voice";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -460,7 +460,7 @@ export const VoiceQuestion: React.FC<{
             >
               Back
             </button>
-            <Voice
+            <VoiceButtonWithStates
               currentStyle={{}}
               voiceButtonStyle={{}}
               startListening={startListening}

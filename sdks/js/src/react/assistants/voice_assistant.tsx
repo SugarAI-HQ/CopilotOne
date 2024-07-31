@@ -26,7 +26,7 @@ import Keyboard from "./components/keyboard";
 import Message from "./components/message";
 import ToolTip from "./components/tooltip";
 import TextBox from "./components/textbox";
-import Voice from "./components/voice";
+import VoiceButtonWithStates from "./components/voice";
 import { getKeyInSession, setKeyInSession } from "../session";
 
 export const VoiceAssistant = ({
@@ -680,7 +680,7 @@ export const VoiceAssistant = ({
             {isUserEngaged && isRightPositioned && isCenterPositioned && (
               <KeyboardEmptyContainer></KeyboardEmptyContainer>
             )}
-            <Voice
+            <VoiceButtonWithStates
               currentStyle={currentStyle}
               voiceButtonStyle={voiceButtonStyle}
               startListening={startListening}
