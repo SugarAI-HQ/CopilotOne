@@ -34,13 +34,6 @@ export const VoiceQuestion: React.FC<{
   const isWorkflowStartedRef = useRef(false);
   const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
-  // const {
-  //   isSpeaking,
-  //   speakMessage,
-  //   speakMessageAsync,
-  //   speaki18nMessageAsync,
-  //   stopSpeaking,
-  // } = useSpeechSynthesis();
 
   const [answer, setAnswer] = useState<string | null>(null);
 
@@ -69,6 +62,7 @@ export const VoiceQuestion: React.FC<{
 
   const {
     isListening,
+    isMicEnabled,
     transcript,
     finalTranscript,
     stopListening,
@@ -84,6 +78,10 @@ export const VoiceQuestion: React.FC<{
     // onListeningStop: onListeningStop,
     continuous: false,
   });
+
+  useEffect(() => {
+    console.log(`isMicEnabled: ${isMicEnabled}`);
+  }, [isMicEnabled]);
 
   const { config, registerAction, unregisterAction, textToAction } =
     useCopilot();
@@ -104,13 +102,13 @@ export const VoiceQuestion: React.FC<{
     stopListening();
   };
 
-  const handleListenClick = () => {
-    if (!isListening) {
-      listen();
-    } else {
-      stopVoiceInput();
-    }
-  };
+  // const handleListenClick = () => {
+  //   if (!isListening) {
+  //     listen();
+  //   } else {
+  //     stopVoiceInput();
+  //   }
+  // };
 
   const highlightTextField = () => {
     if (inputRef.current) {
@@ -464,7 +462,7 @@ export const VoiceQuestion: React.FC<{
               currentStyle={{}}
               voiceButtonStyle={{}}
               startListening={startListening}
-              buttonId={"123"}
+              buttonId={"voice-form"}
               ispermissiongranted={true}
               isprocessing={isEvaluating}
               iswaiting={isWaiting}
