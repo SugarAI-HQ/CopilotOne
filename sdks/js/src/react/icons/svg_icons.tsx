@@ -6,6 +6,7 @@ export interface SvgIconProps {
   width?: string;
   height?: string;
   onClick?: any;
+  style?: React.CSSProperties;
 }
 
 const SvgIcon: React.FC<SvgIconProps & { children: React.ReactNode }> = ({
@@ -15,6 +16,7 @@ const SvgIcon: React.FC<SvgIconProps & { children: React.ReactNode }> = ({
   width,
   height,
   onClick,
+  style = {},
 }): React.ReactElement => {
   const newWidth = width ?? size;
   const newHeight = height ?? size;
@@ -22,6 +24,7 @@ const SvgIcon: React.FC<SvgIconProps & { children: React.ReactNode }> = ({
     <svg
       width={newWidth}
       height={newHeight}
+      style={style}
       viewBox={`0 0 ${newWidth} ${newHeight}`}
       xmlns="http://www.w3.org/2000/svg"
       className={className}

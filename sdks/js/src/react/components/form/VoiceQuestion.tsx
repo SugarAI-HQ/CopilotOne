@@ -20,6 +20,7 @@ import {
   extracti18nText,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
+import Voice from "~/react/assistants/components/voice";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -420,7 +421,9 @@ export const VoiceQuestion: React.FC<{
 
   const startListening = () => {
     console.log("Start listening");
-    debugger;
+  };
+  const temp = () => {
+    console.log("Start listening");
   };
 
   return (
@@ -480,6 +483,7 @@ export const VoiceQuestion: React.FC<{
           selected={answer ? [answer] : []}
         />
       )}
+
       {isQuestionSpoken && (
         <div className="space-y-4 p-4 m-4">
           {isListening && (
@@ -512,19 +516,20 @@ export const VoiceQuestion: React.FC<{
               </span>
             )}
 
-            {/* <Voice
-              // currentStyle={currentStyle}
-              // voiceButtonStyle={voiceButtonStyle}
+            <Voice
+              currentStyle={{}}
+              voiceButtonStyle={{}}
               startListening={startListening}
               buttonId={"123"}
-              // ispermissiongranted={ispermissiongranted}
+              ispermissiongranted={true}
               isprocessing={isEvaluating}
+              iswaiting={isWaiting}
               islistening={isListening}
               isSpeaking={isSpeaking}
               stopSpeaking={stopSpeaking}
-            /> */}
+            />
 
-            <button
+            {/* <button
               className={`mic-button  ${
                 isListening
                   ? "listening"
@@ -545,9 +550,7 @@ export const VoiceQuestion: React.FC<{
               ) : (
                 <FaMicrophoneSlash className="mic-icon" />
               )}
-            </button>
-
-            {isSpeaking && <span>Speaking</span>}
+            </button> */}
 
             {!isWaiting && <button onClick={onSkip}>Skip</button>}
             {isWaiting && (

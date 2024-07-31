@@ -3,6 +3,7 @@ import SvgIcon, { type SvgIconProps } from "./svg_icons";
 
 export interface MicSvgProps extends SvgIconProps {
   color?: string;
+  style?: React.CSSProperties;
 }
 
 const Mic = (props: MicSvgProps): React.ReactElement => {
