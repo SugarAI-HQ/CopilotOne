@@ -3,40 +3,34 @@
 @tailwind components;
 @tailwind utilities;
 
-
 .mic-buttons {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  @apply flex items-center gap-2;
 }
 
 .mic-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  @apply flex items-center justify-center w-12 h-12 rounded-full border-none text-white cursor-pointer transition-colors duration-300;
+  background-color: #007bff; /* Main color */
 }
 
 .mic-button.listening {
-  animation: pulse 1s infinite;
+  @apply animate-pulse;
 }
 
 .mic-button.evaluating,
 .mic-button.waiting {
-  border: 5px solid #f3f3f3;
-  -webkit-animation: spin 1s linear infinite;
-  animation: spin 2s linear infinite;
-  border-top: 5px solid #3498db;
-  border-radius: 50%;
-  width: 58px;
-  height: 58px;
+  @apply border-4 border-t-4 border-gray-200 rounded-full;
+  border-top-color: #3498db; /* Blue color for the spinner */
+  width: 3rem; /* 48px */
+  height: 3rem; /* 48px */
+  animation: spin 1s linear infinite;
+}
+
+.mic-button.disabled {
+  @apply bg-gray-500 cursor-not-allowed;
+}
+
+.mic-icon {
+  @apply text-2xl;
 }
 
 @keyframes spin {
@@ -48,27 +42,22 @@
   }
 }
 
-.mic-button.disabled {
-  background-color: #6c757d;
-}
-
-.mic-icon {
-  font-size: 24px;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-  }
-}
-
 .highlight {
-  outline: none;
-  border: 2px solid yellow;
+  @apply outline-none border-2 border-yellow-500;
+}
+
+.bottom-bar {
+  @apply fixed bottom-0 left-0 right-0 p-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700;
+}
+
+.transcript-container {
+  @apply flex justify-between items-center px-4;
+}
+
+.transcript {
+  @apply text-gray-800 dark:text-white;
+}
+
+.counter {
+  @apply text-lg text-gray-800 dark:text-gray-200;
 }

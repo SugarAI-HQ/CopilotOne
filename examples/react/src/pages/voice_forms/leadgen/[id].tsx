@@ -30,10 +30,6 @@ const App: NextPage = () => {
 
   let showInUnSupportedBrowser = show ? true : false;
 
-  if (process.env.NODE_ENV === "development") {
-    showInUnSupportedBrowser = true;
-  }
-
   const [showStart, setShowStart] = useState<boolean>(true);
 
   const [fd, setFd] = useState<any>(null);

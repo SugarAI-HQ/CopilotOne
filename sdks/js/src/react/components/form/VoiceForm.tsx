@@ -49,7 +49,7 @@ export const VoiceForm: React.FC<{
   const postSubmissionMessage = geti18nMessage("postSubmission", translations);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-2">
       {step === 0 && (
         <Onboarding
           showStartButton={showStartButton}
@@ -72,6 +72,7 @@ export const VoiceForm: React.FC<{
                     answer: answer,
                   })
                 }
+                onBack={() => setStep(step - 1)}
                 onSkip={() =>
                   handleQuestionComplete({
                     question: questions[step - 1],

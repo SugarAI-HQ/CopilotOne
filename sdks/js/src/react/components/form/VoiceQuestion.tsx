@@ -26,8 +26,9 @@ export const VoiceQuestion: React.FC<{
   question: Question;
   onAnswered: (answer: string) => void;
   onSkip: () => void;
+  onBack: () => void;
   formConfig: FormConfig;
-}> = ({ question, onAnswered, onSkip, formConfig }) => {
+}> = ({ question, onAnswered, onSkip, onBack, formConfig }) => {
   // Depdencies
   const { language, voice } = useLanguage();
   const isWorkflowStartedRef = useRef(false);
@@ -406,50 +407,27 @@ export const VoiceQuestion: React.FC<{
   };
 
   return (
-    <div className="p-4">
+    <div className="p-2 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md max-w-3xl mx-auto">
       <Streamingi18nText
         ref={questionRef}
         auto={false}
         message={question.question_text}
         formConfig={formConfig}
       />
-      {/* Text / Number. */}
+
       {question.question_type == "text" && (
-        <div className="flex flex-col items-center mt-4">
+        <div className="flex flex-col items-center mt-2">
           <TextareaAutosize
             autoComplete="off"
-            // value={
-            //   isListening
-            //     ? transcript.length
-            //       ? transcript
-            //       : ""
-            //     : finalTranscript
-            // }
             ref={inputRef}
-            // onKeyDown={handleKeyPress}
-            // onChange={(e) => setInput(e.target.value)}
             name="message"
             disabled={!isQuestionSpoken}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
-            className="rounded border-5 border-[#007bff] max-h-24 px-14 bg-accent py-[22px] text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden dark:bg-card"
+            className="rounded-lg border border-blue-500 max-h-24 px-4 py-3 bg-white dark:bg-gray-800 text-sm placeholder-gray-500 dark:placeholder-gray-400 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-blue-300 focus:border-blue-500"
           />
-
-          {/* <input
-            type="text"
-            className="border-2 border-gray-300 rounded-md w-full"
-            ref={inputRef}
-            // value={input}
-            // onChange={(e) => setInput(e.target.value)}
-          /> */}
-          {/* <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={onAnswered}
-          >
-            Submit
-          </button> */}
         </div>
       )}
-      {/* Multiple choice questions only. Render the options. */}
+
       {question.question_type == "multiple_choice" && (
         <VoiceQuestionOptions
           auto={false}
@@ -463,38 +441,25 @@ export const VoiceQuestion: React.FC<{
         />
       )}
 
-      {isQuestionSpoken && (
-        <div className="space-y-4 p-4 m-4">
-          {isListening && (
-            <div className="flex flex-col justify-center items-center h-full p-4">
-              <div className="w-full max-w-lg p-2 border-t border-gray-300 dark:border-gray-700">
-                <p className="text-center text-gray-800 dark:text-white">
-                  {transcript}
-                </p>
-              </div>
-            </div>
-          )}
-          {!isListening && (
-            <div className="flex flex-col justify-center items-center h-full p-4">
-              <div className="w-full max-w-lg p-2 border-t border-gray-300 dark:border-gray-700">
-                <p className="text-center text-gray-800 dark:text-white">
-                  {finalTranscript}
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div className="flex justify-center mic-buttons">
-            {/* <button className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-md">
-            Centered Button
-          </button> */}
-
+      <div className="mb-8 fixed bottom-0 left-0 right-0 p-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="w-full flex justify-between items-center px-4">
+            <p className="text-gray-800 dark:text-white border-b border-gray-300 dark:border-gray-700">
+              {isListening ? transcript : finalTranscript}
+            </p>
             {isListening && (
               <span className="text-lg text-gray-800 dark:text-gray-200">
                 {question.validation.max_length - transcript.length}
               </span>
             )}
-
+          </div>
+          <div className="flex justify-between items-center w-full max-w-3xl mx-auto space-x-2">
+            <button
+              onClick={onBack}
+              className="px-2 py-1 bg-gray-600 dark:text-white rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            >
+              Back
+            </button>
             <Voice
               currentStyle={{}}
               voiceButtonStyle={{}}
@@ -507,37 +472,24 @@ export const VoiceQuestion: React.FC<{
               isSpeaking={isSpeaking}
               stopSpeaking={stopSpeaking}
             />
-
-            {/* <button
-              className={`mic-button  ${
-                isListening
-                  ? "listening"
-                  : isEvaluating
-                    ? "evaluating"
-                    : isWaiting
-                      ? "waiting"
-                      : "disabled"
-              }`}
-              onClick={handleListenClick}
-            >
-              {isListening ? (
-                <Mic />
-              ) : isEvaluating ? (
-                <Loader />
-              ) : isWaiting ? (
-                <Hourglass />
-              ) : (
-                <FaMicrophoneSlash className="mic-icon" />
-              )}
-            </button> */}
-
-            {!isWaiting && <button onClick={onSkip}>Skip</button>}
-            {isWaiting && (
-              <button onClick={() => onAnswered(answer as string)}>Next</button>
+            {!isWaiting ? (
+              <button
+                onClick={onSkip}
+                className="px-2 py-1 bg-blue-600 dark:text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                Skip
+              </button>
+            ) : (
+              <button
+                onClick={() => onAnswered(answer as string)}
+                className="px-2 py-1 bg-green-600 dark:text-white rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                Next
+              </button>
             )}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
