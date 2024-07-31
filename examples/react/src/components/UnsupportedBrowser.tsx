@@ -2,12 +2,12 @@ import { useEffect, useState, ReactNode } from "react";
 import { isUnsupportedBrowser } from "@/utils/browser";
 
 interface UnsupportedBrowserProps {
-  stillAllow: boolean;
+  forceShow: boolean;
   children?: ReactNode;
 }
 
 export const UnsupportedBrowser: React.FC<UnsupportedBrowserProps> = ({
-  stillAllow,
+  forceShow,
   children,
 }) => {
   const [isUnsupported, setIsUnsupported] = useState(false);
@@ -29,7 +29,6 @@ export const UnsupportedBrowser: React.FC<UnsupportedBrowserProps> = ({
           padding: "20px",
           backgroundColor: "#ffdddd",
           color: "#d8000c",
-          position: "fixed",
           top: 0,
           left: 0,
           right: 0,

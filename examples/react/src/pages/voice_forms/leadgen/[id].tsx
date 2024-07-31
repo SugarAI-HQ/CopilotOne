@@ -22,7 +22,18 @@ import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
 const App: NextPage = () => {
   const router = useRouter();
-  const { id, lang } = router.query as { id: string; lang: LanguageCode };
+  let { id, lang, show } = router.query as {
+    id: string;
+    lang: LanguageCode;
+    show: string;
+  };
+
+  let showInUnSupportedBrowser = show ? true : false;
+
+  if (process.env.NODE_ENV === "development") {
+    showInUnSupportedBrowser = true;
+  }
+
   const [showStart, setShowStart] = useState<boolean>(true);
 
   const [fd, setFd] = useState<any>(null);
@@ -71,7 +82,7 @@ const App: NextPage = () => {
   };
   return (
     <CopilotProvider config={copilotConfig}>
-      <UnsupportedBrowser stillAllow={process.env.NODE_ENV !== "development"}>
+      <UnsupportedBrowser forceShow={showInUnSupportedBrowser}>
         {/* <div>
         <h1>Leadgen Form</h1>
       </div> */}
