@@ -363,27 +363,6 @@ export const VoiceQuestion: React.FC<{
     return ttaResponse.actionOutput;
   };
 
-  // const evaluateResponse = (userResponse: string) => {
-  //   if (question.question_type === "text") {
-  //     onAnswered(userResponse);
-  //   } else if (question.question_type === "multiple_choice") {
-  //     // 1. Functioncalling to get the best match
-  //     // 2. Send question, options and user response to AI
-
-  //     onAnswered(userResponse);
-  //     // evaluateMCQResponse(userResponse);
-  //     // const option = question.question_params.options?.find(
-  //     //   (opt: string) => opt.toLowerCase() === userResponse.toLowerCase()
-  //     // );
-  //     // if (option) {
-  //     //   setSelectedOption(option);
-  //     //   onAnswered(userResponse);
-  //     // } else {
-  //     //   alert("Option not recognized. Please try again.");
-  //     // }
-  //   }
-  // };
-
   const handleOptionClick = (option: string) => {
     setSelectedOption(option);
     // onAnswered();
@@ -564,22 +543,3 @@ export const VoiceQuestion: React.FC<{
 };
 
 export default VoiceQuestion;
-
-// export const speakMCQ = async (
-//   question: Question,
-//   language: string,
-//   voice: SpeechSynthesisVoice
-// ): Promise<void> => {
-//   const lang: LanguageCode = (language.split("-")[0] || "en") as LanguageCode;
-
-//   // Speak the question
-//   const questionText = question?.question_text?.lang[lang] as string;
-//   await speakMessageAsync(questionText, language, voice);
-
-//   // Speak the options
-//   const options = question?.question_params?.options as i18nMessage[];
-//   for (let i = 0; i < options.length; i++) {
-//     const option = options[i];
-//     await speakMessageAsync(option, language, voice);
-//   }
-// };
