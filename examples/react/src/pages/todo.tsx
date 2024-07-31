@@ -10,7 +10,7 @@ import {
   useCopilot,
   type CopilotConfigType,
   CopilotProvider,
-} from "@sugar-ai/core";
+} from "@sugar-ai/copilot-one-js";
 
 import { FilterType, SettingsType, TodoSchemaType } from "../schema/todoSchema";
 import ThemeSwitcher from "@/ThemeSwitcher";

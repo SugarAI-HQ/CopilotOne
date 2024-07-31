@@ -3,14 +3,16 @@ import "../app/globals.css";
 
 import {
   FormConfigDefaults,
-  Translations,
   geti18nMessage,
   Streamingi18nText,
-  Streamingi18nTextRef,
   MessageWorkflow,
   LanguageProvider,
   WorkflowProvider,
-} from "@sugar-ai/core";
+} from "@sugar-ai/copilot-one-js";
+import {
+  Translations,
+  Streamingi18nTextRef,
+} from "@sugar-ai/.ignored_copilot-one-js";
 import { NextPage } from "next";
 import { useRef, useState } from "react";
 import { useEffect } from "react";

@@ -1,4 +1,4 @@
-import { Question, i18nMessage, Translations } from "@sugar-ai/core";
+import { Question, Translations } from "@sugar-ai/.ignored_copilot-one-js";
 
 export const translations: Translations = {
   landingText: {

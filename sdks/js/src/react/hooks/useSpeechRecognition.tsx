@@ -91,7 +91,7 @@ const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         if (recognitionRef.current) {
           setIsListening((il: boolean) => {
             if (il == true) {
-              recognitionRef.current.stop();
+              recognitionRef?.current?.stop();
               resolve(finalTranscript.trim() + interimTranscript.trim());
             }
 
