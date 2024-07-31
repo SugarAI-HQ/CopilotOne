@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useLanguage } from "../../hooks/useLanguage";
 import { FaLanguage } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { LanguageCode, languageCode } from "@sugar-ai/core";
+import { LanguageCode, languageCode, useLanguage } from "@sugar-ai/core";
 import Modal from "../common/Modal";
 
 export const LanguageSelector: React.FC<{ klass: string }> = ({ klass }) => {

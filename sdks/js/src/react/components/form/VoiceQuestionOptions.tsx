@@ -5,10 +5,10 @@ import {
   Question,
   Streamingi18nTextRef,
   FormConfig,
-} from "~/react/schema/form";
-import { LanguageCode } from "@sugar-ai/core";
+  LanguageCode,
+  i18nMessage,
+} from "@sugar-ai/core";
 
-import { i18nMessage } from "~/react/schema/message";
 import { extracti18nText } from "~/react/helpers/voice";
 
 export const VoiceQuestionOptions: React.FC<{

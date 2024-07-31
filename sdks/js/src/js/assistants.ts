@@ -1,8 +1,8 @@
 import { createElement } from "react";
 // import { createRoot } from "react-dom/client";
-import { TextAssistant } from "../react/assistants/text_assistant";
-import { VoiceAssistant } from "../react/assistants/voice_assistant";
-import { CopilotProvider } from "~/react/hooks/useCopilot";
+import { TextAssistant } from "~/react/assistants/text_assistant";
+import { VoiceAssistant } from "~/react/assistants/voice_assistant";
+import { CopilotProvider } from "@sugar-ai/core";
 
 export const predefindedAssistants = { VoiceAssistant, TextAssistant };
 

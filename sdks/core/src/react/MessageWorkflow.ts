@@ -1,6 +1,6 @@
 import React from "react";
 import { Semaphore } from "async-mutex"; // Make sure to install async-mutex: npm install async-mutex
-import { Streamingi18nTextRef } from "~/react/schema/form";
+import { Streamingi18nTextRef } from "@sugar-ai/core";
 
 export class MessageWorkflow {
   private queue: React.RefObject<Streamingi18nTextRef>[];

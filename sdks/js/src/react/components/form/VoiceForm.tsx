@@ -2,11 +2,16 @@ import React, { useRef, useState } from "react";
 import Onboarding from "./Onboarding";
 import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
-import { Translations, i18nMessage } from "~/react/schema/message";
-import { Question, FormConfig, FormConfigDefaults } from "~/react/schema/form";
+import {
+  Translations,
+  i18nMessage,
+  getQueryParams,
+  geti18nMessage,
+  Question,
+  FormConfig,
+  FormConfigDefaults,
+} from "@sugar-ai/core";
 import "~/react/styles/form.css";
-import { getQueryParams } from "@sugar-ai/core";
-import { geti18nMessage } from "~/react/i18n";
 
 export const VoiceForm: React.FC<{
   showStartButton: boolean;

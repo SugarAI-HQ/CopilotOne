@@ -10,20 +10,16 @@ import {
   Question,
   Streamingi18nTextRef,
   FormConfig,
-} from "~/react/schema/form";
-import useSpeechToText from "~/react/hooks/useSpeechRecognition";
-import { useCopilot } from "~/react";
-
-import Streamingi18nText from "../streaming/Streamingi18nText";
-import {
+  useSpeechToText,
+  useCopilot,
   ActionRegistrationType,
   EmbeddingScopeWithUserType,
   LanguageCode,
   delay,
+  useLanguage,
+  extracti18nText,
 } from "@sugar-ai/core";
-import useSpeechSynthesis from "~/react/hooks/useSpeechSynthesis";
-import { extracti18nText } from "~/react/helpers/voice";
-import { useLanguage } from "~/react/hooks/useLanguage";
+import Streamingi18nText from "../streaming/Streamingi18nText";
 
 export const VoiceQuestion: React.FC<{
   question: Question;

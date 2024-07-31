@@ -10,19 +10,20 @@ import React, {
 const FAST_FORWARD = "fastForward";
 
 import {
+  i18nMessage,
+  useWorkflow,
+  useLanguage,
+  LanguageCode,
+  geti18nMessage,
   CharcterPerSec,
   Streamingi18nTextProps,
   Streamingi18nTextRef,
-} from "../../schema/form";
-import { i18nMessage, useWorkflow } from "~/react";
-import { LanguageCode } from "@sugar-ai/core";
-import { useLanguage } from "~/react/hooks/useLanguage";
+} from "@sugar-ai/core";
 import {
   extracti18nText,
   speakMessageAsync,
   stopSpeaking,
 } from "~/react/helpers/voice";
-import { geti18nMessage } from "~/react/i18n";
 
 export const Streamingi18nText: React.ForwardRefRenderFunction<
   Streamingi18nTextRef,

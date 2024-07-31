@@ -62,13 +62,6 @@ const useSpeechSynthesis = () => {
     setIsSpeaking(false);
   };
 
-  const extracti18nText = (message, language) => {
-    const userLang = language.split("-")[0];
-    let text =
-      message?.lang[language] ?? message?.lang[userLang] ?? "not found";
-    return text;
-  };
-
   return {
     isSpeaking,
     speakMessage,
@@ -79,3 +72,9 @@ const useSpeechSynthesis = () => {
 };
 
 export default useSpeechSynthesis;
+
+export const extracti18nText = (message, language) => {
+  const userLang = language.split("-")[0];
+  let text = message?.lang[language] ?? message?.lang[userLang] ?? "not found";
+  return text;
+};

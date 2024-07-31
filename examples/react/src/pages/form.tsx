@@ -1,6 +1,6 @@
 import { resume } from "@/helpers/data";
 import { CopilotConfigType } from "@sugar-ai/core";
-import { useCopilot, CopilotProvider } from "@sugar-ai/copilot-one-js";
+import { useCopilot, CopilotProvider } from "@sugar-ai/core";
 import { VoiceAssistant } from "@sugar-ai/copilot-one-js";
 import { NextPage } from "next";
 import React, { useEffect, useState } from "react";

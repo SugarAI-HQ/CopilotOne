@@ -3,21 +3,38 @@ import { createUseStateEmbedding } from "./useStateEmbedding";
 
 import { any } from "zod";
 import {
-  type ActionDefinitionType,
-  type ActionRegistrationType,
-  type CopilotConfigType,
-  type CopilotSytleType,
-  type EmbeddingScopeType,
-  type EmbeddingScopeWithUserType,
+  ActionDefinitionType,
+  ActionRegistrationType,
+  CopilotConfigType,
+  CopilotSytleType,
+  EmbeddingScopeType,
+  TextToActionResponse,
   copilotAiDefaults,
   copilotRouterDefaults,
-  TextToActionResponse,
-  generateUserId,
-  SugarAiApiClient,
+} from "~/schema/copilot";
+import { generateUserId } from "~/helpers/utils";
+import { SugarAiApiClient } from "~/api-client";
+import {
   register,
   unregister,
   textToAction as nativeTextoAction,
-} from "@sugar-ai/core";
+} from "~/base/actions";
+// import {
+//   type ActionDefinitionType,
+//   type ActionRegistrationType,
+//   type CopilotConfigType,
+//   type CopilotSytleType,
+//   type EmbeddingScopeType,
+//   type EmbeddingScopeWithUserType,
+//   copilotAiDefaults,
+//   copilotRouterDefaults,
+//   TextToActionResponse,
+//   generateUserId,
+//   SugarAiApiClient,
+//   register,
+//   unregister,
+//   textToAction as nativeTextoAction,
+// } from "@sugar-ai/core";
 
 export const CopilotContext = createContext({
   config: null as CopilotConfigType | null,

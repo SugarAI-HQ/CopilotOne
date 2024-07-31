@@ -1,9 +1,13 @@
-import { Streamingi18nTextRef, FormConfig } from "~/react/schema/form";
 import React, { useEffect, useRef } from "react";
 import Streamingi18nText from "../streaming/Streamingi18nText";
-import { i18nMessage } from "~/react/schema/message";
-import { useLanguage } from "~/react/hooks/useLanguage";
-import MessageWorkflow from "../workflow/MessageWorkflow";
+
+import {
+  FormConfig,
+  Streamingi18nTextRef,
+  i18nMessage,
+  useLanguage,
+  MessageWorkflow,
+} from "@sugar-ai/core";
 
 export const Submission: React.FC<{
   postSubmissionMessage: i18nMessage;

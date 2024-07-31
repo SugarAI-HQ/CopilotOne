@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { languageCode } from "@sugar-ai/core";
+import { languageCode } from "./lang";
 
 export const langTranslation = z.record(languageCode, z.string());
 export type LangTranslation = z.infer<typeof langTranslation>;

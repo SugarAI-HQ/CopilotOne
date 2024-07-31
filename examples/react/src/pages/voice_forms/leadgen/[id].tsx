@@ -7,11 +7,11 @@ import {
   geti18nMessage,
   CopilotProvider,
   LanguageProvider,
-  VoiceForm,
-  LanguageSelector,
   WorkflowProvider,
   FormConfigDefaults,
-} from "@sugar-ai/copilot-one-js";
+} from "@sugar-ai/core";
+
+import { VoiceForm, LanguageSelector } from "@sugar-ai/copilot-one-js";
 
 import "@sugar-ai/copilot-one-js/style";
 import dynamic from "next/dynamic";

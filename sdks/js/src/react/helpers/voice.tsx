@@ -1,7 +1,6 @@
 // import { LanguageCode, i18nMessage } from "../base/schema/"
 
-import { i18nMessage } from "~/react/schema/message";
-import { LanguageCode } from "@sugar-ai/core";
+import { LanguageCode, i18nMessage } from "@sugar-ai/core";
 import root from "window-or-global";
 
 let synth: any = null;

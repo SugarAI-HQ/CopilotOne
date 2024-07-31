@@ -1,4 +1,4 @@
-import { Translations, i18nMessage } from "..";
+import { Translations, i18nMessage } from "~/schema/message";
 
 export const FormTranslations: Translations = {
   permissionsGranted: {

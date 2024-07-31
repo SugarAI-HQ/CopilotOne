@@ -1,18 +1,16 @@
 import dynamic from "next/dynamic";
 import "../app/globals.css";
 
+import { Streamingi18nText } from "@sugar-ai/copilot-one-js";
 import {
   FormConfigDefaults,
   geti18nMessage,
-  Streamingi18nText,
-  MessageWorkflow,
   LanguageProvider,
   WorkflowProvider,
-} from "@sugar-ai/copilot-one-js";
-import {
   Translations,
+  MessageWorkflow,
   Streamingi18nTextRef,
-} from "@sugar-ai/.ignored_copilot-one-js";
+} from "@sugar-ai/core";
 import { NextPage } from "next";
 import { useRef, useState } from "react";
 import { useEffect } from "react";

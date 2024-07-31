@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { delay } from "@sugar-ai/core";
-import { ListenConfigDefaults, ListenConfig } from "../schema/form";
+import { ListenConfigDefaults, ListenConfig } from "~/schema/form";
 import root from "window-or-global";
-import { geti18nMessage } from "~/react/i18n";
 import { useLanguage } from "./useLanguage";
 import useSpeechSynthesis from "./useSpeechSynthesis";
+import { delay } from "~/helpers";
+import { geti18nMessage } from "~/i18n";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
@@ -14,7 +14,7 @@ interface SpeechRecognitionOptions {
 
 const noSpeech = geti18nMessage("noSpeech");
 
-const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
+export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const { language, voice } = useLanguage();
   const [isMicEnabled, setIsMicEnabled] = useState(false);
   const [isListening, setIsListening] = useState(false);

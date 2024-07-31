@@ -5,7 +5,7 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import MessageWorkflow from "./MessageWorkflow";
+import MessageWorkflow from "../MessageWorkflow";
 
 interface ContextType {
   workflow: MessageWorkflow;

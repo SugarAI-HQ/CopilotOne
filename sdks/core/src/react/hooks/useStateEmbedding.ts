@@ -1,5 +1,5 @@
 import { useEffect, useState as useStateOriginal } from "react";
-import { type SugarAiApiClient } from "../../../../core/src/api-client";
+import { type SugarAiApiClient } from "~/api-client";
 import {
   type CopilotConfigType,
   type EmbeddingScopeType,
@@ -7,9 +7,9 @@ import {
   DEFAULT_GROUP_ID,
   defaultGroupId,
   scopeDefaults,
-} from "../../../../core/src/schema/copilot";
+} from "~/schema/copilot";
 
-import { createOrUpdateEmbedding } from "../../../../core/src/base/embedding";
+import { createOrUpdateEmbedding } from "~/base/embedding";
 
 export function createUseStateEmbedding(
   client: SugarAiApiClient,

@@ -5,9 +5,9 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { LanguageCode, getQueryParams } from "@sugar-ai/core";
 import root from "window-or-global";
-import { Translations } from "~/react/schema/message";
+import { LanguageCode } from "~/schema/lang";
+import { Translations } from "~/schema/message";
 interface LanguageContextType {
   language: LanguageCode;
   setLanguage: (language: LanguageCode) => void;
@@ -17,6 +17,7 @@ interface LanguageContextType {
   translations: Translations;
   setTranslations: (translations: Translations) => void;
 }
+import { getQueryParams } from "~/helpers/url";
 
 const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined,

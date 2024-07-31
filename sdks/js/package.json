@@ -23,6 +23,7 @@
     "type": "git",
     "url": "https://github.com/SugarAI-HQ/CopilotOne.git"
   },
+  "rootDir": ".",
   "scripts": {
     "devx": "tsc -b ./tsconfig.esm.json ./tsconfig.types.json -w",
     "devxx": "node dev.mjs",
