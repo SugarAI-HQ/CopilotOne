@@ -1,5 +1,7 @@
-import { Question, Translations } from "@sugar-ai/core";
+import { LanguageCode, Question, Translations } from "@sugar-ai/core";
 // import { type Question, type Translations } from "@sugar-ai/copilot-one-js";
+
+export const languagesEnabled: LanguageCode[] = ["en", "hi"];
 
 export const translations: Translations = {
   landingText: {

@@ -68,10 +68,19 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
       const filterLang =
         defaultVoiceLang == "auto" ? language : defaultVoiceLang;
 
-      const filterVoice =
-        availableVoices.find((v) => v.lang.startsWith(filterLang as string)) ||
-        availableVoices[0];
+      const [lang, country] = filterLang.split("-");
 
+      let filterVoice =
+        availableVoices.find((v) => v.lang.startsWith(filterLang as string)) ||
+        availableVoices.find((v) => v.lang.startsWith(lang as string));
+
+      // For indian languages fallback to google-hindi
+      // as it support for mulitple indian languages
+      if (!filterVoice && country == "IN") {
+        filterVoice = availableVoices.find(
+          (v) => v.lang.split("-")[1] === country && v.name === "Google हिन्दी",
+        );
+      }
       setVoice(filterVoice);
     };
     synth.onvoiceschanged = onVoicesChanged;

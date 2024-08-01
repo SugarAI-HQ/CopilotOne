@@ -22,9 +22,11 @@ export const LanguageSelector: React.FC<{
     //   languagesEnabled || Array.from(navigator.languages || [language]);
 
     // Filter all the languages that are supported by the browser
-    const allLanguages = languageCode._def.values;
-    const filteredLangauges = allLanguages.filter((l) =>
-      languagesEnabled.includes(l.split("-")[0]),
+    const allLanguages: LanguageCode[] = languageCode._def.values;
+    const filteredLangauges = allLanguages.filter(
+      (l) =>
+        languagesEnabled.includes(l.split("-")[0] as LanguageCode) ||
+        languagesEnabled.includes(l),
     );
     setLanguages(filteredLangauges);
 
@@ -70,6 +72,13 @@ export const LanguageSelector: React.FC<{
       filteredVoices = voices.filter(
         (v) => v.lang.toLowerCase() === language.toLowerCase(),
       );
+
+      // exceptions in case of Indian Languages
+      if (filteredVoices.length === 0 && country === "IN") {
+        filteredVoices = voices.filter(
+          (v) => v.lang.split("-")[1] === country && v.name === "Google हिन्दी",
+        );
+      }
     }
 
     // Use a Map to ensure uniqueness by 'lang' property

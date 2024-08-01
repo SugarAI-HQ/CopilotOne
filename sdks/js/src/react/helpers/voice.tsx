@@ -3,6 +3,8 @@
 import { LanguageCode, i18nMessage } from "@sugar-ai/core";
 import root from "window-or-global";
 
+const NOT_FOUND = "not found";
+
 let synth: any = null;
 let recognition: any = null;
 
@@ -61,7 +63,12 @@ export const extracti18nText = (
   language: LanguageCode,
 ) => {
   const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
-  let text = "not found";
+  let text = NOT_FOUND;
   text = message?.lang[language] ?? (message?.lang[userLang] as string);
+  if (text == NOT_FOUND) {
+    console.error(
+      `i18n message not found for ${language}: ${JSON.stringify(message)}`,
+    );
+  }
   return text;
 };

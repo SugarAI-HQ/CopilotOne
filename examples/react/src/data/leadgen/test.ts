@@ -1,4 +1,11 @@
-import { Question, i18nMessage, Translations } from "@sugar-ai/core";
+import {
+  Question,
+  i18nMessage,
+  Translations,
+  LanguageCode,
+} from "@sugar-ai/core";
+
+export const languagesEnabled: LanguageCode[] = ["en", "hi"];
 
 export const translations: Translations = {
   welcome: {
