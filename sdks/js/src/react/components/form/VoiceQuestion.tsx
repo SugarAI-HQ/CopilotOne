@@ -227,6 +227,11 @@ export const VoiceQuestion: React.FC<{
       // validate Answer
       await validateAnswerWithUser(question, questionAnswer, followupResponse);
 
+      // Wait
+      setIsWaiting(true);
+      await delay(3000);
+      setIsWaiting(false);
+
       // Submit if fine
       onAnswered(questionAnswer);
     }
@@ -237,36 +242,32 @@ export const VoiceQuestion: React.FC<{
     answer: string,
     followupResponse: string,
   ) => {
+    // await speaki18nMessageAsync(
+    //   selectedAnswer,
+    //   language,
+    //   voice as SpeechSynthesisVoice,
+    // );
+
     // Show final evaluated answer
     if (question.question_type == "multiple_choice") {
       setAnswer(answer);
-      // await speaki18nMessageAsync(
-      //   selectedAnswer,
-      //   language,
-      //   voice as SpeechSynthesisVoice,
-      // );
-      await speakMessageAsync(
-        followupResponse,
-        language,
-        voice as SpeechSynthesisVoice,
-      );
-      await delay(3000);
-    } else {
-      // await speaki18nMessageAsync(
-      //   selectedAnswer,
-      //   language,
-      //   voice as SpeechSynthesisVoice,
-      // );
-      await speakMessageAsync(
-        followupResponse,
-        language,
-        voice as SpeechSynthesisVoice,
-      );
 
-      // Wait
-      setIsWaiting(true);
-      await delay(3000);
-      setIsWaiting(false);
+      await speakMessageAsync(
+        followupResponse,
+        language,
+        voice as SpeechSynthesisVoice,
+      );
+    } else if (
+      question.question_type == "text" ||
+      question.question_type == "number"
+    ) {
+      if (answer.length <= 150) {
+        await speakMessageAsync(
+          followupResponse,
+          language,
+          voice as SpeechSynthesisVoice,
+        );
+      }
     }
   };
 
@@ -471,16 +472,21 @@ export const VoiceQuestion: React.FC<{
 
       <div className="mb-8 fixed bottom-0 left-0 right-0 p-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700">
         <div className="flex flex-col items-center space-y-2">
-          <div className="w-full flex justify-between items-center px-4">
-            <p className="text-gray-800 dark:text-white border-b border-gray-300 dark:border-gray-700">
-              {isListening ? transcript : finalTranscript}
+          <div className="transcript-container w-full flex items-center px-2 relative">
+            <p className="transcript text-gray-800 mb-2 dark:text-white border-b border-gray-300 dark:border-gray-700 mx-auto">
+              {isWaiting
+                ? " Loading next questions"
+                : isListening
+                  ? transcript
+                  : finalTranscript}
             </p>
             {isListening && (
-              <span className="text-lg text-gray-800 dark:text-gray-200">
+              <span className="counter absolute right-0 text-lg text-gray-800 dark:text-gray-200">
                 {question.validation.max_length - transcript.length}
               </span>
             )}
           </div>
+
           <div className="flex justify-between items-center w-full max-w-3xl mx-auto space-x-2">
             <button
               onClick={onBack}

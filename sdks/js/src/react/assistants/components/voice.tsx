@@ -32,7 +32,7 @@ const VoiceButtonWithStates = ({
   const showSpinner = isprocessing || iswaiting;
 
   const iconStyle = {
-    margin: "15px",
+    margin: "17px",
   };
 
   return (
