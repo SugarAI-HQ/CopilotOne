@@ -23,13 +23,18 @@ export const LanguageSelector: React.FC<{
 
     // Filter all the languages that are supported by the browser
     const allLanguages = languageCode._def.values;
-    console.log(allLanguages);
     const filteredLangauges = allLanguages.filter((l) =>
       languagesEnabled.includes(l.split("-")[0]),
     );
     setLanguages(filteredLangauges);
+
     const fv = shorlistVoices(voices, language);
+
     setFilteredVoices(fv);
+    console.log(
+      "FilteredVoices",
+      fv.map((l) => `${l.name} ${l.lang}`),
+    );
 
     // const listLangs = userLanguages.length > 0 ? userLanguages :
     // const allLanguages = Array.from(
@@ -57,13 +62,23 @@ export const LanguageSelector: React.FC<{
   const shorlistVoices = (voices, language: LanguageCode) => {
     const [shortLang, country] = language.split("-");
 
+    let filteredVoices: SpeechSynthesisVoice[] = [];
+
     if (!country) {
-      return voices.filter((v) => v.lang.split("-")[0] === shortLang);
+      filteredVoices = voices.filter((v) => v.lang.split("-")[0] === shortLang);
     } else {
-      return voices.filter(
+      filteredVoices = voices.filter(
         (v) => v.lang.toLowerCase() === language.toLowerCase(),
       );
     }
+
+    // Use a Map to ensure uniqueness by 'lang' property
+    const uniqueVoicesMap = new Map();
+    filteredVoices.forEach((voice) => {
+      uniqueVoicesMap.set(voice.name, voice);
+    });
+
+    return Array.from(uniqueVoicesMap.values());
   };
 
   return (
