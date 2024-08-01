@@ -1,5 +1,7 @@
 import { Question, Translations } from "@sugar-ai/core";
 
+export const languagesEnabled = ["en", "hi"];
+
 export const translations: Translations = {
   landingText: {
     en: "Experience Lead Generation with Our Multilingual Voice Form",

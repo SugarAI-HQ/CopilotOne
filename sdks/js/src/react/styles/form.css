@@ -46,6 +46,23 @@
   @apply outline-none border-2 border-yellow-500;
 }
 
+.highlighted-selected {
+  /* background-color: gray */
+  @apply bg-gray-300 dark:bg-gray-400;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .highlight {
+    @apply outline-none border-2 border-yellow-200;
+  }
+}
+
+/* Dark mode styles */
+/* .dark .highlighted-selected {
+  background-color: 
+} */
+
 .bottom-bar {
   @apply fixed bottom-0 left-0 right-0 p-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700;
 }
