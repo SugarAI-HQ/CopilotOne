@@ -176,6 +176,7 @@ export const VoiceQuestion: React.FC<{
     let fq: string | null = "";
     let attempts = 0;
     let questionAnswer = "";
+    let followupResponse = "";
 
     // Loop until we get a valid answer or number of attempts exceeded
     while (fq !== null && attempts < 2) {
@@ -204,13 +205,19 @@ export const VoiceQuestion: React.FC<{
       // Evaluation
       const evaluationResult = await evaluate(question, userResponse, language);
 
+      // Ask followup question if needed
       if (!evaluationResult) {
         fq = "";
         questionAnswer = userResponse;
       } else {
         fq = evaluationResult.followupQuestion;
         questionAnswer = evaluationResult.answer;
+
+        // followupResponse = evaluationResult.followupResponse ?? questionAnswer;
+        console.log(`followupResponse: ${followupResponse}`);
+        followupResponse = questionAnswer;
       }
+
       if (inputRef && inputRef.current) {
         inputRef.current.value = questionAnswer;
       }
@@ -218,24 +225,31 @@ export const VoiceQuestion: React.FC<{
       attempts = attempts + 1;
 
       // validate Answer
-      await validateAnswerWithUser(question, questionAnswer);
+      await validateAnswerWithUser(question, questionAnswer, followupResponse);
 
       // Submit if fine
       onAnswered(questionAnswer);
     }
   };
 
-  const validateAnswerWithUser = async (question: Question, answer: string) => {
+  const validateAnswerWithUser = async (
+    question: Question,
+    answer: string,
+    followupResponse: string,
+  ) => {
     // Show final evaluated answer
     if (question.question_type == "multiple_choice") {
-      // setAnswer("15-30 days");
       setAnswer(answer);
       // await speaki18nMessageAsync(
       //   selectedAnswer,
       //   language,
       //   voice as SpeechSynthesisVoice,
       // );
-      await speakMessageAsync(answer, language, voice as SpeechSynthesisVoice);
+      await speakMessageAsync(
+        followupResponse,
+        language,
+        voice as SpeechSynthesisVoice,
+      );
       await delay(3000);
     } else {
       // await speaki18nMessageAsync(
@@ -243,7 +257,11 @@ export const VoiceQuestion: React.FC<{
       //   language,
       //   voice as SpeechSynthesisVoice,
       // );
-      await speakMessageAsync(answer, language, voice as SpeechSynthesisVoice);
+      await speakMessageAsync(
+        followupResponse,
+        language,
+        voice as SpeechSynthesisVoice,
+      );
 
       // Wait
       setIsWaiting(true);
@@ -279,7 +297,7 @@ export const VoiceQuestion: React.FC<{
     let action: ActionRegistrationType = {
       name: "evaluateMcqResponse",
       description:
-        "Evaluate the user's response to a multiple-choice question and return the most likely option.",
+        "Evaluate the user's response for a question and return the most likely option.",
       parameters: [
         {
           name: "answer",
@@ -292,6 +310,13 @@ export const VoiceQuestion: React.FC<{
           type: "string",
           enum: ["fully", "partially", "no"],
           description: "Is question answered by the user ?",
+          required: true,
+        },
+        {
+          name: "followupResponse",
+          type: "string",
+          description:
+            "response to be communicated back when user answered the question, which include 1-5 words along with the correct answer.For example: You have chosen <correct answer>, Nice <correct answer>, great, I am going ahead with <correct answer>, Dont ask any followup question, this is required when isQuestionAnswered is yes ",
           required: true,
         },
         {
@@ -318,18 +343,23 @@ export const VoiceQuestion: React.FC<{
     function evaluateMcqResponse(
       answer: string,
       isQuestionAnswered: string,
+      followupResponse: string,
       followupQuestion: string,
     ) {
       console.log(
-        `answer: ${answer}, ${isQuestionAnswered}, ${followupQuestion}`,
+        `answer: ${answer}, ${isQuestionAnswered}, ${followupResponse}, ${followupQuestion}`,
       );
 
       if (isQuestionAnswered === "fully") {
-        return { answer, followupQuestion: null };
+        return {
+          answer,
+          followupResponse,
+          followupQuestion: null,
+        };
       }
 
       if (isQuestionAnswered !== "fully" && followupQuestion) {
-        return { answer, followupQuestion };
+        return { answer, followupResponse: null, followupQuestion };
       }
 
       throw new Error(

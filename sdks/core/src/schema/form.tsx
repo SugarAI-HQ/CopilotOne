@@ -75,6 +75,7 @@ export type Streamingi18nTextRef = z.infer<typeof StreamingTextRefSchema>;
 export const evaluationResponse = z.object({
   answer: z.string(),
   followupQuestion: z.string().nullable(),
+  followupResponse: z.string().nullable(),
 });
 
 export type EvaluationResponse = z.infer<typeof evaluationResponse>;
