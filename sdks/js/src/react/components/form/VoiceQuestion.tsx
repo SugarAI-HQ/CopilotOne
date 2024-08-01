@@ -436,7 +436,7 @@ export const VoiceQuestion: React.FC<{
   };
 
   return (
-    <div className="p-2 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md max-w-3xl mx-auto">
+    <div className="p-2 bg-gray-500 dark:bg-gray-600 rounded-lg shadow-md max-w-3xl mx-auto">
       <Streamingi18nText
         ref={questionRef}
         auto={false}
@@ -444,7 +444,7 @@ export const VoiceQuestion: React.FC<{
         formConfig={formConfig}
       />
 
-      {question.question_type == "text" && (
+      {question.question_type === "text" && (
         <div className="flex flex-col items-center mt-2">
           <TextareaAutosize
             autoComplete="off"
@@ -457,7 +457,7 @@ export const VoiceQuestion: React.FC<{
         </div>
       )}
 
-      {question.question_type == "multiple_choice" && (
+      {question.question_type === "multiple_choice" && (
         <VoiceQuestionOptions
           auto={false}
           question={question}
@@ -470,12 +470,12 @@ export const VoiceQuestion: React.FC<{
         />
       )}
 
-      <div className="mb-8 fixed bottom-0 left-0 right-0 p-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-300 dark:border-gray-700">
+      <div className="mb-8 fixed bottom-0 left-0 right-0 p-2 bg-gray-500 dark:bg-gray-600 border-t border-gray-300 dark:border-gray-700">
         <div className="flex flex-col items-center space-y-2">
           <div className="transcript-container w-full flex items-center px-2 relative">
-            <p className="transcript text-gray-800 mb-2 dark:text-white border-b border-gray-300 dark:border-gray-700 mx-auto">
+            <p className="transcript text-gray-800 dark:text-white mb-2 border-b border-gray-300 dark:border-gray-700 mx-auto">
               {isWaiting
-                ? " Loading next questions"
+                ? "Loading next questions"
                 : isListening
                   ? transcript
                   : finalTranscript}

@@ -163,7 +163,7 @@ export const VoiceAssistant = ({
     let haveMicPermission = false;
     setIsUserEngaged(true);
     if (!ispermissiongranted) {
-      await navigator.mediaDevices
+      await root.navigator.mediaDevices
         .getUserMedia({ audio: true })
         .then(() => {
           haveMicPermission = true;

@@ -342,7 +342,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       return granted;
     }
 
-    return await navigator.mediaDevices
+    return await root.navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
         // stream.getTracks().forEach((track) => track.stop());
