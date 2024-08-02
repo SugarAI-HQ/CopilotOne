@@ -3,6 +3,7 @@ import { FaLanguage } from "react-icons/fa";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { LanguageCode, languageCode, useLanguage } from "@sugar-ai/core";
 import Modal from "../common/Modal";
+import { allLanguages } from "@sugar-ai/core";
 
 export const LanguageSelector: React.FC<{
   klass: string;
@@ -117,7 +118,7 @@ export const LanguageSelector: React.FC<{
           >
             {languages.map((lang) => (
               <option key={lang} value={lang}>
-                {lang}
+                {allLanguages[lang]} - ({lang})
               </option>
             ))}
           </select>
