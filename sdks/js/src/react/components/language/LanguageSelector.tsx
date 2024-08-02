@@ -95,18 +95,25 @@ export const LanguageSelector: React.FC<{
     <div
       className={`${klass} bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-md`}
     >
-      <div className="flex justify-center items-center text-gray-400 dark:text-white-600">
-        <span className="p-1">
-          Lang: ({language}), Voice: {voice?.name}({voice?.lang})
-        </span>
-        <span className="mr-2"></span>
+      <div
+        className="flex flex-row justify-center items-center text-gray-400 dark:text-white-600"
+        onClick={() => setIsModalOpen(true)}
+      >
         <FaLanguage
-          size={32}
+          size={48}
           data-tip="Change Language and Voice Settings"
-          onClick={() => setIsModalOpen(true)}
           className="text-blue-500 cursor-pointer dark:text-blue-300"
         />
-        <ReactTooltip id="lang-tooltip" place="top" />
+        <div className="ml-2 flex flex-col text-gray-400 dark:text-white-600">
+          <p className="p-1">
+            Lang: {allLanguages[language]} - {language}
+          </p>
+          <p>
+            Voice: {voice?.name} - {voice?.lang}
+          </p>
+
+          <ReactTooltip id="lang-tooltip" place="top" />
+        </div>
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className="mb-4">
@@ -118,7 +125,7 @@ export const LanguageSelector: React.FC<{
           >
             {languages.map((lang) => (
               <option key={lang} value={lang}>
-                {allLanguages[lang]} - ({lang})
+                {allLanguages[lang]} - {lang}
               </option>
             ))}
           </select>
@@ -139,7 +146,7 @@ export const LanguageSelector: React.FC<{
           >
             {filteredVoices.map((v) => (
               <option key={v.name} value={v.name}>
-                {v.name} ({v.lang})
+                {v.name} - {v.lang}
               </option>
             ))}
           </select>
