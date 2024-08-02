@@ -68,9 +68,9 @@ export const VoiceQuestion: React.FC<{
     transcript,
     finalTranscript,
     stopListening,
-    getUserResponse,
+    startListeningContinous,
+    getUserResponseContinous,
     getUserResponseAutoBreak,
-    startListeningAsync,
 
     isSpeaking,
     speaki18nMessageAsync,
@@ -194,10 +194,8 @@ export const VoiceQuestion: React.FC<{
           maxAnswerLength: question.validation?.max_length,
         },
       };
-      // userResponse = await startListeningAsync(listenConfig);
-      // userResponse = await getUserResponse(listenConfig);
-
-      userResponse = await getUserResponseAutoBreak(listenConfig);
+      userResponse = await getUserResponseContinous(listenConfig);
+      // userResponse = await getUserResponseAutoBreak(listenConfig);
 
       // Fill answer in text field in case of text fields
       if (inputRef && inputRef.current) {
@@ -491,7 +489,7 @@ export const VoiceQuestion: React.FC<{
         formConfig={formConfig}
       />
 
-      {question.question_type === "text" && (
+      {["text", "number"].includes(question.question_type) && (
         <div className="flex flex-col items-center mt-2">
           <TextareaAutosize
             autoComplete="off"

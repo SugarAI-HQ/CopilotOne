@@ -64,12 +64,16 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   //   }
   // };
 
-  const startListeningAsync = (
+  const startListeningContinous = (
     options: ListenConfig = ListenConfigDefaults,
+    counter: number = -1,
   ): Promise<string> => {
     return new Promise((resolve, reject) => {
       // Stop existing recognition if it is already running
       if (recognitionRef.current) {
+        console.warn(
+          `[ListeningContinous][${counter}] Already listening, stopping...`,
+        );
         recognitionRef.current.stop();
       }
 
@@ -87,10 +91,17 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       let timeout;
 
       // Stop recognition on pause or length limit
-      const stopRecognition = () => {
+      const stopRecognition = (timeout = true) => {
+        if (timeout) {
+          console.log(`[ListeningContinous][${counter}] timedout `);
+        }
+
         if (recognitionRef.current) {
           setIsListening((il: boolean) => {
             if (il == true) {
+              console.log(
+                `[ListeningContinous][${counter}] Stoping listening...`,
+              );
               recognitionRef?.current?.stop();
               resolve(finalTranscript.trim() + interimTranscript.trim());
             }
@@ -98,6 +109,18 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             return false;
           });
         }
+      };
+
+      const cleanup = () => {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+
+        if (recognitionRef.current) {
+          recognitionRef.current = null;
+        }
+
+        console.log(`[ListeningContinous][${counter}] cleanup `);
       };
 
       // Reset the pause timer
@@ -116,14 +139,17 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           answerLength >= options.maxAnswerLength &&
           options.maxAnswerLength > 0
         ) {
-          stopRecognition();
+          console.log(`[ListeningContinous][${counter}] answer length reached`);
+          stopRecognition(false);
         } else {
-          timeout = setTimeout(
-            stopRecognition,
+          const ts =
             answerLength > 0
               ? options.userPauseTimeout
-              : options.userNoSpeechTimeout,
-          );
+              : options.userNoSpeechTimeout;
+
+          console.log(`[ListeningContinous][${counter}] setting timeout ${ts}`);
+
+          timeout = setTimeout(stopRecognition, ts);
         }
       };
 
@@ -141,11 +167,17 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       };
 
       recognition.onerror = (event) => {
+        console.error(
+          `[ListeningContinous][${counter}] onerror ${event.error}`,
+        );
+        cleanup();
         setIsListening(false);
         reject(event.error);
       };
 
       recognition.onend = () => {
+        console.log(`[ListeningContinous][${counter}] Stop listening`);
+        cleanup();
         setIsListening(false);
         resolve(finalTranscript.trim() + interimTranscript.trim());
       };
@@ -158,8 +190,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         userSpeakingTimout();
       };
 
+      console.log(`[ListeningContinous][${counter}] Start listening`);
       recognition.start();
       setIsListening(true);
+
       userSpeakingTimout();
     });
   };
@@ -305,6 +339,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const checkIfAudioPermissionGranted = async (): Promise<boolean> => {
     return new Promise(async (resolve, reject) => {
       let granted = false;
+      debugger;
       if (!isMicEnabled) {
         try {
           const result = await navigator.permissions.query({
@@ -375,7 +410,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       });
   };
 
-  const getUserResponse = async (
+  const getUserResponseContinous = async (
     options: ListenConfig = ListenConfigDefaults,
   ): Promise<string> => {
     let userResponse = "";
@@ -384,24 +419,29 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     // Get user response
     while (userResponse === "") {
       counter = counter + 1;
-      userResponse = await startListeningAsync(options).catch(async (error) => {
-        console.error(error);
-        if (error == "no-speech") {
-          // nudge user to speak
-          await speaki18nMessageAsync(
-            noSpeech,
-            language,
-            voice as SpeechSynthesisVoice,
-          );
-        } else if (error == "aborted") {
-          // india
-          await delay(counter * 2000);
-        } else {
-          await delay(counter * 1000);
-          console.error("[Listening] Error getting user response", error);
-        }
-        return "";
-      });
+      userResponse = await startListeningContinous(options, counter).catch(
+        async (error) => {
+          console.error(error);
+          if (error == "no-speech") {
+            // nudge user to speak
+            await speaki18nMessageAsync(
+              noSpeech,
+              language,
+              voice as SpeechSynthesisVoice,
+            );
+          } else if (error == "aborted") {
+            // india
+            await delay(counter * 2000);
+          } else {
+            await delay(counter * 1000);
+            console.error(
+              `[Listening][[${counter}] Error getting user response`,
+              error,
+            );
+          }
+          return "";
+        },
+      );
     }
 
     return userResponse;
@@ -456,11 +496,11 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     transcript,
     finalTranscript,
     // startListening,
-    startListeningAsync,
+    startListeningContinous,
     stopListening,
     requestMicPermission,
     checkIfAudioPermissionGranted,
-    getUserResponse,
+    getUserResponseContinous,
     getUserResponseAutoBreak,
 
     isSpeaking,
