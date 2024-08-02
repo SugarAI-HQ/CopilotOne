@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "~/react/styles/form.css"; // Adjust the path according to your project structure
+import { isMobilePhone, isEmail } from "validator";
 
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { AudioLines, Hourglass, Loader, Mic } from "lucide-react";
@@ -21,6 +22,7 @@ import {
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
+import { geti18nMessage } from "@sugar-ai/core";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -202,8 +204,23 @@ export const VoiceQuestion: React.FC<{
         inputRef.current.value = userResponse;
       }
 
-      // Evaluation
-      const evaluationResult = await evaluate(question, userResponse, language);
+      // Run Rule validators
+      const isValidAnswer = await checkValidators(question, userResponse);
+      if (!isValidAnswer) {
+        await speaki18nMessageAsync(
+          geti18nMessage("validationFailed"),
+          language,
+          voice as SpeechSynthesisVoice,
+        );
+        continue;
+      }
+
+      // AI Evaluation
+      const evaluationResult = await aiEvaluate(
+        question,
+        userResponse,
+        language,
+      );
 
       // Ask followup question if needed
       if (!evaluationResult) {
@@ -213,9 +230,9 @@ export const VoiceQuestion: React.FC<{
         fq = evaluationResult.followupQuestion;
         questionAnswer = evaluationResult.answer;
 
+        followupResponse = questionAnswer;
         // followupResponse = evaluationResult.followupResponse ?? questionAnswer;
         console.log(`followupResponse: ${followupResponse}`);
-        followupResponse = questionAnswer;
       }
 
       if (inputRef && inputRef.current) {
@@ -223,18 +240,18 @@ export const VoiceQuestion: React.FC<{
       }
 
       attempts = attempts + 1;
-
-      // validate Answer
-      await validateAnswerWithUser(question, questionAnswer, followupResponse);
-
-      // Wait
-      setIsWaiting(true);
-      await delay(3000);
-      setIsWaiting(false);
-
-      // Submit if fine
-      onAnswered(questionAnswer);
     }
+
+    // validate Answer
+    await validateAnswerWithUser(question, questionAnswer, followupResponse);
+
+    // Wait
+    setIsWaiting(true);
+    await delay(3000);
+    setIsWaiting(false);
+
+    // Submit if fine
+    onAnswered(questionAnswer);
   };
 
   const validateAnswerWithUser = async (
@@ -261,14 +278,42 @@ export const VoiceQuestion: React.FC<{
       question.question_type == "text" ||
       question.question_type == "number"
     ) {
-      if (answer.length <= 150) {
-        await speakMessageAsync(
-          followupResponse,
-          language,
-          voice as SpeechSynthesisVoice,
-        );
+      const isValidAnswer = await checkValidators(question, answer);
+
+      if (isValidAnswer) {
+        if (answer.length <= 150) {
+          await speakMessageAsync(
+            followupResponse,
+            language,
+            voice as SpeechSynthesisVoice,
+          );
+        }
+      } else {
+        // Not valid answer
       }
     }
+  };
+
+  const checkValidators = async (
+    question: Question,
+    answer: string,
+  ): Promise<boolean> => {
+    const validators = question.validation?.validators || [];
+
+    let result: boolean = true;
+
+    // run validators
+    validators.forEach(async (validator) => {
+      if (validator == "mobile") {
+        result = isMobilePhone(answer.replace(/ /g, ""));
+      }
+
+      // if (validator == "email") {
+      //   result = isEmail(answer);
+      // }
+    });
+
+    return result;
   };
 
   const startRecognition = () => {
@@ -277,7 +322,7 @@ export const VoiceQuestion: React.FC<{
     // }
   };
 
-  const evaluate = async (
+  const aiEvaluate = async (
     question: Question,
     userResponse: string,
     language: LanguageCode,
@@ -317,7 +362,9 @@ export const VoiceQuestion: React.FC<{
           name: "followupResponse",
           type: "string",
           description:
-            "response to be communicated back when user answered the question, which include 1-5 words along with the correct answer.For example: You have chosen <correct answer>, Nice <correct answer>, great, I am going ahead with <correct answer>, Dont ask any followup question, this is required when isQuestionAnswered is yes ",
+            // "response to be communicated back when user answered the question correctly, which include 1-5 words along with the correct answer.For example: You have chosen <correct answer>, Nice <correct answer>, great, I am going ahead with <correct answer>, Dont ask any followup question, this is required when isQuestionAnswered is yes ",
+            // "followup Respose to correct response, should be friendly with confirmation and the correct answer. Use 1-5 words along with the correct answer. For example: 'You have chosen <correct answer>,' 'Nice <correct answer>,' 'Great, I am going ahead with <correct answer>.' Do not ask any follow-up questions. This is required when isQuestionAnswered is yes.",
+            `On receiving the user's answer, respond with a confirmation message in language ${language} that includes 1-5 words along with the correct answer. Examples: 'You have chosen <correct answer>', 'Hello <correct answer>', 'Nice choice with <correct answer>', 'Great, moving ahead with <correct answer>', 'Got it, <correct answer> it is', 'Perfect, <correct answer>,' 'Sounds good, <correct answer>', 'Excellent, <correct answer>', 'Alright <correct answer>', etc. Ensure no follow-up questions are asked when the answer is confirmed (isQuestionAnswered is yes).`,
           required: true,
         },
         {

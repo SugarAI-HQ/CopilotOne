@@ -34,6 +34,9 @@ export const FormConfigDefaults: FormConfig = {
   listen: ListenConfigDefaults,
 };
 
+export const formFieldValidator = z.enum(["mobile", "email"]);
+export type FormFieldValidator = z.infer<typeof formFieldValidator>;
+
 export const QuestionSchema = z.object({
   id: z.string(),
   question_type: z.enum(["multiple_choice", "single_choice", "text", "number"]),
@@ -46,6 +49,7 @@ export const QuestionSchema = z.object({
   validation: z
     .object({
       max_length: z.number().optional().default(120),
+      validators: z.array(formFieldValidator).optional(),
     })
     .passthrough(),
 });

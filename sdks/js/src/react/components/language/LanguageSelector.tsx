@@ -43,7 +43,7 @@ export const LanguageSelector: React.FC<{
     //   new Set(userLanguages.concat(languageCode._def.values)),
     // );
     // setLanguages(allLanguages);
-  }, [language]);
+  }, [language, voices, languagesEnabled]);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value as LanguageCode);

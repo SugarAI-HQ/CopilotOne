@@ -123,8 +123,35 @@ export const questions: Question[] = [
     question_params: {},
     validation: {
       max_length: 20,
+      validators: ["mobile"],
     },
   },
+  // {
+  //   id: "2.1",
+  //   question_type: "text",
+  //   question_text: {
+  //     mode: "manual",
+  //     lang: {
+  //       en: "Tell me your email.",
+  //       hi: "मुझे अपना ईमेल बताएं।",
+  //       "bn-IN": "আপনার ইমেল বলুন।",
+  //       "te-IN": "మీ ఈమెయిల్ చెప్పండి.",
+  //       "mr-IN": "मला तुमचा ईमेल सांगा.",
+  //       "ta-IN": "உங்கள் மின்னஞ்சலை சொல்லுங்கள்.",
+  //       es: "Dime tu correo electrónico.",
+  //       fr: "Dites-moi votre email.",
+  //       de: "Sagen Sie mir Ihre E-Mail-Adresse.",
+  //       zh: "告诉我你的电子邮件。",
+  //     },
+  //     voice: true,
+  //     output: "none",
+  //   },
+  //   question_params: {},
+  //   validation: {
+  //     max_length: 20,
+  //     validators: ["email"],
+  //   },
+  // },
   {
     id: "3",
     question_type: "multiple_choice",

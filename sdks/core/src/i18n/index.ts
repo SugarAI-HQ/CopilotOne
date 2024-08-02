@@ -61,6 +61,18 @@ export const FormTranslations: Translations = {
     de: "Warten auf Ihre Antwort. Bitte sprechen Sie jetzt.",
     zh: "等待你的回答。请现在说话。",
   },
+  validationFailed: {
+    en: "Answer is not correct. Please try again.",
+    hi: "उत्तर सही नहीं है। कृपया फिर से प्रयास करें।",
+    "bn-IN": "উত্তর সঠিক নয়। দয়া করে আবার চেষ্টা করুন।",
+    "te-IN": "సమాధానం సరైనది కాదు. దయచేసి మళ్లీ ప్రయత్నించండి.",
+    "mr-IN": "उत्तर बरोबर नाही. कृपया पुन्हा प्रयत्न करा.",
+    "ta-IN": "பதில் சரியாக இல்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.",
+    es: "La respuesta no es correcta. Por favor, inténtalo de nuevo.",
+    fr: "La réponse n'est pas correcte. Veuillez réessayer.",
+    de: "Die Antwort ist nicht korrekt. Bitte versuchen Sie es erneut.",
+    zh: "答案不正确。请再试一次。",
+  },
 };
 
 export function geti18nMessage(
