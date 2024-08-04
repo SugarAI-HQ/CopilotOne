@@ -158,11 +158,13 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript;
+            setTranscript(finalTranscript);
           } else {
             interimTranscript += event.results[i][0].transcript;
+            setTranscript(interimTranscript);
           }
         }
-        setTranscript(finalTranscript + interimTranscript);
+
         userSpeakingTimout();
       };
 
