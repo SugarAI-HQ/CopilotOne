@@ -116,10 +116,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
                 `[ListeningContinous][${counter}] Stoping listening, answer: ${answerCaptured}`,
               );
               recognitionRef?.current?.stop();
-              resolve({
-                text: answerCaptured,
-                autoStopped: false,
-              });
+              // resolve({
+              //   text: answerCaptured,
+              //   autoStopped: false,
+              // });
             }
 
             return false;
