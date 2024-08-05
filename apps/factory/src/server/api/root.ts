@@ -1,7 +1,7 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { promptRouter } from "./routers/prompt";
 import { marketplaceRouter } from "./routers/marketplace";
-import { serviceRouter } from "./routers/service";
+import { serviceLiteRouter, serviceRouter } from "./routers/service";
 import { logRouter } from "./routers/logs";
 import { versionRouter } from "./routers/versions";
 import { cubeRouter } from "./routers/cube";
@@ -24,7 +24,7 @@ import { formRouter } from "./routers/form";
 export const appRouter = createTRPCRouter({
   prompt: promptRouter,
   service: serviceRouter,
-  // liteService: serviceLiteRouter,
+  liteService: serviceLiteRouter,
   marketplace: marketplaceRouter,
   log: logRouter,
   version: versionRouter,
