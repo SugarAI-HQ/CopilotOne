@@ -42,7 +42,7 @@ export default defineConfig((options) => {
         return;
       }
       console.log("publishing");
-      const cmd = `yalc publish --push --changed  --no-scripts  --sig --pure`;
+      const cmd = `yalc publish --push --changed  --no-scripts  --sig`;
 
       exec(cmd, (error, stdout, stderr) => {
         console.log(stdout);

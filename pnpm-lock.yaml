@@ -3778,21 +3778,6 @@ packages:
   '@storybook/types@7.4.6':
     resolution: {integrity: sha512-6QLXtMVsFZFpzPkdGWsu/iuc8na9dnS67AMOBKm5qCLPwtUJOYkwhMdFRSSeJthLRpzV7JLAL8Kwvl7MFP3QSw==}
 
-  '@sugar-ai/copilot-one-js@0.0.43':
-    resolution: {integrity: sha512-PVBuMPZUQm5iRu2mLU8OILwMRoxggcYTDvj3kawBFoU7uml4gxarzVfMHD5GFIr0JSekMXeZi8KG+Q4LjT08jA==}
-    peerDependencies:
-      react: '>16.0.0'
-
-  '@sugar-ai/copilot-one-js@file:examples/react/.yalc/@sugar-ai/copilot-one-js':
-    resolution: {directory: examples/react/.yalc/@sugar-ai/copilot-one-js, type: directory}
-    peerDependencies:
-      react: '>16.0.0'
-
-  '@sugar-ai/core@0.0.7':
-    resolution: {integrity: sha512-MlxEYc5Dj800NMkIFhQ5qpiH8TG2SNS7uOkM3Nxjhm7t5LIbpL79bJCW0kZxByh0oy0VyXUGJ+AWBuP6immD5g==}
-    peerDependencies:
-      react: '>16.0.0'
-
   '@sugar-ai/core@file:examples/react/.yalc/@sugar-ai/core':
     resolution: {directory: examples/react/.yalc/@sugar-ai/core, type: directory}
     peerDependencies:
@@ -14554,50 +14539,6 @@ snapshots:
       '@types/babel__core': 7.20.2
       '@types/express': 4.17.19
       file-system-cache: 2.3.0
-
-  '@sugar-ai/copilot-one-js@0.0.43(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)':
-    dependencies:
-      '@sugar-ai/copilot-one-js': file:examples/react/.yalc/@sugar-ai/copilot-one-js(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)
-      '@sugar-ai/core': file:examples/react/.yalc/@sugar-ai/core(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)
-      '@types/dom-speech-recognition': 0.0.4
-      '@types/easy-speech': 1.2.4
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      styled-components: 6.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      window-or-global: 1.0.1
-      zod: 3.22.4
-    transitivePeerDependencies:
-      - '@types/react'
-      - jiti
-      - tsx
-
-  '@sugar-ai/copilot-one-js@file:examples/react/.yalc/@sugar-ai/copilot-one-js(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)':
-    dependencies:
-      '@sugar-ai/copilot-one-js': 0.0.43(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)
-      '@sugar-ai/core': 0.0.7(react@18.2.0)
-      '@types/dom-speech-recognition': 0.0.4
-      '@types/easy-speech': 1.2.4
-      build: 0.1.4
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      styled-components: 6.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      validator: 13.12.0
-      window-or-global: 1.0.1
-      zod: 3.22.4
-    transitivePeerDependencies:
-      - '@types/react'
-      - jiti
-      - tsx
-
-  '@sugar-ai/core@0.0.7(react@18.2.0)':
-    dependencies:
-      form-data: 4.0.0
-      js-base64: 3.7.7
-      qs: 6.12.0
-      react: 18.2.0
-      url-join-ts: 1.0.5
-      window-or-global: 1.0.1
-      zod: 3.22.4
 
   '@sugar-ai/core@file:examples/react/.yalc/@sugar-ai/core(@types/react@18.2.78)(jiti@1.21.6)(react@18.2.0)':
     dependencies:

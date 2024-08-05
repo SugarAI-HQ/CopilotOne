@@ -5,6 +5,8 @@ import { useLanguage } from "./useLanguage";
 import useSpeechSynthesis from "./useSpeechSynthesis";
 import { delay } from "~/helpers";
 import { geti18nMessage } from "~/i18n";
+import { debug } from "console";
+import { isAndroid, isDesktop, isIOS } from "~/helpers/useragent";
 
 interface SpeechRecognitionOptions {
   interimResults?: boolean;
@@ -86,12 +88,14 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
       recognitionRef.current = recognition;
 
-      let finalTranscript = "";
-      let interimTranscript = "";
+      let lfinalTranscript = "";
+      let linterimTranscript = "";
       let timeout;
+      let isStopped = false;
 
       // Stop recognition on pause or length limit
       const stopRecognition = (timeout = true) => {
+        isStopped = true;
         if (timeout) {
           console.log(`[ListeningContinous][${counter}] timedout `);
         }
@@ -100,7 +104,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           setIsListening((il: boolean) => {
             if (il == true) {
               const answerCaptured =
-                finalTranscript.trim() + interimTranscript.trim();
+                lfinalTranscript.trim() + linterimTranscript.trim();
 
               console.log(
                 `[ListeningContinous][${counter}] Stoping listening, answer: ${answerCaptured}`,
@@ -137,8 +141,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         // 2. user have not spoken few words, -> keep listening till userPauseTimeout
         // 3. if Max answer length have reached, dont wait at all
 
-        const answer = finalTranscript + interimTranscript.length;
-        const answerLength = finalTranscript.length + interimTranscript.length;
+        const answer = lfinalTranscript + linterimTranscript.length;
+        const answerLength =
+          lfinalTranscript.length + linterimTranscript.length;
         if (
           answerLength >= options.maxAnswerLength &&
           options.maxAnswerLength > 0
@@ -152,37 +157,74 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
               : options.userNoSpeechTimeout;
 
           console.log(
-            `[ListeningContinous][${counter}] asnwer: ${answer} setting timeout ${ts}`,
+            `[ListeningContinous][${counter}] answer: ${answer} setting timeout ${ts}`,
           );
 
           timeout = setTimeout(stopRecognition, ts);
         }
       };
 
-      recognition.onresult = async (event: SpeechRecognitionEvent) => {
-        let interimTranscript = "";
+      const processResultWithInterim = (event: SpeechRecognitionEvent) => {
+        let interim = lfinalTranscript;
         // let finalTranscript = "";
+
+        DEV: console.log(
+          `[ListeningContinous][${counter}] onresult ${event.resultIndex}`,
+          event.results,
+        );
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            finalTranscript = event.results[i][0].transcript;
+            lfinalTranscript += event.results[i][0].transcript;
+          }
 
-            setTranscript(finalTranscript);
-            setFinalTranscript(finalTranscript);
-            // DEV: console.log(`[Listening] Final: ${finalTranscript}`);
+          // This is already final + New words yet to be finalised
+          interim += event.results[i][0].transcript;
+          linterimTranscript = interim;
+        }
+        setFinalTranscript(finalTranscript);
 
-            // Take care of it
-            // setIslistening(false);
-            // setFinalOutput(finalTranscript);
+        setTranscript(interim);
+        DEV: console.log(`[ListeningContinous][${counter}] interim ${interim}`);
+      };
 
-            // await processSpeechToText(finalTranscript);
+      const processResultWithFinal = (event: SpeechRecognitionEvent) => {
+        let interim = "";
+        let final = "";
+
+        DEV: console.log(
+          `[ListeningContinous][${counter}] onresult ${event.resultIndex}`,
+          event.results,
+        );
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript;
           } else {
-            interimTranscript += event.results[i][0].transcript;
-            setTranscript(interimTranscript);
+            interim += event.results[i][0].transcript;
           }
         }
+        lfinalTranscript = final + interim;
 
-        setFinalTranscript(finalTranscript);
+        setTranscript(lfinalTranscript);
+        setFinalTranscript(lfinalTranscript);
+
+        DEV: console.log(`[ListeningContinous][${counter}] interim ${final}`);
+      };
+
+      recognition.onresult = async (event: SpeechRecognitionEvent) => {
+        if (isAndroid() || isIOS()) {
+          // for chrome in mobile chrome
+          processResultWithFinal(event);
+        } else if (isDesktop()) {
+          // for chrome in desktop/laptop browser
+          processResultWithInterim(event);
+        } else {
+          processResultWithInterim(event);
+        }
+
+        // for chrome in mobile browser
+
         userSpeakingTimout();
       };
 
@@ -210,11 +252,14 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         reject(event.error);
       };
 
-      recognition.onend = () => {
-        console.log(`[ListeningContinous][${counter}] Stop listening`);
+      recognition.onend = (event) => {
+        console.log(
+          `[ListeningContinousx][${counter}] Stop listening isStopped: ${isStopped}`,
+        );
         cleanup();
         setIsListening(false);
-        resolve(finalTranscript.trim() + interimTranscript.trim());
+        // debugger;
+        resolve(lfinalTranscript.trim());
       };
 
       recognition.onspeechstart = () => {
