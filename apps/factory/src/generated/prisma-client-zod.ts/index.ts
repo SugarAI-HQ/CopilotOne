@@ -86,6 +86,10 @@ export const EmbeddingScalarFieldEnumSchema = z.enum(['id','userId','copilotId',
 
 export const CopilotPromptScalarFieldEnumSchema = z.enum(['id','userId','copilotId','copilotKey','userName','packageName','packageId','templateName','versionName','createdAt','updatedAt']);
 
+export const FormScalarFieldEnumSchema = z.enum(['id','userId','name','description','startButtonText','messages','languages','formConfig','createdAt','updatedAt']);
+
+export const FormQuestionScalarFieldEnumSchema = z.enum(['id','userId','formId','question_type','question_text','question_params','validation','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const JsonNullValueInputSchema = z.enum(['JsonNull',]);
@@ -489,3 +493,40 @@ export const CopilotPromptSchema = z.object({
 })
 
 export type CopilotPrompt = z.infer<typeof CopilotPromptSchema>
+
+/////////////////////////////////////////
+// FORM SCHEMA
+/////////////////////////////////////////
+
+export const FormSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  name: z.string(),
+  description: InputJsonValue,
+  startButtonText: InputJsonValue,
+  messages: InputJsonValue,
+  languages: InputJsonValue,
+  formConfig: InputJsonValue,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Form = z.infer<typeof FormSchema>
+
+/////////////////////////////////////////
+// FORM QUESTION SCHEMA
+/////////////////////////////////////////
+
+export const FormQuestionSchema = z.object({
+  id: z.string().uuid(),
+  userId: z.string(),
+  formId: z.string(),
+  question_type: z.string(),
+  question_text: InputJsonValue,
+  question_params: InputJsonValue,
+  validation: InputJsonValue,
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type FormQuestion = z.infer<typeof FormQuestionSchema>

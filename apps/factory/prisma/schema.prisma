@@ -387,3 +387,42 @@ model CopilotPrompt {
 
   @@unique([userId, copilotId, copilotKey])
 }
+
+
+// prisma/schema.prisma
+model Form {
+  id          String        @id @default(uuid())
+  userId        String
+  name        String
+  
+  description Json
+  startButtonText Json
+
+  messages    Json
+  languages   Json @default("[]")
+
+  formConfig  Json
+  questions   FormQuestion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId, id])
+}
+
+model FormQuestion {
+  id          String        @id @default(uuid())
+  userId        String
+  
+  formId  String
+  form    Form @relation(fields: [formId], references: [id])
+  question_type String
+  question_text Json
+  question_params Json
+  validation   Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId, formId, id])
+}

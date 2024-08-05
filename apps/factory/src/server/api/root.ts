@@ -12,7 +12,7 @@ import { apiKeyRouter } from "./routers/apikey";
 import { chatRouter } from "./routers/chat";
 import { messageRouter } from "./routers/message";
 import { copilotRouter } from "./routers/copilot";
-import { serviceLiteRouter } from "./routers/service";
+import { formRouter } from "./routers/form";
 
 // export const runtime = 'nodejs';
 
@@ -24,7 +24,7 @@ import { serviceLiteRouter } from "./routers/service";
 export const appRouter = createTRPCRouter({
   prompt: promptRouter,
   service: serviceRouter,
-  liteService: serviceLiteRouter,
+  // liteService: serviceLiteRouter,
   marketplace: marketplaceRouter,
   log: logRouter,
   version: versionRouter,
@@ -36,6 +36,7 @@ export const appRouter = createTRPCRouter({
   chat: chatRouter,
   message: messageRouter,
   copilot: copilotRouter,
+  forms: formRouter,
 });
 
 // export type definition of API
