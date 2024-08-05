@@ -99,11 +99,14 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         if (recognitionRef.current) {
           setIsListening((il: boolean) => {
             if (il == true) {
+              const answerCaptured =
+                finalTranscript.trim() + interimTranscript.trim();
+
               console.log(
-                `[ListeningContinous][${counter}] Stoping listening...`,
+                `[ListeningContinous][${counter}] Stoping listening, answer: ${answerCaptured}`,
               );
               recognitionRef?.current?.stop();
-              resolve(finalTranscript.trim() + interimTranscript.trim());
+              resolve(answerCaptured);
             }
 
             return false;
@@ -134,12 +137,13 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         // 2. user have not spoken few words, -> keep listening till userPauseTimeout
         // 3. if Max answer length have reached, dont wait at all
 
+        const answer = finalTranscript + interimTranscript.length;
         const answerLength = finalTranscript.length + interimTranscript.length;
         if (
           answerLength >= options.maxAnswerLength &&
           options.maxAnswerLength > 0
         ) {
-          console.log(`[ListeningContinous][${counter}] answer length reached`);
+          console.log(`[ListeningContinous][${counter}] answer length reache`);
           stopRecognition(false);
         } else {
           const ts =
@@ -147,7 +151,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
               ? options.userPauseTimeout
               : options.userNoSpeechTimeout;
 
-          console.log(`[ListeningContinous][${counter}] setting timeout ${ts}`);
+          console.log(
+            `[ListeningContinous][${counter}] asnwer: ${answer} setting timeout ${ts}`,
+          );
 
           timeout = setTimeout(stopRecognition, ts);
         }
@@ -155,29 +161,33 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
       recognition.onresult = async (event: SpeechRecognitionEvent) => {
         let interimTranscript = "";
-        let fTranscript = "";
+        // let finalTranscript = "";
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            fTranscript = event.results[i][0].transcript;
-            // DEV: console.log(`[Listening] Final: ${fTranscript}`);
+            finalTranscript = event.results[i][0].transcript;
+
+            setTranscript(finalTranscript);
+            setFinalTranscript(finalTranscript);
+            // DEV: console.log(`[Listening] Final: ${finalTranscript}`);
 
             // Take care of it
             // setIslistening(false);
-            // setFinalOutput(fTranscript);
+            // setFinalOutput(finalTranscript);
 
-            // await processSpeechToText(fTranscript);
+            // await processSpeechToText(finalTranscript);
           } else {
             interimTranscript += event.results[i][0].transcript;
+            setTranscript(interimTranscript);
           }
         }
-        setTranscript(interimTranscript);
-        setFinalTranscript(fTranscript);
+
+        setFinalTranscript(finalTranscript);
         userSpeakingTimout();
       };
 
       // recognition.onresult = (event: SpeechRecognitionEvent) => {
-      //   interimTranscript = "";
+      // interimTranscript = "";
       //   for (let i = event.resultIndex; i < event.results.length; i++) {
       //     if (event.results[i].isFinal) {
       //       finalTranscript += event.results[i][0].transcript;
@@ -364,7 +374,6 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const checkIfAudioPermissionGranted = async (): Promise<boolean> => {
     return new Promise(async (resolve, reject) => {
       let granted = false;
-      debugger;
       if (!isMicEnabled) {
         try {
           const result = await navigator.permissions.query({

@@ -7,6 +7,8 @@ import fs from "fs";
 const additionalPaths = [
   path.resolve("node_modules/@sugar-ai/core"),
   path.resolve("../../sdks/core/dist/esm/"),
+  path.resolve("node_modules/@sugar-ai/copilot-one-js"),
+  path.resolve("../../sdks/js/dist/esm/"),
 ];
 
 // const nextConfig = {

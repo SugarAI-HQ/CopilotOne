@@ -9,7 +9,7 @@ export default defineConfig((options) => {
     sourcemap: true,
     treeshake: true,
 
-    clean: true,
+    clean: !options.watch,
     minify: !options.watch,
 
     format: ["esm"],
@@ -42,7 +42,7 @@ export default defineConfig((options) => {
         return;
       }
       console.log("publishing");
-      const cmd = `yalc publish --push --changed  --no-scripts  --sig`;
+      const cmd = `yalc publish --push --changed  --no-scripts  --sig --pure`;
 
       exec(cmd, (error, stdout, stderr) => {
         console.log(stdout);

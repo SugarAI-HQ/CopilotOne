@@ -9,7 +9,7 @@ export default defineConfig((options) => {
     sourcemap: true,
     treeshake: true,
 
-    clean: true,
+    clean: !options.watch,
     minify: !options.watch,
 
     format: ["esm"],
