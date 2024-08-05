@@ -79,7 +79,7 @@ export const questions: Question[] = [
     id: "1",
     question_type: "text",
     question_text: {
-      mode: "manual",
+      // mode: "manual",
       lang: {
         en: "What is your name.",
         hi: "आपका नाम क्या है?",
@@ -92,8 +92,8 @@ export const questions: Question[] = [
         de: "Wie heißen Sie?",
         zh: "你叫什么名字？",
       },
-      voice: true,
-      output: "none",
+      // voice: true,
+      // output: "none",
     },
     question_params: {},
     validation: {
@@ -104,7 +104,7 @@ export const questions: Question[] = [
     id: "2",
     question_type: "number",
     question_text: {
-      mode: "manual",
+      // mode: "manual",
       lang: {
         en: "Tell me your phone number.",
         hi: "मुझे अपना फोन नंबर बताएं।",
@@ -117,8 +117,8 @@ export const questions: Question[] = [
         de: "Sagen Sie mir Ihre Telefonnummer.",
         zh: "告诉我你的电话号码。",
       },
-      voice: true,
-      output: "none",
+      // voice: true,
+      // output: "none",
     },
     question_params: {},
     validation: {
@@ -126,37 +126,37 @@ export const questions: Question[] = [
       validators: ["mobile"],
     },
   },
-  // {
-  //   id: "2.1",
-  //   question_type: "text",
-  //   question_text: {
-  //     mode: "manual",
-  //     lang: {
-  //       en: "Tell me your email.",
-  //       hi: "मुझे अपना ईमेल बताएं।",
-  //       "bn-IN": "আপনার ইমেল বলুন।",
-  //       "te-IN": "మీ ఈమెయిల్ చెప్పండి.",
-  //       "mr-IN": "मला तुमचा ईमेल सांगा.",
-  //       "ta-IN": "உங்கள் மின்னஞ்சலை சொல்லுங்கள்.",
-  //       es: "Dime tu correo electrónico.",
-  //       fr: "Dites-moi votre email.",
-  //       de: "Sagen Sie mir Ihre E-Mail-Adresse.",
-  //       zh: "告诉我你的电子邮件。",
-  //     },
-  //     voice: true,
-  //     output: "none",
-  //   },
-  //   question_params: {},
-  //   validation: {
-  //     max_length: 20,
-  //     validators: ["email"],
-  //   },
-  // },
+  {
+    id: "2",
+    question_type: "text",
+    question_text: {
+      // mode: "manual",
+      lang: {
+        en: "Tell me your email.",
+        hi: "मुझे अपना ईमेल बताएं।",
+        "bn-IN": "আপনার ইমেল বলুন।",
+        "te-IN": "మీ ఈమెయిల్ చెప్పండి.",
+        "mr-IN": "मला तुमचा ईमेल सांगा.",
+        "ta-IN": "உங்கள் மின்னஞ்சலை சொல்லுங்கள்.",
+        es: "Dime tu correo electrónico.",
+        fr: "Dites-moi votre email.",
+        de: "Sagen Sie mir Ihre E-Mail-Adresse.",
+        zh: "告诉我你的电子邮件。",
+      },
+      // voice: true,
+      // output: "none",
+    },
+    question_params: {},
+    validation: {
+      max_length: 20,
+      validators: ["email"],
+    },
+  },
   {
     id: "3",
     question_type: "multiple_choice",
     question_text: {
-      mode: "manual",
+      // mode: "manual",
       lang: {
         en: "What is the intensity of your pain?",
         hi: "आप अभी कितना दर्द महसूस कर रहे हैं ?",
@@ -169,8 +169,8 @@ export const questions: Question[] = [
         de: "Wie stark ist Ihr Schmerz?",
         zh: "你的疼痛程度如何？",
       },
-      voice: true,
-      output: "none",
+      // voice: true,
+      // output: "none",
     },
     question_params: {
       options: [
@@ -187,9 +187,9 @@ export const questions: Question[] = [
             de: "Sehr mild",
             zh: "非常轻微",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -204,9 +204,9 @@ export const questions: Question[] = [
             de: "Leichter Schmerz",
             zh: "轻微疼痛",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -221,9 +221,9 @@ export const questions: Question[] = [
             de: "Mäßiger Schmerz",
             zh: "中度疼痛",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -238,9 +238,9 @@ export const questions: Question[] = [
             de: "Starke Schmerzen",
             zh: "剧烈疼痛",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -255,9 +255,9 @@ export const questions: Question[] = [
             de: "Sehr starke Schmerzen",
             zh: "非常剧烈的疼痛",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
       ],
     },
@@ -269,7 +269,7 @@ export const questions: Question[] = [
     id: "4",
     question_type: "multiple_choice",
     question_text: {
-      mode: "manual",
+      // mode: "manual",
       lang: {
         en: "How long have you been experiencing the problem?",
         hi: "आप इस समस्या का अनुभव कब से कर रहे हैं?",
@@ -283,8 +283,8 @@ export const questions: Question[] = [
         de: "Wie lange haben Sie das Problem schon?",
         zh: "您经历这个问题有多长时间了？",
       },
-      voice: true,
-      output: "none",
+      // voice: true,
+      // output: "none",
     },
     question_params: {
       options: [
@@ -301,9 +301,9 @@ export const questions: Question[] = [
             de: "Weniger als 15 Tage",
             zh: "少于15天",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -318,9 +318,9 @@ export const questions: Question[] = [
             de: "15 bis 30 Tage",
             zh: "15至30天",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -335,9 +335,9 @@ export const questions: Question[] = [
             de: "1 bis 6 Monate",
             zh: "1到6个月",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -352,9 +352,9 @@ export const questions: Question[] = [
             de: "6 bis 12 Monate",
             zh: "6到12个月",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
         {
           lang: {
@@ -369,9 +369,9 @@ export const questions: Question[] = [
             de: "Mehr als ein Jahr",
             zh: "一年以上",
           },
-          mode: "manual",
-          voice: true,
-          output: "none",
+          // mode: "manual",
+          // voice: true,
+          // output: "none",
         },
       ],
     },
@@ -383,7 +383,7 @@ export const questions: Question[] = [
     id: "5",
     question_type: "text",
     question_text: {
-      mode: "manual",
+      // mode: "manual",
       lang: {
         en: "What's your age?",
         hi: "आपकी उम्र कितने साल है?",
@@ -396,8 +396,8 @@ export const questions: Question[] = [
         de: "Wie alt sind Sie?",
         zh: "你多大了？",
       },
-      voice: true,
-      output: "none",
+      // voice: true,
+      // output: "none",
     },
     question_params: {},
     validation: {
@@ -408,7 +408,7 @@ export const questions: Question[] = [
     id: "6",
     question_type: "text",
     question_text: {
-      mode: "manual",
+      // mode: "manual",
       lang: {
         en: "What is your occupation?",
         hi: "आप क्या काम करते हैं?",
@@ -421,8 +421,8 @@ export const questions: Question[] = [
         de: "Was machen Sie beruflich?",
         zh: "你是做什么工作的？",
       },
-      voice: true,
-      output: "none",
+      // voice: true,
+      // output: "none",
     },
     question_params: {},
     validation: {
@@ -433,7 +433,7 @@ export const questions: Question[] = [
     id: "7",
     question_type: "text",
     question_text: {
-      mode: "manual",
+      // mode: "manual",
       lang: {
         en: "Please explain your current problem. Mention the pain, affected areas etc.",
         hi: "आप अपने दर्द और समस्या के बारे में बताएं",
@@ -449,8 +449,8 @@ export const questions: Question[] = [
         de: "Bitte erklären Sie Ihr aktuelles Problem. Erwähnen Sie den Schmerz, betroffene Bereiche usw.",
         zh: "请解释您的当前问题。提及疼痛、受影响的区域等。",
       },
-      voice: true,
-      output: "none",
+      // voice: true,
+      // output: "none",
     },
     question_params: {},
     validation: {

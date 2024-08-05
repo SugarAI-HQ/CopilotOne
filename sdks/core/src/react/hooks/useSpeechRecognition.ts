@@ -153,20 +153,43 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         }
       };
 
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        interimTranscript = "";
+      recognition.onresult = async (event: SpeechRecognitionEvent) => {
+        let interimTranscript = "";
+        let fTranscript = "";
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
-            finalTranscript += event.results[i][0].transcript;
-            setTranscript(finalTranscript);
+            fTranscript = event.results[i][0].transcript;
+            // DEV: console.log(`[Listening] Final: ${fTranscript}`);
+
+            // Take care of it
+            // setIslistening(false);
+            // setFinalOutput(fTranscript);
+
+            // await processSpeechToText(fTranscript);
           } else {
             interimTranscript += event.results[i][0].transcript;
-            setTranscript(interimTranscript);
           }
         }
-
+        setTranscript(interimTranscript);
+        setFinalTranscript(fTranscript);
         userSpeakingTimout();
       };
+
+      // recognition.onresult = (event: SpeechRecognitionEvent) => {
+      //   interimTranscript = "";
+      //   for (let i = event.resultIndex; i < event.results.length; i++) {
+      //     if (event.results[i].isFinal) {
+      //       finalTranscript += event.results[i][0].transcript;
+      //       setTranscript(finalTranscript);
+      //     } else {
+      //       interimTranscript += event.results[i][0].transcript;
+      //       setTranscript(interimTranscript);
+      //     }
+      //   }
+
+      //   userSpeakingTimout();
+      // };
 
       recognition.onerror = (event) => {
         console.error(

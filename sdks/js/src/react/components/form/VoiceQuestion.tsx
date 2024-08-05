@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "~/react/styles/form.css"; // Adjust the path according to your project structure
-import { isMobilePhone, isEmail } from "validator";
+// import isMobilePhone from "validator/es/lib/isMobilePhone";
+import validator from "validator";
 
 import { FaMicrophoneSlash } from "react-icons/fa";
 import { AudioLines, Hourglass, Loader, Mic } from "lucide-react";
@@ -301,9 +302,9 @@ export const VoiceQuestion: React.FC<{
     let result: boolean = true;
 
     // run validators
-    validators.forEach(async (validator) => {
-      if (validator == "mobile") {
-        result = isMobilePhone(answer.replace(/ /g, ""));
+    validators.forEach(async (v) => {
+      if (v == "mobile") {
+        result = validator.isMobilePhone(answer.replace(/ /g, ""));
       }
 
       // if (validator == "email") {
@@ -519,6 +520,8 @@ export const VoiceQuestion: React.FC<{
         <div className="flex flex-col items-center space-y-2">
           <div className="transcript-container w-full flex items-center px-2 relative">
             <p className="transcript text-gray-800 dark:text-white mb-2 border-b border-gray-300 dark:border-gray-700 mx-auto">
+              {/* <p>T: {transcript}</p>
+              <p>FT: {finalTranscript}</p> */}
               {isWaiting
                 ? "Loading next questions"
                 : isListening

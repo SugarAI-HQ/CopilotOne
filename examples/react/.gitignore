@@ -10,3 +10,4 @@ videos/
 
 .env*
 dist/
+certificates

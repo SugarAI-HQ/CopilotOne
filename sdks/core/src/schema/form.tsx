@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { i18nMessageSchema } from "./message";
+import { languageCode } from ".";
 
 export const listenConfig = z.object({
   maxAnswerLength: z.number().default(-1),
@@ -37,9 +38,17 @@ export const FormConfigDefaults: FormConfig = {
 export const formFieldValidator = z.enum(["mobile", "email"]);
 export type FormFieldValidator = z.infer<typeof formFieldValidator>;
 
+export const questionType = z.enum([
+  "multiple_choice",
+  "single_choice",
+  "text",
+  "number",
+]);
+export type QuestionType = z.infer<typeof questionType>;
+
 export const QuestionSchema = z.object({
   id: z.string(),
-  question_type: z.enum(["multiple_choice", "single_choice", "text", "number"]),
+  question_type: questionType,
   question_text: i18nMessageSchema,
   question_params: z
     .object({
@@ -113,3 +122,26 @@ export const StreamingHtmlRefSchema = z.object({
 });
 
 export type Streamingi18nHtmlRef = z.infer<typeof StreamingHtmlRefSchema>;
+
+export const formMessageType = z.enum([
+  "welcome",
+  "submit",
+  "success",
+  "error",
+  "thankyou",
+  "thankyou-message",
+]);
+export type FormMessageType = z.infer<typeof formMessageType>;
+
+export const voiceForm = z.object({
+  name: i18nMessageSchema,
+  description: i18nMessageSchema,
+  startButtonText: i18nMessageSchema,
+
+  questions: z.array(QuestionSchema),
+  messages: z.record(formMessageType, z.string()),
+
+  languages: z.array(languageCode),
+  formConfig: formConfig,
+});
+export type VoiceForm = z.infer<typeof voiceForm>;

@@ -84,10 +84,10 @@ export function geti18nMessage(
     throw new Error(`translations for "${key}" not found`);
   }
   const msg: i18nMessage = {
-    mode: "manual",
+    // mode: "manual",
     lang: translation,
-    voice: true,
-    output: "none",
+    // voice: true,
+    // output: "none",
   };
 
   return msg;

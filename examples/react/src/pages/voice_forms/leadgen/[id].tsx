@@ -44,7 +44,6 @@ const App: NextPage = () => {
     }
   }, [id, router]);
 
-  // const { language, voice } = useLanguage();
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
 
   let copilotConfig: CopilotConfigType = {
