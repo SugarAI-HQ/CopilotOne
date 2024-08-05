@@ -14,6 +14,11 @@ interface SpeechRecognitionOptions {
   onListeningStop?: (text: string) => void;
 }
 
+interface STTResponse {
+  text: string;
+  autoStopped: boolean;
+}
+
 const noSpeech = geti18nMessage("noSpeech");
 
 export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
@@ -68,9 +73,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
   const startListeningContinous = (
     options: ListenConfig = ListenConfigDefaults,
+    previousResponse = "",
     counter: number = -1,
-  ): Promise<string> => {
-    return new Promise((resolve, reject) => {
+  ): Promise<STTResponse> => {
+    return new Promise<STTResponse>((resolve, reject) => {
       // Stop existing recognition if it is already running
       if (recognitionRef.current) {
         console.warn(
@@ -91,11 +97,11 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       let lfinalTranscript = "";
       let linterimTranscript = "";
       let timeout;
-      let isStopped = false;
+      let autoStopped = true;
 
       // Stop recognition on pause or length limit
       const stopRecognition = (timeout = true) => {
-        isStopped = true;
+        autoStopped = false;
         if (timeout) {
           console.log(`[ListeningContinous][${counter}] timedout `);
         }
@@ -110,7 +116,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
                 `[ListeningContinous][${counter}] Stoping listening, answer: ${answerCaptured}`,
               );
               recognitionRef?.current?.stop();
-              resolve(answerCaptured);
+              resolve({
+                text: answerCaptured,
+                autoStopped: false,
+              });
             }
 
             return false;
@@ -168,10 +177,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         let interim = lfinalTranscript;
         // let finalTranscript = "";
 
-        DEV: console.log(
-          `[ListeningContinous][${counter}] onresult ${event.resultIndex}`,
-          event.results,
-        );
+        // DEV: console.log(
+        //   `[ListeningContinous][${counter}] onresult ${event.resultIndex}`,
+        //   event.results,
+        // );
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
@@ -182,9 +191,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           interim += event.results[i][0].transcript;
           linterimTranscript = interim;
         }
-        setFinalTranscript(finalTranscript);
+        setFinalTranscript(previousResponse + lfinalTranscript);
 
-        setTranscript(interim);
+        setTranscript(previousResponse + interim);
+
         DEV: console.log(`[ListeningContinous][${counter}] interim ${interim}`);
       };
 
@@ -192,10 +202,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         let interim = "";
         let final = "";
 
-        DEV: console.log(
-          `[ListeningContinous][${counter}] onresult ${event.resultIndex}`,
-          event.results,
-        );
+        // DEV: console.log(
+        //   `[ListeningContinous][${counter}] onresult ${event.resultIndex}`,
+        //   event.results,
+        // );
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
@@ -204,7 +214,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             interim += event.results[i][0].transcript;
           }
         }
-        lfinalTranscript = final + interim;
+        lfinalTranscript = previousResponse + final + interim;
 
         setTranscript(lfinalTranscript);
         setFinalTranscript(lfinalTranscript);
@@ -254,12 +264,15 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
       recognition.onend = (event) => {
         console.log(
-          `[ListeningContinousx][${counter}] Stop listening isStopped: ${isStopped}`,
+          `[ListeningContinousx][${counter}] Stop listening autoStopped: ${autoStopped}`,
         );
         cleanup();
         setIsListening(false);
         // debugger;
-        resolve(lfinalTranscript.trim());
+        resolve({
+          text: lfinalTranscript.trim(),
+          autoStopped: autoStopped,
+        });
       };
 
       recognition.onspeechstart = () => {
@@ -494,12 +507,23 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   ): Promise<string> => {
     let userResponse = "";
     let counter = 0;
+    let autoStopped = false;
 
     // Get user response
+    // while (userResponse === "" || autoStopped) {
     while (userResponse === "") {
       counter = counter + 1;
-      userResponse = await startListeningContinous(options, counter).catch(
-        async (error) => {
+
+      userResponse = await startListeningContinous(
+        options,
+        userResponse,
+        counter,
+      )
+        .then((sttResponse) => {
+          autoStopped = sttResponse.autoStopped;
+          return sttResponse.text;
+        })
+        .catch(async (error) => {
           console.error(error);
           if (error == "no-speech") {
             // nudge user to speak
@@ -519,8 +543,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
             );
           }
           return "";
-        },
-      );
+        });
     }
 
     return userResponse;
