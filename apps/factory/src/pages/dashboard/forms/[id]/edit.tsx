@@ -13,6 +13,7 @@ import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
 import LanguagesSelector from "~/components/voice_forms/langauges_selector";
 import { LanguageCode, i18nMessage } from "@sugar-ai/core";
 import Loading from "~/components/Layouts/loading";
+import humanizeString from "humanize-string";
 
 const FormEdit: NextPageWithLayout = () => {
   const router = useRouter();
@@ -116,6 +117,7 @@ const FormEdit: NextPageWithLayout = () => {
       } else {
         toast.error("Something went wrong, Please try again");
       }
+      return true;
     },
   });
 
@@ -131,7 +133,9 @@ const FormEdit: NextPageWithLayout = () => {
     const allowedLanguages = voiceForm.languages;
 
     if (!allowedLanguages.includes(langCode)) {
-      setValue("languages", [...allowedLanguages, langCode]);
+      const updatedLanguages = [...allowedLanguages, langCode];
+      setValue("languages", updatedLanguages);
+      setVoiceForm({ ...voiceForm, ...{ languages: updatedLanguages } });
     }
   };
 
@@ -145,6 +149,7 @@ const FormEdit: NextPageWithLayout = () => {
         ...allowedLanguages.slice(index + 1),
       ];
       setValue("languages", newAllowedLanguages);
+      setVoiceForm({ ...voiceForm, ...{ languages: newAllowedLanguages } });
     }
   };
 
@@ -152,9 +157,9 @@ const FormEdit: NextPageWithLayout = () => {
     <Box className="w-full">
       {isFormLoading && <Loading />}
       {voiceForm && (
-        <Stack spacing={2} mt={2}>
+        <Stack spacing={2} mt={2} mb={2}>
           <Typography variant="h4" component="h4">
-            {voiceForm?.name}
+            {humanizeString(voiceForm?.name)}
           </Typography>
           {/* <Controller
             name="name"
@@ -185,14 +190,6 @@ const FormEdit: NextPageWithLayout = () => {
             onSave={handleSaveMessage}
             // control={control} // Pass control to CreateI18nMessage
           />
-          {/* 
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => (
-              
-            )}
-          /> */}
 
           <CreateI18nMessage
             // {...field}
@@ -206,25 +203,18 @@ const FormEdit: NextPageWithLayout = () => {
             onSave={handleSaveMessage}
             // control={control} // Pass control to CreateI18nMessage
           />
-
-          {/* <Controller
-            name="startButtonText"
-            control={control}
-            render={({ field }) => (
-              
-            )}
-          /> */}
         </Stack>
       )}
 
       <Button
-        size="small"
+        size="medium"
         variant="outlined"
         onClick={handleSubmit(onFormSubmit)}
         disabled={formMutation.isLoading}
       >
         {formMutation.isLoading ? "Saving..." : "Save"}
       </Button>
+      {/* <>{formMutation.isLoading ? "loading" : "not loading"}</> */}
     </Box>
   );
 };
