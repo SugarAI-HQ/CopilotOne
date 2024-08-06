@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  List,
+  ListItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/router";
 import { getLayout } from "~/app/layout";
 import { NextPageWithLayout } from "~/pages/_app";
@@ -8,10 +17,14 @@ import { Form } from "~/validators/form";
 import toast from "react-hot-toast";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createFormInput } from "~/validators/form";
+import {
+  createFormInput,
+  I18nMessageWithRules,
+  i18nMessageWithRules,
+} from "~/validators/form";
 import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
 import LanguagesSelector from "~/components/voice_forms/langauges_selector";
-import { LanguageCode, i18nMessage } from "@sugar-ai/core";
+import { LanguageCode } from "@sugar-ai/core";
 import Loading from "~/components/Layouts/loading";
 import humanizeString from "humanize-string";
 
@@ -51,7 +64,7 @@ const FormEdit: NextPageWithLayout = () => {
   });
 
   const handleClose = () => {
-    reset();
+    // reset();
   };
 
   useEffect(() => {
@@ -70,8 +83,8 @@ const FormEdit: NextPageWithLayout = () => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      const formData = getValues();
-      await formMutation.mutateAsync({ ...formData, id: formId });
+      const formData = { ...getValues(), id: formId };
+      await formMutation.mutateAsync(formData);
     } catch (error) {
       console.error(error);
     }
@@ -104,7 +117,6 @@ const FormEdit: NextPageWithLayout = () => {
 
   const formMutation = api.forms.updateForm.useMutation({
     onError: (error) => {
-      debugger;
       const errorData = JSON.parse(error.message);
       setCustomError(errorData);
     },
@@ -121,7 +133,7 @@ const FormEdit: NextPageWithLayout = () => {
     },
   });
 
-  const handleSaveMessage = (key: string, message: i18nMessage) => {
+  const handleSaveMessage = (key: string, message: I18nMessageWithRules) => {
     setValue(key, message);
     // setVoiceForm((prevForm) => ({
     //   ...prevForm,
@@ -161,7 +173,30 @@ const FormEdit: NextPageWithLayout = () => {
           <Typography variant="h4" component="h4">
             {humanizeString(voiceForm?.name)}
           </Typography>
-          {/* <Controller
+
+          <LanguagesSelector
+            initialLanguages={voiceForm?.languages}
+            onAddLanguage={handleAddLanguage}
+            onRemoveLanguage={handleRemoveLanguage}
+          />
+
+          {/* {errors && Object.keys(errors).length > 0 && ( */}
+          {
+            <div>
+              <Typography variant="body1">
+                Errors: ({Object.keys(errors).length})
+              </Typography>
+              <List>
+                {Object.keys(errors).map((key) => (
+                  <ListItem key={key}>
+                    <Alert severity="error">{errors[key].message}</Alert>
+                  </ListItem>
+                ))}
+              </List>
+            </div>
+          }
+
+          <Controller
             name="name"
             control={control}
             defaultValue={voiceForm?.name} // Set defaultValue for each field
@@ -173,12 +208,6 @@ const FormEdit: NextPageWithLayout = () => {
                 helperText={errors.name?.message || ""}
               />
             )}
-          /> */}
-
-          <LanguagesSelector
-            initialLanguages={voiceForm?.languages}
-            onAddLanguage={handleAddLanguage}
-            onRemoveLanguage={handleRemoveLanguage}
           />
 
           <CreateI18nMessage
@@ -210,11 +239,10 @@ const FormEdit: NextPageWithLayout = () => {
         size="medium"
         variant="outlined"
         onClick={handleSubmit(onFormSubmit)}
-        disabled={formMutation.isLoading}
+        // disabled={formMutation.isLoading}
       >
         {formMutation.isLoading ? "Saving..." : "Save"}
       </Button>
-      {/* <>{formMutation.isLoading ? "loading" : "not loading"}</> */}
     </Box>
   );
 };

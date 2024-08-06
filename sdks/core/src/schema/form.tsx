@@ -134,7 +134,7 @@ export const formMessageType = z.enum([
 export type FormMessageType = z.infer<typeof formMessageType>;
 
 export const voiceForm = z.object({
-  name: i18nMessageSchema,
+  name: z.string(),
   description: i18nMessageSchema,
   startButtonText: i18nMessageSchema,
 

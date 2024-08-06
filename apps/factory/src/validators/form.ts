@@ -1,11 +1,38 @@
 import { z } from "zod";
-import { formMessageType, voiceForm, i18nMessageSchema } from "@sugar-ai/core";
+import {
+  formMessageType,
+  voiceForm,
+  i18nMessageSchema,
+  languageCode,
+} from "@sugar-ai/core";
 
 export const getFormsInput = z.object({});
 export type GetFormsInput = z.infer<typeof getFormsInput>;
 
 export const form = z.any();
 export type Form = z.infer<typeof form>;
+
+export const transalationWithRules = z
+  .string()
+  .min(1, {
+    message: "must be at least 1 characters long.",
+  })
+  .max(255, {
+    message: "must be at most 30 characters long.",
+  });
+
+export type TransalationWithRules = z.infer<typeof transalationWithRules>;
+
+export const langTranslationWithRules = z.record(
+  languageCode,
+  transalationWithRules,
+);
+
+export type LangTranslationWithRules = z.infer<typeof langTranslationWithRules>;
+export const i18nMessageWithRules = i18nMessageSchema.extend({
+  lang: langTranslationWithRules,
+});
+export type I18nMessageWithRules = z.infer<typeof i18nMessageWithRules>;
 
 export const formList = z.array(form);
 export type FormList = z.infer<typeof formList>;
@@ -24,11 +51,11 @@ export type CreateFormInput = z.infer<typeof createFormInput>;
 
 export const updateFormInput = createFormInput.extend({
   id: z.string(),
-  description: i18nMessageSchema.passthrough().optional(),
-  startButtonText: i18nMessageSchema.passthrough(),
+  description: i18nMessageWithRules.passthrough().optional(),
+  languages: z.array(z.string()),
+  startButtonText: i18nMessageWithRules.passthrough(),
 
   // messages: z.record(formMessageType, z.string()),
-  languages: z.array(z.string()),
   // formConfig: z.object({}).passthrough(),
 });
 

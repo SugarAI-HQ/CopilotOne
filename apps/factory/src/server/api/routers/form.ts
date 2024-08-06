@@ -13,6 +13,7 @@ import {
   updateFormInput,
   getFormInput,
   form,
+  I18nMessageWithRules,
 } from "~/validators/form";
 
 export const formRouter = createTRPCRouter({
@@ -152,7 +153,6 @@ export const formRouter = createTRPCRouter({
         where: query,
       });
 
-      // debugger;
       // console.log(`forms out -------------- ${JSON.stringify(forms)}`);
       return form;
     }),
@@ -208,8 +208,8 @@ export const formRouter = createTRPCRouter({
   //     },
 });
 
-const getEmptyMessage = (text: string = ""): i18nMessage => {
-  const msg: i18nMessage = {
+const getEmptyMessage = (text: string = ""): I18nMessageWithRules => {
+  const msg: I18nMessageWithRules = {
     lang: {
       en: text as string,
     },
