@@ -43,6 +43,12 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
   const updateLanguagesSet = new Set();
 
   useEffect(() => {
+    if (!initialMessage) {
+      return;
+    }
+
+    console.log(`field ${fieldName}: ${JSON.stringify(initialMessage)}`);
+
     const existingLanguages = allowedLanguages || [];
 
     // Set of existing language codes for quick lookup
@@ -100,10 +106,11 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
         {fields.map((field, index) => {
           const langCode = Object.keys(field)[0] as LanguageCode;
           return (
-            <Box key={index} className="flex items-center space-x-4">
+            <Box key={index} className="mt-4 flex items-center space-x-4">
               <Controller
                 name={`lang.${langCode}`}
                 control={control}
+                defaultValue={field[langCode]} // Set defaultValue for each field
                 render={({ field }) => (
                   <TextField
                     {...field}
@@ -111,7 +118,6 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
                     variant="outlined"
                     size="small"
                     className="flex-grow"
-                    // onChange={() => onSave(fieldKey, va)}
                     inputProps={{ minLength, maxLength }}
                     InputProps={{
                       className: classNames(
@@ -122,6 +128,7 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
                   />
                 )}
               />
+              {/* Uncomment if needed */}
               {/* <IconButton
                 onClick={() => handleRemoveLanguage(index)}
                 size="small"

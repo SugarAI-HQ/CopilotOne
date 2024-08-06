@@ -23,11 +23,12 @@ export const createFormInput = z.object({
 export type CreateFormInput = z.infer<typeof createFormInput>;
 
 export const updateFormInput = createFormInput.extend({
+  id: z.string(),
   description: i18nMessageSchema.passthrough().optional(),
-  // startButtonText: i18nMessageSchema.passthrough(),
+  startButtonText: i18nMessageSchema.passthrough(),
 
   // messages: z.record(formMessageType, z.string()),
-  // languages: z.array(z.string()),
+  languages: z.array(z.string()),
   // formConfig: z.object({}).passthrough(),
 });
 

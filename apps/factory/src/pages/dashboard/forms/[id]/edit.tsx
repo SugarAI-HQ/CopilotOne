@@ -12,6 +12,7 @@ import { createFormInput } from "~/validators/form";
 import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
 import LanguagesSelector from "~/components/voice_forms/langauges_selector";
 import { LanguageCode, i18nMessage } from "@sugar-ai/core";
+import Loading from "~/components/Layouts/loading";
 
 const FormEdit: NextPageWithLayout = () => {
   const router = useRouter();
@@ -20,9 +21,9 @@ const FormEdit: NextPageWithLayout = () => {
   const [status, setStatus] = useState("");
   const [voiceForm, setVoiceForm] = useState<Form>();
   const [customError, setCustomError] = useState({});
-  const [allowedLanguages, setAllowedLanguages] = useState<LanguageCode[]>([
-    "en",
-  ]);
+  // const [allowedLanguages, setAllowedLanguages] = useState<LanguageCode[]>([
+  //   "en",
+  // ]);
 
   const {
     control,
@@ -30,10 +31,12 @@ const FormEdit: NextPageWithLayout = () => {
     setError,
     clearErrors,
     setValue,
+    getValues,
     formState: { errors },
     reset,
   } = useForm({
     defaultValues: {
+      id: "",
       name: "",
       description: { lang: { en: "" } },
       startButtonText: { lang: { en: "" } },
@@ -69,42 +72,51 @@ const FormEdit: NextPageWithLayout = () => {
 
   const onFormSubmit = async (data: any) => {
     try {
-      await formMutation.mutateAsync(data);
+      const formData = getValues();
+      await formMutation.mutateAsync({ ...formData, id: formId });
     } catch (error) {
       console.error(error);
     }
   };
 
-  const { data: form } = api.forms.getForm.useQuery(
+  const loadForm = (form: Form) => {
+    setVoiceForm(form);
+
+    setValue("id", form.id);
+    setValue("name", form.name);
+    setValue("description", form.description);
+    setValue("startButtonText", form.startButtonText);
+    setValue("languages", form.languages);
+    // setAllowedLanguages(form.languages);
+    setValue("messages", form.messages);
+  };
+
+  const { data: form, isLoading: isFormLoading } = api.forms.getForm.useQuery(
     { id: formId },
     {
       enabled: !!formId,
       onSuccess(form: Form) {
-        setVoiceForm(form);
-        setValue("name", form.name);
-        setValue("description", form.description);
-        setValue("startButtonText", form.startButtonText);
-        setValue("languages", form.languages);
-        setAllowedLanguages(form.languages);
-        setValue("messages", form.messages);
+        loadForm(form);
       },
     },
   );
 
   const handleVoiceFormCreationSuccess = (createdForm) => {
     setStatus("success");
-    toast.success("Form updated successfully");
   };
 
   const formMutation = api.forms.updateForm.useMutation({
     onError: (error) => {
+      debugger;
       const errorData = JSON.parse(error.message);
       setCustomError(errorData);
     },
     onSuccess: (updateForm) => {
       if (updateForm !== null) {
         setCustomError({});
-        handleVoiceFormCreationSuccess(updateForm);
+        loadForm(updateForm);
+        toast.success("Form updated successfully");
+        setStatus("success");
       } else {
         toast.error("Something went wrong, Please try again");
       }
@@ -116,79 +128,86 @@ const FormEdit: NextPageWithLayout = () => {
   };
 
   const handleAddLanguage = (langCode: LanguageCode) => {
+    const allowedLanguages = voiceForm.languages;
+
     if (!allowedLanguages.includes(langCode)) {
-      setAllowedLanguages([...allowedLanguages, langCode]);
+      setValue("languages", [...allowedLanguages, langCode]);
     }
   };
 
   const handleRemoveLanguage = (langCode: LanguageCode) => {
+    const allowedLanguages = voiceForm.languages;
+
     if (allowedLanguages.includes(langCode)) {
       const index = allowedLanguages.indexOf(langCode);
       const newAllowedLanguages = [
         ...allowedLanguages.slice(0, index),
         ...allowedLanguages.slice(index + 1),
       ];
-      setAllowedLanguages(newAllowedLanguages);
+      setValue("languages", newAllowedLanguages);
     }
   };
 
   return (
     <Box className="w-full">
-      <Stack spacing={2} mt={2}>
-        <LanguagesSelector
-          initialLanguages={allowedLanguages}
-          onAddLanguage={handleAddLanguage}
-          onRemoveLanguage={handleRemoveLanguage}
-        />
-        <Controller
-          name="name"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Form Name"
-              error={!!errors.name}
-              helperText={errors.name?.message || ""}
-            />
-          )}
-        />
+      {isFormLoading && <Loading />}
+      {voiceForm && (
+        <Stack spacing={2} mt={2}>
+          <LanguagesSelector
+            initialLanguages={voiceForm?.languages}
+            onAddLanguage={handleAddLanguage}
+            onRemoveLanguage={handleRemoveLanguage}
+          />
+          <Controller
+            name="name"
+            defaultValue={voiceForm.name} // Set defaultValue for each field
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Form Name"
+                error={!!errors.name}
+                helperText={errors.name?.message || ""}
+              />
+            )}
+          />
 
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <CreateI18nMessage
-              {...field}
-              fieldKey="description"
-              fieldName="Description"
-              initialMessage={{
-                lang: voiceForm?.description?.lang || { en: "" },
-              }}
-              allowedLanguages={allowedLanguages}
-              onSave={handleSaveMessage}
-              control={control} // Pass control to CreateI18nMessage
-            />
-          )}
-        />
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <CreateI18nMessage
+                // {...field}
+                fieldKey="description"
+                fieldName="Description"
+                initialMessage={voiceForm?.description}
+                allowedLanguages={voiceForm?.languages}
+                onSave={handleSaveMessage}
+                // control={control} // Pass control to CreateI18nMessage
+              />
+            )}
+          />
 
-        <Controller
-          name="startButtonText"
-          control={control}
-          render={({ field }) => (
-            <CreateI18nMessage
-              {...field}
-              fieldKey="startButtonText"
-              fieldName="Start Button Text"
-              initialMessage={{
-                lang: voiceForm?.startButtonText?.lang || { en: "" },
-              }}
-              allowedLanguages={allowedLanguages}
-              onSave={handleSaveMessage}
-              control={control} // Pass control to CreateI18nMessage
-            />
-          )}
-        />
-      </Stack>
+          <Controller
+            name="startButtonText"
+            control={control}
+            render={({ field }) => (
+              <CreateI18nMessage
+                {...field}
+                fieldKey="startButtonText"
+                fieldName="Start Button Text"
+                initialMessage={voiceForm?.startButtonText}
+                // initialMessage={{
+                //   lang: voiceForm?.startButtonText?.lang || { en: "" },
+                // }}
+                allowedLanguages={voiceForm?.languages}
+                onSave={handleSaveMessage}
+                control={control} // Pass control to CreateI18nMessage
+              />
+            )}
+          />
+        </Stack>
+      )}
 
       <Button
         size="small"

@@ -87,7 +87,8 @@ export const formRouter = createTRPCRouter({
     .input(updateFormInput)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
-      const formId = input.formId; // Assuming `formId` is provided in the input to identify which form to update
+
+      const formId = input.id;
 
       const formDefaults = {
         description: getEmptyMessage("description"),
@@ -102,16 +103,17 @@ export const formRouter = createTRPCRouter({
       const updateData: any = {
         ...formDefaults,
         ...{
-          userId: userId,
+          name: input.name,
           description: input.description,
           startButtonText: input.startButtonText,
+          languages: input.languages,
         },
       };
 
       try {
         // Perform the update operation
         const updatedForm = await ctx.prisma.form.update({
-          where: { id: formId },
+          where: { id: formId, userId: userId },
           data: updateData,
         });
 
