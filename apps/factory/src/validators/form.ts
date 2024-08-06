@@ -22,13 +22,19 @@ export const createFormInput = z.object({
 });
 export type CreateFormInput = z.infer<typeof createFormInput>;
 
-export const editFormInput = createFormInput.extend({
+export const updateFormInput = createFormInput.extend({
   description: i18nMessageSchema.passthrough().optional(),
-  startButtonText: i18nMessageSchema.passthrough(),
+  // startButtonText: i18nMessageSchema.passthrough(),
 
-  messages: z.record(formMessageType, z.string()),
-  languages: z.array(z.string()),
-  formConfig: z.object({}).passthrough(),
+  // messages: z.record(formMessageType, z.string()),
+  // languages: z.array(z.string()),
+  // formConfig: z.object({}).passthrough(),
 });
 
-export type EditFormInput = z.infer<typeof editFormInput>;
+export type UpdateFormInput = z.infer<typeof updateFormInput>;
+
+export const getFormInput = z.object({
+  // userId: z.string().optional(),
+  id: z.string(),
+});
+export type GetFormInput = z.infer<typeof getFormInput>;

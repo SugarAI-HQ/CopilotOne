@@ -6,7 +6,14 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { getFormsInput, formList, createFormInput } from "~/validators/form";
+import {
+  getFormsInput,
+  formList,
+  createFormInput,
+  updateFormInput,
+  getFormInput,
+  form,
+} from "~/validators/form";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -62,7 +69,7 @@ export const formRouter = createTRPCRouter({
       };
 
       try {
-        debugger;
+        // debugger;
         const form = await ctx.prisma.form.create({
           data: data,
         });
@@ -71,6 +78,48 @@ export const formRouter = createTRPCRouter({
         console.error(`Error in creating Package-----------------  ${error}`);
         if (error.code === "P2002" && error.meta?.target.includes("name")) {
           const errorMessage = { error: { name: "Name already exist" } };
+          throw new Error(JSON.stringify(errorMessage));
+        }
+        throw new Error("Something went wrong");
+      }
+    }),
+  updateForm: protectedProcedure
+    .input(updateFormInput)
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      const formId = input.formId; // Assuming `formId` is provided in the input to identify which form to update
+
+      const formDefaults = {
+        description: getEmptyMessage("description"),
+        startButtonText: getEmptyMessage("Start"),
+        messages: {
+          welcome: getEmptyMessage("Welcome"),
+        },
+        languages: ["en"],
+        formConfig: {},
+      };
+
+      const updateData: any = {
+        ...formDefaults,
+        ...{
+          userId: userId,
+          description: input.description,
+          startButtonText: input.startButtonText,
+        },
+      };
+
+      try {
+        // Perform the update operation
+        const updatedForm = await ctx.prisma.form.update({
+          where: { id: formId },
+          data: updateData,
+        });
+
+        return updatedForm;
+      } catch (error: any) {
+        console.error(`Error in updating form ----------------- ${error}`);
+        if (error.code === "P2002" && error.meta?.target.includes("name")) {
+          const errorMessage = { error: { name: "Name already exists" } };
           throw new Error(JSON.stringify(errorMessage));
         }
         throw new Error("Something went wrong");
@@ -86,8 +135,8 @@ export const formRouter = createTRPCRouter({
     //     summary: "Read all packages",
     //   },
     // })
-    .input(getFormsInput)
-    .output(formList)
+    .input(getFormInput)
+    .output(form)
     .query(async ({ ctx, input }) => {
       let query = {
         id: input.id,
@@ -96,14 +145,14 @@ export const formRouter = createTRPCRouter({
 
       // console.log(`packages input -------------- ${JSON.stringify(query)}`);
 
-      const forms = await ctx.prisma.form.findMany({
+      // debugger;
+      const form = await ctx.prisma.form.findUnique({
         where: query,
-        orderBy: {
-          createdAt: "desc",
-        },
       });
+
+      // debugger;
       // console.log(`forms out -------------- ${JSON.stringify(forms)}`);
-      return forms;
+      return form;
     }),
 
   createQuestion: protectedProcedure

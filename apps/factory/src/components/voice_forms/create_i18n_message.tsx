@@ -1,39 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import {
   i18nMessage,
   allLanguages,
   LanguageCode,
   i18nMessageSchema,
 } from "@sugar-ai/core";
-import {
-  TextField,
-  Button,
-  Box,
-  MenuItem,
-  IconButton,
-  Select,
-  InputLabel,
-} from "@mui/material";
+import { TextField, Box, Typography, IconButton } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { Delete } from "@mui/icons-material";
+import classNames from "classnames";
 
 interface CreateI18nMessageProps {
+  fieldKey: string;
+  fieldName: string;
   initialMessage: i18nMessage;
-  initialLanguages: LanguageCode[];
-  onSave: (message: i18nMessage) => void;
+  allowedLanguages: LanguageCode[];
+  onSave: (key: string, message: i18nMessage) => void;
+  minLength?: number;
+  maxLength?: number;
 }
 
 const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
+  fieldKey,
+  fieldName,
   initialMessage,
-  initialLanguages,
+  allowedLanguages,
   onSave,
+  minLength = 5,
+  maxLength = 40,
 }) => {
-  const [availableLanguages, setAvailableLanguages] = useState(
-    Object.keys(allLanguages) as LanguageCode[],
-  );
-
-  const { control, handleSubmit, setValue, watch } = useForm<i18nMessage>({
+  const { control, watch } = useForm<i18nMessage>({
     defaultValues: initialMessage,
     resolver: zodResolver(i18nMessageSchema),
   });
@@ -43,104 +40,100 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
     name: "lang",
   });
 
-  // Populate fields based on initialMessage
-  React.useEffect(() => {
-    const existingLanguages = Object.keys(
-      initialMessage.lang,
-    ) as LanguageCode[];
-    existingLanguages.forEach((lang) => {
-      if (!fields.some((field) => Object.keys(field)[0] === lang)) {
-        append({ [lang]: initialMessage.lang[lang] });
+  const updateLanguagesSet = new Set();
+
+  useEffect(() => {
+    const existingLanguages = allowedLanguages || [];
+
+    // Set of existing language codes for quick lookup
+    const existingLanguageSet = new Set(existingLanguages);
+
+    // Filter and remove languages that are no longer allowed
+    fields.forEach((field, index) => {
+      const langCode = Object.keys(field)[0] as LanguageCode;
+      if (!existingLanguageSet.has(langCode)) {
+        remove(index);
+        updateLanguagesSet.delete(langCode);
       }
     });
-  }, [initialMessage, append, fields]);
 
-  const handleAddLanguage = (langCode: LanguageCode) => {
-    if (!fields.some((field) => Object.keys(field).includes(langCode))) {
-      append({ [langCode]: "" });
-    }
-  };
+    // Add new languages only if they are not already present
+    existingLanguages.forEach((lang) => {
+      if (
+        !updateLanguagesSet.has(lang) &&
+        !fields.some((field) => Object.keys(field)[0] === lang)
+      ) {
+        append({ [lang]: initialMessage.lang[lang] || "" });
+        updateLanguagesSet.add(lang);
+      }
+    });
+  }, [allowedLanguages, initialMessage, append, remove, fields]);
+
+  useEffect(() => {
+    const subscription = watch((data) => {
+      // Ensure the keys are consistent and log the data
+      // console.log(`${fieldKey} : ${JSON.stringify(data.lang)}`);
+
+      // Check if data.lang is an object and has valid language codes
+      if (data.lang && typeof data.lang === "object") {
+        const validData = Object.keys(data.lang).reduce((acc, key) => {
+          if (allowedLanguages.includes(key as LanguageCode)) {
+            acc[key] = data.lang[key];
+          }
+          return acc;
+        }, {} as i18nMessage);
+
+        onSave(fieldKey, { lang: validData } as i18nMessage);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, onSave, fieldKey, allowedLanguages]);
 
   const handleRemoveLanguage = (index: number) => {
     remove(index);
   };
 
-  const onSubmit = (data: i18nMessage) => {
-    onSave(data);
-  };
-
-  const newLangOptions = availableLanguages.filter(
-    (lang) => !fields.some((field) => Object.keys(field).includes(lang)),
-  );
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Box>
+    <Box className="rounded-lg border-2 border-gray-700 p-4 shadow-md dark:border-gray-600">
+      <Typography className="mb-4 text-3xl font-bold">{fieldName}</Typography>
+      <Box className="space-y-4">
         {fields.map((field, index) => {
           const langCode = Object.keys(field)[0] as LanguageCode;
           return (
-            <Box key={index} display="flex" alignItems="center" mb={1}>
+            <Box key={index} className="flex items-center space-x-4">
               <Controller
                 name={`lang.${langCode}`}
                 control={control}
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label={`${allLanguages[langCode]}`}
+                    label={allLanguages[langCode]}
                     variant="outlined"
                     size="small"
-                    style={{ flexGrow: 1, marginRight: 8 }}
+                    className="flex-grow"
+                    // onChange={() => onSave(fieldKey, va)}
+                    inputProps={{ minLength, maxLength }}
+                    InputProps={{
+                      className: classNames(
+                        "text-gray-900 dark:bg-gray-700 dark:text-gray-200",
+                        "border-gray-300 dark:border-gray-600",
+                      ),
+                    }}
                   />
                 )}
               />
-              <IconButton
+              {/* <IconButton
                 onClick={() => handleRemoveLanguage(index)}
                 size="small"
+                className="text-red-500 hover:text-red-700"
               >
                 <Delete />
-              </IconButton>
+              </IconButton> */}
             </Box>
           );
         })}
-        <Box display="flex" alignItems="center" mb={2}>
-          <InputLabel>Add Language</InputLabel>
-          <Controller
-            name="newLangCode"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                size="small"
-                style={{ marginRight: 8 }}
-                displayEmpty
-                inputProps={{ "aria-label": "Language" }}
-                onChange={(e) =>
-                  handleAddLanguage(e.target.value as LanguageCode)
-                }
-              >
-                <MenuItem value="" disabled>
-                  Select Language
-                </MenuItem>
-                {newLangOptions.map((lang) => (
-                  <MenuItem key={lang} value={lang}>
-                    {allLanguages[lang]}
-                  </MenuItem>
-                ))}
-              </Select>
-            )}
-          />
-          <Button
-            variant="outlined"
-            onClick={() => handleAddLanguage(control.getValues("newLangCode"))}
-          >
-            Add
-          </Button>
-        </Box>
-        <Button type="submit" variant="contained" color="primary">
-          Save
-        </Button>
       </Box>
-    </form>
+    </Box>
   );
 };
 
