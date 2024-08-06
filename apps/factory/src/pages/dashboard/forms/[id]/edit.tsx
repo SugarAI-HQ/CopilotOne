@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { getLayout } from "~/app/layout";
 import { NextPageWithLayout } from "~/pages/_app";
@@ -21,9 +21,6 @@ const FormEdit: NextPageWithLayout = () => {
   const [status, setStatus] = useState("");
   const [voiceForm, setVoiceForm] = useState<Form>();
   const [customError, setCustomError] = useState({});
-  // const [allowedLanguages, setAllowedLanguages] = useState<LanguageCode[]>([
-  //   "en",
-  // ]);
 
   const {
     control,
@@ -87,7 +84,6 @@ const FormEdit: NextPageWithLayout = () => {
     setValue("description", form.description);
     setValue("startButtonText", form.startButtonText);
     setValue("languages", form.languages);
-    // setAllowedLanguages(form.languages);
     setValue("messages", form.messages);
   };
 
@@ -125,6 +121,10 @@ const FormEdit: NextPageWithLayout = () => {
 
   const handleSaveMessage = (key: string, message: i18nMessage) => {
     setValue(key, message);
+    // setVoiceForm((prevForm) => ({
+    //   ...prevForm,
+    //   [key]: message,
+    // }));
   };
 
   const handleAddLanguage = (langCode: LanguageCode) => {
@@ -153,15 +153,13 @@ const FormEdit: NextPageWithLayout = () => {
       {isFormLoading && <Loading />}
       {voiceForm && (
         <Stack spacing={2} mt={2}>
-          <LanguagesSelector
-            initialLanguages={voiceForm?.languages}
-            onAddLanguage={handleAddLanguage}
-            onRemoveLanguage={handleRemoveLanguage}
-          />
-          <Controller
+          <Typography variant="h4" component="h4">
+            {voiceForm?.name}
+          </Typography>
+          {/* <Controller
             name="name"
-            defaultValue={voiceForm.name} // Set defaultValue for each field
             control={control}
+            defaultValue={voiceForm?.name} // Set defaultValue for each field
             render={({ field }) => (
               <TextField
                 {...field}
@@ -170,42 +168,52 @@ const FormEdit: NextPageWithLayout = () => {
                 helperText={errors.name?.message || ""}
               />
             )}
+          /> */}
+
+          <LanguagesSelector
+            initialLanguages={voiceForm?.languages}
+            onAddLanguage={handleAddLanguage}
+            onRemoveLanguage={handleRemoveLanguage}
           />
 
+          <CreateI18nMessage
+            // {...field}
+            fieldKey="description"
+            fieldName="Description"
+            initialMessage={voiceForm?.description}
+            allowedLanguages={voiceForm?.languages}
+            onSave={handleSaveMessage}
+            // control={control} // Pass control to CreateI18nMessage
+          />
+          {/* 
           <Controller
             name="description"
             control={control}
             render={({ field }) => (
-              <CreateI18nMessage
-                // {...field}
-                fieldKey="description"
-                fieldName="Description"
-                initialMessage={voiceForm?.description}
-                allowedLanguages={voiceForm?.languages}
-                onSave={handleSaveMessage}
-                // control={control} // Pass control to CreateI18nMessage
-              />
+              
             )}
+          /> */}
+
+          <CreateI18nMessage
+            // {...field}
+            fieldKey="startButtonText"
+            fieldName="Start Button Text"
+            initialMessage={voiceForm?.startButtonText}
+            // initialMessage={{
+            //   lang: voiceForm?.startButtonText?.lang || { en: "" },
+            // }}
+            allowedLanguages={voiceForm?.languages}
+            onSave={handleSaveMessage}
+            // control={control} // Pass control to CreateI18nMessage
           />
 
-          <Controller
+          {/* <Controller
             name="startButtonText"
             control={control}
             render={({ field }) => (
-              <CreateI18nMessage
-                {...field}
-                fieldKey="startButtonText"
-                fieldName="Start Button Text"
-                initialMessage={voiceForm?.startButtonText}
-                // initialMessage={{
-                //   lang: voiceForm?.startButtonText?.lang || { en: "" },
-                // }}
-                allowedLanguages={voiceForm?.languages}
-                onSave={handleSaveMessage}
-                control={control} // Pass control to CreateI18nMessage
-              />
+              
             )}
-          />
+          /> */}
         </Stack>
       )}
 
