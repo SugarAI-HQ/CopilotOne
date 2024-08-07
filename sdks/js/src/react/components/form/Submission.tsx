@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import Streamingi18nText from "../streaming/Streamingi18nText";
-
 import {
   FormConfig,
   Streamingi18nTextRef,
@@ -20,7 +19,6 @@ export const Submission: React.FC<{
   const runWorkflow = async () => {
     const workflow = new MessageWorkflow();
     workflow.addMessage(postSubmissionMessageRef);
-
     // await workflow.run();
   };
 
@@ -31,7 +29,7 @@ export const Submission: React.FC<{
   }, [postSubmissionMessageRef, language, voice]);
 
   useEffect(() => {
-    // Submit answers to the server
+    // Submit all answers to the server
     fetch("/api/submit", {
       method: "POST",
       headers: {

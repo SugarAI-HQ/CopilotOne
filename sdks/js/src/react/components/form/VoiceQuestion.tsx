@@ -488,6 +488,7 @@ export const VoiceQuestion: React.FC<{
         auto={false}
         message={question.question_text}
         formConfig={formConfig}
+        klasses={"font-medium text-3xl mb-4"}
       />
 
       {["text", "number"].includes(question.question_type) && (

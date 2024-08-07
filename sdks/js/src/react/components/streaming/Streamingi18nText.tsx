@@ -29,7 +29,16 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   Streamingi18nTextRef,
   Streamingi18nTextProps
 > = (
-  { auto, message, messageKey, formConfig, beforeSpeak, afterSpeak },
+  {
+    auto,
+    message,
+    messageKey,
+    formConfig,
+    beforeSpeak,
+    afterSpeak,
+    klasses = "",
+    style = {},
+  },
   ref,
 ) => {
   const { language, voice, translations } = useLanguage();
@@ -245,10 +254,11 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
       <h1
         ref={elRef}
         tabIndex={-1}
-        className={`text-2xl whitespace-pre-wrap ${false ? "highlight" : ""}`}
+        className={`${klasses} text-2xl whitespace-pre-wrap ${false ? "highlight" : ""}`}
         onFocus={() => elRef.current?.classList.add("highlight")}
         onBlur={() => elRef.current?.classList.remove("highlight")}
         onClick={() => fastForward()}
+        style={style}
       >
         {displayedText}
       </h1>

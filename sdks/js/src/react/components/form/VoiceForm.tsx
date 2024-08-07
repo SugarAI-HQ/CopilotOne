@@ -1,12 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Onboarding from "./Onboarding";
 import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
 import {
   Translations,
-  i18nMessage,
-  getQueryParams,
   geti18nMessage,
+  getQueryParams,
   Question,
   FormConfig,
   FormConfigDefaults,
@@ -25,19 +24,32 @@ export const VoiceForm: React.FC<{
   formConfig = FormConfigDefaults,
 }) => {
   const initialStep = parseInt(getQueryParams("step") || "0");
-  const currentFromConfig = { ...FormConfigDefaults, ...formConfig };
+  const currentFormConfig = { ...FormConfigDefaults, ...formConfig };
   const [step, setStep] = useState<number>(initialStep);
   const [answers, setAnswers] = useState<any[]>([]);
 
   const handleOnboardingComplete = () => {
-    setStep((step) => {
-      return step + 1;
-    });
+    setStep((step) => step + 1);
   };
 
-  const handleQuestionComplete = (answer: any) => {
-    // return;
-    setAnswers([...answers, answer]);
+  const handleQuestionComplete = async (answer: any) => {
+    const newAnswers = [...answers, answer];
+    setAnswers(newAnswers);
+
+    try {
+      // Submit each question's answer to the server
+      await fetch("/api/submit-question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(answer),
+      });
+      console.log("Answer submitted successfully");
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+    }
+
     if (step < questions.length) {
       setStep(step + 1);
     } else {
@@ -49,20 +61,20 @@ export const VoiceForm: React.FC<{
   const postSubmissionMessage = geti18nMessage("postSubmission", translations);
 
   return (
-    <div className="container mx-auto p-2">
+    <div className="container mx-auto p-2 w-full ">
       {step === 0 && (
         <Onboarding
           showStartButton={showStartButton}
           onComplete={handleOnboardingComplete}
           welcomeMessage={welcomeMessage}
-          formConfig={currentFromConfig}
+          formConfig={currentFormConfig}
         />
       )}
       {step > 0 &&
         step <= questions.length &&
         questions.map(
           (question, index) =>
-            index == step - 1 && (
+            index === step - 1 && (
               <VoiceQuestion
                 key={index}
                 question={question}
@@ -79,7 +91,7 @@ export const VoiceForm: React.FC<{
                     answer: "User Answer",
                   })
                 }
-                formConfig={currentFromConfig}
+                formConfig={currentFormConfig}
               />
             ),
         )}
@@ -87,7 +99,7 @@ export const VoiceForm: React.FC<{
         <Submission
           postSubmissionMessage={postSubmissionMessage}
           answers={answers}
-          formConfig={currentFromConfig}
+          formConfig={currentFormConfig}
         />
       )}
     </div>
@@ -95,54 +107,3 @@ export const VoiceForm: React.FC<{
 };
 
 export default VoiceForm;
-
-// const ParentComponentx = () => {
-//   const streamingTextRef = useRef<StreamingTextRef>(null);
-
-//   const triggerStreaming = () => {
-//     if (streamingTextRef.current) {
-//       streamingTextRef.current.startStreaming();
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <StreamingText
-//         ref={streamingTextRef}
-//         message="Hello, welcome to the streaming text and speech synthesis example."
-//       />
-//       <button onClick={triggerStreaming}>Start button</button>
-//     </div>
-//   );
-// };
-
-// const ParentComponent = () => {
-//   const streamingTextRef = useRef<Streamingi18nTextRef>(null);
-
-//   const triggerStreaming = () => {
-//     if (streamingTextRef.current) {
-//       streamingTextRef.current.startStreaming();
-//     }
-//   };
-
-//   const msg: i18nMessage = {
-//     mode: "manual",
-//     lang: {
-//       en: "Hola, welcome to the streaming text and speech synthesis example.",
-//       hi: "नमस्ते, स्वागत है कि स्ट्रीज और संवाद सीखें।",
-//     },
-//     voice: true,
-//     output: "none",
-//   };
-
-//   return (
-//     <div>
-//       <Streamingi18nText
-//         ref={streamingTextRef}
-//         message={msg}
-//         formConfig={currentFromConfig}
-//       />
-//       <button onClick={triggerStreaming}>Start button</button>
-//     </div>
-//   );
-// };

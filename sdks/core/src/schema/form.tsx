@@ -71,6 +71,8 @@ export const streamingi18nTextSchema = z.object({
   formConfig: formConfig.optional(),
   // beforeSpeak: z.function().optional(),
   // afterSpeak: z.function().optional(),
+  klasses: z.string().optional(),
+  style: z.any().optional(),
   beforeSpeak: z.function().args().returns(z.promise(z.any())).optional(),
   afterSpeak: z.function().args().returns(z.promise(z.any())).optional(),
 });
