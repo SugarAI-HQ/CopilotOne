@@ -7,9 +7,17 @@
 }
 
 
+.sai-vf-welcome-message {
+  @apply !text-4xl;
+}
+
+.sai-vf-request-permissions {
+  @apply !text-3xl !mt-3 py-3 text-blue-500;
+}
+
 .sai-vq-container {
   @apply p-4 bg-slate-50 dark:bg-gray-800 rounded-lg max-w-3xl mx-auto w-full;
-  @apply dark:shadow-lg dark:shadow-gray-900; /* Add shadow for dark mode */
+  @apply dark:shadow-lg dark:shadow-gray-900;
 }
 
 .sai-vq-text-input {
@@ -33,15 +41,17 @@
 
 .blinking-cursor {
   margin-left: 0.1em;
-  animation: blink-cursor 1s step-end infinite;
+  display: inline-block;
+  width: 2px;
+  animation: blink 0.5s step-end infinite;
 }
-@keyframes blink-cursor {
-  0%,
-  100% {
-    opacity: 1;
+
+@keyframes blink {
+  from, to {
+    visibility: hidden;
   }
   50% {
-    opacity: 0;
+    visibility: visible;
   }
 }
 
@@ -84,9 +94,9 @@
   }
 }
 
-.highlight {
+/* .highlight {
   @apply outline-none border-2 border-yellow-500;
-}
+} */
 
 .highlighted-selected {
   /* background-color: gray */

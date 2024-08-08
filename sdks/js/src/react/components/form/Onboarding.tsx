@@ -71,6 +71,7 @@ export const Onboarding: React.FC<{
       ) : (
         <div className="p-4 block justify-center">
           <Streamingi18nText
+            klasses="sai-vf-welcome-message"
             auto={false}
             ref={welcomeMessageRef}
             message={welcomeMessage}
@@ -78,6 +79,7 @@ export const Onboarding: React.FC<{
           />
           {!isMicEnabled && (
             <Streamingi18nText
+              klasses="sai-vf-request-permissions"
               auto={false}
               ref={requestMicPermissionsRef}
               message={geti18nMessage("requestMicPermissions")}

@@ -5,7 +5,6 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from "react";
-// import { css } from "@emotion/react";
 
 const FAST_FORWARD = "fastForward";
 
@@ -52,7 +51,6 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   const createRef = (): Streamingi18nTextRef => ({
     startStreaming: handleStart,
     focusElement: focusElement,
-    // unfocusElement: unfocusElement,
   });
   const selfRef = useRef<Streamingi18nTextRef | null>(null);
 
