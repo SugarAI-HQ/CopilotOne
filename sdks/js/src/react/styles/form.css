@@ -31,6 +31,19 @@
   @apply dark:shadow-lg dark:shadow-gray-600;
 }
 
+.blinking-cursor {
+  margin-left: 0.1em;
+  animation: blink-cursor 1s step-end infinite;
+}
+@keyframes blink-cursor {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
 
 .mic-buttons {
   @apply flex items-center gap-2;

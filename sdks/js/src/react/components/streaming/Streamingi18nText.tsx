@@ -74,23 +74,6 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
     return { characters, renderTime };
   };
 
-  const streamRenderx = async (characters: string[], renderTime) => {
-    const promises: Promise<void>[] = [];
-    for (let i = 0; i < characters.length; i++) {
-      promises.push(
-        new Promise<void>((resolve) => {
-          setTimeout(() => {
-            setDisplayedText((prev) => {
-              const next = `${prev}${characters[i]}`;
-              resolve();
-              return next;
-            });
-          }, i * renderTime); // Distribute time evenly
-        }),
-      );
-    }
-    return Promise.all(promises);
-  };
   const streamRender = (characters, renderTime) => {
     const intervalTime = renderTime / characters.length;
     const promises: Promise<void>[] = [];
@@ -129,7 +112,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
       waitForFastforward(renderTime),
     ])
       .catch((e) => {
-        if (e == FAST_FORWARD) {
+        if (e === FAST_FORWARD) {
           // ignore
         }
       })
@@ -169,7 +152,6 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
       msg = message;
     }
 
-    // messageKey
     if (messageKey && !message) {
       msg = geti18nMessage(messageKey, translations);
     }
@@ -220,7 +202,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   useImperativeHandle(ref, createRef);
 
   useEffect(() => {
-    if (auto && (message || messageKey) && language && language != "auto") {
+    if (auto && (message || messageKey) && language && language !== "auto") {
       handleStart();
     }
 
@@ -261,13 +243,10 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
         style={style}
       >
         {displayedText}
+        <span className={`${isSpeaking ? "blinking-cursor" : "hidden"}`}>
+          |
+        </span>
       </h1>
-      {/* <style jsx>{`
-        .highlight {
-          outline: none;
-          border: 2px solid yellow;
-        }
-      `}</style> */}
     </div>
   );
 };
