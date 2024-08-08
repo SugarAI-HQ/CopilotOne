@@ -247,7 +247,7 @@ export const VoiceQuestion: React.FC<{
   };
 
   return (
-    <div className="p-4 bg-white-300 dark:bg-gray-800 rounded-lg max-w-3xl mx-auto w-full">
+    <div className="sai-vq-container">
       <Streamingi18nText
         ref={questionRef}
         auto={false}
@@ -264,7 +264,7 @@ export const VoiceQuestion: React.FC<{
             name="message"
             disabled={!isQuestionSpoken}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
-            className="rounded-lg border border-gray-500 max-h-24 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-sm placeholder-gray-500 dark:placeholder-gray-400 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-grau-300 focus:border-gray-500"
+            className="sai-vq-text-input"
           />
         </div>
       )}
@@ -282,7 +282,7 @@ export const VoiceQuestion: React.FC<{
         />
       )}
 
-      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white dark:bg-gray-800 border-t border-gray-500 dark:border-gray-500">
+      <div className="sai-vf-actions-container">
         <div className="flex flex-col items-center space-y-2">
           <div className="transcript-container w-full flex items-center px-2 relative">
             <p className="transcript text-gray-900 dark:text-white mb-2 border-b border-gray-300 dark:border-gray-700 mx-auto">
@@ -301,11 +301,8 @@ export const VoiceQuestion: React.FC<{
             )}
           </div>
 
-          <div className="flex justify-between items-center w-full max-w-3xl mx-auto pb-4 space-x-2">
-            <button
-              onClick={onBack}
-              className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-            >
+          <div className="sai-vf-actions">
+            <button onClick={onBack} className="sai-vf-action action-back">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <VoiceButtonWithStates
@@ -321,16 +318,13 @@ export const VoiceQuestion: React.FC<{
               stopSpeaking={stopSpeaking}
             />
             {!isWaiting ? (
-              <button
-                onClick={onSkip}
-                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
-              >
+              <button onClick={onSkip} className="sai-vf-action action-skip ">
                 <SkipForward className="w-5 h-5" />
               </button>
             ) : (
               <button
                 onClick={() => onAnswered(answer as string)}
-                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="sai-vf-action action-next"
               >
                 <ArrowRight className="w-5 h-5" />
               </button>

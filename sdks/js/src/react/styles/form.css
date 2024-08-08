@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+.sai-vf-container {
+  @apply m-4 mx-auto w-full rounded-lg h-[65dvh] flex items-center justify-center
+}
+
+
+.sai-vq-container {
+  @apply p-4 bg-slate-50 dark:bg-gray-800 rounded-lg max-w-3xl mx-auto w-full;
+  @apply dark:shadow-lg dark:shadow-gray-900; /* Add shadow for dark mode */
+}
+
+.sai-vq-text-input {
+  @apply rounded-lg border border-gray-500 max-h-24 px-4 py-3 bg-gray-100 text-sm placeholder-gray-500 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-gray-300 focus:border-gray-500;
+  @apply dark:bg-gray-700 dark:placeholder-gray-400;
+}
+
+.sai-vf-actions-container {
+  @apply fixed bottom-0 left-0 right-0 p-2 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-500
+}
+
+.sai-vf-actions {
+  @apply flex justify-between items-center w-full max-w-3xl mx-auto pb-4 space-x-2;
+  @apply dark:shadow-md dark:shadow-gray-900; /* Add subtle shadow for action buttons in dark mode */
+}
+
+.sai-vf-action {
+  @apply p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500;
+  @apply dark:shadow-lg dark:shadow-gray-600;
+}
+
+
 .mic-buttons {
   @apply flex items-center gap-2;
 }
