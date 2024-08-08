@@ -97,6 +97,7 @@ export const validateAnswerWithUser = async (
   answer: string,
   followupResponse: string,
   language: LanguageCode,
+  voice: SpeechSynthesisVoice,
   setAnswer: Function,
   //   setAnswer: Function,
 ) => {
@@ -232,9 +233,9 @@ const aiEvaluate = async (
     followupResponse: string,
     followupQuestion: string,
   ) {
-    console.log(
-      `answer: ${answer}, ${isQuestionAnswered}, ${followupResponse}, ${followupQuestion}`,
-    );
+    // DEV: console.log(
+    //   `answer: ${answer}, ${isQuestionAnswered}, ${followupResponse}, ${followupQuestion}`,
+    // );
 
     if (isQuestionAnswered === "fully") {
       return {

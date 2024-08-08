@@ -195,7 +195,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
         setTranscript(previousResponse + interim);
 
-        DEV: console.log(`[ListeningContinous][${counter}] interim ${interim}`);
+        // DEV: console.log(`[ListeningContinous][${counter}] interim ${interim}`);
       };
 
       const processResultWithFinal = (event: SpeechRecognitionEvent) => {

@@ -29,6 +29,7 @@ export const Submission: React.FC<{
   }, [postSubmissionMessageRef, language, voice]);
 
   useEffect(() => {
+    return;
     // Submit all answers to the server
     fetch("/api/submit", {
       method: "POST",

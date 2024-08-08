@@ -191,6 +191,7 @@ export const VoiceQuestion: React.FC<{
       questionAnswer,
       followupResponse,
       language,
+      voice,
       setAnswer,
     );
 
@@ -246,7 +247,7 @@ export const VoiceQuestion: React.FC<{
   };
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-3xl mx-auto w-full">
+    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-3xl mx-auto w-full">
       <Streamingi18nText
         ref={questionRef}
         auto={false}
