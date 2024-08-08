@@ -66,3 +66,17 @@ export const getFormInput = z.object({
   id: z.string(),
 });
 export type GetFormInput = z.infer<typeof getFormInput>;
+
+export const questionSchema = z.object({
+  questionId: z.string().cuid(),
+  response: z.string(),
+});
+
+export const submissionSchema = z.object({
+  formId: z.string().cuid(),
+  answers: z.array(questionSchema),
+});
+
+export const submissionOutputSchema = z.object({
+  submissionId: z.string().cuid(),
+});

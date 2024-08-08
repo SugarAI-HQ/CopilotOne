@@ -13,6 +13,7 @@ import { chatRouter } from "./routers/chat";
 import { messageRouter } from "./routers/message";
 import { copilotRouter } from "./routers/copilot";
 import { formRouter } from "./routers/form";
+import { formSubmissionRouter } from "./routers/formSubmission";
 
 // export const runtime = 'nodejs';
 
@@ -37,6 +38,7 @@ export const appRouter = createTRPCRouter({
   message: messageRouter,
   copilot: copilotRouter,
   forms: formRouter,
+  formSubmission: formSubmissionRouter,
 });
 
 // export type definition of API

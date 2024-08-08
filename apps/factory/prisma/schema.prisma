@@ -403,6 +403,8 @@ model Form {
 
   formConfig  Json
   questions   FormQuestion[]
+  submissions FormSubmission[]
+  answers     FormSubmissionAnswers[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -421,8 +423,44 @@ model FormQuestion {
   question_params Json
   validation   Json
 
+  answers     FormSubmissionAnswers[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@index([userId, formId, id])
+}
+
+model FormSubmission {
+  id         String      @id @default(cuid())
+  userId     String
+  
+  clientUserId  String
+  formId     String
+  form       Form   @relation(fields: [formId], references: [id])
+  answers    FormSubmissionAnswers[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId, clientUserId, formId])
+}
+
+model FormSubmissionAnswers {
+  id            String     @id @default(cuid())
+  userId        String
+
+  clientUserId  String
+  
+  formId     String
+  form       Form   @relation(fields: [formId], references: [id])
+  submissionId  String
+  submission    FormSubmission @relation(fields: [submissionId], references: [id])
+  questionId    String
+  question      FormQuestion   @relation(fields: [questionId], references: [id])
+  response      Json @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@index([submissionId, questionId])
 }
