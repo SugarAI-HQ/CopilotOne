@@ -103,7 +103,7 @@ const App: NextPage = () => {
             <WorkflowProvider>
               <Suspense fallback={<p>Loading feed...</p>}>
                 {showStart && fd && (
-                  <div className="flex flex-col items-center justify-center h-dvh p-4 bg-gray-100 dark:bg-gray-900">
+                  <div className="leadgen-container flex flex-col items-center justify-center h-dvh p-4 bg-gray-100 dark:bg-gray-800">
                     <LanguageSelector
                       languagesEnabled={fd.languagesEnabled}
                       xklass="fixed bottom-0 left-0 right-0"
@@ -158,7 +158,7 @@ export default dynamic(() => Promise.resolve(App), {
 
 export const Header = () => {
   return (
-    <header className="bg-gray-800 shadow">
+    <header className="bg-gray-900 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-6">
           <div className="flex items-center">

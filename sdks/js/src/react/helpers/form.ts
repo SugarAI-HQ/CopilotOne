@@ -1,4 +1,3 @@
-import "~/react/styles/form.css"; // Adjust the path according to your project structure
 import validator from "validator";
 import {
   ActionRegistrationType,

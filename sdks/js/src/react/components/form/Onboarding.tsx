@@ -11,6 +11,7 @@ import {
 
 // import MessageWorkflow from "~/react/workflow/MessageWorkflow";
 import Streamingi18nText from "~/react/components/streaming/Streamingi18nText";
+import "~/react/styles/form.css";
 
 export const Onboarding: React.FC<{
   showStartButton: boolean;

@@ -8,6 +8,7 @@ import {
   i18nMessage,
 } from "@sugar-ai/core";
 import { extracti18nText } from "~/react/helpers/voice";
+import "~/react/styles/form.css";
 
 export const VoiceQuestionOptions: React.FC<{
   auto: boolean;
@@ -67,7 +68,7 @@ export const VoiceQuestionOptions: React.FC<{
             onClick={(e) =>
               handleInputChange(extracti18nText(option, language))
             }
-            className={`flex items-center cursor-pointer p-2 rounded transition-colors duration-200 ease-in-out dark:text-gray-200
+            className={`flex items-center cursor-pointer pl-2 rounded transition-colors duration-200 ease-in-out dark:text-gray-200
               ${
                 selectedOptions.includes(extracti18nText(option, language))
                   ? "highlighted-selected"

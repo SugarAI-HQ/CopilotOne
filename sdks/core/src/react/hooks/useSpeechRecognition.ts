@@ -165,9 +165,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
               ? options.userPauseTimeout
               : options.userNoSpeechTimeout;
 
-          console.log(
-            `[ListeningContinous][${counter}] answer: ${answer} setting timeout ${ts}`,
-          );
+          // console.log(
+          //   `[ListeningContinous][${counter}] answer: ${answer} setting timeout ${ts}`,
+          // );
 
           timeout = setTimeout(stopRecognition, ts);
         }
@@ -219,7 +219,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         setTranscript(lfinalTranscript);
         setFinalTranscript(lfinalTranscript);
 
-        DEV: console.log(`[ListeningContinous][${counter}] interim ${final}`);
+        // DEV: console.log(`[ListeningContinous][${counter}] interim ${final}`);
       };
 
       recognition.onresult = async (event: SpeechRecognitionEvent) => {

@@ -250,7 +250,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   };
 
   return (
-    <div className="streaming-text m-2 block" onClick={handleStart}>
+    <div className="streaming-text block" onClick={handleStart}>
       <h1
         ref={elRef}
         tabIndex={-1}

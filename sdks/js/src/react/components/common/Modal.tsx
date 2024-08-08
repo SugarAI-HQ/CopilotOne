@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import "~/react/styles/global.css";
 
 interface ModalProps {
   isOpen: boolean;

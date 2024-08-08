@@ -93,16 +93,16 @@ export const LanguageSelector: React.FC<{
 
   return (
     <div
-      className={`${klass ?? ""} bg-gray-200 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700 shadow-md p-2 rounded-lg`}
+      className={`${klass ?? ""} bg-gray-200 dark:bg-gray-700  dark:border-gray-700 shadow-md p-2 rounded-lg`}
     >
       <div
-        className="flex flex-row items-center text-gray-300 dark:text-white-300 cursor-pointer"
+        className="flex flex-row items-center text-white-700 dark:text-white-700 cursor-pointer"
         onClick={() => setIsModalOpen(true)}
       >
         <FaLanguage
           size={48}
           data-tip="Change Language and Voice Settings"
-          className="text-blue-500 dark:text-blue-300"
+          className="text-gray-500 dark:text-gray-500"
         />
         <div className="ml-2 flex flex-col ">
           <p className="text-sm">

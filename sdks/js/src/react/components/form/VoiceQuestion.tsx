@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "~/react/styles/form.css"; // Adjust the path according to your project structure
+import "~/react/styles/form.css";
 // import isMobilePhone from "validator/es/lib/isMobilePhone";
 import TextareaAutosize from "react-textarea-autosize";
 import { VoiceQuestionOptions } from "./VoiceQuestionOptions";
@@ -247,7 +247,7 @@ export const VoiceQuestion: React.FC<{
   };
 
   return (
-    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-3xl mx-auto w-full">
+    <div className="p-4 bg-white-300 dark:bg-gray-800 rounded-lg max-w-3xl mx-auto w-full">
       <Streamingi18nText
         ref={questionRef}
         auto={false}
@@ -282,7 +282,7 @@ export const VoiceQuestion: React.FC<{
         />
       )}
 
-      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700">
+      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white dark:bg-gray-800 border-t border-gray-500 dark:border-gray-500">
         <div className="flex flex-col items-center space-y-2">
           <div className="transcript-container w-full flex items-center px-2 relative">
             <p className="transcript text-gray-900 dark:text-white mb-2 border-b border-gray-300 dark:border-gray-700 mx-auto">
@@ -304,7 +304,7 @@ export const VoiceQuestion: React.FC<{
           <div className="flex justify-between items-center w-full max-w-3xl mx-auto pb-4 space-x-2">
             <button
               onClick={onBack}
-              className="p-2 bg-gray-300 dark:bg-gray-600 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -323,14 +323,14 @@ export const VoiceQuestion: React.FC<{
             {!isWaiting ? (
               <button
                 onClick={onSkip}
-                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-600 dark:hover:bg-grau-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
               >
                 <SkipForward className="w-5 h-5" />
               </button>
             ) : (
               <button
                 onClick={() => onAnswered(answer as string)}
-                className="p-2 bg-green-500 dark:bg-green-600 dark:text-white rounded-lg shadow-md hover:bg-green-600 dark:hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
               >
                 <ArrowRight className="w-5 h-5" />
               </button>

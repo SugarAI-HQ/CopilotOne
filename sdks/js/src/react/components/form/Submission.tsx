@@ -7,6 +7,7 @@ import {
   useLanguage,
   MessageWorkflow,
 } from "@sugar-ai/core";
+import "~/react/styles/form.css";
 
 export const Submission: React.FC<{
   postSubmissionMessage: i18nMessage;
