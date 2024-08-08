@@ -300,7 +300,7 @@ export const VoiceQuestion: React.FC<{
             )}
           </div>
 
-          <div className="flex justify-between items-center w-full max-w-3xl mx-auto space-x-2">
+          <div className="flex justify-between items-center w-full max-w-3xl mx-auto pb-4 space-x-2">
             <button
               onClick={onBack}
               className="p-2 bg-gray-300 dark:bg-gray-600 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
