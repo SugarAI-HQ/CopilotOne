@@ -18,9 +18,13 @@ const VoiceButtonWithStates = ({
   currentStyle = copilotStyleDefaults,
   voiceButtonStyle, //= copilotStyleDefaults.voiceButton,
 }) => {
-  const latestCurrentStyle = { ...copilotStyleDefaults, ...currentStyle };
+  // const styleConfig = { ...copilotStyleDefaults, ...currentStyle.voiceButton };
+  const voiceButtonConfig = {
+    ...copilotStyleDefaults.voiceButton,
+    ...currentStyle.voiceButton,
+  };
 
-  const latestVoiceButtonStyle = {
+  const overrideStyle = {
     ...voiceButtonStyle,
     ...{
       position: "relative",
@@ -39,8 +43,8 @@ const VoiceButtonWithStates = ({
     <VoiceButton
       id={`sugar-ai-voice-button-${buttonId}`}
       className="sugar-ai-copilot-voice-button"
-      style={latestVoiceButtonStyle}
-      button={latestCurrentStyle?.voiceButton as CopilotSyleButtonType}
+      button={voiceButtonConfig as CopilotSyleButtonType}
+      style={overrideStyle}
       ispermissiongranted={ispermissiongranted.toString()}
       isprocessing={isprocessing.toString()}
       islistening={islistening.toString()}
@@ -58,8 +62,8 @@ const VoiceButtonWithStates = ({
         {islistening ? (
           <OpenMic
             style={iconStyle}
-            size={latestCurrentStyle?.voiceButton?.iconSize}
-            color={latestCurrentStyle?.voiceButton?.color}
+            size={voiceButtonConfig?.iconSize}
+            color={voiceButtonConfig?.color}
             onClick={(e) => {
               void startListening(e);
             }}
@@ -67,8 +71,8 @@ const VoiceButtonWithStates = ({
         ) : isSpeaking ? (
           <Speak
             style={iconStyle}
-            size={latestCurrentStyle?.voiceButton?.iconSize}
-            color={latestCurrentStyle?.voiceButton?.color}
+            size={voiceButtonConfig?.iconSize}
+            color={voiceButtonConfig?.color}
             onClick={(e) => {
               void stopSpeaking(e);
             }}
@@ -78,8 +82,8 @@ const VoiceButtonWithStates = ({
         ) : (
           <Mic
             style={iconStyle}
-            color={latestCurrentStyle?.voiceButton?.color}
-            size={latestCurrentStyle?.voiceButton?.iconSize}
+            color={voiceButtonConfig?.color}
+            size={voiceButtonConfig?.iconSize}
             onClick={(e) => {
               void startListening(e);
             }}
@@ -95,7 +99,7 @@ const VoiceButtonWithStates = ({
               left: "-6px",
             }}
             size={"72"}
-            color={latestCurrentStyle?.voiceButton?.bgColor}
+            color={voiceButtonConfig?.bgColor}
           />
         )}
       </div>

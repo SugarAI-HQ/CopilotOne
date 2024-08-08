@@ -59,7 +59,7 @@ export const VoiceQuestionOptions: React.FC<{
   };
 
   return (
-    <ul>
+    <ul className="space-y-2">
       {question.question_params.options?.map(
         (option: i18nMessage, index: number) => (
           <li
@@ -67,14 +67,12 @@ export const VoiceQuestionOptions: React.FC<{
             onClick={(e) =>
               handleInputChange(extracti18nText(option, language))
             }
-            className={`flex items-center mb-2 cursor-pointer
+            className={`flex items-center cursor-pointer p-2 rounded transition-colors duration-200 ease-in-out dark:text-gray-200
               ${
                 selectedOptions.includes(extracti18nText(option, language))
                   ? "highlighted-selected"
                   : "bg-transparent"
-              } 
-              transition-colors duration-200 ease-in-out
-              dark:text-gray-200`}
+              }`}
           >
             {streamingStarted[index] && (
               <input
@@ -86,7 +84,7 @@ export const VoiceQuestionOptions: React.FC<{
                 checked={selectedOptions.includes(
                   extracti18nText(option, language),
                 )}
-                className="mr-2 dark:bg-gray-800 dark:border-gray-600"
+                className="mr-2 w-4 h-4 text-gray-600 bg-gray-100 border-gray-300 rounded focus:ring-gray-500 dark:text-gray-500 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-gray-600"
               />
             )}
             <label

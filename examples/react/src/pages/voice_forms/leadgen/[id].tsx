@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
-import { type CopilotConfigType, LanguageCode } from "@sugar-ai/core";
+import {
+  type CopilotConfigType,
+  LanguageCode,
+  formConfig,
+  FormConfig,
+} from "@sugar-ai/core";
 
 import {
   extracti18nText,
@@ -71,9 +76,17 @@ const App: NextPage = () => {
     },
     style: {
       container: { position: "bottom-center" },
-      theme: { primaryColor: "#3b83f6" },
-      voiceButton: {},
+      // theme: { primaryColor: "#3b83f6" },
+      theme: { primaryColor: "#2563eb" },
+      voiceButton: {
+        bgColor: "#2563eb",
+      },
     },
+  };
+
+  const formConfig: FormConfig = {
+    ...FormConfigDefaults,
+    voiceButton: copilotConfig.style.voiceButton,
   };
   return (
     <>
@@ -87,12 +100,12 @@ const App: NextPage = () => {
             <WorkflowProvider>
               <Suspense fallback={<p>Loading feed...</p>}>
                 {showStart && fd && (
-                  <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
+                  <div className="flex flex-col items-center justify-center h-dvh p-4 bg-gray-100 dark:bg-gray-900">
                     <LanguageSelector
                       languagesEnabled={fd.languagesEnabled}
                       xklass="fixed bottom-0 left-0 right-0"
                     />
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl p-2 m-4 text-center text-gray-800">
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl p-2 m-4 text-center text-gray-800 dark:text-gray-200">
                       {fd.translations &&
                         extracti18nText(
                           geti18nMessage("landingText", fd.translations),
@@ -100,7 +113,7 @@ const App: NextPage = () => {
                         )}
                     </h1>
                     <button
-                      className="w-full max-w-xs md:max-w-md lg:max-w-lg m-4 p-4 bg-blue-500 hover:bg-blue-600 text-white text-center rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                      className="w-full max-w-xs md:max-w-md lg:max-w-lg m-4 p-4 bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white text-center rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
                       onClick={() => {
                         setShowStart(false);
                       }}
@@ -119,9 +132,7 @@ const App: NextPage = () => {
                     showStartButton={false}
                     translations={fd.translations}
                     questions={fd.questions}
-                    formConfig={{
-                      ...FormConfigDefaults,
-                    }}
+                    formConfig={formConfig}
                   />
                 )}
               </Suspense>

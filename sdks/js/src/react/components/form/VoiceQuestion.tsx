@@ -263,7 +263,7 @@ export const VoiceQuestion: React.FC<{
             name="message"
             disabled={!isQuestionSpoken}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
-            className="rounded-lg border border-blue-500 max-h-24 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-sm placeholder-gray-500 dark:placeholder-gray-400 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-blue-300 focus:border-blue-500"
+            className="rounded-lg border border-gray-500 max-h-24 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-sm placeholder-gray-500 dark:placeholder-gray-400 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-grau-300 focus:border-gray-500"
           />
         </div>
       )}
@@ -308,7 +308,7 @@ export const VoiceQuestion: React.FC<{
               <ArrowLeft className="w-5 h-5" />
             </button>
             <VoiceButtonWithStates
-              currentStyle={{}}
+              currentStyle={{ voiceButton: formConfig.voiceButton }}
               voiceButtonStyle={{}}
               startListening={startListening}
               buttonId={"voice-form"}
@@ -322,7 +322,7 @@ export const VoiceQuestion: React.FC<{
             {!isWaiting ? (
               <button
                 onClick={onSkip}
-                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-600 dark:hover:bg-grau-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
               >
                 <SkipForward className="w-5 h-5" />
               </button>

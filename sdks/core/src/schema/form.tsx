@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { i18nMessageSchema } from "./message";
-import { languageCode } from ".";
+import { languageCode } from "./lang";
+import { copilotStyleVoiceButtonSchema } from "./copilot";
 
 export const listenConfig = z.object({
   maxAnswerLength: z.number().default(-1),
@@ -25,6 +26,8 @@ export const formConfig = z.object({
   // lang: z.string().optional().default("auto"),
   // defaultLang: z.string().optional().default("en"),
   listen: listenConfig,
+
+  voiceButton: copilotStyleVoiceButtonSchema.optional(),
 });
 export type FormConfig = z.infer<typeof formConfig>;
 
