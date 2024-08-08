@@ -93,63 +93,65 @@ export const LanguageSelector: React.FC<{
 
   return (
     <div
-      className={`${klass} bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-md`}
+      className={`${klass ?? ""} bg-gray-200 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700 shadow-md p-2 rounded-lg`}
     >
       <div
-        className="flex flex-row justify-center items-center text-gray-400 dark:text-white-600"
+        className="flex flex-row items-center text-gray-300 dark:text-white-300 cursor-pointer"
         onClick={() => setIsModalOpen(true)}
       >
         <FaLanguage
           size={48}
           data-tip="Change Language and Voice Settings"
-          className="text-blue-500 cursor-pointer dark:text-blue-300"
+          className="text-blue-500 dark:text-blue-300"
         />
-        <div className="ml-2 flex flex-col text-gray-400 dark:text-white-600">
-          <p className="p-1">
+        <div className="ml-2 flex flex-col ">
+          <p className="text-sm">
             Lang: {allLanguages[language]} - {language}
           </p>
-          <p>
+          <p className="text-sm">
             Voice: {voice?.name} - {voice?.lang}
           </p>
-
           <ReactTooltip id="lang-tooltip" place="top" />
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="mb-4">
-          <p className="text-gray-800 dark:text-gray-200">Select language</p>
-          <select
-            value={language}
-            onChange={handleLanguageChange}
-            className="mt-2 p-1 border rounded w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          >
-            {languages.map((lang) => (
-              <option key={lang} value={lang}>
-                {allLanguages[lang]} - {lang}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <p className="text-gray-800 dark:text-gray-200">Select voice</p>
-          {/* <input
-            type="text"
-            placeholder="Search voices..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="mt-2 p-1 border rounded w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          /> */}
-          <select
-            value={voice?.name || ""}
-            onChange={handleVoiceChange}
-            className="mt-2 p-1 border rounded w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-          >
-            {filteredVoices.map((v) => (
-              <option key={v.name} value={v.name}>
-                {v.name} - {v.lang}
-              </option>
-            ))}
-          </select>
+      <Modal
+        klass="bg-gray-200 dark:bg-gray-700"
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      >
+        <div className="p-4 ">
+          <div className="mb-4">
+            <p className="text-gray-800 dark:text-gray-200 text-lg font-semibold">
+              Select language
+            </p>
+            <select
+              value={language}
+              onChange={handleLanguageChange}
+              className="mt-2 p-2 border rounded-lg w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {languages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {allLanguages[lang]} - {lang}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-4">
+            <p className="text-gray-800 dark:text-gray-200 text-lg font-semibold">
+              Select voice
+            </p>
+            <select
+              value={voice?.name || ""}
+              onChange={handleVoiceChange}
+              className="mt-2 p-2 border rounded-lg w-full bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {filteredVoices.map((v) => (
+                <option key={v.name} value={v.name}>
+                  {v.name} - {v.lang}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </Modal>
     </div>
