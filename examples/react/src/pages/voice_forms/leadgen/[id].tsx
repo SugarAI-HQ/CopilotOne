@@ -27,10 +27,11 @@ import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
 const App: NextPage = () => {
   const router = useRouter();
-  let { id, lang, show } = router.query as {
+  let { id, lang, show, color } = router.query as {
     id: string;
     lang: LanguageCode;
     show: string;
+    color: string;
   };
 
   let showInUnSupportedBrowser = show ? true : false;
@@ -50,6 +51,8 @@ const App: NextPage = () => {
   }, [id, router]);
 
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
+  const themeColor = color ?? "#2563eb";
+  // const themeColor = "#3b83f6";
 
   let copilotConfig: CopilotConfigType = {
     copilotId: process.env.NEXT_PUBLIC_COPILOT_ID as string,
@@ -76,10 +79,10 @@ const App: NextPage = () => {
     },
     style: {
       container: { position: "bottom-center" },
-      // theme: { primaryColor: "#3b83f6" },
-      theme: { primaryColor: "#2563eb" },
+
+      theme: { primaryColor: themeColor },
       voiceButton: {
-        bgColor: "#2563eb",
+        bgColor: themeColor,
       },
     },
   };
@@ -113,7 +116,11 @@ const App: NextPage = () => {
                         )}
                     </h1>
                     <button
-                      className="w-full max-w-xs md:max-w-md lg:max-w-lg m-4 p-4 bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white text-center rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                      className={`w-full max-w-xs md:max-w-md lg:max-w-lg m-4 p-4 bg-[${themeColor}] dark:bg-[${themeColor}] hover:bg-[${themeColor}] dark:bg-[${themeColor}] text-white text-center rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105`}
+                      // style={`background-color: ${themeColor};`}
+                      style={{
+                        backgroundColor: themeColor,
+                      }}
                       onClick={() => {
                         setShowStart(false);
                       }}
