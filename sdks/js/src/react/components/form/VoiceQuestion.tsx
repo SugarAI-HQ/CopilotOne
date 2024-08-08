@@ -262,6 +262,7 @@ export const VoiceQuestion: React.FC<{
             autoComplete="off"
             ref={inputRef}
             name="message"
+            minRows={5}
             disabled={!isQuestionSpoken}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
             className="sai-vq-text-input"

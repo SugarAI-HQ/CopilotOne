@@ -13,7 +13,7 @@
 }
 
 .sai-vq-text-input {
-  @apply rounded-lg border border-gray-500 max-h-24 px-4 py-3 bg-gray-100 text-sm placeholder-gray-500 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-gray-300 focus:border-gray-500;
+  @apply rounded-lg border border-gray-500 max-h-24 px-4 py-3 bg-gray-100 text-sm placeholder-gray-500 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-y focus:ring focus:ring-gray-300 focus:border-gray-500;
   @apply dark:bg-gray-700 dark:placeholder-gray-400;
 }
 
