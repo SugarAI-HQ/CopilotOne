@@ -51,7 +51,7 @@ const App: NextPage = () => {
   }, [id, router]);
 
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
-  const themeColor = color ?? "#2563eb";
+  const themeColor = color ?? "#0057FF";
   // const themeColor = "#3b83f6";
 
   let copilotConfig: CopilotConfigType = {
