@@ -19,6 +19,7 @@ import {
   captureUserResponse,
   validateAnswerWithUser,
 } from "~/react/helpers/form";
+import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -245,13 +246,13 @@ export const VoiceQuestion: React.FC<{
   };
 
   return (
-    <div className="p-2 bg-gray-500 dark:bg-gray-600 rounded-lg shadow-md max-w-3xl mx-auto">
+    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-3xl mx-auto w-full">
       <Streamingi18nText
         ref={questionRef}
         auto={false}
         message={question.question_text}
         formConfig={formConfig}
-        klasses={"font-medium text-3xl mb-4"}
+        klasses={"font-medium text-3xl mb-4 text-gray-900 dark:text-white"}
       />
 
       {["text", "number"].includes(question.question_type) && (
@@ -262,7 +263,7 @@ export const VoiceQuestion: React.FC<{
             name="message"
             disabled={!isQuestionSpoken}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
-            className="rounded-lg border border-blue-500 max-h-24 px-4 py-3 bg-white dark:bg-gray-800 text-sm placeholder-gray-500 dark:placeholder-gray-400 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-blue-300 focus:border-blue-500"
+            className="rounded-lg border border-blue-500 max-h-24 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-sm placeholder-gray-500 dark:placeholder-gray-400 disabled:cursor-not-allowed disabled:opacity-50 w-full flex items-center h-16 resize-none overflow-hidden focus:ring focus:ring-blue-300 focus:border-blue-500"
           />
         </div>
       )}
@@ -280,10 +281,10 @@ export const VoiceQuestion: React.FC<{
         />
       )}
 
-      <div className="mb-8 fixed bottom-0 left-0 right-0 p-2 bg-gray-500 dark:bg-gray-600 border-t border-gray-300 dark:border-gray-700">
+      <div className="fixed bottom-0 left-0 right-0 p-2 bg-white dark:bg-gray-800 border-t border-gray-300 dark:border-gray-700">
         <div className="flex flex-col items-center space-y-2">
           <div className="transcript-container w-full flex items-center px-2 relative">
-            <p className="transcript text-gray-800 dark:text-white mb-2 border-b border-gray-300 dark:border-gray-700 mx-auto">
+            <p className="transcript text-gray-900 dark:text-white mb-2 border-b border-gray-300 dark:border-gray-700 mx-auto">
               {/* <p>T: {transcript}</p>
               <p>FT: {finalTranscript}</p> */}
               {isWaiting
@@ -302,9 +303,9 @@ export const VoiceQuestion: React.FC<{
           <div className="flex justify-between items-center w-full max-w-3xl mx-auto space-x-2">
             <button
               onClick={onBack}
-              className="px-2 py-1 bg-gray-600 dark:text-white rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              className="p-2 bg-gray-300 dark:bg-gray-600 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400"
             >
-              Back
+              <ArrowLeft className="w-5 h-5" />
             </button>
             <VoiceButtonWithStates
               currentStyle={{}}
@@ -321,16 +322,16 @@ export const VoiceQuestion: React.FC<{
             {!isWaiting ? (
               <button
                 onClick={onSkip}
-                className="px-2 py-1 bg-blue-600 dark:text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="p-2 dark:text-white rounded-lg shadow-md hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
-                Skip
+                <SkipForward className="w-5 h-5" />
               </button>
             ) : (
               <button
                 onClick={() => onAnswered(answer as string)}
-                className="px-2 py-1 bg-green-600 dark:text-white rounded-lg shadow-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+                className="p-2 bg-green-500 dark:bg-green-600 dark:text-white rounded-lg shadow-md hover:bg-green-600 dark:hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
               >
-                Next
+                <ArrowRight className="w-5 h-5" />
               </button>
             )}
           </div>

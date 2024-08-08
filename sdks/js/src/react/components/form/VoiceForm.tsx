@@ -61,7 +61,7 @@ export const VoiceForm: React.FC<{
   const postSubmissionMessage = geti18nMessage("postSubmission", translations);
 
   return (
-    <div className="container mx-auto p-2 w-full ">
+    <div className="container m-4 mx-auto px-4 w-full rounded-lg h-screen bg-white dark:bg-gray-800 flex items-center justify-center">
       {step === 0 && (
         <Onboarding
           showStartButton={showStartButton}
