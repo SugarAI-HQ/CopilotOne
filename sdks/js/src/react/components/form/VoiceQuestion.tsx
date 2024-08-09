@@ -176,6 +176,7 @@ export const VoiceQuestion: React.FC<{
       voice,
       formConfig,
       getUserResponseContinous,
+      setIsEvaluating,
       registerAction,
       unregisterAction,
       textToAction,

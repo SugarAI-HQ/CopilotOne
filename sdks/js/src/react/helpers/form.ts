@@ -18,6 +18,7 @@ export const captureUserResponse = async (
   voice: SpeechSynthesisVoice,
   formConfig: FormConfig,
   getUserResponseContinous: Function,
+  setIsEvaluating: Function,
   registerAction: Function,
   unregisterAction: Function,
   textToAction,
@@ -62,9 +63,9 @@ export const captureUserResponse = async (
       continue;
     }
 
-    debugger;
     // AI Evaluation
-    if (question.evaluation == "ai") {
+    if (!question.evaluation || question.evaluation == "ai") {
+      setIsEvaluating(true);
       const evaluationResult = await aiEvaluate(
         question,
         userResponse,
@@ -86,8 +87,8 @@ export const captureUserResponse = async (
         // followupResponse = evaluationResult.followupResponse ?? questionAnswer;
         console.log(`followupResponse: ${followupResponse}`);
       }
+      setIsEvaluating(false);
     } else {
-      debugger;
       // Manual/No evaluation
       fq = null;
       questionAnswer = userResponse;
