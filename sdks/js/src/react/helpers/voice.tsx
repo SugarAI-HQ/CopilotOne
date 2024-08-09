@@ -7,6 +7,7 @@ const NOT_FOUND = "not found";
 
 let synth: any = null;
 let recognition: any = null;
+let utterances: any[] = [];
 
 export const speakMessage = (
   message: string,
@@ -15,24 +16,58 @@ export const speakMessage = (
   callback?: () => void,
   failureCallback?: (event: any) => void,
 ) => {
-  console.log(`${voice?.name} Speaking in ${language}: ${message}`);
-
   const utterance = new SpeechSynthesisUtterance(message);
+  utterances.push(utterance);
   synth = synth ?? root.speechSynthesis;
 
   utterance.voice = voice;
   utterance.lang = language;
 
+  // utterance.onmark = (event) => {
+  //   DEV: console.log(
+  //     `[Speaking](${utterances.length}) mark: ${JSON.stringify(event)}`,
+  //   );
+  // };
+
+  // utterance.onboundary = (event) => {
+  //   DEV: console.log(
+  //     `[Speaking](${utterances.length}) boundary: ${JSON.stringify(event)}`,
+  //   );
+  // };
+
+  // utterance.onpause = (event) => {
+  //   DEV: console.log(
+  //     `[Speaking](${utterances.length}) pause: ${JSON.stringify(event)}`,
+  //   );
+  // };
+
+  // utterance.onstart = (event) => {
+  //   DEV: console.log(
+  //     `[Speaking](${utterances.length}) start: ${JSON.stringify(event)}`,
+  //   );
+  // };
+
   utterance.onend = () => {
+    DEV: console.log(`[Speaking](${utterances.length}) speaking done`);
     if (callback) callback();
   };
 
   utterance.onerror = (event) => {
+    DEV: console.error(
+      `[Speaking](${utterances.length}) Error ${JSON.stringify(event)}`,
+    );
     if (failureCallback) failureCallback(event);
-    console.error(`speechSynthesisUtterance.onerror ${JSON.stringify(event)}`);
   };
 
-  synth.speak(utterance);
+  setTimeout(() => {
+    console.log(
+      `[Speaking](${utterances.length}) ${voice?.name} in ${language}: ${message}`,
+    );
+    synth.speak(utterance);
+    // root.addEventListener("unload", stopSpeaking());
+  }, 100);
+
+  // synth.speak(utterance);
 };
 
 export const speakMessageAsync = async (
