@@ -122,16 +122,35 @@ export const validateAnswerWithUser = async (
     const isValidAnswer = await checkValidators(question, answer);
 
     if (isValidAnswer) {
-      if (answer.length <= 150) {
-        await speakMessageAsync(
-          followupResponse,
-          language,
-          voice as SpeechSynthesisVoice,
-        );
-      }
+      formatAndSpeak(question, answer, followupResponse, language, voice);
     } else {
       // Not valid answer
     }
+  }
+};
+
+const formatAndSpeak = async (
+  question: Question,
+  answer: string,
+  followupResponse: string,
+  language: LanguageCode,
+  voice: SpeechSynthesisVoice,
+) => {
+  let formattedResponse = followupResponse;
+
+  DEV: console.log(`formating response : ${answer}`);
+
+  if (question.validation?.validators?.includes["mobile"]) {
+    formattedResponse = formatMobileNumber(followupResponse);
+  }
+  DEV: console.log(`formatteed response : ${answer}`);
+
+  if (answer.length <= 150) {
+    await speakMessageAsync(
+      formattedResponse,
+      language,
+      voice as SpeechSynthesisVoice,
+    );
   }
 };
 
@@ -277,3 +296,16 @@ const aiEvaluate = async (
 
   return ttaResponse.actionOutput;
 };
+
+function formatMobileNumber(mobile) {
+  // Remove all hyphens and spaces
+  const cleaned = mobile.replace(/[-\s]/g, "");
+
+  // Ensure the number is 10 digits
+  // if (cleaned.length !== 10) {
+  //   throw new Error("Phone number must be 10 digits long");
+  // }
+
+  // Format as 4-3-3
+  return `${cleaned.slice(0, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7, 10)}`;
+}
