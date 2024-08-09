@@ -83,6 +83,7 @@ const App: NextPage = () => {
       theme: { primaryColor: themeColor },
       voiceButton: {
         bgColor: themeColor,
+        iconSize: "28",
       },
     },
   };

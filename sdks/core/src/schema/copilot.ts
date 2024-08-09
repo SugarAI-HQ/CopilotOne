@@ -210,7 +210,7 @@ export const copilotStyleDefaults: CopilotSytleType = {
     color: secondaryColor,
     width: "60px",
     height: "60px",
-    iconSize: "25",
+    iconSize: "28",
     audio:
       "https://commondatastorage.googleapis.com/codeskulptor-assets/Collision8-Bit.ogg",
   },
