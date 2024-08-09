@@ -62,27 +62,35 @@ export const captureUserResponse = async (
       continue;
     }
 
+    debugger;
     // AI Evaluation
-    const evaluationResult = await aiEvaluate(
-      question,
-      userResponse,
-      language,
-      registerAction,
-      unregisterAction,
-      textToAction,
-    );
+    if (question.evaluation == "ai") {
+      const evaluationResult = await aiEvaluate(
+        question,
+        userResponse,
+        language,
+        registerAction,
+        unregisterAction,
+        textToAction,
+      );
 
-    // Ask followup question if needed
-    if (!evaluationResult) {
-      fq = "";
-      questionAnswer = userResponse;
+      // Ask followup question if needed
+      if (!evaluationResult) {
+        fq = null;
+        questionAnswer = userResponse;
+      } else {
+        fq = evaluationResult.followupQuestion;
+        questionAnswer = evaluationResult.answer;
+
+        followupResponse = questionAnswer;
+        // followupResponse = evaluationResult.followupResponse ?? questionAnswer;
+        console.log(`followupResponse: ${followupResponse}`);
+      }
     } else {
-      fq = evaluationResult.followupQuestion;
-      questionAnswer = evaluationResult.answer;
-
-      followupResponse = questionAnswer;
-      // followupResponse = evaluationResult.followupResponse ?? questionAnswer;
-      console.log(`followupResponse: ${followupResponse}`);
+      debugger;
+      // Manual/No evaluation
+      fq = null;
+      questionAnswer = userResponse;
     }
 
     attempts = attempts + 1;
@@ -309,3 +317,27 @@ function formatMobileNumber(mobile) {
   // Format as 4-3-3
   return `${cleaned.slice(0, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7, 10)}`;
 }
+
+// export async function createSubmission(
+//   apiClient: any,
+//   data: any,
+// ): Promise<any> {
+//   const result = (await apiClient.createSubmission(data)) as SugarAiApi.CreateSubmissionResponse;
+
+//   // const response = await fetch(`/api/voice-forms/${data.formId}/submission`, {
+//   //   method: 'POST',
+//   //   headers: {
+//   //     'Content-Type': 'application/json',
+//   //   },
+//   //   body: JSON.stringify({
+//   //     clientUserId: data.clientUserId,
+//   //   }),
+//   // });
+
+//   if (!response.ok) {
+//     throw new Error(`Failed to create submission: ${response.statusText}`);
+//   }
+
+//   const result: any = await response.json();
+//   return result;
+// }

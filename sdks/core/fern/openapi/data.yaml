@@ -1380,6 +1380,98 @@
                     additionalProperties: false
           default: 
             $ref: "#/components/responses/error"
+    /voice-forms/{formId}/submission: 
+      post: 
+        operationId: "formSubmission-createSubmission"
+        summary: "Submit voice form with answers"
+        tags: 
+          - "VoiceForm"
+        requestBody: 
+          required: true
+          content: 
+            application/json: 
+              schema: 
+                type: "object"
+                properties: 
+                  clientUserId: 
+                    type: "string"
+                required: 
+                  - "clientUserId"
+                additionalProperties: false
+        parameters: 
+          - 
+            name: "formId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: 
+                  type: "object"
+                  properties: 
+                    submissionId: 
+                      type: "string"
+                  required: 
+                    - "submissionId"
+                  additionalProperties: false
+          default: 
+            $ref: "#/components/responses/error"
+    /voice-forms/{formId}/submission/{submissionId}/questions/{questionId}/answer: 
+      post: 
+        operationId: "formSubmission-submitAnswer"
+        summary: "Submit voice form with answers"
+        tags: 
+          - "VoiceForm"
+        requestBody: 
+          required: true
+          content: 
+            application/json: 
+              schema: 
+                type: "object"
+                properties: 
+                  answer: 
+                    type: "string"
+                required: 
+                  - "answer"
+                additionalProperties: false
+        parameters: 
+          - 
+            name: "formId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "submissionId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "questionId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: 
+                  type: "object"
+                  properties: 
+                    id: 
+                      type: "string"
+                  required: 
+                    - "id"
+                  additionalProperties: false
+          default: 
+            $ref: "#/components/responses/error"
   components: 
     securitySchemes: 
       Authorization: 

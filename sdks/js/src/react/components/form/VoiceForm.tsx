@@ -9,6 +9,8 @@ import {
   Question,
   FormConfig,
   FormConfigDefaults,
+  useCopilot,
+  SugarAiApi,
 } from "@sugar-ai/core";
 import "~/react/styles/form.css";
 
@@ -28,6 +30,8 @@ export const VoiceForm: React.FC<{
   const [step, setStep] = useState<number>(initialStep);
   const [answers, setAnswers] = useState<any[]>([]);
 
+  const { apiClient, config } = useCopilot();
+
   const handleOnboardingComplete = () => {
     setStep((step) => step + 1);
   };
@@ -35,20 +39,6 @@ export const VoiceForm: React.FC<{
   const handleQuestionComplete = async (answer: any) => {
     const newAnswers = [...answers, answer];
     setAnswers(newAnswers);
-
-    try {
-      // Submit each question's answer to the server
-      await fetch("/api/submit-question", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(answer),
-      });
-      console.log("Answer submitted successfully");
-    } catch (error) {
-      console.error("Error submitting answer:", error);
-    }
 
     if (step < questions.length) {
       setStep(step + 1);
@@ -59,6 +49,34 @@ export const VoiceForm: React.FC<{
 
   const welcomeMessage = geti18nMessage("welcome", translations);
   const postSubmissionMessage = geti18nMessage("postSubmission", translations);
+
+  const createSubmission = async function () {
+    try {
+      const { submissionId } = (await apiClient.createSubmission({
+        formId: currentFormConfig?.id,
+        clientUserId: config?.clientUserId,
+      })) as SugarAiApi.FormSubmissionCreateSubmissionResponse;
+
+      console.log(`Submission created successfully ${submissionId}`);
+    } catch (error) {
+      console.error("Error creating submission:", error);
+    }
+  };
+
+  const submitAnswer = async function (questionId, answer) {
+    try {
+      const { id } = (await apiClient.submitAnswer({
+        formId: currentFormConfig?.id,
+        clientUserId: config?.clientUserId,
+        questionId: questionId,
+        answer: answer,
+      })) as SugarAiApi.FormSubmissionSubmitAnswerResponse;
+
+      console.log(`Answer submitteed successfully ${id}`);
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+    }
+  };
 
   return (
     <div className="sai-vf-container container">

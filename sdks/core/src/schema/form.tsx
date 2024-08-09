@@ -22,6 +22,9 @@ export const ListenConfigDefaults = {
 export const CharcterPerSec = 20;
 
 export const formConfig = z.object({
+  id: z.string(),
+  userId: z.string().optional(),
+
   characterPerSec: z.number().optional().default(CharcterPerSec),
   // lang: z.string().optional().default("auto"),
   // defaultLang: z.string().optional().default("en"),
@@ -32,6 +35,7 @@ export const formConfig = z.object({
 export type FormConfig = z.infer<typeof formConfig>;
 
 export const FormConfigDefaults: FormConfig = {
+  id: "",
   characterPerSec: CharcterPerSec,
 
   // maxAnswerLength
@@ -58,8 +62,10 @@ export const QuestionSchema = z.object({
       options: z.array(i18nMessageSchema).optional(),
     })
     .passthrough(),
+  evaluation: z.enum(["none", "ai", "manual"]).optional(),
   validation: z
     .object({
+      // evaluation: z.boolean().optional().default(true),
       max_length: z.number().optional().default(120),
       validators: z.array(formFieldValidator).optional(),
     })

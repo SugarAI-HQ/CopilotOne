@@ -67,16 +67,36 @@ export const getFormInput = z.object({
 });
 export type GetFormInput = z.infer<typeof getFormInput>;
 
-export const questionSchema = z.object({
-  questionId: z.string().cuid(),
-  response: z.string(),
+export const createSubmission = z.object({
+  formId: z.string(),
+  clientUserId: z.string(),
 });
 
-export const submissionSchema = z.object({
-  formId: z.string().cuid(),
-  answers: z.array(questionSchema),
+export type CreateSubmission = z.infer<typeof createSubmission>;
+
+export const createSubmissionResponse = z.object({
+  // formId: z.string(),
+  // clientUserId: z.string(),
+  submissionId: z.string(),
 });
 
-export const submissionOutputSchema = z.object({
-  submissionId: z.string().cuid(),
+export type CreateSubmissionResponse = z.infer<typeof createSubmissionResponse>;
+
+// export const questionAnswerSchema = z.object({
+//   questionId: z.string().cuid(),
+//   response: z.string(),
+// });
+
+export const submitAnswer = z.object({
+  formId: z.string(),
+  submissionId: z.string(),
+  questionId: z.string(),
+  answer: z.string(),
+  // answers: z.array(questionAnswerSchema),
+});
+export type SubmitAnswer = z.infer<typeof submitAnswer>;
+
+export const submitAnswerResponse = z.object({
+  // submissionId: z.string().cuid(),
+  id: z.string(),
 });

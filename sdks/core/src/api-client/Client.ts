@@ -10,6 +10,7 @@ import { Embedding } from "./api/resources/embedding/client/Client";
 import { Chat } from "./api/resources/chat/client/Client";
 import { ChatHistory } from "./api/resources/chatHistory/client/Client";
 import { Message } from "./api/resources/message/client/Client";
+import { VoiceForm } from "./api/resources/voiceForm/client/Client";
 
 export declare namespace SugarAiApiClient {
   interface Options {
@@ -60,5 +61,11 @@ export class SugarAiApiClient {
 
   public get message(): Message {
     return (this._message ??= new Message(this._options));
+  }
+
+  protected _voiceForm: VoiceForm | undefined;
+
+  public get voiceForm(): VoiceForm {
+    return (this._voiceForm ??= new VoiceForm(this._options));
   }
 }
