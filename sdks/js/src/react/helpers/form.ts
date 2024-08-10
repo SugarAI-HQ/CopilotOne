@@ -41,7 +41,7 @@ export const captureUserResponse = async (
     const listenConfig = {
       ...formConfig.listen,
       ...{
-        maxAnswerLength: question.validation?.max_length,
+        maxAnswerLength: question.validation?.max_length || 120,
       },
     };
     userResponse = await getUserResponseContinous(listenConfig);

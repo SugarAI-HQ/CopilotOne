@@ -298,7 +298,7 @@ export const VoiceQuestion: React.FC<{
             </p>
             {isListening && (
               <span className="counter absolute right-0 text-lg text-gray-800 dark:text-gray-200">
-                {question.validation.max_length - transcript.length}
+                {(question.validation?.max_length || 120) - transcript.length}
               </span>
             )}
           </div>
