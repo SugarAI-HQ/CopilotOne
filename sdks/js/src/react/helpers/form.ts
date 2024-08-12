@@ -172,7 +172,7 @@ const formatAndSpeak = async (
 
   DEV: console.log(`formating response : ${answer}`);
 
-  if (question.validation?.validators?.includes["mobile"]) {
+  if (question.validation?.validators?.includes("mobile")) {
     formattedResponse = formatMobileNumber(followupResponse);
   }
   DEV: console.log(`formatteed response : ${answer}`);
