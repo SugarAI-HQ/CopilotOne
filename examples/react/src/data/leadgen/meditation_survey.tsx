@@ -89,7 +89,7 @@ export const questions: Question[] = [
   },
   {
     id: "5",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "What is your current role?",
@@ -124,7 +124,7 @@ export const questions: Question[] = [
   },
   {
     id: "6",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "What is your gender?",
@@ -144,7 +144,7 @@ export const questions: Question[] = [
   },
   {
     id: "7",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "How long have you been practicing meditation?",
@@ -164,7 +164,7 @@ export const questions: Question[] = [
   },
   {
     id: "7.1",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "how frequently have you been practicing meditation?",
@@ -240,7 +240,7 @@ export const questions: Question[] = [
   },
   {
     id: "9",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "What made you skip your meditation in the past?",
@@ -284,7 +284,7 @@ export const questions: Question[] = [
   },
   {
     id: "10",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "What are a few life conflicts you have faced in the recent past?",
@@ -325,7 +325,7 @@ export const questions: Question[] = [
   },
   {
     id: "11",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "What are the emotional challenges you are facing lately?",
@@ -354,7 +354,7 @@ export const questions: Question[] = [
   },
   {
     id: "12",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "What do you do to deal with these challenges?",

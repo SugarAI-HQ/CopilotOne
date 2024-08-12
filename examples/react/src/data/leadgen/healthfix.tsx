@@ -154,7 +154,7 @@ export const questions: Question[] = [
   // },
   {
     id: "3",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       // mode: "manual",
       lang: {
@@ -267,7 +267,7 @@ export const questions: Question[] = [
   },
   {
     id: "4",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       // mode: "manual",
       lang: {

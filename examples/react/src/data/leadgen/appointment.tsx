@@ -60,7 +60,7 @@ export const questions: Question[] = [
   },
   {
     id: "3",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "How long have you been experiencing the problem?",
@@ -122,7 +122,7 @@ export const questions: Question[] = [
   },
   {
     id: "5",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "What will the most convenient time for the treatment of your pain?",

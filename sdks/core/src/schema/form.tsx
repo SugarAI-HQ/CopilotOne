@@ -49,8 +49,8 @@ export const formFieldValidator = z.enum(["mobile", "email"]);
 export type FormFieldValidator = z.infer<typeof formFieldValidator>;
 
 export const questionType = z.enum([
-  "multiple_choice",
   "single_choice",
+  "multiple_choice",
   "text",
   "number",
 ]);

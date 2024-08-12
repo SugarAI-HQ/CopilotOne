@@ -19,6 +19,7 @@ import VoiceButtonWithStates from "~/react/assistants/components/voice";
 import {
   captureUserResponse,
   validateAnswerWithUser,
+  SELECTED_QUESTION_TYPES,
 } from "~/react/helpers/form";
 import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
 
@@ -36,6 +37,7 @@ export const VoiceQuestion: React.FC<{
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [answer, setAnswer] = useState<string | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
   const [answerRecording, setAnswerRecording] = useState<Recording | null>(
     null,
   );
@@ -203,6 +205,7 @@ export const VoiceQuestion: React.FC<{
       language,
       voice,
       setAnswer,
+      setSelectedAnswer,
     );
 
     // Wait
@@ -214,8 +217,8 @@ export const VoiceQuestion: React.FC<{
     onAnswered(questionEvaluation.aiResponse.answer);
   };
 
-  const handleOptionClick = (option: string) => {
-    setSelectedOption(option);
+  const handleOptionClick = (options: string[]) => {
+    // setSelectedOption(option);
     // onAnswered();
   };
 
@@ -280,7 +283,7 @@ export const VoiceQuestion: React.FC<{
         </div>
       )}
 
-      {question.question_type === "multiple_choice" && (
+      {SELECTED_QUESTION_TYPES.includes(question.question_type) && (
         <VoiceQuestionOptions
           auto={false}
           question={question}
@@ -288,8 +291,8 @@ export const VoiceQuestion: React.FC<{
           formConfig={formConfig}
           optionRefs={optionRefs}
           handleOptionClick={handleOptionClick}
-          useRadio={true}
-          selected={answer ? [answer] : []}
+          useRadio={question.question_type == "single_choice" ? true : false}
+          selected={selectedAnswer ? selectedAnswer : []}
         />
       )}
 

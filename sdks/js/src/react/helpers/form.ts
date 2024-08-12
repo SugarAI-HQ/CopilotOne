@@ -14,6 +14,9 @@ import {
 } from "@sugar-ai/core";
 import { speakMessageAsync, speaki18nMessageAsync } from "./voice";
 
+export const SELECTED_QUESTION_TYPES = ["single_choice", "multiple_choice"];
+export const SELECTED_QUESTION_ANSWER_SPLIT = ",";
+
 export const captureUserResponse = async (
   question: Question,
   language: LanguageCode,
@@ -130,7 +133,7 @@ export const validateAnswerWithUser = async (
   language: LanguageCode,
   voice: SpeechSynthesisVoice,
   setAnswer: Function,
-  //   setAnswer: Function,
+  setSelectedAnswer: Function,
 ) => {
   // await speaki18nMessageAsync(
   //   selectedAnswer,
@@ -139,8 +142,14 @@ export const validateAnswerWithUser = async (
   // );
 
   // Show final evaluated answer
-  if (question.question_type == "multiple_choice") {
+  if (SELECTED_QUESTION_TYPES.includes(question.question_type)) {
     setAnswer(answer);
+    let choices = answer
+      .split(SELECTED_QUESTION_ANSWER_SPLIT)
+      .map((c) => c.trim());
+    setSelectedAnswer(
+      question.question_type == "multiple_choice" ? choices : [choices[0]],
+    );
 
     await speakMessageAsync(
       followupResponse,

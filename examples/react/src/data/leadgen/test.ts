@@ -20,7 +20,7 @@ export const translations: Translations = {
 
 export const questions: Question[] = [
   {
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       // mode: "manual",
       lang: {

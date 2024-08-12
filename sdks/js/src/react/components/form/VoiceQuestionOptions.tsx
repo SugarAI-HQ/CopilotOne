@@ -16,7 +16,7 @@ export const VoiceQuestionOptions: React.FC<{
   language: LanguageCode;
   formConfig: FormConfig;
   optionRefs: React.RefObject<Streamingi18nTextRef>[];
-  handleOptionClick: (value: string) => void;
+  handleOptionClick: (values: string[]) => void;
   useRadio: boolean; // Flag to switch between checkbox and radio button
   selected: string[];
 }> = ({
@@ -35,20 +35,25 @@ export const VoiceQuestionOptions: React.FC<{
   );
 
   useEffect(() => {
-    handleInputChange(selected[0]);
+    handleInputChange(selected);
   }, [selected]);
 
-  const handleInputChange = (value: string) => {
+  const handleInputChange = (values: string[]) => {
     if (useRadio) {
-      setSelectedOptions([value]);
+      setSelectedOptions(values);
     } else {
-      setSelectedOptions((prev) =>
-        prev.includes(value)
-          ? prev.filter((option) => option !== value)
-          : [...prev, value],
-      );
+      if (values.length === 1) {
+        let value = values[0];
+        setSelectedOptions((prev) =>
+          prev.includes(value)
+            ? prev.filter((option) => option !== value)
+            : [...prev, value],
+        );
+      } else {
+        setSelectedOptions(values);
+      }
     }
-    handleOptionClick(value);
+    handleOptionClick(values);
   };
 
   const handleStreamingStart = async (index: number) => {
@@ -66,7 +71,7 @@ export const VoiceQuestionOptions: React.FC<{
           <li
             key={index}
             onClick={(e) =>
-              handleInputChange(extracti18nText(option, language))
+              handleInputChange([extracti18nText(option, language)])
             }
             className={`flex items-center cursor-pointer pl-2 rounded transition-colors duration-200 ease-in-out dark:text-gray-200
               ${
@@ -81,7 +86,7 @@ export const VoiceQuestionOptions: React.FC<{
                 id={`option-${question.id}-${index}`}
                 name={`option-${question.id}`}
                 value={extracti18nText(option, language)}
-                onChange={(e) => handleInputChange(e.currentTarget.value)}
+                onChange={(e) => handleInputChange([e.currentTarget.value])}
                 checked={selectedOptions.includes(
                   extracti18nText(option, language),
                 )}
