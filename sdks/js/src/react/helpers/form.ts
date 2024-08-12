@@ -27,7 +27,7 @@ export const captureUserResponse = async (
 ): Promise<QuestionEvaluation> => {
   // Start listening
   let userResponse: AudioResponse | null = null;
-  let fq: string | null = "";
+  // let fq: string | null = "";
   let attempts = 0;
   let questionAnswer = "";
   let followupResponse = "";
@@ -79,6 +79,7 @@ export const captureUserResponse = async (
 
     // AI Evaluation
     if (!question.evaluation || question.evaluation == "ai") {
+      console.log("Evaluating");
       setIsEvaluating(true);
       const aiEvaluationResponse = await aiEvaluate(
         question,
@@ -153,7 +154,7 @@ export const validateAnswerWithUser = async (
     const isValidAnswer = await checkValidators(question, answer);
 
     if (isValidAnswer) {
-      formatAndSpeak(question, answer, followupResponse, language, voice);
+      await formatAndSpeak(question, answer, followupResponse, language, voice);
     } else {
       // Not valid answer
     }

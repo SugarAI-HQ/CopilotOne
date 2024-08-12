@@ -8,11 +8,14 @@ export const listenConfig = z.object({
   userNoSpeechTimeout: z.number().default(30000), // User have not spoken any single word
   // userNoSpeechNudgeAfter: z.number().default(2), // no of retries in case of no speech
   userPauseTimeout: z.number().default(5000), // User is speaking but take a pause in between
+
+  record: z.boolean().default(false),
 });
 
 export type ListenConfig = z.infer<typeof listenConfig>;
 
 export const ListenConfigDefaults = {
+  record: false,
   maxAnswerLength: -1,
   userNoSpeechTimeout: 30000, // User have not spoken any single word
   userNoSpeechRetry: 2,

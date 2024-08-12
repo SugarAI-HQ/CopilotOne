@@ -101,9 +101,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       let linterimTranscript = "";
       let timeout;
       let autoStopped = true;
+      let recordingPromise: Promise<Recording | null> | null = null;
 
       // debugger;
-      const recordingPromise = recordAudio(counter);
 
       // Stop recognition on pause or length limit
       const stopRecognition = (timeout = true) => {
@@ -275,14 +275,23 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         cleanup();
         setIsListening(false);
 
-        // wait for audio track to finish
-        recordingPromise.then((recording) => {
+        if (recordingPromise) {
+          // debugger;
+          // wait for audio track to finish
+          recordingPromise.then((recording) => {
+            resolve({
+              text: lfinalTranscript.trim(),
+              autoStopped: autoStopped,
+              recording,
+            });
+          });
+        } else {
           resolve({
             text: lfinalTranscript.trim(),
             autoStopped: autoStopped,
-            recording,
+            recording: null,
           });
-        });
+        }
       };
 
       recognition.onspeechstart = () => {
@@ -295,6 +304,8 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
       console.log(`[ListeningContinous][${counter}] Start listening`);
       recognition.start();
+      // Start recording
+      recordingPromise = recordAudio(options.record, counter);
       setIsListening(true);
 
       userSpeakingTimout();
@@ -470,12 +481,18 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   };
 
   const recordAudio = async (
+    record: boolean,
     counter: number = -1,
   ): Promise<Recording | null> => {
     return new Promise<Recording | null>(async (resolve, reject) => {
-      if (true) {
+      // Recording doesnot work along with STT on mobile devices
+      // TODO: check with multiple devices and browsers.
+
+      if (!record || isAndroid() || isIOS()) {
+        DEV: console.log(`[Recording][${counter}] Skipping ...`);
         return resolve(null);
       }
+
       // Set up media recorder for audio capture
       if (!streamRef.current) {
         streamRef.current = await navigator.mediaDevices.getUserMedia({
@@ -489,8 +506,12 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         audioChunks.push(event.data);
       };
 
-      mediaRecorder.onstop = async () => {
-        DEV: console.log(`[Recording]${counter} Stopped`);
+      mediaRecorder.onerror = (event) => {
+        console.error(`error recording stream: ${event}`);
+      };
+
+      mediaRecorder.onstop = async (event) => {
+        DEV: console.log(`[Recording][${counter}] Stopped`);
         const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
         const audioUrl = URL.createObjectURL(audioBlob);
         const audioFile = new File([audioBlob], `recording-${Date.now()}.mp3`, {
@@ -511,7 +532,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         // document.body.removeChild(downloadLink);
 
         DEV: console.log(
-          `[Recording]${counter} MP3 file url: ${audioUrl}`,
+          `[Recording][${counter}] MP3 file url: ${audioUrl}`,
           audioFile,
         );
 
@@ -522,7 +543,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       };
 
       // Start recording
-      DEV: console.log(`[Recording]${counter} Started`);
+      DEV: console.log(`[Recording][${counter}] Started`);
       mediaRecorder.start();
       mediaRecorderRef.current = mediaRecorder;
     });
@@ -581,7 +602,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
     // Get user response
     // while (userResponse === "" || autoStopped) {
-    while (userResponse === "") {
+    while (userResponse === "" && recording === null) {
       counter = counter + 1;
 
       userResponse = await startListeningContinous(

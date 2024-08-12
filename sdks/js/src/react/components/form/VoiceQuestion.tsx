@@ -12,7 +12,7 @@ import {
   LanguageCode,
   delay,
   useLanguage,
-  AudioResponse,
+  Recording,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
@@ -21,7 +21,6 @@ import {
   validateAnswerWithUser,
 } from "~/react/helpers/form";
 import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
-import { QuestionEvaluation } from "@sugar-ai/core";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -37,6 +36,9 @@ export const VoiceQuestion: React.FC<{
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [answer, setAnswer] = useState<string | null>(null);
+  const [answerRecording, setAnswerRecording] = useState<Recording | null>(
+    null,
+  );
 
   // Create refs for the question and options
   const questionRef: React.RefObject<Streamingi18nTextRef> =
@@ -184,6 +186,11 @@ export const VoiceQuestion: React.FC<{
       textToAction,
     );
 
+    // Recording
+    if (questionEvaluation?.userResponse?.recording) {
+      setAnswerRecording(questionEvaluation?.userResponse?.recording);
+    }
+
     if (inputRef && inputRef.current) {
       inputRef.current.value = questionEvaluation.aiResponse.answer;
     }
@@ -298,6 +305,14 @@ export const VoiceQuestion: React.FC<{
                   ? transcript
                   : finalTranscript}
             </p>
+            {answerRecording && (
+              <a
+                href={answerRecording.audioUrl}
+                download={answerRecording?.audioFile?.name}
+              >
+                Recording
+              </a>
+            )}
             {isListening && (
               <span className="counter absolute right-0 text-lg text-gray-800 dark:text-gray-200">
                 {(question.validation?.max_length || 120) - transcript.length}
