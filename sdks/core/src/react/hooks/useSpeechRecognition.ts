@@ -469,8 +469,13 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     });
   };
 
-  const recordAudio = async (counter: number = -1): Promise<Recording> => {
-    return new Promise<Recording>(async (resolve, reject) => {
+  const recordAudio = async (
+    counter: number = -1,
+  ): Promise<Recording | null> => {
+    return new Promise<Recording | null>(async (resolve, reject) => {
+      if (true) {
+        return resolve(null);
+      }
       // Set up media recorder for audio capture
       if (!streamRef.current) {
         streamRef.current = await navigator.mediaDevices.getUserMedia({
@@ -584,10 +589,10 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         userResponse,
         counter,
       )
-        .then((sttResponse) => {
-          autoStopped = sttResponse.autoStopped;
-          recording = sttResponse.recording;
-          return sttResponse.text;
+        .then((audioResponse) => {
+          autoStopped = audioResponse.autoStopped;
+          recording = audioResponse.recording;
+          return audioResponse.text;
         })
         .catch(async (error) => {
           console.error(error);

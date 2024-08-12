@@ -37,7 +37,7 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "none",
+    evaluation: "ai",
     validation: {
       max_length: 100,
     },
@@ -52,7 +52,7 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "none",
+    evaluation: "ai",
     validation: {
       max_length: 3,
     },
@@ -67,7 +67,7 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "none",
+    evaluation: "ai",
     validation: {
       max_length: 50,
     },
@@ -392,7 +392,7 @@ export const questions: Question[] = [
         },
       ],
     },
-    evaluation: "none",
+    evaluation: "ai",
     validation: {
       max_length: 200,
     },
