@@ -34,7 +34,7 @@ export default defineConfig((options) => {
         return;
       }
 
-      const cmd = `yalc publish --push --changed  --no-scripts  --sig --pure`;
+      const cmd = `yalc publish --push --changed  --no-scripts  --sig --workspace`;
       console.log("publishing");
       exec(cmd, (error, stdout, stderr) => {
         console.log(stdout);

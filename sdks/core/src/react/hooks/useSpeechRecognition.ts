@@ -507,7 +507,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       };
 
       mediaRecorder.onerror = (event) => {
-        console.error(`error recording stream: ${event}`);
+        console.error(`[Recording][${counter}] error ${event}`);
       };
 
       mediaRecorder.onstop = async (event) => {

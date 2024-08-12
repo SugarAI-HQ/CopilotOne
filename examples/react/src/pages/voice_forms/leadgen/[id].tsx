@@ -91,7 +91,10 @@ const App: NextPage = () => {
 
   const formConfig: FormConfig = {
     ...FormConfigDefaults,
-    record: record ? true : false,
+    listen: {
+      ...FormConfigDefaults.listen,
+      record: record ? true : false,
+    },
     voiceButton: copilotConfig.style.voiceButton,
   };
   return (
