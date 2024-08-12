@@ -2,13 +2,15 @@ import validator from "validator";
 import {
   ActionRegistrationType,
   EmbeddingScopeWithUserType,
-  EvaluationResponse,
+  AiEvaluationResponse,
   FormConfig,
   LanguageCode,
   Question,
   extracti18nText,
   geti18nMessage,
   useCopilot,
+  QuestionEvaluation,
+  AudioResponse,
 } from "@sugar-ai/core";
 import { speakMessageAsync, speaki18nMessageAsync } from "./voice";
 
@@ -22,19 +24,30 @@ export const captureUserResponse = async (
   registerAction: Function,
   unregisterAction: Function,
   textToAction,
-): Promise<{ questionAnswer: string; followupResponse: string }> => {
+): Promise<QuestionEvaluation> => {
   // Start listening
-  let userResponse: string = "";
+  let userResponse: AudioResponse | null = null;
   let fq: string | null = "";
   let attempts = 0;
   let questionAnswer = "";
   let followupResponse = "";
 
+  let finalResponse: AiEvaluationResponse = {
+    answer: "",
+    followupQuestion: "",
+    followupResponse: "",
+  };
+
   // Loop until we get a valid answer or number of attempts exceeded
-  while (fq !== null && attempts < 2) {
-    if (fq !== "") {
+  while (finalResponse.followupQuestion !== null && attempts < 2) {
+    // Speak it out to user if followup question exists
+    if (finalResponse.followupQuestion !== "") {
       // Ask the followup question to the user
-      await speakMessageAsync(fq, language, voice as SpeechSynthesisVoice);
+      await speakMessageAsync(
+        finalResponse.followupQuestion,
+        language,
+        voice as SpeechSynthesisVoice,
+      );
     }
 
     // Get user response
@@ -44,6 +57,7 @@ export const captureUserResponse = async (
         maxAnswerLength: question.validation?.max_length || 120,
       },
     };
+
     userResponse = await getUserResponseContinous(listenConfig);
     // userResponse = await getUserResponseAutoBreak(listenConfig);
 
@@ -53,7 +67,7 @@ export const captureUserResponse = async (
     // }
 
     // Run Rule validators
-    const isValidAnswer = await checkValidators(question, userResponse);
+    const isValidAnswer = await checkValidators(question, userResponse?.text);
     if (!isValidAnswer) {
       await speaki18nMessageAsync(
         geti18nMessage("validationFailed"),
@@ -66,9 +80,9 @@ export const captureUserResponse = async (
     // AI Evaluation
     if (!question.evaluation || question.evaluation == "ai") {
       setIsEvaluating(true);
-      const evaluationResult = await aiEvaluate(
+      const aiEvaluationResponse = await aiEvaluate(
         question,
-        userResponse,
+        userResponse?.text as string,
         language,
         registerAction,
         unregisterAction,
@@ -76,28 +90,36 @@ export const captureUserResponse = async (
       );
 
       // Ask followup question if needed
-      if (!evaluationResult) {
-        fq = null;
-        questionAnswer = userResponse;
+      if (!aiEvaluationResponse) {
+        finalResponse.followupQuestion = null;
+        questionAnswer = userResponse?.text as string;
       } else {
-        fq = evaluationResult.followupQuestion;
-        questionAnswer = evaluationResult.answer;
+        finalResponse.followupQuestion = aiEvaluationResponse.followupQuestion;
+        questionAnswer = aiEvaluationResponse.answer;
 
         followupResponse = questionAnswer;
-        // followupResponse = evaluationResult.followupResponse ?? questionAnswer;
+        // followupResponse = aiEvaluationResponse.followupResponse ?? questionAnswer;
         console.log(`followupResponse: ${followupResponse}`);
       }
       setIsEvaluating(false);
     } else {
       // Manual/No evaluation
-      fq = null;
-      questionAnswer = userResponse;
+      finalResponse.followupQuestion = null;
+      questionAnswer = userResponse?.text as string;
     }
 
     attempts = attempts + 1;
   }
-
-  return { questionAnswer, followupResponse };
+  const qe: QuestionEvaluation = {
+    userResponse: userResponse as AudioResponse,
+    aiResponse: {
+      answer: questionAnswer,
+      followupResponse: followupResponse as string,
+      followupQuestion: "",
+    },
+  };
+  DEV: console.log(qe.aiResponse, qe.userResponse);
+  return qe;
 };
 
 export const validateAnswerWithUser = async (
@@ -187,12 +209,12 @@ const checkValidators = async (
 
 const aiEvaluate = async (
   question: Question,
-  userResponse: string,
+  answer: string,
   language: LanguageCode,
   registerAction: Function,
   unregisterAction: Function,
   textToAction: Function,
-): Promise<EvaluationResponse> => {
+): Promise<AiEvaluationResponse> => {
   //   setIsEvaluating(true);
 
   const promptTemplate = process.env
@@ -286,7 +308,7 @@ const aiEvaluate = async (
   // @ts-ignore
   const ttaResponse: TextToActionResponse = await textToAction(
     promptTemplate,
-    userResponse,
+    answer,
     pvs,
     {
       scope1: "",

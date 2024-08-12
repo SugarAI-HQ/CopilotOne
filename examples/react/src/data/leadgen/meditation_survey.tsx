@@ -78,7 +78,7 @@ export const questions: Question[] = [
     question_text: {
       lang: {
         en: "What is your  phone number?",
-        hi: "आपका ईमेल या फोन नंबर क्या है?",
+        hi: "आपका फोन नंबर क्या है?",
       },
     },
     question_params: {},
@@ -117,6 +117,7 @@ export const questions: Question[] = [
         { lang: { en: "Currently Unemployed", hi: "वर्तमान में बेरोजगार" } },
       ],
     },
+    evaluation: "ai",
     validation: {
       max_length: 50,
     },
@@ -137,35 +138,54 @@ export const questions: Question[] = [
         { lang: { en: "Other", hi: "अन्य" } },
       ],
     },
+    validation: {
+      max_length: 50,
+    },
   },
   {
     id: "7",
-    question_type: "matrix_choice",
+    question_type: "multiple_choice",
     question_text: {
       lang: {
-        en: "How long and how frequently have you been practicing meditation?",
+        en: "How long have you been practicing meditation?",
         hi: "आप कितने समय से और कितनी बार मेडिटेशन कर रहे हैं?",
       },
     },
     question_params: {
-      options: {
-        rows: [
-          { lang: { en: "1 to 3 months", hi: "1 से 3 महीने" } },
-          { lang: { en: "4 to 12 months", hi: "4 से 12 महीने" } },
-          { lang: { en: "More than 12 months", hi: "12 महीने से अधिक" } },
-        ],
-        cols: [
-          { lang: { en: "Everyday", hi: "हर दिन" } },
-          { lang: { en: "4 to 5 times a week", hi: "सप्ताह में 4 से 5 बार" } },
-          { lang: { en: "2 to 3 times a week", hi: "सप्ताह में 2 से 3 बार" } },
-          {
-            lang: {
-              en: "At least once a week",
-              hi: "कम से कम सप्ताह में एक बार",
-            },
-          },
-        ],
+      options: [
+        { lang: { en: "1 to 3 months", hi: "1 से 3 महीने" } },
+        { lang: { en: "4 to 12 months", hi: "4 से 12 महीने" } },
+        { lang: { en: "More than 12 months", hi: "12 महीने से अधिक" } },
+      ],
+    },
+    validation: {
+      max_length: 50,
+    },
+  },
+  {
+    id: "7.1",
+    question_type: "multiple_choice",
+    question_text: {
+      lang: {
+        en: "how frequently have you been practicing meditation?",
+        hi: "आप  कितनी बार मेडिटेशन कर रहे हैं?",
       },
+    },
+    question_params: {
+      options: [
+        { lang: { en: "Everyday", hi: "हर दिन" } },
+        { lang: { en: "4 to 5 times a week", hi: "सप्ताह में 4 से 5 बार" } },
+        { lang: { en: "2 to 3 times a week", hi: "सप्ताह में 2 से 3 बार" } },
+        {
+          lang: {
+            en: "At least once a week",
+            hi: "कम से कम सप्ताह में एक बार",
+          },
+        },
+      ],
+    },
+    validation: {
+      max_length: 50,
     },
   },
   {
@@ -213,7 +233,9 @@ export const questions: Question[] = [
         },
         { lang: { en: "Something else", hi: "कुछ और" } },
       ],
-      max_options: 2,
+    },
+    validation: {
+      max_length: 50,
     },
   },
   {
@@ -255,7 +277,9 @@ export const questions: Question[] = [
         },
         { lang: { en: "Something else", hi: "कुछ और" } },
       ],
-      max_options: 2,
+    },
+    validation: {
+      max_length: 50,
     },
   },
   {
@@ -293,7 +317,10 @@ export const questions: Question[] = [
         },
         { lang: { en: "None", hi: "कोई नहीं" } },
       ],
-      max_options: 2,
+    },
+
+    validation: {
+      max_length: 50,
     },
   },
   {
@@ -319,7 +346,10 @@ export const questions: Question[] = [
           },
         },
       ],
-      max_options: 2,
+    },
+    evaluation: "ai",
+    validation: {
+      max_length: 50,
     },
   },
   {
@@ -361,7 +391,10 @@ export const questions: Question[] = [
           lang: { en: "Consume content online", hi: "ऑनलाइन सामग्री का उपभोग" },
         },
       ],
-      max_options: 2,
+    },
+    evaluation: "none",
+    validation: {
+      max_length: 200,
     },
   },
   {

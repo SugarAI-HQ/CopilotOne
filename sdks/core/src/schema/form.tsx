@@ -96,13 +96,29 @@ export const StreamingTextRefSchema = z.object({
 // Define the TypeScript type based on the Zod schema
 export type Streamingi18nTextRef = z.infer<typeof StreamingTextRefSchema>;
 
-export const evaluationResponse = z.object({
+export const aiEvaluationResponse = z.object({
   answer: z.string(),
   followupQuestion: z.string().nullable(),
   followupResponse: z.string().nullable(),
 });
 
-export type EvaluationResponse = z.infer<typeof evaluationResponse>;
+export interface Recording {
+  audioUrl: string;
+  audioFile: File;
+}
+
+export type AiEvaluationResponse = z.infer<typeof aiEvaluationResponse>;
+
+export interface AudioResponse {
+  text: string;
+  autoStopped: boolean;
+  recording: Recording | null;
+}
+
+export interface QuestionEvaluation {
+  userResponse: AudioResponse;
+  aiResponse: AiEvaluationResponse;
+}
 
 export const voiceFormStates = z.enum([
   "none",

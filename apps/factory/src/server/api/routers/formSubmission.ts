@@ -9,7 +9,6 @@ import {
   submitAnswer,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
-import { create } from "lodash";
 
 export const formSubmissionRouter = createTRPCRouter({
   createSubmission: publicProcedure

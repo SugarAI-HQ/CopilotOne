@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { ListenConfigDefaults, ListenConfig } from "~/schema/form";
+import {
+  ListenConfigDefaults,
+  ListenConfig,
+  AudioResponse,
+  Recording,
+} from "~/schema/form";
 import root from "window-or-global";
 import { useLanguage } from "./useLanguage";
 import useSpeechSynthesis from "./useSpeechSynthesis";
@@ -14,11 +19,6 @@ interface SpeechRecognitionOptions {
   onListeningStop?: (text: string) => void;
 }
 
-interface STTResponse {
-  text: string;
-  autoStopped: boolean;
-}
-
 const noSpeech = geti18nMessage("noSpeech");
 
 export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
@@ -29,6 +29,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
   const [finalTranscript, setFinalTranscript] = useState<string>("");
   const [transcriptLength, setTranscriptLength] = useState(-1);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<any | null>(null);
+  const [audioFiles, setAudioFiles] = useState<File[]>([]);
 
   const {
     isSpeaking,
@@ -75,8 +78,8 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     options: ListenConfig = ListenConfigDefaults,
     previousResponse = "",
     counter: number = -1,
-  ): Promise<STTResponse> => {
-    return new Promise<STTResponse>((resolve, reject) => {
+  ): Promise<AudioResponse> => {
+    return new Promise<AudioResponse>(async (resolve, reject) => {
       // Stop existing recognition if it is already running
       if (recognitionRef.current) {
         console.warn(
@@ -99,11 +102,14 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       let timeout;
       let autoStopped = true;
 
+      // debugger;
+      const recordingPromise = recordAudio(counter);
+
       // Stop recognition on pause or length limit
       const stopRecognition = (timeout = true) => {
         autoStopped = false;
         if (timeout) {
-          console.log(`[ListeningContinous][${counter}] timedout `);
+          console.log(`[ListeningContinous][${counter}] timed out`);
         }
 
         if (recognitionRef.current) {
@@ -113,13 +119,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
                 lfinalTranscript.trim() + linterimTranscript.trim();
 
               console.log(
-                `[ListeningContinous][${counter}] Stoping listening, answer: ${answerCaptured}`,
+                `[ListeningContinous][${counter}] Stopping listening, answer: ${answerCaptured}`,
               );
               recognitionRef?.current?.stop();
-              // resolve({
-              //   text: answerCaptured,
-              //   autoStopped: false,
-              // });
             }
 
             return false;
@@ -136,7 +138,11 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           recognitionRef.current = null;
         }
 
-        console.log(`[ListeningContinous][${counter}] cleanup `);
+        if (mediaRecorderRef.current) {
+          mediaRecorderRef.current?.stop(); // Stop recording when recognition stops
+        }
+
+        console.log(`[ListeningContinous][${counter}] cleanup`);
       };
 
       // Reset the pause timer
@@ -157,7 +163,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
           answerLength >= options.maxAnswerLength &&
           options.maxAnswerLength > 0
         ) {
-          console.log(`[ListeningContinous][${counter}] answer length reache`);
+          console.log(`[ListeningContinous][${counter}] answer length reached`);
           stopRecognition(false);
         } else {
           const ts =
@@ -264,14 +270,18 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
       recognition.onend = (event) => {
         console.log(
-          `[ListeningContinousx][${counter}] Stop listening autoStopped: ${autoStopped}`,
+          `[ListeningContinous][${counter}] Stop listening autoStopped: ${autoStopped}`,
         );
         cleanup();
         setIsListening(false);
-        // debugger;
-        resolve({
-          text: lfinalTranscript.trim(),
-          autoStopped: autoStopped,
+
+        // wait for audio track to finish
+        recordingPromise.then((recording) => {
+          resolve({
+            text: lfinalTranscript.trim(),
+            autoStopped: autoStopped,
+            recording,
+          });
         });
       };
 
@@ -459,6 +469,60 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
     });
   };
 
+  const recordAudio = async (counter: number = -1): Promise<Recording> => {
+    return new Promise<Recording>(async (resolve, reject) => {
+      // Set up media recorder for audio capture
+      if (!streamRef.current) {
+        streamRef.current = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+      }
+      const mediaRecorder = new MediaRecorder(streamRef.current);
+      let audioChunks: Blob[] = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        DEV: console.log(`[Recording]${counter} Stopped`);
+        const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audioFile = new File([audioBlob], `recording-${Date.now()}.mp3`, {
+          type: "audio/mp3",
+        });
+
+        // Create a download link
+        // const downloadLink = document.createElement("a");
+        // downloadLink.href = audioUrl;
+        // downloadLink.text = "Download MP3";
+        // downloadLink.download = audioFile.name;
+
+        setAudioFiles((afs: File[]) => [...afs, audioFile]);
+
+        // Trigger the download
+        // document.body.appendChild(downloadLink);
+        // downloadLink.click();
+        // document.body.removeChild(downloadLink);
+
+        DEV: console.log(
+          `[Recording]${counter} MP3 file url: ${audioUrl}`,
+          audioFile,
+        );
+
+        resolve({
+          audioUrl,
+          audioFile,
+        });
+      };
+
+      // Start recording
+      DEV: console.log(`[Recording]${counter} Started`);
+      mediaRecorder.start();
+      mediaRecorderRef.current = mediaRecorder;
+    });
+  };
+
   const requestMicPermission = async (): Promise<boolean> => {
     let granted = false;
     const alreadyGranted = await checkIfAudioPermissionGranted();
@@ -466,12 +530,12 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
     if (alreadyGranted) {
       granted = true;
-      return granted;
     }
 
     return await root.navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
+        streamRef.current = stream;
         // stream.getTracks().forEach((track) => track.stop());
         setIsMicEnabled(true);
         granted = true;
@@ -504,10 +568,11 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
   const getUserResponseContinous = async (
     options: ListenConfig = ListenConfigDefaults,
-  ): Promise<string> => {
+  ): Promise<AudioResponse> => {
     let userResponse = "";
     let counter = 0;
     let autoStopped = false;
+    let recording: Recording | null = null;
 
     // Get user response
     // while (userResponse === "" || autoStopped) {
@@ -521,6 +586,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       )
         .then((sttResponse) => {
           autoStopped = sttResponse.autoStopped;
+          recording = sttResponse.recording;
           return sttResponse.text;
         })
         .catch(async (error) => {
@@ -546,7 +612,11 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         });
     }
 
-    return userResponse;
+    return {
+      text: userResponse,
+      autoStopped: autoStopped,
+      recording,
+    };
   };
 
   const getUserResponseAutoBreak = async (

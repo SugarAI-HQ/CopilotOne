@@ -12,6 +12,7 @@ import {
   LanguageCode,
   delay,
   useLanguage,
+  AudioResponse,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
@@ -20,6 +21,7 @@ import {
   validateAnswerWithUser,
 } from "~/react/helpers/form";
 import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
+import { QuestionEvaluation } from "@sugar-ai/core";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -170,7 +172,7 @@ export const VoiceQuestion: React.FC<{
       return v;
     });
 
-    const { questionAnswer, followupResponse } = await captureUserResponse(
+    const questionEvaluation = await captureUserResponse(
       question,
       language,
       voice,
@@ -183,14 +185,14 @@ export const VoiceQuestion: React.FC<{
     );
 
     if (inputRef && inputRef.current) {
-      inputRef.current.value = questionAnswer;
+      inputRef.current.value = questionEvaluation.aiResponse.answer;
     }
 
     // validate Answer
     await validateAnswerWithUser(
       question,
-      questionAnswer,
-      followupResponse,
+      questionEvaluation.aiResponse.answer,
+      questionEvaluation.aiResponse.followupResponse as string,
       language,
       voice,
       setAnswer,
@@ -202,7 +204,7 @@ export const VoiceQuestion: React.FC<{
     setIsWaiting(false);
 
     // Submit if fine
-    onAnswered(questionAnswer);
+    onAnswered(questionEvaluation.aiResponse.answer);
   };
 
   const handleOptionClick = (option: string) => {
