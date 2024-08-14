@@ -13,24 +13,24 @@ import { useSession } from "next-auth/react";
 import { Form } from "~/generated/prisma-client-zod.ts";
 import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
 import ViewI18nMessage from "~/components/voice_forms/view_i18n_message";
-import { LanguageCode } from "@sugar-ai/core";
+import { LanguageCode, i18nMessage } from "@sugar-ai/core";
 import { I18nMessageWithRules } from "~/validators/form";
 
 const VoiceFormHome = () => {
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
-  const [voiceForms, setVoiceForms] = useState<Form>([]);
+  const [voiceForms, setVoiceForms] = useState<Form[]>([]);
   const router = useRouter();
   const { data: sessionData } = useSession();
   const ns = sessionData?.user;
 
-  const handleVoiceFormCreationSuccess = (createdForm) => {
+  const handleVoiceFormCreationSuccess = (createdForm: Form) => {
     setStatus("success");
     toast.success("Form created successfully");
     router.push("/dashboard/forms/" + createdForm?.id + "/edit");
   };
 
-  const formMutation = api.forms.createForm.useMutation({
+  const formMutation = api.form.createForm.useMutation({
     onError: (error) => {
       const errorData = JSON.parse(error.message);
       setCustomError(errorData);
@@ -45,7 +45,7 @@ const VoiceFormHome = () => {
     },
   });
 
-  const questionMutation = api.forms.createQuestion.createQuestion.useMutation({
+  const questionMutation = api.form.createQuestion.useMutation({
     onError: (error) => {
       const errorData = JSON.parse(error.message);
       setCustomError(errorData);
@@ -55,7 +55,7 @@ const VoiceFormHome = () => {
     },
   });
 
-  api.forms.getForms.useQuery(
+  api.form.getForms.useQuery(
     {},
     {
       onSuccess(data) {
@@ -65,15 +65,15 @@ const VoiceFormHome = () => {
   );
 
   const initialMessage: I18nMessageWithRules = {
-    mode: "manual",
+    // mode: "manual",
     lang: {
       en: "Hello",
       es: "Hola",
       fr: "Bonjour",
       hi: "नमस्ते",
     },
-    voice: false,
-    output: "none",
+    // voice: false,
+    // output: "none",
   };
 
   const initialLanguages: LanguageCode[] = ["en", "es", "fr", "hi"];
@@ -88,11 +88,11 @@ const VoiceFormHome = () => {
   return (
     <>
       <ViewI18nMessage message={message} languages={languages} />
-      <CreateI18nMessage
+      {/* <CreateI18nMessage
         initialMessage={message}
         initialLanguages={languages}
         onSave={handleSave}
-      />
+      /> */}
       {voiceForms && voiceForms.length > 0 ? (
         <>
           <CreateVoiceForm

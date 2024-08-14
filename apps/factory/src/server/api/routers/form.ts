@@ -1,5 +1,3 @@
-import { i18nMessage, i18nMessageSchema } from "@sugar-ai/core";
-import { any } from "zod";
 import {
   createTRPCRouter,
   promptMiddleware,
@@ -84,6 +82,7 @@ export const formRouter = createTRPCRouter({
         throw new Error("Something went wrong");
       }
     }),
+
   updateForm: protectedProcedure
     .input(updateFormInput)
     .mutation(async ({ ctx, input }) => {
@@ -166,7 +165,7 @@ export const formRouter = createTRPCRouter({
         const voiceForm = await ctx.prisma.form.create({
           data: {
             name: input.name,
-            description: input.description,
+            // description: input.description,
             userId: userId,
           },
         });

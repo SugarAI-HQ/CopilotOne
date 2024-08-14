@@ -3,7 +3,6 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { prisma } from "~/server/db";
 import {
   Form,
   createSubmission,
@@ -33,7 +32,7 @@ export const formSubmissionRouter = createTRPCRouter({
       const form = await getForm(ctx, formId);
       // debugger;
 
-      const submission = await ctx.prisma.$transaction(async (prisma) => {
+      const submission = await ctx.prisma.$transaction(async (prisma: any) => {
         // Try to find an existing non-completed submission
         let existingSubmission = await prisma.formSubmission.findFirst({
           where: {

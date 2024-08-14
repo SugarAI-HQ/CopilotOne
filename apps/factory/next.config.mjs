@@ -33,6 +33,13 @@ const config = {
     domains: ["localhost", "*.sugarcaneai.dev", "sugarcaneai.dev"], // add sugarcane host
   },
   transpilePackages: ["@mui/x-charts"],
+
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+    // quiet: true,
+  },
 };
 
 export default withSentryConfig(

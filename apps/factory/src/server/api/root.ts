@@ -37,7 +37,7 @@ export const appRouter = createTRPCRouter({
   chat: chatRouter,
   message: messageRouter,
   copilot: copilotRouter,
-  forms: formRouter,
+  form: formRouter,
   formSubmission: formSubmissionRouter,
 });
 

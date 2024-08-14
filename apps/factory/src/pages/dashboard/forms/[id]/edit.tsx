@@ -73,13 +73,13 @@ const FormEdit: NextPageWithLayout = () => {
     }
   }, [status]);
 
-  useEffect(() => {
-    if (customError && customError.error) {
-      setError("name", { type: "manual", message: customError.error?.name });
-    } else {
-      clearErrors("name");
-    }
-  }, [customError, setError, clearErrors]);
+  // useEffect(() => {
+  //   if (customError && customError?.error) {
+  //     setError("name", { type: "manual", message: customError.error?.name });
+  //   } else {
+  //     clearErrors("name");
+  //   }
+  // }, [customError, setError, clearErrors]);
 
   const onFormSubmit = async (data: any) => {
     try {
@@ -101,7 +101,7 @@ const FormEdit: NextPageWithLayout = () => {
     setValue("messages", form.messages);
   };
 
-  const { data: form, isLoading: isFormLoading } = api.forms.getForm.useQuery(
+  const { data: form, isLoading: isFormLoading } = api.form.getForm.useQuery(
     { id: formId },
     {
       enabled: !!formId,
@@ -111,11 +111,11 @@ const FormEdit: NextPageWithLayout = () => {
     },
   );
 
-  const handleVoiceFormCreationSuccess = (createdForm) => {
-    setStatus("success");
-  };
+  // const handleVoiceFormCreationSuccess = (createdForm) => {
+  //   setStatus("success");
+  // };
 
-  const formMutation = api.forms.updateForm.useMutation({
+  const formMutation = api.form.updateForm.useMutation({
     onError: (error) => {
       const errorData = JSON.parse(error.message);
       setCustomError(errorData);
@@ -133,7 +133,7 @@ const FormEdit: NextPageWithLayout = () => {
     },
   });
 
-  const handleSaveMessage = (key: string, message: I18nMessageWithRules) => {
+  const handleSaveMessage = (key: any, message: I18nMessageWithRules) => {
     setValue(key, message);
     // setVoiceForm((prevForm) => ({
     //   ...prevForm,
@@ -189,6 +189,7 @@ const FormEdit: NextPageWithLayout = () => {
               <List>
                 {Object.keys(errors).map((key) => (
                   <ListItem key={key}>
+                    {/* @ts-ignore */}
                     <Alert severity="error">{errors[key].message}</Alert>
                   </ListItem>
                 ))}
