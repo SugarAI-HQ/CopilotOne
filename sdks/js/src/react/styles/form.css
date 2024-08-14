@@ -37,6 +37,9 @@
 .sai-vf-action {
   @apply p-2 dark:text-white rounded-lg shadow-md hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500;
   @apply dark:shadow-lg dark:shadow-gray-600;
+
+  /* Disabled state */
+  @apply disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-gray-300 disabled:dark:bg-gray-700;
 }
 
 .blinking-cursor {

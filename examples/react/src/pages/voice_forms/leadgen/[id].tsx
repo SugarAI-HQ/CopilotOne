@@ -40,16 +40,6 @@ const App: NextPage = () => {
   const [showStart, setShowStart] = useState<boolean>(true);
 
   const [fd, setFd] = useState<any>(null);
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (id) {
-      const data = getFormData(id);
-      setFd(data);
-
-      // const imsg = geti18nMessage("startButton", data.translations);
-      // const buttonText = extracti18nText(imsg, lang);
-    }
-  }, [id, router]);
 
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
   const themeColor = color ?? "#0057FF";
@@ -88,15 +78,34 @@ const App: NextPage = () => {
       },
     },
   };
-
-  const formConfig: FormConfig = {
+  const initFormConfig: FormConfig = {
     ...FormConfigDefaults,
     listen: {
       ...FormConfigDefaults.listen,
       record: record ? true : false,
     },
     voiceButton: copilotConfig.style.voiceButton,
+    // userId: fd.userId,
   };
+
+  const [formConfig, setFormConfig] = useState<FormConfig>(initFormConfig);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (id) {
+      const data = getFormData(id);
+      setFd(data);
+
+      setFormConfig((fc) => {
+        fc.id = data.formId;
+        return fc;
+      });
+
+      // const imsg = geti18nMessage("startButton", data.translations);
+      // const buttonText = extracti18nText(imsg, lang);
+    }
+  }, [id, router]);
+
   return (
     <>
       <Header />

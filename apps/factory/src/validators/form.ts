@@ -67,9 +67,12 @@ export const getFormInput = z.object({
 });
 export type GetFormInput = z.infer<typeof getFormInput>;
 
+export const metadata = z.record(z.any());
+
 export const createSubmission = z.object({
   formId: z.string(),
   clientUserId: z.string(),
+  metadata: metadata,
 });
 
 export type CreateSubmission = z.infer<typeof createSubmission>;
@@ -82,16 +85,13 @@ export const createSubmissionResponse = z.object({
 
 export type CreateSubmissionResponse = z.infer<typeof createSubmissionResponse>;
 
-// export const questionAnswerSchema = z.object({
-//   questionId: z.string().cuid(),
-//   response: z.string(),
-// });
-
 export const submitAnswer = z.object({
+  clientUserId: z.string(),
   formId: z.string(),
   submissionId: z.string(),
   questionId: z.string(),
-  answer: z.string(),
+  answer: metadata,
+  metadata: metadata,
   // answers: z.array(questionAnswerSchema),
 });
 export type SubmitAnswer = z.infer<typeof submitAnswer>;

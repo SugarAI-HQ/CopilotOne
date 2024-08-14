@@ -1383,7 +1383,7 @@
     /voice-forms/{formId}/submission: 
       post: 
         operationId: "formSubmission-createSubmission"
-        summary: "Submit voice form with answers"
+        summary: "Create a new submission for voice form for user with clientUserId "
         tags: 
           - "VoiceForm"
         requestBody: 
@@ -1395,8 +1395,12 @@
                 properties: 
                   clientUserId: 
                     type: "string"
+                  metadata: 
+                    type: "object"
+                    additionalProperties: {}
                 required: 
                   - "clientUserId"
+                  - "metadata"
                 additionalProperties: false
         parameters: 
           - 
@@ -1433,10 +1437,18 @@
               schema: 
                 type: "object"
                 properties: 
-                  answer: 
+                  clientUserId: 
                     type: "string"
+                  answer: 
+                    type: "object"
+                    additionalProperties: {}
+                  metadata: 
+                    type: "object"
+                    additionalProperties: {}
                 required: 
+                  - "clientUserId"
                   - "answer"
+                  - "metadata"
                 additionalProperties: false
         parameters: 
           - 

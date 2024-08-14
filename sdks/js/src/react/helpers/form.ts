@@ -13,11 +13,12 @@ import {
   AudioResponse,
 } from "@sugar-ai/core";
 import { speakMessageAsync, speaki18nMessageAsync } from "./voice";
+import { QuestionAnswer } from "@sugar-ai/core";
 
 export const SELECTED_QUESTION_TYPES = ["single_choice", "multiple_choice"];
 export const SELECTED_QUESTION_ANSWER_SPLIT = ",";
 
-export const captureUserResponse = async (
+export const captureVoiceResponseAndEvaluate = async (
   question: Question,
   language: LanguageCode,
   voice: SpeechSynthesisVoice,
@@ -128,11 +129,11 @@ export const captureUserResponse = async (
 
 export const validateAnswerWithUser = async (
   question: Question,
-  answer: string,
+  voiceAnswer: QuestionAnswer,
   followupResponse: string,
   language: LanguageCode,
   voice: SpeechSynthesisVoice,
-  setAnswer: Function,
+  setVoiceAnswer: Function,
   setSelectedAnswer: Function,
 ) => {
   // await speaki18nMessageAsync(
@@ -140,10 +141,10 @@ export const validateAnswerWithUser = async (
   //   language,
   //   voice as SpeechSynthesisVoice,
   // );
-
+  const answer = voiceAnswer.evaluatedAnswer;
   // Show final evaluated answer
   if (SELECTED_QUESTION_TYPES.includes(question.question_type)) {
-    setAnswer(answer);
+    setVoiceAnswer(voiceAnswer);
     let choices = answer
       .split(SELECTED_QUESTION_ANSWER_SPLIT)
       .map((c) => c.trim());
@@ -163,6 +164,7 @@ export const validateAnswerWithUser = async (
     const isValidAnswer = await checkValidators(question, answer);
 
     if (isValidAnswer) {
+      setVoiceAnswer(voiceAnswer);
       await formatAndSpeak(question, answer, followupResponse, language, voice);
     } else {
       // Not valid answer
@@ -185,8 +187,7 @@ const formatAndSpeak = async (
     formattedResponse = formatMobileNumber(followupResponse);
   }
   DEV: console.log(`formatteed response : ${answer}`);
-
-  if (answer.length <= 150) {
+  if (answer && answer.length <= 150) {
     await speakMessageAsync(
       formattedResponse,
       language,

@@ -5,9 +5,13 @@
 /**
  * @example
  *     {
- *         answer: "answer"
+ *         clientUserId: "clientUserId",
+ *         answer: {},
+ *         metadata: {}
  *     }
  */
 export interface FormSubmissionSubmitAnswerRequest {
-  answer: string;
+  clientUserId: string;
+  answer: Record<string, unknown>;
+  metadata: Record<string, unknown>;
 }

@@ -13,11 +13,12 @@ import {
   delay,
   useLanguage,
   Recording,
+  QuestionAnswer,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
 import {
-  captureUserResponse,
+  captureVoiceResponseAndEvaluate,
   validateAnswerWithUser,
   SELECTED_QUESTION_TYPES,
 } from "~/react/helpers/form";
@@ -25,7 +26,7 @@ import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
 
 export const VoiceQuestion: React.FC<{
   question: Question;
-  onAnswered: (answer: string) => void;
+  onAnswered: (voiceAnswer: QuestionAnswer) => Promise<void>;
   onSkip: () => void;
   onBack: () => void;
   formConfig: FormConfig;
@@ -36,19 +37,13 @@ export const VoiceQuestion: React.FC<{
   const [isQuestionSpoken, setIsQuestionSpoken] = useState<boolean>(false);
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const [answer, setAnswer] = useState<string | null>(null);
-  const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
-  const [answerRecording, setAnswerRecording] = useState<Recording | null>(
-    null,
-  );
+  const [voiceAnswer, setVoiceAnswer] = useState<QuestionAnswer | null>(null);
 
+  const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
   // Create refs for the question and options
   const questionRef: React.RefObject<Streamingi18nTextRef> =
     useRef<Streamingi18nTextRef>(null);
   const optionRefs: React.RefObject<Streamingi18nTextRef>[] = [];
-
-  // Selected option
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   // Text Question field
   const [input, setInput] = useState<string>("");
@@ -176,7 +171,7 @@ export const VoiceQuestion: React.FC<{
       return v;
     });
 
-    const questionEvaluation = await captureUserResponse(
+    const questionEvaluation = await captureVoiceResponseAndEvaluate(
       question,
       language,
       voice,
@@ -188,10 +183,17 @@ export const VoiceQuestion: React.FC<{
       textToAction,
     );
 
-    // Recording
-    if (questionEvaluation?.userResponse?.recording) {
-      setAnswerRecording(questionEvaluation?.userResponse?.recording);
-    }
+    const finalAnswer: QuestionAnswer = {
+      recording: questionEvaluation.userResponse.recording,
+      rawAnswer: questionEvaluation.userResponse.text,
+      evaluatedAnswer: questionEvaluation.aiResponse.answer,
+      by: "voice",
+    };
+
+    // // Recording
+    // if (questionEvaluation?.userResponse?.recording) {
+    //   setAnswerRecording(questionEvaluation?.userResponse?.recording);
+    // }
 
     if (inputRef && inputRef.current) {
       inputRef.current.value = questionEvaluation.aiResponse.answer;
@@ -200,24 +202,34 @@ export const VoiceQuestion: React.FC<{
     // validate Answer
     await validateAnswerWithUser(
       question,
-      questionEvaluation.aiResponse.answer,
+      finalAnswer,
       questionEvaluation.aiResponse.followupResponse as string,
       language,
       voice,
-      setAnswer,
+      setVoiceAnswer,
       setSelectedAnswer,
     );
 
     // Wait
     setIsWaiting(true);
-    await delay(3000);
-    setIsWaiting(false);
+    DEV: console.log("submitting Answer", finalAnswer);
+    await Promise.all([
+      await onAnswered(finalAnswer as QuestionAnswer),
+      await delay(3000),
+    ]);
 
-    // Submit if fine
-    onAnswered(questionEvaluation.aiResponse.answer);
+    setIsWaiting(false);
   };
 
-  const handleOptionClick = (options: string[]) => {
+  const handleOptionClick = (values: string[]) => {
+    const answer: QuestionAnswer = {
+      rawAnswer: values.join(", "),
+      evaluatedAnswer: values.join(", "),
+      recording: null,
+      by: "manual",
+    };
+
+    setVoiceAnswer(answer);
     // setSelectedOption(option);
     // onAnswered();
   };
@@ -277,6 +289,17 @@ export const VoiceQuestion: React.FC<{
             name="message"
             minRows={5}
             disabled={!isQuestionSpoken}
+            onChange={(e) => {
+              setVoiceAnswer((va) => {
+                let lva: QuestionAnswer = {
+                  rawAnswer: va?.rawAnswer, // Use existing 'raw' or the new value
+                  evaluatedAnswer: e.target.value, // Use existing 'evaluatedAnswer' or the new value
+                  recording: va?.recording || null, // Use existing 'recording' or default to null
+                  by: va?.by || "manual", // Use existing 'by' or default to "manual"
+                };
+                return lva;
+              });
+            }}
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
             className="sai-vq-text-input"
           />
@@ -308,10 +331,10 @@ export const VoiceQuestion: React.FC<{
                   ? transcript
                   : finalTranscript}
             </p>
-            {answerRecording && (
+            {voiceAnswer && voiceAnswer.recording && (
               <a
-                href={answerRecording.audioUrl}
-                download={answerRecording?.audioFile?.name}
+                href={voiceAnswer.recording?.audioUrl}
+                download={voiceAnswer.recording?.audioFile?.name}
               >
                 Recording
               </a>
@@ -340,12 +363,22 @@ export const VoiceQuestion: React.FC<{
               stopSpeaking={stopSpeaking}
             />
             {!isWaiting ? (
-              <button onClick={onSkip} className="sai-vf-action action-skip ">
+              <button
+                disabled={
+                  voiceAnswer == null || voiceAnswer?.evaluatedAnswer == ""
+                }
+                onClick={() =>
+                  voiceAnswer?.evaluatedAnswer != ""
+                    ? onAnswered(voiceAnswer as QuestionAnswer)
+                    : onSkip()
+                }
+                className="sai-vf-action action-skip "
+              >
                 <SkipForward className="w-5 h-5" />
               </button>
             ) : (
               <button
-                onClick={() => onAnswered(answer as string)}
+                onClick={() => onAnswered(voiceAnswer as QuestionAnswer)}
                 className="sai-vf-action action-next"
               >
                 <ArrowRight className="w-5 h-5" />

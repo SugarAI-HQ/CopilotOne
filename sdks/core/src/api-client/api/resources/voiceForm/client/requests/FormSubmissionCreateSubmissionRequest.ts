@@ -5,9 +5,11 @@
 /**
  * @example
  *     {
- *         clientUserId: "clientUserId"
+ *         clientUserId: "clientUserId",
+ *         metadata: {}
  *     }
  */
 export interface FormSubmissionCreateSubmissionRequest {
   clientUserId: string;
+  metadata: Record<string, unknown>;
 }

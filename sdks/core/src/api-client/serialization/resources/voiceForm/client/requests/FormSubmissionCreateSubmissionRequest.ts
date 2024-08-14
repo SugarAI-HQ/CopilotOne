@@ -11,10 +11,15 @@ export const FormSubmissionCreateSubmissionRequest: core.serialization.Schema<
   SugarAiApi.FormSubmissionCreateSubmissionRequest
 > = core.serialization.object({
   clientUserId: core.serialization.string(),
+  metadata: core.serialization.record(
+    core.serialization.string(),
+    core.serialization.unknown(),
+  ),
 });
 
 export declare namespace FormSubmissionCreateSubmissionRequest {
   interface Raw {
     clientUserId: string;
+    metadata: Record<string, unknown>;
   }
 }

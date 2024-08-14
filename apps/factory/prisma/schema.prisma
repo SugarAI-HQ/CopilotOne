@@ -423,7 +423,7 @@ model FormQuestion {
   question_params Json
   validation   Json
 
-  answers     FormSubmissionAnswers[]
+  // answers     FormSubmissionAnswers[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
@@ -432,13 +432,17 @@ model FormQuestion {
 }
 
 model FormSubmission {
-  id         String      @id @default(cuid())
+  id         String      @id @default(uuid())
   userId     String
   
   clientUserId  String
   formId     String
   form       Form   @relation(fields: [formId], references: [id])
   answers    FormSubmissionAnswers[]
+  submittedAt DateTime?
+
+  metadata    Json @default("{}")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
@@ -446,7 +450,7 @@ model FormSubmission {
 }
 
 model FormSubmissionAnswers {
-  id            String     @id @default(cuid())
+  id            String     @id @default(uuid())
   userId        String
 
   clientUserId  String
@@ -456,11 +460,14 @@ model FormSubmissionAnswers {
   submissionId  String
   submission    FormSubmission @relation(fields: [submissionId], references: [id])
   questionId    String
-  question      FormQuestion   @relation(fields: [questionId], references: [id])
-  response      Json @default("{}")
+  // question      FormQuestion   @relation(fields: [questionId], references: [id])
+  
+  answer      Json @default("{}")
+  metadata    Json @default("{}")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  @@index([submissionId, questionId])
+  @@index([formId, submissionId, questionId])
+  @@unique([submissionId, questionId])
 }

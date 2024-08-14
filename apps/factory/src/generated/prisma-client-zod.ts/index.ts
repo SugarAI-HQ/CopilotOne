@@ -90,9 +90,9 @@ export const FormScalarFieldEnumSchema = z.enum(['id','userId','name','descripti
 
 export const FormQuestionScalarFieldEnumSchema = z.enum(['id','userId','formId','question_type','question_text','question_params','validation','createdAt','updatedAt']);
 
-export const FormSubmissionScalarFieldEnumSchema = z.enum(['id','userId','clientUserId','formId','createdAt','updatedAt']);
+export const FormSubmissionScalarFieldEnumSchema = z.enum(['id','userId','clientUserId','formId','submittedAt','metadata','createdAt','updatedAt']);
 
-export const FormSubmissionAnswersScalarFieldEnumSchema = z.enum(['id','userId','clientUserId','formId','submissionId','questionId','response','createdAt','updatedAt']);
+export const FormSubmissionAnswersScalarFieldEnumSchema = z.enum(['id','userId','clientUserId','formId','submissionId','questionId','answer','metadata','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -540,10 +540,12 @@ export type FormQuestion = z.infer<typeof FormQuestionSchema>
 /////////////////////////////////////////
 
 export const FormSubmissionSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().uuid(),
   userId: z.string(),
   clientUserId: z.string(),
   formId: z.string(),
+  submittedAt: z.coerce.date().nullable(),
+  metadata: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -555,13 +557,14 @@ export type FormSubmission = z.infer<typeof FormSubmissionSchema>
 /////////////////////////////////////////
 
 export const FormSubmissionAnswersSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string().uuid(),
   userId: z.string(),
   clientUserId: z.string(),
   formId: z.string(),
   submissionId: z.string(),
   questionId: z.string(),
-  response: InputJsonValue,
+  answer: InputJsonValue,
+  metadata: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })

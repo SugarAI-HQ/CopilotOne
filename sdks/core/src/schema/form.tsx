@@ -105,23 +105,30 @@ export const aiEvaluationResponse = z.object({
   followupResponse: z.string().nullable(),
 });
 
-export interface Recording {
-  audioUrl: string;
-  audioFile: File;
-}
+// Recording Schema
+export const recording = z.object({
+  audioUrl: z.string(),
+  audioFile: z.instanceof(File),
+});
 
+// AudioResponse
+export const audioResponse = z.object({
+  text: z.string(),
+  autoStopped: z.boolean(),
+  recording: recording.nullable(),
+});
+
+// QuestionEvaluation
+export const questionEvaluation = z.object({
+  userResponse: audioResponse,
+  aiResponse: aiEvaluationResponse,
+});
+
+// Exporting the type inferred from Zod schemas
+export type Recording = z.infer<typeof recording>;
 export type AiEvaluationResponse = z.infer<typeof aiEvaluationResponse>;
-
-export interface AudioResponse {
-  text: string;
-  autoStopped: boolean;
-  recording: Recording | null;
-}
-
-export interface QuestionEvaluation {
-  userResponse: AudioResponse;
-  aiResponse: AiEvaluationResponse;
-}
+export type AudioResponse = z.infer<typeof audioResponse>;
+export type QuestionEvaluation = z.infer<typeof questionEvaluation>;
 
 export const voiceFormStates = z.enum([
   "none",
@@ -175,3 +182,25 @@ export const voiceForm = z.object({
   formConfig: formConfig,
 });
 export type VoiceForm = z.infer<typeof voiceForm>;
+
+// Question answer
+// 1. raw audio
+// 2. transcribed text
+// 3. ai processed text
+// Eithre raw audio is captured or transcribed text,
+// atleast one of them should be present
+export const questionAnswer = z
+  .object({
+    recording: recording.nullable(),
+    rawAnswer: z.string().optional(),
+    evaluatedAnswer: z.string().optional(),
+    by: z.enum(["voice", "manual"]),
+  })
+  .refine(
+    (data) => data.recording || data.rawAnswer, // At least one of recording or rawAnswer must be present
+    {
+      message: "Either recording or rawAnswer must be provided.",
+      path: ["recording", "rawAnswer"], // These are the paths that will be checked
+    },
+  );
+export type QuestionAnswer = z.infer<typeof questionAnswer>;

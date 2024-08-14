@@ -1,4 +1,8 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import {
   Form,
@@ -17,7 +21,8 @@ export const formSubmissionRouter = createTRPCRouter({
         method: "POST",
         path: "/voice-forms/{formId}/submission",
         tags: ["VoiceForm"],
-        summary: "Submit voice form with answers",
+        summary:
+          "Create a new submission for voice form for user with clientUserId ",
       },
     })
     .input(createSubmission)
@@ -26,14 +31,31 @@ export const formSubmissionRouter = createTRPCRouter({
       const { formId, clientUserId } = input;
 
       const form = await getForm(ctx, formId);
+      // debugger;
 
-      // Create a submission
-      const submission = await ctx.prisma.formSubmission.create({
-        data: {
-          formId,
-          clientUserId,
-          userId: form.userId,
-        },
+      const submission = await ctx.prisma.$transaction(async (prisma) => {
+        // Try to find an existing non-completed submission
+        let existingSubmission = await prisma.formSubmission.findFirst({
+          where: {
+            formId,
+            clientUserId,
+            submittedAt: null, // Check if the submission is not completed
+          },
+        });
+
+        // If no existing submission is found, create a new one
+        if (!existingSubmission) {
+          existingSubmission = await prisma.formSubmission.create({
+            data: {
+              formId,
+              clientUserId,
+              userId: form.userId, // Ensure this field is provided
+              metadata: input.metadata,
+            },
+          });
+        }
+
+        return existingSubmission;
       });
 
       const response: CreateSubmissionResponse = {
@@ -43,7 +65,7 @@ export const formSubmissionRouter = createTRPCRouter({
       return response;
     }),
 
-  submitAnswer: publicProcedure
+  submitAnswer: protectedProcedure
     .meta({
       openapi: {
         method: "POST",
@@ -59,31 +81,40 @@ export const formSubmissionRouter = createTRPCRouter({
 
       const form = await getForm(ctx, formId);
 
+      debugger;
       // Create a submission
-      const submitteedAnswer = await ctx.prisma.formSubmissionAnswers.create({
-        data: {
-          id: formId,
+      const submittedAnswer = await ctx.prisma.formSubmissionAnswers.upsert({
+        where: {
+          // Unique constraint to identify the specific answer for the question by user, form, and submission
+          submissionId_questionId: {
+            questionId: questionId,
+            submissionId: submissionId,
+          },
+        },
+        update: {
+          // Fields to update if the record exists
+          answer: answer,
+          metadata: input.metadata,
+        },
+        create: {
+          // Fields to create a new record if it doesn't exist
           userId: form.userId,
+          formId: formId,
           submissionId: submissionId,
           questionId: questionId,
-
-          response: answer,
-          // answers: {
-          //   create: answers.map((answer) => ({
-          //     questionId: answer.questionId,
-          //     response: answer.response,
-          //   })),
-          // },
+          answer: answer,
+          clientUserId: input.clientUserId,
+          metadata: input.metadata,
         },
       });
 
-      return { id: submitteedAnswer.id };
+      return { id: submittedAnswer.id };
     }),
 });
 
 async function getForm(ctx: any, formId: string): Promise<Form> {
   // Validate that the form exists
-  const form = await ctx.prisma.voiceForm.findUnique({
+  const form = await ctx.prisma.form.findUnique({
     where: { id: formId },
     select: {
       id: true,
