@@ -602,7 +602,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
     // Get user response
     // while (userResponse === "" || autoStopped) {
-    while (userResponse === "" && recording === null) {
+    while (userResponse === "" && recording === null && counter < 100) {
       counter = counter + 1;
 
       userResponse = await startListeningContinous(
@@ -655,7 +655,7 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
 
     // Get user response
     // while (userResponse === "" && (nudgeAfterAttempts ?? 0) < 2) {
-    while (userResponse === "") {
+    while (userResponse === "" && counter < 100) {
       counter = counter + 1;
       userResponse = await startListeningAsyncAutoBreak(-1, counter).catch(
         async (error) => {

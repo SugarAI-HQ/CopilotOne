@@ -5,5 +5,3 @@ export * from "./assistants/text_assistant";
 
 // components
 export * from "./components";
-
-export * from "./helpers/voice";

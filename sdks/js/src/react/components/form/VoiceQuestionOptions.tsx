@@ -6,8 +6,8 @@ import {
   FormConfig,
   LanguageCode,
   i18nMessage,
+  extracti18nText,
 } from "@sugar-ai/core";
-import { extracti18nText } from "~/react/helpers/voice";
 import "~/react/styles/form.css";
 
 export const VoiceQuestionOptions: React.FC<{

@@ -17,12 +17,10 @@ import {
   CharcterPerSec,
   Streamingi18nTextProps,
   Streamingi18nTextRef,
-} from "@sugar-ai/core";
-import {
   extracti18nText,
   speakMessageAsync,
   stopSpeaking,
-} from "~/react/helpers/voice";
+} from "@sugar-ai/core";
 
 export const Streamingi18nText: React.ForwardRefRenderFunction<
   Streamingi18nTextRef,

@@ -13,9 +13,9 @@ export const UnsupportedBrowser: React.FC<UnsupportedBrowserProps> = ({
   const [isUnsupported, setIsUnsupported] = useState(false);
 
   useEffect(() => {
-    if (isUnsupportedBrowser()) {
-      setIsUnsupported(true);
-    }
+    // if (isUnsupportedBrowser()) {
+    //   setIsUnsupported(true);
+    // }
   }, []);
 
   if (!isUnsupported) {

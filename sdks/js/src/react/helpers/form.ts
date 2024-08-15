@@ -11,8 +11,9 @@ import {
   useCopilot,
   QuestionEvaluation,
   AudioResponse,
+  speakMessageAsync,
+  speaki18nMessageAsync,
 } from "@sugar-ai/core";
-import { speakMessageAsync, speaki18nMessageAsync } from "./voice";
 import { QuestionAnswer } from "@sugar-ai/core";
 
 export const SELECTED_QUESTION_TYPES = ["single_choice", "multiple_choice"];
