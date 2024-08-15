@@ -30,7 +30,6 @@ export const formSubmissionRouter = createTRPCRouter({
       const { formId, clientUserId } = input;
 
       const form = await getForm(ctx, formId);
-      // debugger;
 
       const submission = await ctx.prisma.$transaction(async (prisma: any) => {
         // Try to find an existing non-completed submission
@@ -80,7 +79,6 @@ export const formSubmissionRouter = createTRPCRouter({
 
       const form = await getForm(ctx, formId);
 
-      debugger;
       // Create a submission
       const submittedAnswer = await ctx.prisma.formSubmissionAnswers.upsert({
         where: {

@@ -4,3 +4,4 @@ export * from "./useSpeechRecognition";
 export * from "./useSpeechSynthesis";
 export * from "./useStateEmbedding";
 export * from "./useWorkflow";
+export * from "./useVoiceForm";
