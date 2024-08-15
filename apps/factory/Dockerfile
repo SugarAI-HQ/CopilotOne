@@ -3,18 +3,28 @@ FROM node:20.12-alpine AS build
 
 RUN apk add --update --no-cache curl bash git python3 make g++ vips-dev build-base
 
-WORKDIR /app
+WORKDIR /app/
+ARG PROJECT_NAME
 
 # Set up npm
 RUN npm install -g npm@latest
 
-COPY package.json package-lock.json* ./
+COPY apps/${PROJECT_NAME}/package.json package-lock.json* ./
 
 # Install dependencies using npm
-RUN npm install
+RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
+# RUN npm install
+RUN --mount=type=cache,id=npm,target=/root/.npm npm install --ignore-scripts
+# RUN cd ../../sdks/core/ && npm install && npm run build
+# RUN npm link @sugar-ai/core
+
+RUN mkdir -p /sdks/core
+COPY sdks/core /sdks/core
+RUN cd /sdks/core && npm install && npm run build && npm link
+RUN cd /app && npm link @sugar-ai/core
 
 # Build
-COPY .  .
+COPY apps/${PROJECT_NAME}/  .
 
 # Postinstall tasks
 RUN npm run postinstall
@@ -34,6 +44,7 @@ ENV PORT 80
 ENV HOSTNAME 0.0.0.0
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV PROJECT_PATH /app
+ARG PROJECT_NAME
 
 
 WORKDIR /app
@@ -47,7 +58,7 @@ COPY --from=build --chown=nextjs:nodejs /app/public* ./public
 COPY --from=build --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=build --chown=nextjs:nodejs /app/prisma ./prisma
 # COPY --from=build --chown=nextjs:nodejs /app/server.js ./
-COPY docker .
+COPY apps/${PROJECT_NAME}/docker .
 # COPY --chown=nextjs:nodejs ./docker/entrypoint.sh /app/entrypoint.sh
 # COPY --chown=nextjs:nodejs ./docker/generate-env.cjs /app/
 
