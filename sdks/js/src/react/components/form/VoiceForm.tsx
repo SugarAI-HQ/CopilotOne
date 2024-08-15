@@ -76,7 +76,7 @@ export const VoiceForm: React.FC<{
 
     // 2. Create submission when user click start
     const submissionId = await createSubmission(formConfig.id);
-    setSubmissionId(submissionId);
+    // setSubmissionId(submissionId);
 
     // 3. Submit answers on each successful submission
     // const submitted = await submitAnswer(
@@ -97,10 +97,10 @@ export const VoiceForm: React.FC<{
     }
   }, [formConfig]);
 
-  useEffect(() => {
-    const m = getMetadata(language, voice, formConfig);
-    setMetadata(m);
-  }, [formConfig, language, voice]);
+  // useEffect(() => {
+  //   const m = getMetadata(language, voice, formConfig);
+  //   setMetadata(m);
+  // }, [formConfig, language, voice]);
 
   const welcomeMessage = geti18nMessage("welcome", translations);
   const postSubmissionMessage = geti18nMessage("postSubmission", translations);
@@ -115,11 +115,10 @@ export const VoiceForm: React.FC<{
       const { submissionId: submissionId } =
         (await apiClient.voiceForm.formSubmissionCreateSubmission(formId, {
           clientUserId: config?.clientUserId,
-          metadata: metadata,
+          metadata: getMetadata(language, voice, formConfig),
         })) as SugarAiApi.FormSubmissionCreateSubmissionResponse;
 
       console.log(`Submission created successfully ${submissionId}`);
-      setSubmissionId(submissionId);
       return submissionId;
     } catch (error) {
       console.error("Error creating submission:", error);
@@ -149,7 +148,7 @@ export const VoiceForm: React.FC<{
         {
           clientUserId: config?.clientUserId,
           answer: answer,
-          metadata: metadata,
+          metadata: getMetadata(language, voice, formConfig),
         },
       )) as SugarAiApi.FormSubmissionSubmitAnswerResponse;
 
@@ -172,7 +171,6 @@ export const VoiceForm: React.FC<{
       )}
       {step > 0 &&
         step <= questions.length &&
-        submissionId &&
         questions.map(
           (question, index) =>
             index === step - 1 && (
