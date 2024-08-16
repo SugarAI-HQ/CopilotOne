@@ -19,7 +19,6 @@ import { getLayout } from "~/app/layout";
 
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
-import { KeyOutput } from "~/validators/api_key";
 import SubmissionAnalytics from "../../../../components/voice_forms/submissions/analytics";
 import SubmissionsDashboard from "../../../../components/voice_forms/submissions/list";
 
@@ -46,7 +45,13 @@ FormShow.getLayout = getLayout;
 export default FormShow;
 
 function VoiceFormTabs({ formId }: { formId: string }) {
-  const [value, setValue] = useState(0);
+  const tabs = ["info", "submissions", "analytics"];
+
+  const router = useRouter();
+  const tab = (router.query.tab as string) || tabs[0];
+  const initTab = tabs.indexOf(tab) || 0;
+
+  const [value, setValue] = useState(initTab);
   const [pvalue, setPvalue] = useState(0);
 
   const handleChange = (event: any, newValue: number) => {
@@ -61,13 +66,9 @@ function VoiceFormTabs({ formId }: { formId: string }) {
     <div className="w-full">
       <Tabs
         value={value}
-        centered={true}
         onChange={handleChange}
         variant="scrollable" // This makes the tabs scrollable
         scrollButtons="auto" // This makes scroll buttons appear when there are more tabs than can fit
-        TabIndicatorProps={{
-          style: { background: "var(--sugarhub-text-color)" },
-        }}
       >
         <Tab label="Info" sx={{ color: "var(--sugarhub-text-color)" }} />
         <Tab label="Submissions" sx={{ color: "var(--sugarhub-text-color)" }} />

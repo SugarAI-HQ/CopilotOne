@@ -170,7 +170,7 @@ const VoiceForms = ({
               </Button>
               <Button
                 size="small"
-                href={`/dashboard/forms/${form?.id}/submissions`}
+                href={`/dashboard/forms/${form?.id}?tab=submissions`}
               >
                 Submissions
               </Button>
