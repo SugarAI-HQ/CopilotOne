@@ -12,6 +12,7 @@ import {
   getFormInput,
   form,
   I18nMessageWithRules,
+  getSubmissionsInput,
 } from "~/validators/form";
 
 export const formRouter = createTRPCRouter({
@@ -210,6 +211,189 @@ export const formRouter = createTRPCRouter({
   //         },
   //       });
   //     },
+
+  getSubmissionsSummary: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/voice-forms/{formId}/submissions",
+        tags: ["VoiceForm"],
+        summary: "Get a summary of submissions for a voice form",
+      },
+    })
+    .input(getSubmissionsInput)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      const { formId } = input;
+
+      const submissions = await ctx.prisma.formSubmission.findMany({
+        where: {
+          formId,
+          userId,
+        },
+        select: {
+          id: true,
+          clientUserId: true,
+          // submittedAt: true,
+          createdAt: true,
+        },
+      });
+
+      return submissions;
+    }),
+
+  // getSubmissionDetails: protectedProcedure
+  //   .meta({
+  //     openapi: {
+  //       method: "GET",
+  //       path: "/voice-forms/{formId}/submission/{submissionId}",
+  //       tags: ["VoiceForm"],
+  //       summary: "Get details of a single submission",
+  //     },
+  //   })
+  //   .input(z.object({ formId: z.string(), submissionId: z.string() }))
+  //   .query(async ({ ctx, input }) => {
+  //     const { submissionId } = input;
+
+  //     const submission = await ctx.prisma.formSubmission.findUnique({
+  //       where: {
+  //         id: submissionId,
+  //       },
+  //       include: {
+  //         answers: {
+  //           select: {
+  //             questionId: true,
+  //             answer: true,
+  //           },
+  //         },
+  //       },
+  //     });
+
+  //     if (!submission) {
+  //       throw new TRPCError({
+  //         code: "NOT_FOUND",
+  //         message: "Submission not found",
+  //       });
+  //     }
+
+  //     return submission;
+  //   }),
+
+  getTotalSubmissions: protectedProcedure
+    .input(getSubmissionsInput)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      const { formId } = input;
+      return await ctx.prisma.formSubmission.count({
+        where: {
+          formId: formId,
+          userId,
+        },
+      });
+    }),
+
+  getSubmissionTimeSeries: protectedProcedure
+    .input(getSubmissionsInput)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      const { formId } = input;
+      const submissions = await ctx.prisma.formSubmission.groupBy({
+        where: {
+          formId,
+          userId,
+        },
+        by: ["createdAt"],
+        _count: {
+          _all: true,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
+
+      const dates = submissions.map(
+        (item) => item.createdAt.toISOString().split("T")[0],
+      );
+      const counts = submissions.map((item) => item._count._all);
+
+      return { dates, counts };
+    }),
+
+  getLanguageBreakdown: protectedProcedure
+    .input(getSubmissionsInput)
+    .query(async ({ ctx, input }) => {
+      const { formId } = input;
+      const languages = await ctx.prisma.formSubmission.groupBy({
+        // by: ["metadata->>language"], // Assuming language is stored in metadata
+        where: {
+          formId,
+          userId: ctx.jwt?.id as string,
+        },
+        _count: {
+          _all: true,
+        },
+      });
+
+      return languages.map((lang) => ({
+        label: lang.language,
+        value: lang._count._all,
+      }));
+    }),
+
+  getCompletionRate: protectedProcedure
+    .input(getSubmissionsInput)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      const { formId } = input;
+
+      const totalSubmissions = await ctx.prisma.formSubmission.count({
+        where: {
+          formId,
+          userId,
+        },
+      });
+
+      const completedSubmissions = await ctx.prisma.formSubmission.count({
+        where: {
+          formId,
+          userId,
+          NOT: {
+            submittedAt: null,
+          },
+        },
+      });
+
+      const completionRate =
+        totalSubmissions > 0
+          ? (completedSubmissions / totalSubmissions) * 100
+          : 0;
+
+      return completionRate;
+    }),
+
+  getAverageCompletionTime: protectedProcedure
+    .input(getSubmissionsInput)
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.jwt?.id as string;
+      const { formId } = input;
+
+      const avgCompletionTime = await ctx.prisma.formSubmission.aggregate({
+        _avg: {
+          duration: {
+            seconds: true,
+          },
+        },
+        where: {
+          formId,
+          userId,
+          NOT: {
+            submittedAt: null,
+          },
+        },
+      });
+
+      return avgCompletionTime._avg?.duration || 0;
+    }),
 });
 
 const getEmptyMessage = (text: string = ""): I18nMessageWithRules => {

@@ -5,6 +5,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import VoiceChatIcon from "@mui/icons-material/VoiceChat";
 import DocumentScanner from "@mui/icons-material/DocumentScanner";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Dataset from "@mui/icons-material/Dataset";
@@ -28,6 +29,14 @@ export const mainListItems = (
           <PrecisionManufacturingIcon />
         </ListItemIcon>
         <ListItemText primary="Copilots" />
+      </ListItemButton>
+    </Link>
+    <Link href="/dashboard/forms">
+      <ListItemButton>
+        <ListItemIcon>
+          <VoiceChatIcon />
+        </ListItemIcon>
+        <ListItemText primary="Forms" />
       </ListItemButton>
     </Link>
     <Link href="/dashboard/prompts">

@@ -3,14 +3,13 @@ import { getLayout } from "~/components/Layouts/DashboardLayout";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
-import { Typography, Grid, Chip, CardActionArea } from "@mui/material";
+import CardActions from "@mui/material/CardActions";
+import { Typography, Grid, Chip, CardActionArea, Button } from "@mui/material";
 import { CreateVoiceForm } from "~/components/voice_forms/create_voice_form";
-import { CreateQuestion } from "~/components/voice_forms/create_question";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
 import ViewI18nMessage from "~/components/voice_forms/view_i18n_message";
 import { LanguageCode, i18nMessage } from "@sugar-ai/core";
 import { I18nMessageWithRules, Form } from "~/validators/form";
@@ -22,6 +21,9 @@ const VoiceFormHome = () => {
   const router = useRouter();
   const { data: sessionData } = useSession();
   const ns = sessionData?.user;
+
+  const initialLanguages: LanguageCode[] = ["en", "es", "fr", "hi"];
+  const [languages, setLanguages] = useState<LanguageCode[]>(initialLanguages);
 
   const handleVoiceFormCreationSuccess = (createdForm: Form) => {
     setStatus("success");
@@ -63,22 +65,19 @@ const VoiceFormHome = () => {
     },
   );
 
-  const initialMessage: I18nMessageWithRules = {
-    // mode: "manual",
-    lang: {
-      en: "Hello",
-      es: "Hola",
-      fr: "Bonjour",
-      hi: "नमस्ते",
-    },
-    // voice: false,
-    // output: "none",
-  };
+  // const initialMessage: I18nMessageWithRules = {
+  //   // mode: "manual",
+  //   lang: {
+  //     en: "Hello",
+  //     es: "Hola",
+  //     fr: "Bonjour",
+  //     hi: "नमस्ते",
+  //   },
+  //   // voice: false,
+  //   // output: "none",
+  // };
 
-  const initialLanguages: LanguageCode[] = ["en", "es", "fr", "hi"];
-
-  const [message, setMessage] = useState<i18nMessage>(initialMessage);
-  const [languages, setLanguages] = useState<LanguageCode[]>(initialLanguages);
+  // const [message, setMessage] = useState<i18nMessage>(initialMessage);
 
   const handleSave = (newMessage: i18nMessage) => {
     setMessage(newMessage);
@@ -86,12 +85,7 @@ const VoiceFormHome = () => {
 
   return (
     <>
-      <ViewI18nMessage message={message} languages={languages} />
-      {/* <CreateI18nMessage
-        initialMessage={message}
-        initialLanguages={languages}
-        onSave={handleSave}
-      /> */}
+      {/* <ViewI18nMessage message={message} languages={languages} /> */}
       {voiceForms && voiceForms.length > 0 ? (
         <>
           <CreateVoiceForm
@@ -100,7 +94,11 @@ const VoiceFormHome = () => {
             status={status}
             customError={customError}
           />
-          <VoiceForms voiceForms={voiceForms} setVoiceForms={setVoiceForms} />
+          <VoiceForms
+            voiceForms={voiceForms}
+            setVoiceForms={setVoiceForms}
+            languages={languages}
+          />
         </>
       ) : (
         <Grid
@@ -109,7 +107,7 @@ const VoiceFormHome = () => {
           alignItems="center"
           style={{ minHeight: "80vh" }}
         >
-          <Grid item xs={12}>
+          <Grid item xs={12} justifyContent="center" alignItems="center">
             <Typography align="center" variant="h5" padding={3}>
               Create your first Voice Form
             </Typography>
@@ -129,6 +127,7 @@ const VoiceFormHome = () => {
 const VoiceForms = ({
   voiceForms,
   setVoiceForms,
+  languages,
 }: {
   voiceForms: any[];
   setVoiceForms: React.Dispatch<React.SetStateAction<any[]>>;
@@ -141,9 +140,9 @@ const VoiceForms = ({
             <CardActionArea href={`/dashboard/forms/${form?.id}`}>
               <CardHeader
                 title={form?.name}
-                action={
-                  <Chip sx={{ mr: 2 }} size="small" label={form?.status} />
-                }
+                action={form?.languages.map((lang) => (
+                  <Chip sx={{ mr: 2 }} size="small" label={lang} />
+                ))}
               />
 
               <CardContent>
@@ -157,10 +156,25 @@ const VoiceForms = ({
                     WebkitBoxOrient: "vertical",
                   }}
                 >
-                  {form?.description}
+                  <ViewI18nMessage
+                    message={form?.description}
+                    languages={languages}
+                  />
+                  {/* {form?.description} */}
                 </Typography>
               </CardContent>
             </CardActionArea>
+            <CardActions>
+              <Button size="small" href={`/dashboard/forms/${form?.id}/edit`}>
+                Edit
+              </Button>
+              <Button
+                size="small"
+                href={`/dashboard/forms/${form?.id}/submissions`}
+              >
+                Submissions
+              </Button>
+            </CardActions>
           </Card>
         </Grid>
       ))}

@@ -95,3 +95,6 @@ export const submitAnswerResponse = z.object({
   // submissionId: z.string().cuid(),
   id: z.string(),
 });
+
+export const getSubmissionsInput = z.object({ formId: z.string() });
+export type GetSubmissionsInput = z.infer<typeof getSubmissionsInput>;
