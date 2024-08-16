@@ -34,10 +34,9 @@ RUN npm run postinstall
 RUN npm run cibuild
 
 # Runtime image
-FROM node:20.12-alpine AS release
+FROM node:20.12-alpine AS prod-build
 
 LABEL org.opencontainers.image.authors="ankur@sugarai.dev"
-
 
 ENV NODE_ENV=production
 ENV PORT 80
@@ -50,6 +49,11 @@ ARG PROJECT_NAME
 WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
+RUN npm install sharp
+
+FROM prod-build
 
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone/ ./
 COPY --from=build --chown=nextjs:nodejs /app/next.config.mjs ./
@@ -66,8 +70,6 @@ RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' pac
 
 RUN chmod +x /app/entrypoint.sh
 
-RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
-RUN npm install sharp
 
 
 USER root
