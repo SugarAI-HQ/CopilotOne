@@ -51,22 +51,28 @@ const LanguagesSelector: React.FC<LanguagesSelectorProps> = ({
           style={{ margin: "4px" }}
         />
       ))}
-      <Autocomplete
+      {/* <Autocomplete
         value={inputValue}
         clearOnBlur={true}
         onChange={(_, newValue) => handleAddLanguage(newValue)}
         options={availableLanguages}
         getOptionLabel={(option) => allLanguages[option]}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Add Language"
-            variant="outlined"
-            size="small"
-            style={{ width: "200px" }}
-          />
-        )}
-      />
+        renderInput={(params) => {
+          // Destructure and remove contentEditable from InputLabelProps
+          const { InputLabelProps, ...otherParams } = params;
+          const { contentEditable, ...filteredInputLabelProps } =
+            InputLabelProps || {};
+          return (
+            <TextField
+              {...otherParams}
+              InputLabelProps={filteredInputLabelProps} // Use filtered InputLabelProps
+              label="Add Language"
+              size="small"
+              style={{ width: "200px" }}
+            />
+          );
+        }}
+      /> */}
     </Box>
   );
 };
