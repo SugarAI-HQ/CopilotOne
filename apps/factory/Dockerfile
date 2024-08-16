@@ -62,12 +62,12 @@ COPY apps/${PROJECT_NAME}/docker .
 # COPY --chown=nextjs:nodejs ./docker/entrypoint.sh /app/entrypoint.sh
 # COPY --chown=nextjs:nodejs ./docker/generate-env.cjs /app/
 
-
+RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
 
 RUN chmod +x /app/entrypoint.sh
 
 RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
-RUN npm install sharp npm install
+RUN npm install sharp
 
 
 USER root

@@ -45,6 +45,7 @@ export const formRouter = createTRPCRouter({
 
   createForm: protectedProcedure
     .input(createFormInput)
+    .output(form)
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
 
@@ -165,8 +166,12 @@ export const formRouter = createTRPCRouter({
         const voiceForm = await ctx.prisma.form.create({
           data: {
             name: input.name,
-            // description: input.description,
             userId: userId,
+
+            description: "Default description", // Provide default values
+            startButtonText: "Start",
+            messages: "{}",
+            formConfig: "{}",
           },
         });
         return voiceForm;

@@ -10,11 +10,10 @@ import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { Form } from "~/generated/prisma-client-zod.ts";
 import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
 import ViewI18nMessage from "~/components/voice_forms/view_i18n_message";
 import { LanguageCode, i18nMessage } from "@sugar-ai/core";
-import { I18nMessageWithRules } from "~/validators/form";
+import { I18nMessageWithRules, Form } from "~/validators/form";
 
 const VoiceFormHome = () => {
   const [status, setStatus] = useState("");
@@ -35,7 +34,7 @@ const VoiceFormHome = () => {
       const errorData = JSON.parse(error.message);
       setCustomError(errorData);
     },
-    onSuccess: (createdForm) => {
+    onSuccess: (createdForm: Form) => {
       if (createdForm !== null) {
         setCustomError({});
         handleVoiceFormCreationSuccess(createdForm);
