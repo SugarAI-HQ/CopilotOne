@@ -1382,7 +1382,7 @@
             $ref: "#/components/responses/error"
     /voice-forms/{formId}/submissions: 
       get: 
-        operationId: "form-getSubmissionsSummary"
+        operationId: "form-getSubmissions"
         summary: "Get a summary of submissions for a voice form"
         tags: 
           - "VoiceForm"
@@ -1425,7 +1425,86 @@
             description: "Successful response"
             content: 
               application/json: 
-                schema: {}
+                schema: 
+                  type: "object"
+                  properties: 
+                    id: 
+                      type: "string"
+                    formId: 
+                      type: "string"
+                    userId: 
+                      type: "string"
+                    clientUserId: 
+                      type: "string"
+                    metadata: 
+                      anyOf: 
+                        - 
+                          type: "string"
+                        - 
+                          type: "number"
+                        - 
+                          type: "boolean"
+                        - 
+                          type: "array"
+                          items: {}
+                        - 
+                          type: "object"
+                          additionalProperties: {}
+                    submittedAt: 
+                      type: "string"
+                      format: "date-time"
+                      nullable: true
+                    createdAt: 
+                      type: "string"
+                      format: "date-time"
+                    updatedAt: 
+                      type: "string"
+                      format: "date-time"
+                    answers: 
+                      type: "array"
+                      items: 
+                        type: "object"
+                        properties: 
+                          questionId: 
+                            type: "string"
+                          answer: {}
+                          metadata: 
+                            anyOf: 
+                              - 
+                                type: "string"
+                              - 
+                                type: "number"
+                              - 
+                                type: "boolean"
+                              - 
+                                type: "array"
+                                items: {}
+                              - 
+                                type: "object"
+                                additionalProperties: {}
+                          updatedAt: 
+                            type: "string"
+                            format: "date-time"
+                          createdAt: 
+                            type: "string"
+                            format: "date-time"
+                        required: 
+                          - "questionId"
+                          - "metadata"
+                          - "updatedAt"
+                          - "createdAt"
+                        additionalProperties: false
+                  required: 
+                    - "id"
+                    - "formId"
+                    - "userId"
+                    - "clientUserId"
+                    - "metadata"
+                    - "submittedAt"
+                    - "createdAt"
+                    - "updatedAt"
+                    - "answers"
+                  additionalProperties: false
           default: 
             $ref: "#/components/responses/error"
     /voice-forms/{formId}/submission: 
@@ -1444,8 +1523,19 @@
                   clientUserId: 
                     type: "string"
                   metadata: 
-                    type: "object"
-                    additionalProperties: {}
+                    anyOf: 
+                      - 
+                        type: "string"
+                      - 
+                        type: "number"
+                      - 
+                        type: "boolean"
+                      - 
+                        type: "array"
+                        items: {}
+                      - 
+                        type: "object"
+                        additionalProperties: {}
                 required: 
                   - "clientUserId"
                   - "metadata"
@@ -1489,10 +1579,49 @@
                     type: "string"
                   answer: 
                     type: "object"
-                    additionalProperties: {}
+                    properties: 
+                      recording: 
+                        type: "object"
+                        properties: 
+                          audioUrl: 
+                            type: "string"
+                          audioFile: {}
+                        required: 
+                          - "audioUrl"
+                          - "audioFile"
+                        additionalProperties: false
+                        nullable: true
+                      rawAnswer: 
+                        type: "string"
+                        nullable: true
+                      evaluatedAnswer: 
+                        type: "string"
+                        nullable: true
+                      by: 
+                        type: "string"
+                        enum: 
+                          - "voice"
+                          - "manual"
+                    required: 
+                      - "recording"
+                      - "rawAnswer"
+                      - "evaluatedAnswer"
+                      - "by"
+                    additionalProperties: false
                   metadata: 
-                    type: "object"
-                    additionalProperties: {}
+                    anyOf: 
+                      - 
+                        type: "string"
+                      - 
+                        type: "number"
+                      - 
+                        type: "boolean"
+                      - 
+                        type: "array"
+                        items: {}
+                      - 
+                        type: "object"
+                        additionalProperties: {}
                 required: 
                   - "clientUserId"
                   - "answer"

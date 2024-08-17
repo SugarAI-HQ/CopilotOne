@@ -24,7 +24,7 @@ export declare namespace VoiceForm {
 export class VoiceForm {
   constructor(protected readonly _options: VoiceForm.Options = {}) {}
 
-  public async formGetSubmissionsSummary(
+  public async formGetSubmissions(
     formId: string,
     requestOptions?: VoiceForm.RequestOptions,
   ): Promise<unknown> {
@@ -76,7 +76,7 @@ export class VoiceForm {
     formId: string,
     submissionId: string,
     requestOptions?: VoiceForm.RequestOptions,
-  ): Promise<unknown> {
+  ): Promise<SugarAiApi.FormGetSubmissionResponse> {
     const _response = await core.fetcher({
       url: urlJoin(
         (await core.Supplier.get(this._options.environment)) ??
@@ -96,7 +96,15 @@ export class VoiceForm {
       maxRetries: requestOptions?.maxRetries,
     });
     if (_response.ok) {
-      return _response.body;
+      return await serializers.FormGetSubmissionResponse.parseOrThrow(
+        _response.body,
+        {
+          unrecognizedObjectKeys: "passthrough",
+          allowUnrecognizedUnionMembers: true,
+          allowUnrecognizedEnumValues: true,
+          breadcrumbsPrefix: ["response"],
+        },
+      );
     }
 
     if (_response.error.reason === "status-code") {

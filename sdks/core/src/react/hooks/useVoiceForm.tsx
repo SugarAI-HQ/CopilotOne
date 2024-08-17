@@ -23,7 +23,7 @@ export interface VoiceFormContextType {
   createSubmission: (formId: string) => Promise<any>;
   submitAnswer: (
     formId: string,
-    submissionId: string,
+    // submissionId: string,
     question: Question,
     answer: QuestionAnswer,
   ) => Promise<any>;
@@ -38,6 +38,7 @@ export const VoiceFormProvider: React.FC<{
   children: ReactNode;
 }> = ({ formConfig, children }) => {
   const [submissionId, setSubmissionId] = useState<string | null>(null);
+
   const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
   const { apiClient, config } = useCopilot();
   const { language, voice } = useLanguage();
@@ -68,7 +69,7 @@ export const VoiceFormProvider: React.FC<{
 
   useEffect(() => {
     if (formConfig.id && formConfig.id !== "") {
-      init(formConfig.id);
+      // init(formConfig.id);
     }
   }, [formConfig]);
 
@@ -78,6 +79,7 @@ export const VoiceFormProvider: React.FC<{
   };
 
   const createSubmission = async (formId: string): Promise<string | null> => {
+    debugger;
     try {
       const { submissionId } =
         (await apiClient.voiceForm.formSubmissionCreateSubmission(formId, {
@@ -96,12 +98,15 @@ export const VoiceFormProvider: React.FC<{
 
   const submitAnswer = async (
     formId: string,
-    submissionId: string,
+    // submissionId: string,
     question: Question,
     answer: QuestionAnswer,
   ) => {
     if (!formId) throw new Error("Form Id is not set");
-    if (!submissionId) throw new Error("Submission ID is not set");
+    if (!submissionId) {
+      await createSubmission(formId);
+      // throw new Error("Submission ID is not set");
+    }
 
     try {
       const { id } = (await apiClient.voiceForm.formSubmissionSubmitAnswer(

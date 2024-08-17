@@ -82,7 +82,6 @@ export const formSubmissionRouter = createTRPCRouter({
       const { formId, submissionId, questionId, answer } = input;
 
       const form = await getForm(ctx, formId);
-
       // Create a submission
       const submittedAnswer = await ctx.prisma.formSubmissionAnswers.upsert({
         where: {

@@ -197,10 +197,11 @@ export const questionAnswer = z
     by: z.enum(["voice", "manual"]),
   })
   .refine(
-    (data) => data.recording || data.rawAnswer, // At least one of recording or rawAnswer must be present
+    (data) => data.recording || data.evaluatedAnswer || data.rawAnswer, // At least one of recording or rawAnswer must be present
     {
-      message: "Either recording or rawAnswer must be provided.",
-      path: ["recording", "rawAnswer"], // These are the paths that will be checked
+      message:
+        "Either recording or rawAnswer or evaluatedAnswer must be provided.",
+      path: ["recording", "rawAnswer", "evaluatedAnswer"], // These are the paths that will be checked
     },
   );
 export type QuestionAnswer = z.infer<typeof questionAnswer>;
