@@ -16,8 +16,11 @@ import {
   getSubmissionsInput,
   getSubmissionsResponse,
   getSubmissionResponse,
+  GetSubmissionResponse,
+  parsePrismaJsonb,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
+import { debounce } from "lodash";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -290,6 +293,11 @@ export const formRouter = createTRPCRouter({
         });
       }
 
+      // const parsedSubmissionData: GetSubmissionResponse = parsePrismaJsonb(
+      //   submission,
+      //   getSubmissionResponse,
+      // );
+
       return submission;
     }),
 
@@ -335,27 +343,27 @@ export const formRouter = createTRPCRouter({
       return { dates, counts };
     }),
 
-  getLanguageBreakdown: protectedProcedure
-    .input(getSubmissionsInput)
-    .output(getSubmissionsResponse)
-    .query(async ({ ctx, input }) => {
-      const { formId } = input;
-      const languages = await ctx.prisma.formSubmission.groupBy({
-        // by: ["metadata->>language"], // Assuming language is stored in metadata
-        where: {
-          formId,
-          userId: ctx.jwt?.id as string,
-        },
-        _count: {
-          _all: true,
-        },
-      });
+  // getLanguageBreakdown: protectedProcedure
+  //   .input(getSubmissionsInput)
+  //   .output(getSubmissionsResponse)
+  //   .query(async ({ ctx, input }) => {
+  //     const { formId } = input;
+  //     const languages = await ctx.prisma.formSubmission.groupBy({
+  //       // by: ["metadata->>language"], // Assuming language is stored in metadata
+  //       where: {
+  //         formId,
+  //         userId: ctx.jwt?.id as string,
+  //       },
+  //       _count: {
+  //         _all: true,
+  //       },
+  //     });
 
-      return languages.map((lang) => ({
-        label: lang.language,
-        value: lang._count._all,
-      }));
-    }),
+  //     return languages.map((lang) => ({
+  //       label: lang.language,
+  //       value: lang._count._all,
+  //     }));
+  //   }),
 
   getCompletionRate: protectedProcedure
     .input(getSubmissionsInput)
@@ -412,8 +420,9 @@ export const formRouter = createTRPCRouter({
 
       // Calculate the total duration and count
       const totalDuration = submissions.reduce((acc, submission) => {
-        const duration =
-          submission.submittedAt.getTime() - submission.createdAt.getTime();
+        const duration = submission?.submittedAt
+          ? submission?.submittedAt?.getTime() - submission.createdAt.getTime()
+          : 0;
         return acc + duration;
       }, 0);
 

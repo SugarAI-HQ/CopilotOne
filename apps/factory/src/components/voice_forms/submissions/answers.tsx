@@ -8,9 +8,9 @@ import {
   Paper,
 } from "@mui/material";
 
-import { allLanguages, LangCode } from "@sugar-ai/core";
+import { allLanguages, LanguageCode, QuestionAnswer } from "@sugar-ai/core";
 
-import { GetSubmissionResponse } from "~/validators/form";
+import { SubmittedAnswer } from "~/validators/form";
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import LabelIcon from "@mui/icons-material/Label";
@@ -40,7 +40,8 @@ const SubmissionAnswers = ({ submission }: any) => {
           {submission?.metadata?.browser?.version}
         </h3>
         <h3 className="text-md mb-4 font-medium">
-          Language: {allLanguages[submission?.metadata?.language as LangCode]}
+          Language:{" "}
+          {allLanguages[submission?.metadata?.language as LanguageCode]}
           {" / "}
           {submission?.metadata?.voice?.name}
         </h3>
@@ -49,9 +50,9 @@ const SubmissionAnswers = ({ submission }: any) => {
         </h3>
 
         <List>
-          {submission?.answers.map((sa: GetSubmissionResponse) => (
+          {submission?.answers.map((sa: SubmittedAnswer) => (
             <ListItem
-              key={sa.questionId}
+              key={sa?.questionId}
               className="border-b"
               // secondaryAction={
               //   <IconButton aria-label="comment">
@@ -62,9 +63,12 @@ const SubmissionAnswers = ({ submission }: any) => {
               <ListItemAvatar>
                 <LabelIcon />
               </ListItemAvatar>
+
               <ListItemText
-                primary={`${sa.questionId}: `}
-                secondary={`Answer [${sa.answer.by}]: ${sa.answer.evaluatedAnswer}`}
+                primary={`${sa?.questionId}: `}
+                secondary={`Answer [${(sa.answer as QuestionAnswer).by}]: ${
+                  (sa.answer as QuestionAnswer).evaluatedAnswer
+                }`}
               />
             </ListItem>
           ))}

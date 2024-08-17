@@ -80,7 +80,7 @@ const VoiceFormHome = () => {
   // const [message, setMessage] = useState<i18nMessage>(initialMessage);
 
   const handleSave = (newMessage: i18nMessage) => {
-    setMessage(newMessage);
+    // setMessage(newMessage);
   };
 
   return (
@@ -131,6 +131,7 @@ const VoiceForms = ({
 }: {
   voiceForms: any[];
   setVoiceForms: React.Dispatch<React.SetStateAction<any[]>>;
+  languages: LanguageCode[];
 }) => {
   return (
     <Grid container spacing={1} paddingTop={2}>
@@ -140,7 +141,7 @@ const VoiceForms = ({
             <CardActionArea href={`/dashboard/forms/${form?.id}`}>
               <CardHeader
                 title={form?.name}
-                action={form?.languages.map((lang) => (
+                action={form?.languages.map((lang: LanguageCode) => (
                   <Chip sx={{ mr: 2 }} size="small" label={lang} />
                 ))}
               />

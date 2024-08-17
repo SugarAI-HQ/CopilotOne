@@ -53,7 +53,7 @@ RUN adduser --system --uid 1001 nextjs
 RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
 RUN npm install sharp
 
-FROM prod-build
+FROM prod-build as release
 
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone/ ./
 COPY --from=build --chown=nextjs:nodejs /app/next.config.mjs ./

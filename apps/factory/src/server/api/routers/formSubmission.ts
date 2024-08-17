@@ -15,6 +15,8 @@ import {
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
 
+import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
+
 export const formSubmissionRouter = createTRPCRouter({
   createSubmission: publicProcedure
     .meta({
@@ -92,8 +94,8 @@ export const formSubmissionRouter = createTRPCRouter({
         },
         update: {
           // Fields to update if the record exists
-          answer: answer,
-          metadata: input.metadata,
+          answer: answer as InputJsonValueType,
+          metadata: input.metadata as InputJsonValueType,
         },
         create: {
           // Fields to create a new record if it doesn't exist
@@ -101,9 +103,9 @@ export const formSubmissionRouter = createTRPCRouter({
           formId: formId,
           submissionId: submissionId,
           questionId: questionId,
-          answer: answer,
+          answer: answer as InputJsonValueType,
           clientUserId: input.clientUserId,
-          metadata: input.metadata,
+          metadata: input.metadata as InputJsonValueType,
         },
       });
 

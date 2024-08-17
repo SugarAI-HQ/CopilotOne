@@ -440,7 +440,7 @@ model FormSubmission {
   form       Form   @relation(fields: [formId], references: [id])
   answers    FormSubmissionAnswers[]
   submittedAt DateTime?
-  duration   Int @default(0)
+  // duration   Int @default(0)
 
   metadata    Json @default("{}")
 

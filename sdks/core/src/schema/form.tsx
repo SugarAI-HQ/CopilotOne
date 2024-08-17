@@ -192,8 +192,8 @@ export type VoiceForm = z.infer<typeof voiceForm>;
 export const questionAnswer = z
   .object({
     recording: recording.nullable(),
-    rawAnswer: z.string().optional(),
-    evaluatedAnswer: z.string().optional(),
+    rawAnswer: z.string().nullable(),
+    evaluatedAnswer: z.string().nullable(),
     by: z.enum(["voice", "manual"]),
   })
   .refine(

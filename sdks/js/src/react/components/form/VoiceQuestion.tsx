@@ -292,7 +292,7 @@ export const VoiceQuestion: React.FC<{
             onChange={(e) => {
               setVoiceAnswer((va) => {
                 let lva: QuestionAnswer = {
-                  rawAnswer: va?.rawAnswer, // Use existing 'raw' or the new value
+                  rawAnswer: va?.rawAnswer || null, // Use existing 'raw' or the new value
                   evaluatedAnswer: e.target.value, // Use existing 'evaluatedAnswer' or the new value
                   recording: va?.recording || null, // Use existing 'recording' or default to null
                   by: va?.by || "manual", // Use existing 'by' or default to "manual"

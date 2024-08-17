@@ -1,5 +1,10 @@
-import { z } from "zod";
-import { i18nMessageSchema, languageCode } from "@sugar-ai/core";
+import { z, ZodType } from "zod";
+import {
+  i18nMessageSchema,
+  languageCode,
+  questionAnswer,
+} from "@sugar-ai/core";
+import { JsonValue, JsonValueType } from "~/generated/prisma-client-zod.ts";
 
 export const getFormsInput = z.object({});
 export type GetFormsInput = z.infer<typeof getFormsInput>;
@@ -62,7 +67,7 @@ export const getFormInput = z.object({
 });
 export type GetFormInput = z.infer<typeof getFormInput>;
 
-export const metadata = z.record(z.any());
+export const metadata = JsonValue;
 
 export const createSubmission = z.object({
   formId: z.string(),
@@ -101,7 +106,7 @@ export const submitAnswer = z.object({
   formId: z.string(),
   submissionId: z.string(),
   questionId: z.string(),
-  answer: metadata,
+  answer: questionAnswer,
   metadata: metadata,
   // answers: z.array(questionAnswerSchema),
 });
@@ -126,11 +131,13 @@ export type GetSubmissionsResponse = z.infer<typeof getSubmissionsResponse>;
 
 export const submittedAnswer = z.object({
   questionId: z.string(),
-  answer: metadata,
+  answer: z.any(),
   metadata: metadata,
   updatedAt: z.date(),
   createdAt: z.date(),
 });
+
+export type SubmittedAnswer = z.infer<typeof submittedAnswer>;
 
 export const getSubmissionResponse = z.object({
   id: z.string(),
@@ -144,3 +151,36 @@ export const getSubmissionResponse = z.object({
   answers: z.array(submittedAnswer),
 });
 export type GetSubmissionResponse = z.infer<typeof getSubmissionResponse>;
+
+/**
+ * Utility function to parse and validate Prisma JSONB data.
+ * @param rawData - The raw JSONB data from the Prisma database.
+ * @param schema - The Zod schema to validate the data against.
+ * @returns - Parsed and validated data according to the provided Zod schema.
+ * @throws - Will throw an error if the data does not match the schema.
+ */
+export function parsePrismaJsonb<T extends ZodType<any, any>>(
+  rawData: any,
+  schema: T,
+): z.infer<T> {
+  const preprocessDates = (data: any) => {
+    if (typeof data === "object" && data !== null) {
+      for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+          if (
+            typeof data[key] === "string" &&
+            /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/.test(data[key])
+          ) {
+            data[key] = new Date(data[key]);
+          } else if (typeof data[key] === "object") {
+            preprocessDates(data[key]);
+          }
+        }
+      }
+    }
+  };
+
+  preprocessDates(rawData);
+
+  return schema.parse(rawData);
+}

@@ -1,6 +1,7 @@
 Dockerfile
 .env
 app/factory/.env
+app/factory/.env.local
 app/factory/.env.example
 app/factory/.env.production
 app/factory/node_modules
@@ -17,3 +18,4 @@ README.md
 .terraform
 .husky
 .github
+apps/factory/node_modules/
