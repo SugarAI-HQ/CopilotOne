@@ -80,6 +80,22 @@ export const createSubmissionResponse = z.object({
 
 export type CreateSubmissionResponse = z.infer<typeof createSubmissionResponse>;
 
+export const completeSubmissionInput = z.object({
+  formId: z.string(),
+  submissionId: z.string(),
+});
+
+export type CompleteSubmissionInput = z.infer<typeof completeSubmissionInput>;
+
+export const completeSubmissionResponse = z.object({
+  submissionId: z.string(),
+  message: z.string(),
+});
+
+export type CompleteSubmissionResponse = z.infer<
+  typeof completeSubmissionResponse
+>;
+
 export const submitAnswer = z.object({
   clientUserId: z.string(),
   formId: z.string(),

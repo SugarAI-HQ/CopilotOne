@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Onboarding from "./Onboarding";
 import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
@@ -18,7 +18,8 @@ export const VoiceForm: React.FC<{
   questions: Question[];
   formConfig: FormConfig;
 }> = ({ showStartButton, translations, questions, formConfig }) => {
-  const { submissionId, createSubmission, submitAnswer } = useVoiceForm();
+  const { submissionId, createSubmission, submitAnswer, completeSubmission } =
+    useVoiceForm();
   const initialStep = parseInt(
     new URLSearchParams(window.location.search).get("step") || "0",
   );
@@ -26,15 +27,33 @@ export const VoiceForm: React.FC<{
 
   const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
 
-  const handleOnboardingComplete = async () => {
-    const submissionId = await createSubmission(formConfig.id);
-    setStep((prevStep) => prevStep + 1);
+  useEffect(() => {
+    handleOnboardingComplete(false);
+  }, []);
+
+  const handleOnboardingComplete = async (
+    isOnboardingComplete: boolean = true,
+  ) => {
+    if (!submissionId) {
+      await createSubmission(formConfig.id);
+    }
+
+    isOnboardingComplete && setStep((prevStep) => prevStep + 1);
+  };
+
+  const handleQuestionsComplete = async () => {
+    const resp = await completeSubmission(
+      formConfig.id,
+      submissionId as string,
+    );
+    // setStep((prevStep) => prevStep + 1);
   };
 
   const handleQuestionComplete = async (
     question: Question,
     answer: QuestionAnswer | null,
   ) => {
+    // Check if the answer is not null before submitting
     if (answer) {
       await submitAnswer(
         formConfig.id,
@@ -45,7 +64,15 @@ export const VoiceForm: React.FC<{
       setAnswers((prevAnswers) => [...prevAnswers, answer]);
     }
 
-    setStep((prevStep) => prevStep + 1);
+    setStep((prevStep) => {
+      const nextStep = prevStep + 1;
+
+      // If we're at the last question, complete the submission
+      if (nextStep > questions.length) {
+        handleQuestionsComplete();
+      }
+      return nextStep;
+    });
   };
 
   const welcomeMessage = geti18nMessage("welcome", translations);

@@ -4,10 +4,10 @@
 
 import * as environments from "../../../../environments";
 import * as core from "../../../../core";
-import * as SugarAiApi from "../../..";
-import * as serializers from "../../../../serialization";
 import { urlJoin } from "url-join-ts";
 import * as errors from "../../../../errors";
+import * as SugarAiApi from "../../..";
+import * as serializers from "../../../../serialization";
 
 export declare namespace VoiceForm {
   interface Options {
@@ -23,6 +23,103 @@ export declare namespace VoiceForm {
 
 export class VoiceForm {
   constructor(protected readonly _options: VoiceForm.Options = {}) {}
+
+  public async formGetSubmissionsSummary(
+    formId: string,
+    requestOptions?: VoiceForm.RequestOptions,
+  ): Promise<unknown> {
+    const _response = await core.fetcher({
+      url: urlJoin(
+        (await core.Supplier.get(this._options.environment)) ??
+          environments.SugarAiApiEnvironment.Default,
+        `voice-forms/${formId}/submissions`,
+      ),
+      method: "GET",
+      headers: {
+        Authorization: await this._getAuthorizationHeader(),
+        "X-Fern-Language": "JavaScript",
+      },
+      contentType: "application/json",
+      timeoutMs:
+        requestOptions?.timeoutInSeconds != null
+          ? requestOptions.timeoutInSeconds * 1000
+          : 60000,
+      maxRetries: requestOptions?.maxRetries,
+    });
+    if (_response.ok) {
+      return _response.body;
+    }
+
+    if (_response.error.reason === "status-code") {
+      throw new errors.SugarAiApiError({
+        statusCode: _response.error.statusCode,
+        body: _response.error.body,
+      });
+    }
+
+    switch (_response.error.reason) {
+      case "non-json":
+        throw new errors.SugarAiApiError({
+          statusCode: _response.error.statusCode,
+          body: _response.error.rawBody,
+        });
+      case "timeout":
+        throw new errors.SugarAiApiTimeoutError();
+      case "unknown":
+        throw new errors.SugarAiApiError({
+          message: _response.error.errorMessage,
+        });
+    }
+  }
+
+  public async formGetSubmission(
+    formId: string,
+    submissionId: string,
+    requestOptions?: VoiceForm.RequestOptions,
+  ): Promise<unknown> {
+    const _response = await core.fetcher({
+      url: urlJoin(
+        (await core.Supplier.get(this._options.environment)) ??
+          environments.SugarAiApiEnvironment.Default,
+        `voice-forms/${formId}/submission/${submissionId}`,
+      ),
+      method: "GET",
+      headers: {
+        Authorization: await this._getAuthorizationHeader(),
+        "X-Fern-Language": "JavaScript",
+      },
+      contentType: "application/json",
+      timeoutMs:
+        requestOptions?.timeoutInSeconds != null
+          ? requestOptions.timeoutInSeconds * 1000
+          : 60000,
+      maxRetries: requestOptions?.maxRetries,
+    });
+    if (_response.ok) {
+      return _response.body;
+    }
+
+    if (_response.error.reason === "status-code") {
+      throw new errors.SugarAiApiError({
+        statusCode: _response.error.statusCode,
+        body: _response.error.body,
+      });
+    }
+
+    switch (_response.error.reason) {
+      case "non-json":
+        throw new errors.SugarAiApiError({
+          statusCode: _response.error.statusCode,
+          body: _response.error.rawBody,
+        });
+      case "timeout":
+        throw new errors.SugarAiApiTimeoutError();
+      case "unknown":
+        throw new errors.SugarAiApiError({
+          message: _response.error.errorMessage,
+        });
+    }
+  }
 
   public async formSubmissionCreateSubmission(
     formId: string,
@@ -120,6 +217,63 @@ export class VoiceForm {
     });
     if (_response.ok) {
       return await serializers.FormSubmissionSubmitAnswerResponse.parseOrThrow(
+        _response.body,
+        {
+          unrecognizedObjectKeys: "passthrough",
+          allowUnrecognizedUnionMembers: true,
+          allowUnrecognizedEnumValues: true,
+          breadcrumbsPrefix: ["response"],
+        },
+      );
+    }
+
+    if (_response.error.reason === "status-code") {
+      throw new errors.SugarAiApiError({
+        statusCode: _response.error.statusCode,
+        body: _response.error.body,
+      });
+    }
+
+    switch (_response.error.reason) {
+      case "non-json":
+        throw new errors.SugarAiApiError({
+          statusCode: _response.error.statusCode,
+          body: _response.error.rawBody,
+        });
+      case "timeout":
+        throw new errors.SugarAiApiTimeoutError();
+      case "unknown":
+        throw new errors.SugarAiApiError({
+          message: _response.error.errorMessage,
+        });
+    }
+  }
+
+  public async formSubmissionCompleteSubmission(
+    formId: string,
+    submissionId: string,
+    requestOptions?: VoiceForm.RequestOptions,
+  ): Promise<SugarAiApi.FormSubmissionCompleteSubmissionResponse> {
+    const _response = await core.fetcher({
+      url: urlJoin(
+        (await core.Supplier.get(this._options.environment)) ??
+          environments.SugarAiApiEnvironment.Default,
+        `voice-forms/${formId}/submission/${submissionId}/complete`,
+      ),
+      method: "POST",
+      headers: {
+        Authorization: await this._getAuthorizationHeader(),
+        "X-Fern-Language": "JavaScript",
+      },
+      contentType: "application/json",
+      timeoutMs:
+        requestOptions?.timeoutInSeconds != null
+          ? requestOptions.timeoutInSeconds * 1000
+          : 60000,
+      maxRetries: requestOptions?.maxRetries,
+    });
+    if (_response.ok) {
+      return await serializers.FormSubmissionCompleteSubmissionResponse.parseOrThrow(
         _response.body,
         {
           unrecognizedObjectKeys: "passthrough",

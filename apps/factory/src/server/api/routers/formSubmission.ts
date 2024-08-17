@@ -10,6 +10,8 @@ import {
   CreateSubmissionResponse,
   submitAnswerResponse,
   submitAnswer,
+  completeSubmissionInput,
+  completeSubmissionResponse,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
 
@@ -106,6 +108,51 @@ export const formSubmissionRouter = createTRPCRouter({
       });
 
       return { id: submittedAnswer.id };
+    }),
+
+  completeSubmission: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/voice-forms/{formId}/submission/{submissionId}/complete",
+        tags: ["VoiceForm"],
+        summary: "Finalize a submission after all answers are submitted",
+      },
+    })
+    .input(completeSubmissionInput)
+    .output(completeSubmissionResponse) // Define this schema according to your response structure
+    .mutation(async ({ ctx, input }) => {
+      const { formId, submissionId } = input;
+
+      // // Find the submission and verify that it belongs to the current user
+      // const submission = await ctx.prisma.formSubmission.findFirst({
+      //   where: {
+      //     id: submissionId,
+      //     formId,
+      //     clientUserId,
+      //     submittedAt: null, // Ensure the submission is not already finalized
+      //   },
+      // });
+
+      // if (!submission) {
+      //   throw new Error("Submission not found or already finalized.");
+      // }
+
+      // Finalize the submission by setting the submittedAt field
+      const updatedSubmission = await ctx.prisma.formSubmission.update({
+        where: {
+          id: submissionId,
+          formId,
+        },
+        data: {
+          submittedAt: new Date(),
+        },
+      });
+
+      return {
+        submissionId: updatedSubmission.id,
+        message: "Submission finalized successfully",
+      };
     }),
 });
 

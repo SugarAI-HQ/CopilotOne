@@ -27,6 +27,7 @@ export interface VoiceFormContextType {
     question: Question,
     answer: QuestionAnswer,
   ) => Promise<any>;
+  completeSubmission: (formId: string, submissionId: string) => Promise<any>;
 }
 
 // Create the context
@@ -120,6 +121,24 @@ export const VoiceFormProvider: React.FC<{
     }
   };
 
+  const completeSubmission = async (
+    formId: string,
+    submissionId: string,
+  ): Promise<string | null> => {
+    try {
+      const resp = (await apiClient.voiceForm.formSubmissionCompleteSubmission(
+        formId,
+        submissionId,
+      )) as SugarAiApi.FormSubmissionCompleteSubmissionResponse;
+
+      console.log(`Submission created successfully ${submissionId}`);
+      return resp.submissionId;
+    } catch (error) {
+      console.error("Error creating submission:", error);
+      return null;
+    }
+  };
+
   const getMetadata = () => {
     const uaData = getBrowserAndOSDetails();
     return {
@@ -140,6 +159,7 @@ export const VoiceFormProvider: React.FC<{
         getForm,
         createSubmission,
         submitAnswer,
+        completeSubmission,
       }}
     >
       {children}

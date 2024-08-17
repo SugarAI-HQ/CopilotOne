@@ -215,7 +215,7 @@ export const formRouter = createTRPCRouter({
   //       });
   //     },
 
-  getSubmissionsSummary: protectedProcedure
+  getSubmissions: protectedProcedure
     .meta({
       openapi: {
         method: "GET",
@@ -238,7 +238,7 @@ export const formRouter = createTRPCRouter({
         select: {
           id: true,
           clientUserId: true,
-          // submittedAt: true,
+          submittedAt: true,
           createdAt: true,
         },
       });
@@ -392,12 +392,7 @@ export const formRouter = createTRPCRouter({
       const userId = ctx.jwt?.id as string;
       const { formId } = input;
 
-      const avgCompletionTime = await ctx.prisma.formSubmission.aggregate({
-        _avg: {
-          duration: {
-            seconds: true,
-          },
-        },
+      const submissions = await ctx.prisma.formSubmission.findMany({
         where: {
           formId,
           userId,
@@ -405,9 +400,23 @@ export const formRouter = createTRPCRouter({
             submittedAt: null,
           },
         },
+        select: {
+          createdAt: true,
+          submittedAt: true,
+        },
       });
 
-      return avgCompletionTime._avg?.duration || 0;
+      // Calculate the total duration and count
+      const totalDuration = submissions.reduce((acc, submission) => {
+        const duration =
+          submission.submittedAt.getTime() - submission.createdAt.getTime();
+        return acc + duration;
+      }, 0);
+
+      const averageDuration = totalDuration / submissions.length;
+
+      // Return the average duration in seconds
+      return averageDuration / 1000; // Convert milliseconds to seconds
     }),
 });
 

@@ -1380,6 +1380,54 @@
                     additionalProperties: false
           default: 
             $ref: "#/components/responses/error"
+    /voice-forms/{formId}/submissions: 
+      get: 
+        operationId: "form-getSubmissionsSummary"
+        summary: "Get a summary of submissions for a voice form"
+        tags: 
+          - "VoiceForm"
+        parameters: 
+          - 
+            name: "formId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: {}
+          default: 
+            $ref: "#/components/responses/error"
+    /voice-forms/{formId}/submission/{submissionId}: 
+      get: 
+        operationId: "form-getSubmission"
+        summary: "Get details of a single submission"
+        tags: 
+          - "VoiceForm"
+        parameters: 
+          - 
+            name: "formId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "submissionId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: {}
+          default: 
+            $ref: "#/components/responses/error"
     /voice-forms/{formId}/submission: 
       post: 
         operationId: "formSubmission-createSubmission"
@@ -1481,6 +1529,43 @@
                       type: "string"
                   required: 
                     - "id"
+                  additionalProperties: false
+          default: 
+            $ref: "#/components/responses/error"
+    /voice-forms/{formId}/submission/{submissionId}/complete: 
+      post: 
+        operationId: "formSubmission-completeSubmission"
+        summary: "Finalize a submission after all answers are submitted"
+        tags: 
+          - "VoiceForm"
+        parameters: 
+          - 
+            name: "formId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+          - 
+            name: "submissionId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: 
+                  type: "object"
+                  properties: 
+                    submissionId: 
+                      type: "string"
+                    message: 
+                      type: "string"
+                  required: 
+                    - "submissionId"
+                    - "message"
                   additionalProperties: false
           default: 
             $ref: "#/components/responses/error"

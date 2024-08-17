@@ -63,7 +63,9 @@ const SubmissionAnalytics = ({ formId }: { formId: string }) => {
             sx={{ padding: 2, backgroundColor: "#1e1e1e", color: "#ffffff" }}
           >
             <Typography variant="h6">Avg. Completion Time</Typography>
-            <Typography variant="h3">{avgCompletionTime || 0} sec</Typography>
+            <Typography variant="h3">
+              {Math.round(avgCompletionTime || 0)} sec
+            </Typography>
           </Paper>
         </Grid>
 
