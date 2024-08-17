@@ -15,6 +15,7 @@ import {
   getAnswersInput,
   getSubmissionsInput,
   getSubmissionsResponse,
+  getSubmissionResponse,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
 
@@ -256,7 +257,7 @@ export const formRouter = createTRPCRouter({
       },
     })
     .input(getAnswersInput)
-    .output(getSubmissionsResponse)
+    .output(getSubmissionResponse)
     .query(async ({ ctx, input }) => {
       const { formId, submissionId } = input;
 
@@ -271,6 +272,9 @@ export const formRouter = createTRPCRouter({
             select: {
               questionId: true,
               answer: true,
+              metadata: true,
+              createdAt: true,
+              updatedAt: true,
             },
             orderBy: {
               createdAt: "asc",

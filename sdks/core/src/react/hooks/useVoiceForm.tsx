@@ -144,7 +144,13 @@ export const VoiceFormProvider: React.FC<{
     return {
       formConfig: currentFormConfig,
       language: language,
-      voice: voice,
+      voice: {
+        voiceURI: voice?.voiceURI,
+        name: voice?.name,
+        lang: voice?.lang,
+        localService: voice?.localService,
+        default: voice?.default,
+      },
       ...uaData,
     };
   };

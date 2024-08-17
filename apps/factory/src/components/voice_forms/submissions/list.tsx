@@ -19,7 +19,7 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
       field: "submittedAt",
       headerName: "Submitted At",
       flex: 1,
-      renderCell: (params) => {
+      renderCell: (params: any) => {
         return params.value
           ? new Date(params.value).toLocaleString()
           : "Not Submitted";
@@ -29,7 +29,7 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
       field: "actions",
       headerName: "Actions",
       flex: 1,
-      renderCell: (params) => (
+      renderCell: (params: any) => (
         <Button
           variant="text"
           size="small"
@@ -53,7 +53,7 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
           rows={submissions || []}
           columns={columns}
           autoHeight
-          pageSize={10}
+          // pageSize={10}
           disableColumnMenu
         />
       </div>

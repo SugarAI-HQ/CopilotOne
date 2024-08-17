@@ -123,3 +123,24 @@ export type GetSubmissionsInput = z.infer<typeof getSubmissionsInput>;
 
 export const getSubmissionsResponse = z.any();
 export type GetSubmissionsResponse = z.infer<typeof getSubmissionsResponse>;
+
+export const submittedAnswer = z.object({
+  questionId: z.string(),
+  answer: metadata,
+  metadata: metadata,
+  updatedAt: z.date(),
+  createdAt: z.date(),
+});
+
+export const getSubmissionResponse = z.object({
+  id: z.string(),
+  formId: z.string(),
+  userId: z.string(),
+  clientUserId: z.string(),
+  metadata: metadata,
+  submittedAt: z.date().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  answers: z.array(submittedAnswer),
+});
+export type GetSubmissionResponse = z.infer<typeof getSubmissionResponse>;
