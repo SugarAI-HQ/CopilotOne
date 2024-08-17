@@ -96,5 +96,14 @@ export const submitAnswerResponse = z.object({
   id: z.string(),
 });
 
+export const getAnswersInput = z.object({
+  formId: z.string(),
+  submissionId: z.string(),
+});
+export type GetAnswersInput = z.infer<typeof getAnswersInput>;
+
 export const getSubmissionsInput = z.object({ formId: z.string() });
 export type GetSubmissionsInput = z.infer<typeof getSubmissionsInput>;
+
+export const getSubmissionsResponse = z.any();
+export type GetSubmissionsResponse = z.infer<typeof getSubmissionsResponse>;

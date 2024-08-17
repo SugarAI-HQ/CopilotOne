@@ -12,8 +12,11 @@ import {
   getFormInput,
   form,
   I18nMessageWithRules,
+  getAnswersInput,
   getSubmissionsInput,
+  getSubmissionsResponse,
 } from "~/validators/form";
+import { TRPCError } from "@trpc/server";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -222,6 +225,7 @@ export const formRouter = createTRPCRouter({
       },
     })
     .input(getSubmissionsInput)
+    .output(getSubmissionsResponse)
     .query(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
       const { formId } = input;
@@ -242,45 +246,52 @@ export const formRouter = createTRPCRouter({
       return submissions;
     }),
 
-  // getSubmissionDetails: protectedProcedure
-  //   .meta({
-  //     openapi: {
-  //       method: "GET",
-  //       path: "/voice-forms/{formId}/submission/{submissionId}",
-  //       tags: ["VoiceForm"],
-  //       summary: "Get details of a single submission",
-  //     },
-  //   })
-  //   .input(z.object({ formId: z.string(), submissionId: z.string() }))
-  //   .query(async ({ ctx, input }) => {
-  //     const { submissionId } = input;
+  getSubmission: protectedProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/voice-forms/{formId}/submission/{submissionId}",
+        tags: ["VoiceForm"],
+        summary: "Get details of a single submission",
+      },
+    })
+    .input(getAnswersInput)
+    .output(getSubmissionsResponse)
+    .query(async ({ ctx, input }) => {
+      const { formId, submissionId } = input;
 
-  //     const submission = await ctx.prisma.formSubmission.findUnique({
-  //       where: {
-  //         id: submissionId,
-  //       },
-  //       include: {
-  //         answers: {
-  //           select: {
-  //             questionId: true,
-  //             answer: true,
-  //           },
-  //         },
-  //       },
-  //     });
+      const submission = await ctx.prisma.formSubmission.findUnique({
+        where: {
+          id: submissionId,
+          formId,
+          userId: ctx.jwt?.id as string,
+        },
+        include: {
+          answers: {
+            select: {
+              questionId: true,
+              answer: true,
+            },
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
+        },
+      });
 
-  //     if (!submission) {
-  //       throw new TRPCError({
-  //         code: "NOT_FOUND",
-  //         message: "Submission not found",
-  //       });
-  //     }
+      if (!submission) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Submission not found",
+        });
+      }
 
-  //     return submission;
-  //   }),
+      return submission;
+    }),
 
   getTotalSubmissions: protectedProcedure
     .input(getSubmissionsInput)
+    .output(getSubmissionsResponse)
     .query(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
       const { formId } = input;
@@ -294,6 +305,7 @@ export const formRouter = createTRPCRouter({
 
   getSubmissionTimeSeries: protectedProcedure
     .input(getSubmissionsInput)
+    .output(getSubmissionsResponse)
     .query(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
       const { formId } = input;
@@ -321,6 +333,7 @@ export const formRouter = createTRPCRouter({
 
   getLanguageBreakdown: protectedProcedure
     .input(getSubmissionsInput)
+    .output(getSubmissionsResponse)
     .query(async ({ ctx, input }) => {
       const { formId } = input;
       const languages = await ctx.prisma.formSubmission.groupBy({
@@ -342,6 +355,7 @@ export const formRouter = createTRPCRouter({
 
   getCompletionRate: protectedProcedure
     .input(getSubmissionsInput)
+    .output(getSubmissionsResponse)
     .query(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
       const { formId } = input;
@@ -373,6 +387,7 @@ export const formRouter = createTRPCRouter({
 
   getAverageCompletionTime: protectedProcedure
     .input(getSubmissionsInput)
+    .output(getSubmissionsResponse)
     .query(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
       const { formId } = input;

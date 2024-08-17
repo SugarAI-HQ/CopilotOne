@@ -28,12 +28,13 @@ import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
 const App: NextPage = () => {
   const router = useRouter();
-  let { id, lang, show, color, record } = router.query as {
+  let { id, formId, lang, show, color, record } = router.query as {
     id: string;
     lang: LanguageCode;
     show: string;
     color: string;
     record: string;
+    formId: string;
   };
 
   let showInUnSupportedBrowser = show ? true : false;
@@ -98,7 +99,8 @@ const App: NextPage = () => {
       setFd(data);
 
       setFormConfig((fc) => {
-        fc.id = data.formId;
+        // debugger;
+        fc.id = formId || data.formId;
         return fc;
       });
 
