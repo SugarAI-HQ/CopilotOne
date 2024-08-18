@@ -1,4 +1,5 @@
 export * from "./form/VoiceQuestionOptions";
+export * from "./form/Initializing";
 export * from "./form/Onboarding";
 export * from "./form/Submission";
 export * from "./form/VoiceForm";

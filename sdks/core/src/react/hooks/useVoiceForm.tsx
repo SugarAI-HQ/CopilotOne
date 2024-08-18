@@ -51,8 +51,7 @@ export const VoiceFormProvider: React.FC<{
     const form = getForm(formId);
 
     // 2. Create submission when user click start
-    const submissionId = await createSubmission(formConfig.id);
-    // setSubmissionId(submissionId);
+    await createSubmission(formConfig.id);
 
     // 3. Submit answers on each successful submission
     // const submitted = await submitAnswer(
@@ -79,7 +78,6 @@ export const VoiceFormProvider: React.FC<{
   };
 
   const createSubmission = async (formId: string): Promise<string | null> => {
-    debugger;
     try {
       const { submissionId } =
         (await apiClient.voiceForm.formSubmissionCreateSubmission(formId, {
@@ -136,10 +134,10 @@ export const VoiceFormProvider: React.FC<{
         submissionId,
       )) as SugarAiApi.FormSubmissionCompleteSubmissionResponse;
 
-      console.log(`Submission created successfully ${submissionId}`);
+      console.log(`Submission completed successfully ${submissionId}`);
       return resp.submissionId;
     } catch (error) {
-      console.error("Error creating submission:", error);
+      console.error("Error completing submission:", error);
       return null;
     }
   };

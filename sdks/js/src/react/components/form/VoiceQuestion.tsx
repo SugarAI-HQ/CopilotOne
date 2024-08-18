@@ -23,6 +23,9 @@ import {
   SELECTED_QUESTION_TYPES,
 } from "~/react/helpers/form";
 import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
+import Initializing from "./Initializing";
+
+let renderCount = 0;
 
 export const VoiceQuestion: React.FC<{
   question: Question;
@@ -31,6 +34,9 @@ export const VoiceQuestion: React.FC<{
   onBack: () => void;
   formConfig: FormConfig;
 }> = ({ question, onAnswered, onSkip, onBack, formConfig }) => {
+  renderCount++;
+  console.log("[re-render] VoiceQuestion", renderCount);
+
   // Depdencies
   const { language, voice } = useLanguage();
   const isWorkflowStartedRef = useRef(false);

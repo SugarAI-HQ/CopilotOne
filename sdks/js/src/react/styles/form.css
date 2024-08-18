@@ -48,13 +48,29 @@
   width: 2px;
   animation: blink 0.5s step-end infinite;
 }
-
 @keyframes blink {
   from, to {
     visibility: hidden;
   }
   50% {
     visibility: visible;
+  }
+}
+
+.blinking-cursor-start {
+  display: inline-block;
+  width: 2px;
+  height: 1.5em; /* Adjust to match the font size */
+  background-color: currentColor;
+  margin-left: 0.1em;
+  animation: blink-start 0.75s step-end infinite;
+}
+@keyframes blink-start {
+  from, to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
   }
 }
 
@@ -132,4 +148,11 @@
 
 .counter {
   @apply text-lg text-gray-800 dark:text-gray-200;
+}
+
+.sai-initializing-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;
+  animation: fadeInOut 2s infinite;
 }

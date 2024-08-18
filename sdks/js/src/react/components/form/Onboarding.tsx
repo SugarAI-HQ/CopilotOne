@@ -13,12 +13,17 @@ import {
 import Streamingi18nText from "~/react/components/streaming/Streamingi18nText";
 import "~/react/styles/form.css";
 
+let renderCount = 0;
+
 export const Onboarding: React.FC<{
   showStartButton: boolean;
   onComplete: () => void;
   welcomeMessage: i18nMessage;
   formConfig: FormConfig;
 }> = ({ showStartButton, onComplete, welcomeMessage, formConfig }) => {
+  renderCount++;
+  DEV: console.log("[re-render] Onboarding: ", renderCount);
+
   const { language, voice } = useLanguage();
   const [showStart, setShowStart] = useState<boolean>(showStartButton);
   const [showPermissionButton, setShowPermissionButton] =
@@ -120,4 +125,5 @@ export const Onboarding: React.FC<{
   );
 };
 
-export default Onboarding;
+export default React.memo(Onboarding);
+// export default Onboarding;
