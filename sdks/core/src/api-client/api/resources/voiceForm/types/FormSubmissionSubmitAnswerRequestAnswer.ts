@@ -9,4 +9,6 @@ export interface FormSubmissionSubmitAnswerRequestAnswer {
   rawAnswer?: string;
   evaluatedAnswer?: string;
   by: SugarAiApi.FormSubmissionSubmitAnswerRequestAnswerBy;
+  qualificationScore?: number;
+  qualificationSummary?: string;
 }

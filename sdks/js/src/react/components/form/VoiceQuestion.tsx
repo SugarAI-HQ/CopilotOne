@@ -35,7 +35,7 @@ export const VoiceQuestion: React.FC<{
   formConfig: FormConfig;
 }> = ({ question, onAnswered, onSkip, onBack, formConfig }) => {
   renderCount++;
-  console.log("[re-render] VoiceQuestion", renderCount);
+  // console.log("[re-render] VoiceQuestion", renderCount);
 
   // Depdencies
   const { language, voice } = useLanguage();
@@ -193,6 +193,8 @@ export const VoiceQuestion: React.FC<{
       recording: questionEvaluation.userResponse.recording,
       rawAnswer: questionEvaluation.userResponse.text,
       evaluatedAnswer: questionEvaluation.aiResponse.answer,
+      qualificationScore: questionEvaluation.aiResponse.qualificationScore,
+      qualificationSummary: questionEvaluation.aiResponse.qualificationSummary,
       by: "voice",
     };
 
@@ -233,6 +235,8 @@ export const VoiceQuestion: React.FC<{
       evaluatedAnswer: values.join(", "),
       recording: null,
       by: "manual",
+      qualificationScore: null,
+      qualificationSummary: null,
     };
 
     setVoiceAnswer(answer);
@@ -302,6 +306,8 @@ export const VoiceQuestion: React.FC<{
                   evaluatedAnswer: e.target.value, // Use existing 'evaluatedAnswer' or the new value
                   recording: va?.recording || null, // Use existing 'recording' or default to null
                   by: va?.by || "manual", // Use existing 'by' or default to "manual"
+                  qualificationScore: va?.qualificationScore || null,
+                  qualificationSummary: va?.qualificationSummary || null,
                 };
                 return lva;
               });

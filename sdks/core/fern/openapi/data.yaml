@@ -1602,11 +1602,19 @@
                         enum: 
                           - "voice"
                           - "manual"
+                      qualificationScore: 
+                        type: "number"
+                        nullable: true
+                      qualificationSummary: 
+                        type: "string"
+                        nullable: true
                     required: 
                       - "recording"
                       - "rawAnswer"
                       - "evaluatedAnswer"
                       - "by"
+                      - "qualificationScore"
+                      - "qualificationSummary"
                     additionalProperties: false
                   metadata: 
                     anyOf: 

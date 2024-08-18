@@ -14,6 +14,8 @@ import { SubmittedAnswer } from "~/validators/form";
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import LabelIcon from "@mui/icons-material/Label";
+import RecordVoiceOverSharpIcon from "@mui/icons-material/RecordVoiceOverSharp";
+import KeyboardAltSharpIcon from "@mui/icons-material/KeyboardAltSharp";
 
 const SubmissionAnswers = ({ submission }: any) => {
   return (
@@ -54,21 +56,25 @@ const SubmissionAnswers = ({ submission }: any) => {
             <ListItem
               key={sa?.questionId}
               className="border-b"
-              // secondaryAction={
-              //   <IconButton aria-label="comment">
-              //     <CheckIcon />
-              //   </IconButton>
-              // }
+              secondaryAction={
+                <IconButton aria-label="comment">
+                  {sa.answer.qualificationScore || "-"}
+                </IconButton>
+              }
             >
               <ListItemAvatar>
-                <LabelIcon />
+                {(sa.answer as QuestionAnswer).by == "voice" ? (
+                  <RecordVoiceOverSharpIcon />
+                ) : (
+                  <KeyboardAltSharpIcon />
+                )}
               </ListItemAvatar>
 
               <ListItemText
-                primary={`${sa?.questionId}: `}
-                secondary={`Answer [${(sa.answer as QuestionAnswer).by}]: ${
-                  (sa.answer as QuestionAnswer).evaluatedAnswer
-                }`}
+                // secondary={`${sa?.questionId}: ${
+                //   sa.answer.qualificationScore || ""
+                // }`}
+                primary={`${(sa.answer as QuestionAnswer).evaluatedAnswer}`}
               />
             </ListItem>
           ))}

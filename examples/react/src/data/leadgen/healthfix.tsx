@@ -81,9 +81,8 @@ export const questions: Question[] = [
     id: "1",
     question_type: "text",
     question_text: {
-      // mode: "manual",
       lang: {
-        en: "What is your name.",
+        en: "What is your name?",
         hi: "आपका नाम क्या है?",
         "bn-IN": "তোমার নাম কি?",
         "te-IN": "మీ పేరు ఏమిటి?",
@@ -94,10 +93,9 @@ export const questions: Question[] = [
         de: "Wie heißen Sie?",
         zh: "你叫什么名字？",
       },
-      // voice: true,
-      // output: "none",
     },
     question_params: {},
+    qualificationCriteria: "Must match a valid name format",
     validation: {
       max_length: 100,
     },
@@ -106,7 +104,6 @@ export const questions: Question[] = [
     id: "2",
     question_type: "number",
     question_text: {
-      // mode: "manual",
       lang: {
         en: "Tell me your phone number.",
         hi: "मुझे अपना फोन नंबर बताएं।",
@@ -119,49 +116,21 @@ export const questions: Question[] = [
         de: "Sagen Sie mir Ihre Telefonnummer.",
         zh: "告诉我你的电话号码。",
       },
-      // voice: true,
-      // output: "none",
     },
     question_params: {},
+    qualificationCriteria: "Must be a valid phone number",
     validation: {
       max_length: 20,
       validators: ["mobile"],
     },
   },
-  // {
-  //   id: "2",
-  //   question_type: "text",
-  //   question_text: {
-  //     // mode: "manual",
-  //     lang: {
-  //       en: "Tell me your email.",
-  //       hi: "मुझे अपना ईमेल बताएं।",
-  //       "bn-IN": "আপনার ইমেল বলুন।",
-  //       "te-IN": "మీ ఈమెయిల్ చెప్పండి.",
-  //       "mr-IN": "मला तुमचा ईमेल सांगा.",
-  //       "ta-IN": "உங்கள் மின்னஞ்சலை சொல்லுங்கள்.",
-  //       es: "Dime tu correo electrónico.",
-  //       fr: "Dites-moi votre email.",
-  //       de: "Sagen Sie mir Ihre E-Mail-Adresse.",
-  //       zh: "告诉我你的电子邮件。",
-  //     },
-  //     // voice: true,
-  //     // output: "none",
-  //   },
-  //   question_params: {},
-  //   validation: {
-  //     max_length: 20,
-  //     validators: ["email"],
-  //   },
-  // },
   {
     id: "3",
     question_type: "single_choice",
     question_text: {
-      // mode: "manual",
       lang: {
         en: "What is the intensity of your pain?",
-        hi: "आप अभी कितना दर्द महसूस कर रहे हैं ?",
+        hi: "आप अभी कितना दर्द महसूस कर रहे हैं?",
         "bn-IN": "আপনার ব্যথার তীব্রতা কত?",
         "te-IN": "మీ నొప్పి తీవ్రత ఎంత?",
         "mr-IN": "आपण किती वेदना अनुभवत आहात?",
@@ -171,8 +140,6 @@ export const questions: Question[] = [
         de: "Wie stark ist Ihr Schmerz?",
         zh: "你的疼痛程度如何？",
       },
-      // voice: true,
-      // output: "none",
     },
     question_params: {
       options: [
@@ -189,9 +156,6 @@ export const questions: Question[] = [
             de: "Sehr mild",
             zh: "非常轻微",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -206,9 +170,6 @@ export const questions: Question[] = [
             de: "Leichter Schmerz",
             zh: "轻微疼痛",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -223,9 +184,6 @@ export const questions: Question[] = [
             de: "Mäßiger Schmerz",
             zh: "中度疼痛",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -240,9 +198,6 @@ export const questions: Question[] = [
             de: "Starke Schmerzen",
             zh: "剧烈疼痛",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -257,12 +212,11 @@ export const questions: Question[] = [
             de: "Sehr starke Schmerzen",
             zh: "非常剧烈的疼痛",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
       ],
     },
+    qualificationCriteria:
+      "Ensure the selected option corresponds to the user's reported pain level",
     validation: {
       max_length: 100,
     },
@@ -271,7 +225,6 @@ export const questions: Question[] = [
     id: "4",
     question_type: "single_choice",
     question_text: {
-      // mode: "manual",
       lang: {
         en: "How long have you been experiencing the problem?",
         hi: "आप इस समस्या का अनुभव कब से कर रहे हैं?",
@@ -285,8 +238,6 @@ export const questions: Question[] = [
         de: "Wie lange haben Sie das Problem schon?",
         zh: "您经历这个问题有多长时间了？",
       },
-      // voice: true,
-      // output: "none",
     },
     question_params: {
       options: [
@@ -303,9 +254,6 @@ export const questions: Question[] = [
             de: "Weniger als 15 Tage",
             zh: "少于15天",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -320,9 +268,6 @@ export const questions: Question[] = [
             de: "15 bis 30 Tage",
             zh: "15至30天",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -337,9 +282,6 @@ export const questions: Question[] = [
             de: "1 bis 6 Monate",
             zh: "1到6个月",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -354,9 +296,6 @@ export const questions: Question[] = [
             de: "6 bis 12 Monate",
             zh: "6到12个月",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
         {
           lang: {
@@ -371,12 +310,11 @@ export const questions: Question[] = [
             de: "Mehr als ein Jahr",
             zh: "一年以上",
           },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
         },
       ],
     },
+    qualificationCriteria:
+      "Answer must align with the reported duration of the issue",
     validation: {
       max_length: 50,
     },
@@ -427,6 +365,8 @@ export const questions: Question[] = [
       // output: "none",
     },
     question_params: {},
+    qualificationCriteria:
+      "Respondent should provide their current occupation clearly",
     validation: {
       max_length: 50,
     },
@@ -455,6 +395,8 @@ export const questions: Question[] = [
       // output: "none",
     },
     question_params: {},
+    qualificationCriteria:
+      "Must provide a clear description of the pain and affected areas, and must be in the context of the current problem",
     validation: {
       max_length: 200,
     },

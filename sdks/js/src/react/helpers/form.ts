@@ -13,6 +13,7 @@ import {
   AudioResponse,
   speakMessageAsync,
   speaki18nMessageAsync,
+  aiEvaluationResponse,
 } from "@sugar-ai/core";
 import { QuestionAnswer } from "@sugar-ai/core";
 
@@ -36,11 +37,14 @@ export const captureVoiceResponseAndEvaluate = async (
   let attempts = 0;
   let questionAnswer = "";
   let followupResponse = "";
+  // const aiEvaluationResponse: AiEvaluationResponse = {
 
   let finalResponse: AiEvaluationResponse = {
     answer: "",
     followupQuestion: "",
     followupResponse: "",
+    qualificationScore: null,
+    qualificationSummary: null,
   };
 
   // Loop until we get a valid answer or number of attempts exceeded
@@ -86,7 +90,7 @@ export const captureVoiceResponseAndEvaluate = async (
     if (!question.evaluation || question.evaluation == "ai") {
       console.log("Evaluating");
       setIsEvaluating(true);
-      const aiEvaluationResponse = await aiEvaluate(
+      const aiEvaluationResponse: AiEvaluationResponse = await aiEvaluate(
         question,
         userResponse?.text as string,
         language,
@@ -94,6 +98,11 @@ export const captureVoiceResponseAndEvaluate = async (
         unregisterAction,
         textToAction,
       );
+
+      finalResponse.qualificationScore =
+        aiEvaluationResponse.qualificationScore;
+      finalResponse.qualificationSummary =
+        aiEvaluationResponse.qualificationSummary;
 
       // Ask followup question if needed
       if (!aiEvaluationResponse) {
@@ -116,12 +125,15 @@ export const captureVoiceResponseAndEvaluate = async (
 
     attempts = attempts + 1;
   }
+
   const qe: QuestionEvaluation = {
     userResponse: userResponse as AudioResponse,
     aiResponse: {
       answer: questionAnswer,
       followupResponse: followupResponse as string,
       followupQuestion: "",
+      qualificationScore: finalResponse.qualificationScore,
+      qualificationSummary: finalResponse.qualificationSummary,
     },
   };
   DEV: console.log(qe.aiResponse, qe.userResponse);
@@ -238,6 +250,7 @@ const aiEvaluate = async (
     "@language": language,
     "@question_type": question.question_type,
     "@question": extracti18nText(question.question_text, language),
+    "@qualification": question.qualificationCriteria,
   };
 
   let action: ActionRegistrationType = {
@@ -274,6 +287,21 @@ const aiEvaluate = async (
           "followup Question to be asked back to the user, this is required when isQuestionAnswered is partially or no",
         required: true,
       },
+      {
+        name: "qualificationScore",
+        type: "string",
+        enum: ["0", "1", "2", "3", "4", "5", "6", "7", "9", "10"],
+        description:
+          "qualification score on the user response based on the Qualification Criteria",
+        required: true,
+      },
+      {
+        name: "qualificationSummary",
+        type: "string",
+        description:
+          "qualification summary on the user response based on the based on the Qualification Criteria",
+        required: true,
+      },
     ],
   };
 
@@ -293,21 +321,32 @@ const aiEvaluate = async (
     isQuestionAnswered: string,
     followupResponse: string,
     followupQuestion: string,
+    qualificationScore: string,
+    qualificationSummary: string,
   ) {
-    // DEV: console.log(
-    //   `answer: ${answer}, ${isQuestionAnswered}, ${followupResponse}, ${followupQuestion}`,
-    // );
+    DEV: console.log(
+      `answer: ${answer}, ${isQuestionAnswered}, ${followupResponse}, ${followupQuestion}, ${qualificationScore}, ${qualificationSummary}`,
+    );
+    const qualificationScoreInt = parseInt(qualificationScore, 10) || 0;
 
     if (isQuestionAnswered === "fully") {
       return {
         answer,
         followupResponse,
         followupQuestion: null,
+        qualificationScore: qualificationScoreInt,
+        qualificationSummary,
       };
     }
 
     if (isQuestionAnswered !== "fully" && followupQuestion) {
-      return { answer, followupResponse: null, followupQuestion };
+      return {
+        answer,
+        followupResponse: null,
+        followupQuestion,
+        qualificationScore: qualificationScoreInt,
+        qualificationSummary,
+      };
     }
 
     throw new Error(

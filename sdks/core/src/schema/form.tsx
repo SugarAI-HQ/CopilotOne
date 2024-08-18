@@ -66,6 +66,7 @@ export const QuestionSchema = z.object({
     })
     .passthrough(),
   evaluation: z.enum(["none", "ai", "manual"]).optional(),
+  qualificationCriteria: z.string().optional(),
   validation: z
     .object({
       // evaluation: z.boolean().optional().default(true),
@@ -103,6 +104,8 @@ export const aiEvaluationResponse = z.object({
   answer: z.string(),
   followupQuestion: z.string().nullable(),
   followupResponse: z.string().nullable(),
+  qualificationScore: z.number().nullable(),
+  qualificationSummary: z.string().nullable(),
 });
 
 // Recording Schema
@@ -195,6 +198,8 @@ export const questionAnswer = z
     rawAnswer: z.string().nullable(),
     evaluatedAnswer: z.string().nullable(),
     by: z.enum(["voice", "manual"]),
+    qualificationScore: z.number().nullable(),
+    qualificationSummary: z.string().nullable(),
   })
   .refine(
     (data) => data.recording || data.evaluatedAnswer || data.rawAnswer, // At least one of recording or rawAnswer must be present

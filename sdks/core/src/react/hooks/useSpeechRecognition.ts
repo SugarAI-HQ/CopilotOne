@@ -103,8 +103,6 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       let autoStopped = true;
       let recordingPromise: Promise<Recording | null> | null = null;
 
-      // debugger;
-
       // Stop recognition on pause or length limit
       const stopRecognition = (timeout = true) => {
         autoStopped = false;
@@ -276,7 +274,6 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
         setIsListening(false);
 
         if (recordingPromise) {
-          // debugger;
           // wait for audio track to finish
           recordingPromise.then((recording) => {
             resolve({
