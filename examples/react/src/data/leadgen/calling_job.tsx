@@ -58,7 +58,7 @@ export const questions: Question[] = [
   },
   {
     id: "3",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "Which languages do you know?",
@@ -93,7 +93,7 @@ export const questions: Question[] = [
   },
   {
     id: "4",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "Are you comfortable working on an incentive-based calling system?",
@@ -122,7 +122,7 @@ export const questions: Question[] = [
   },
   {
     id: "5",
-    question_type: "multiple_choice",
+    question_type: "single_choice",
     question_text: {
       lang: {
         en: "When are you available to join the job?",
