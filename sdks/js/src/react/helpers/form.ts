@@ -154,7 +154,7 @@ export const validateAnswerWithUser = async (
   //   language,
   //   voice as SpeechSynthesisVoice,
   // );
-  const answer = voiceAnswer.evaluatedAnswer;
+  const answer = voiceAnswer.evaluatedAnswer as string;
   // Show final evaluated answer
   if (SELECTED_QUESTION_TYPES.includes(question.question_type)) {
     setVoiceAnswer(voiceAnswer);

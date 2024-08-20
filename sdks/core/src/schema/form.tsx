@@ -186,6 +186,9 @@ export const voiceForm = z.object({
 });
 export type VoiceForm = z.infer<typeof voiceForm>;
 
+export const answeredBy = z.enum(["voice", "keyboard"]);
+export type AnsweredBy = z.infer<typeof answeredBy>;
+
 // Question answer
 // 1. raw audio
 // 2. transcribed text
@@ -197,7 +200,7 @@ export const questionAnswer = z
     recording: recording.nullable(),
     rawAnswer: z.string().nullable(),
     evaluatedAnswer: z.string().nullable(),
-    by: z.enum(["voice", "manual"]),
+    by: answeredBy,
     qualificationScore: z.number().nullable(),
     qualificationSummary: z.string().nullable(),
   })

@@ -24,6 +24,19 @@ import {
 } from "~/react/helpers/form";
 import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
 import Initializing from "./Initializing";
+import {
+  answeredBy,
+  AnsweredBy,
+} from "node_modules/@sugar-ai/core/src/schema/form";
+import { z } from "zod";
+
+export const submissionStates = z.enum([
+  "notReady",
+  "ready",
+  "submitting",
+  "submitted",
+]);
+export type SubmissionState = z.infer<typeof submissionStates>;
 
 let renderCount = 0;
 
@@ -44,6 +57,9 @@ export const VoiceQuestion: React.FC<{
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const [voiceAnswer, setVoiceAnswer] = useState<QuestionAnswer | null>(null);
+  const [answerReady, setAnswerReady] = useState<SubmissionState>(
+    submissionStates.Enum.notReady,
+  );
 
   const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
   // Create refs for the question and options
@@ -198,6 +214,8 @@ export const VoiceQuestion: React.FC<{
       by: "voice",
     };
 
+    setVoiceAnswer(finalAnswer);
+
     // // Recording
     // if (questionEvaluation?.userResponse?.recording) {
     //   setAnswerRecording(questionEvaluation?.userResponse?.recording);
@@ -218,15 +236,48 @@ export const VoiceQuestion: React.FC<{
       setSelectedAnswer,
     );
 
-    // Wait
-    setIsWaiting(true);
-    DEV: console.log("submitting Answer", finalAnswer);
-    await Promise.all([
-      await onAnswered(finalAnswer as QuestionAnswer),
-      await delay(3000),
-    ]);
+    setAnswerReady(submissionStates.Enum.ready);
+  };
 
-    setIsWaiting(false);
+  useEffect(() => {
+    if (voiceAnswer) {
+      // DEV: console.log("[Answer] updated:", voiceAnswer);
+
+      if (answerReady == submissionStates.Enum.ready) {
+        submitAnswer(voiceAnswer);
+      }
+    }
+  }, [voiceAnswer, answerReady]);
+
+  const submitAnswer = async (va: QuestionAnswer) => {
+    if (answerReady !== submissionStates.Enum.ready) {
+      DEV: console.log(
+        `[Answer] ignoring submission: current state: ${answerReady}`,
+        voiceAnswer,
+      );
+      return;
+    }
+    DEV: console.log("[Answer] submitting:", voiceAnswer);
+
+    setAnswerReady(submissionStates.Enum.submitting);
+
+    if (va?.by === answeredBy.Enum.voice) {
+      // Wait
+      setIsWaiting(true);
+      DEV: console.log("submitting Answer", va);
+      await Promise.all([
+        await onAnswered(va as QuestionAnswer),
+        await delay(3000),
+      ]);
+
+      setIsWaiting(false);
+    }
+
+    if (va?.by === answeredBy.Enum.keyboard) {
+      await onAnswered(va as QuestionAnswer);
+    }
+
+    setAnswerReady(submissionStates.Enum.submitted);
   };
 
   const handleOptionClick = (values: string[]) => {
@@ -234,25 +285,24 @@ export const VoiceQuestion: React.FC<{
       rawAnswer: values.join(", "),
       evaluatedAnswer: values.join(", "),
       recording: null,
-      by: "manual",
+      by: answeredBy.Enum.keyboard,
       qualificationScore: null,
       qualificationSummary: null,
     };
 
     setVoiceAnswer(answer);
     // setSelectedOption(option);
-    // onAnswered();
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      // if (isLoading) return;
+  // const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  //   if (e.key === "Enter" && !e.shiftKey) {
+  //     // if (isLoading) return;
 
-      e.preventDefault();
-      // handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
-      // onAnswered(e.target?.value as string);
-    }
-  };
+  //     e.preventDefault();
+  //     // handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+  //     // onAnswered(e.target?.value as string);
+  //   }
+  // };
 
   const renderMCQ = async (
     qRef: React.RefObject<Streamingi18nTextRef>,
@@ -281,6 +331,21 @@ export const VoiceQuestion: React.FC<{
     console.log("Start listening");
   };
 
+  const handleManualEdit = (e: any) => {
+    console.log("switing to manual mode");
+    // setBy(answeredBy.Enum.manual);
+    setVoiceAnswer((lva: QuestionAnswer | null) => {
+      if (!lva) {
+        return null;
+      } else {
+        return {
+          ...lva,
+          by: answeredBy.Enum.keyboard,
+        };
+      }
+    });
+  };
+
   return (
     <div className="sai-vq-container">
       <Streamingi18nText
@@ -299,13 +364,14 @@ export const VoiceQuestion: React.FC<{
             name="message"
             minRows={5}
             disabled={!isQuestionSpoken}
+            onClick={handleManualEdit}
             onChange={(e) => {
               setVoiceAnswer((va) => {
                 let lva: QuestionAnswer = {
                   rawAnswer: va?.rawAnswer || null, // Use existing 'raw' or the new value
                   evaluatedAnswer: e.target.value, // Use existing 'evaluatedAnswer' or the new value
                   recording: va?.recording || null, // Use existing 'recording' or default to null
-                  by: va?.by || "manual", // Use existing 'by' or default to "manual"
+                  by: answeredBy.Enum.keyboard, // Use existing 'by' or default to "manual"
                   qualificationScore: va?.qualificationScore || null,
                   qualificationSummary: va?.qualificationSummary || null,
                 };
@@ -315,6 +381,19 @@ export const VoiceQuestion: React.FC<{
             placeholder={!isListening ? "Enter your answer here" : "Listening"}
             className="sai-vq-text-input"
           />
+          {voiceAnswer?.by == answeredBy.Enum.keyboard && (
+            <button
+              className="justify-center w-full m-4 p-4  text-white text-center"
+              onClick={() => {
+                setAnswerReady(submissionStates.Enum.ready);
+              }}
+              style={{
+                backgroundColor: formConfig.voiceButton?.bgColor,
+              }}
+            >
+              Submit
+            </button>
+          )}
         </div>
       )}
 
@@ -381,7 +460,7 @@ export const VoiceQuestion: React.FC<{
                 }
                 onClick={() =>
                   voiceAnswer?.evaluatedAnswer != ""
-                    ? onAnswered(voiceAnswer as QuestionAnswer)
+                    ? setAnswerReady(submissionStates.Enum.ready)
                     : onSkip()
                 }
                 className="sai-vf-action action-skip "
@@ -390,7 +469,7 @@ export const VoiceQuestion: React.FC<{
               </button>
             ) : (
               <button
-                onClick={() => onAnswered(voiceAnswer as QuestionAnswer)}
+                onClick={() => setAnswerReady(submissionStates.Enum.ready)}
                 className="sai-vf-action action-next"
               >
                 <ArrowRight className="w-5 h-5" />
