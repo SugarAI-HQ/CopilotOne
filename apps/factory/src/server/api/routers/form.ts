@@ -321,24 +321,20 @@ export const formRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.jwt?.id as string;
       const { formId } = input;
-      const submissions = await ctx.prisma.formSubmission.groupBy({
-        where: {
-          formId,
-          userId,
-        },
-        by: ["createdAt"],
-        _count: {
-          _all: true,
-        },
-        orderBy: {
-          createdAt: "asc",
-        },
-      });
+      const submissions = await ctx.prisma.$queryRaw<
+        { date: string; count: number }[]
+      >`
+      SELECT DATE("createdAt") AS date, COUNT(*) AS count
+      FROM "FormSubmission"
+      WHERE "formId" = ${formId} AND "userId" = ${userId}
+      GROUP BY DATE("createdAt")
+      ORDER BY date ASC
+    `;
 
       const dates = submissions.map(
-        (item) => item.createdAt.toISOString().split("T")[0],
+        (item) => item.date.toISOString().split("T")[0],
       );
-      const counts = submissions.map((item) => item._count._all);
+      const counts = submissions.map((item) => Number(item.count));
 
       return { dates, counts };
     }),
