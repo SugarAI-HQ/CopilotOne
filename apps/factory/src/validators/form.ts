@@ -3,6 +3,7 @@ import {
   i18nMessageSchema,
   languageCode,
   questionAnswer,
+  QuestionSchema,
 } from "@sugar-ai/core";
 import { JsonValue, JsonValueType } from "~/generated/prisma-client-zod.ts";
 
@@ -184,3 +185,9 @@ export function parsePrismaJsonb<T extends ZodType<any, any>>(
 
   return schema.parse(rawData);
 }
+
+// Input schema for bulk question creation or update
+export const createOrUpdateQuestionsInput = z.object({
+  formId: z.string(),
+  questions: z.array(QuestionSchema),
+});

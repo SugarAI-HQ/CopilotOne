@@ -95,7 +95,10 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    qualificationCriteria: "Must match a valid name format",
+    qualification: {
+      type: "ai",
+      criteria: "Must match a valid name format",
+    },
     validation: {
       max_length: 100,
     },
@@ -118,7 +121,10 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    qualificationCriteria: "Must be a valid phone number",
+    qualification: {
+      type: "ai",
+      criteria: "Must be a valid phone number",
+    },
     validation: {
       max_length: 20,
       validators: ["mobile"],
@@ -215,8 +221,11 @@ export const questions: Question[] = [
         },
       ],
     },
-    qualificationCriteria:
-      "Ensure the selected option corresponds to the user's reported pain level",
+    qualification: {
+      type: "ai",
+      criteria:
+        "Ensure the selected option corresponds to the user's reported pain level",
+    },
     validation: {
       max_length: 100,
     },
@@ -313,8 +322,10 @@ export const questions: Question[] = [
         },
       ],
     },
-    qualificationCriteria:
-      "Answer must align with the reported duration of the issue",
+    qualification: {
+      type: "ai",
+      criteria: "Answer must align with the reported duration of the issue",
+    },
     validation: {
       max_length: 50,
     },
@@ -338,6 +349,10 @@ export const questions: Question[] = [
       },
       // voice: true,
       // output: "none",
+    },
+    qualification: {
+      type: "none",
+      criteria: "Answer must align with the user's reported age",
     },
     question_params: {},
     validation: {
@@ -365,8 +380,11 @@ export const questions: Question[] = [
       // output: "none",
     },
     question_params: {},
-    qualificationCriteria:
-      "Respondent should provide their current occupation clearly",
+    qualification: {
+      type: "ai",
+      criteria: "Respondent should provide their current occupation clearly",
+    },
+
     validation: {
       max_length: 50,
     },
@@ -395,8 +413,11 @@ export const questions: Question[] = [
       // output: "none",
     },
     question_params: {},
-    qualificationCriteria:
-      "Must provide a clear description of the pain and affected areas, and must be in the context of the current problem",
+    qualification: {
+      type: "ai",
+      criteria:
+        "Must provide a clear description of the pain and affected areas, and must be in the context of the current problem",
+    },
     validation: {
       max_length: 200,
     },

@@ -22,13 +22,13 @@ const LanguagesSelector: React.FC<LanguagesSelectorProps> = ({
 
   useEffect(() => {
     const newLangOptions = (Object.keys(allLanguages) as LanguageCode[]).filter(
-      (lang) => !selectedLanguages.includes(lang),
+      (lang) => !selectedLanguages?.includes(lang),
     );
     setAvailableLanguages(newLangOptions);
   }, [selectedLanguages]);
 
   const handleAddLanguage = (langCode: LanguageCode | null) => {
-    if (langCode && !selectedLanguages.includes(langCode)) {
+    if (langCode && !selectedLanguages?.includes(langCode)) {
       setSelectedLanguages((prev) => [...prev, langCode]);
       onAddLanguage(langCode);
       setInputValue(null); // Clear the Autocomplete input
@@ -42,7 +42,7 @@ const LanguagesSelector: React.FC<LanguagesSelectorProps> = ({
 
   return (
     <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
-      {selectedLanguages.map((langCode) => (
+      {selectedLanguages?.map((langCode) => (
         <Chip
           key={langCode}
           label={allLanguages[langCode]}
@@ -51,7 +51,7 @@ const LanguagesSelector: React.FC<LanguagesSelectorProps> = ({
           style={{ margin: "4px" }}
         />
       ))}
-      {/* <Autocomplete
+      <Autocomplete
         value={inputValue}
         clearOnBlur={true}
         onChange={(_, newValue) => handleAddLanguage(newValue)}
@@ -72,7 +72,7 @@ const LanguagesSelector: React.FC<LanguagesSelectorProps> = ({
             />
           );
         }}
-      /> */}
+      />
     </Box>
   );
 };

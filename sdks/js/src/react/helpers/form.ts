@@ -14,6 +14,7 @@ import {
   speakMessageAsync,
   speaki18nMessageAsync,
   aiEvaluationResponse,
+  qualificationType,
 } from "@sugar-ai/core";
 import { QuestionAnswer } from "@sugar-ai/core";
 
@@ -87,7 +88,10 @@ export const captureVoiceResponseAndEvaluate = async (
     }
 
     // AI Evaluation
-    if (!question.evaluation || question.evaluation == "ai") {
+    if (
+      !question?.qualification?.type ||
+      question?.qualification?.type == qualificationType.Enum.ai
+    ) {
       console.log("Evaluating");
       setIsEvaluating(true);
       const aiEvaluationResponse: AiEvaluationResponse = await aiEvaluate(
@@ -250,8 +254,11 @@ const aiEvaluate = async (
     "@language": language,
     "@question_type": question.question_type,
     "@question": extracti18nText(question.question_text, language),
-    "@qualification": question.qualificationCriteria,
   };
+
+  if (question.qualification?.criteria) {
+    pvs["@qualification"] = question.qualification?.criteria;
+  }
 
   let action: ActionRegistrationType = {
     name: "evaluateMcqResponse",

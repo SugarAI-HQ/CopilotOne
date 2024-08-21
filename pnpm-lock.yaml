@@ -50,8 +50,11 @@ importers:
       '@sentry/nextjs':
         specifier: ^7.92.0
         version: 7.92.0(next@13.4.13(@babel/core@7.23.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0)(webpack@5.88.2(@swc/core@1.3.92(@swc/helpers@0.5.5))(esbuild@0.18.20))
+      '@sugar-ai/copilot-one-js':
+        specifier: file:.yalc/@sugar-ai/copilot-one-js
+        version: file:apps/factory/.yalc/@sugar-ai/copilot-one-js(@types/react@18.2.28)(jiti@1.21.6)(react@18.2.0)
       '@sugar-ai/core':
-        specifier: workspace:*
+        specifier: 'workspace: *'
         version: link:../../sdks/core
       '@t3-oss/env-nextjs':
         specifier: ^0.6.0
@@ -3866,6 +3869,26 @@ packages:
 
   '@storybook/types@7.4.6':
     resolution: {integrity: sha512-6QLXtMVsFZFpzPkdGWsu/iuc8na9dnS67AMOBKm5qCLPwtUJOYkwhMdFRSSeJthLRpzV7JLAL8Kwvl7MFP3QSw==}
+
+  '@sugar-ai/copilot-one-js@0.0.43':
+    resolution: {integrity: sha512-PVBuMPZUQm5iRu2mLU8OILwMRoxggcYTDvj3kawBFoU7uml4gxarzVfMHD5GFIr0JSekMXeZi8KG+Q4LjT08jA==}
+    peerDependencies:
+      react: '>16.0.0'
+
+  '@sugar-ai/copilot-one-js@file:apps/factory/.yalc/@sugar-ai/copilot-one-js':
+    resolution: {directory: apps/factory/.yalc/@sugar-ai/copilot-one-js, type: directory}
+    peerDependencies:
+      react: '>16.0.0'
+
+  '@sugar-ai/core@0.0.7':
+    resolution: {integrity: sha512-MlxEYc5Dj800NMkIFhQ5qpiH8TG2SNS7uOkM3Nxjhm7t5LIbpL79bJCW0kZxByh0oy0VyXUGJ+AWBuP6immD5g==}
+    peerDependencies:
+      react: '>16.0.0'
+
+  '@sugar-ai/core@file:apps/factory/.yalc/@sugar-ai/core':
+    resolution: {directory: apps/factory/.yalc/@sugar-ai/core, type: directory}
+    peerDependencies:
+      react: '>16.0.0'
 
   '@swagger-api/apidom-ast@0.99.1':
     resolution: {integrity: sha512-evkKm2JaqNfg3dB2Yk3FWL/Qy2r4csZLMZ9bHMG+xNpti8ulENHMjuCh3Ry4koV1gD7IA54CU2ZjcaTvqJa22Q==}
@@ -14751,6 +14774,75 @@ snapshots:
       '@types/express': 4.17.19
       file-system-cache: 2.3.0
 
+  '@sugar-ai/copilot-one-js@0.0.43(@types/react@18.2.28)(jiti@1.21.6)(react@18.2.0)':
+    dependencies:
+      '@sugar-ai/copilot-one-js': file:apps/factory/.yalc/@sugar-ai/copilot-one-js(@types/react@18.2.28)(jiti@1.21.6)(react@18.2.0)
+      '@sugar-ai/core': file:apps/factory/.yalc/@sugar-ai/core(@types/react@18.2.28)(jiti@1.21.6)(react@18.2.0)
+      '@types/dom-speech-recognition': 0.0.4
+      '@types/easy-speech': 1.2.4
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      styled-components: 6.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      window-or-global: 1.0.1
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - '@types/react'
+      - jiti
+      - tsx
+
+  '@sugar-ai/copilot-one-js@file:apps/factory/.yalc/@sugar-ai/copilot-one-js(@types/react@18.2.28)(jiti@1.21.6)(react@18.2.0)':
+    dependencies:
+      '@sugar-ai/copilot-one-js': 0.0.43(@types/react@18.2.28)(jiti@1.21.6)(react@18.2.0)
+      '@sugar-ai/core': 0.0.7(react@18.2.0)
+      '@types/dom-speech-recognition': 0.0.4
+      '@types/easy-speech': 1.2.4
+      build: 0.1.4
+      postcss: 8.4.41
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      styled-components: 6.1.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      validator: 13.12.0
+      window-or-global: 1.0.1
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - '@types/react'
+      - jiti
+      - tsx
+
+  '@sugar-ai/core@0.0.7(react@18.2.0)':
+    dependencies:
+      form-data: 4.0.0
+      js-base64: 3.7.7
+      qs: 6.12.0
+      react: 18.2.0
+      url-join-ts: 1.0.5
+      window-or-global: 1.0.1
+      zod: 3.22.4
+
+  '@sugar-ai/core@file:apps/factory/.yalc/@sugar-ai/core(@types/react@18.2.28)(jiti@1.21.6)(react@18.2.0)':
+    dependencies:
+      '@emotion/react': 11.11.1(@types/react@18.2.28)(react@18.2.0)
+      '@types/dom-speech-recognition': 0.0.4
+      '@types/easy-speech': 1.2.4
+      async-mutex: 0.5.0
+      autoprefixer: 10.4.20(postcss@8.4.41)
+      build: 0.1.4
+      easy-speech: 2.3.1
+      form-data: 4.0.0
+      js-base64: 3.7.7
+      postcss: 8.4.41
+      postcss-cli: 11.0.0(jiti@1.21.6)(postcss@8.4.41)
+      qs: 6.12.0
+      react: 18.2.0
+      ua-parser-js: 1.0.38
+      url-join-ts: 1.0.5
+      window-or-global: 1.0.1
+      zod: 3.22.4
+    transitivePeerDependencies:
+      - '@types/react'
+      - jiti
+      - tsx
+
   '@swagger-api/apidom-ast@0.99.1':
     dependencies:
       '@babel/runtime-corejs3': 7.24.4
@@ -20994,6 +21086,25 @@ snapshots:
       - jiti
       - tsx
 
+  postcss-cli@11.0.0(jiti@1.21.6)(postcss@8.4.41):
+    dependencies:
+      chokidar: 3.5.3
+      dependency-graph: 0.11.0
+      fs-extra: 11.1.1
+      get-stdin: 9.0.0
+      globby: 14.0.2
+      picocolors: 1.0.0
+      postcss: 8.4.41
+      postcss-load-config: 5.1.0(jiti@1.21.6)(postcss@8.4.41)
+      postcss-reporter: 7.1.0(postcss@8.4.41)
+      pretty-hrtime: 1.0.3
+      read-cache: 1.0.0
+      slash: 5.1.0
+      yargs: 17.7.2
+    transitivePeerDependencies:
+      - jiti
+      - tsx
+
   postcss-import@15.1.0(postcss@8.4.39):
     dependencies:
       postcss: 8.4.39
@@ -21040,6 +21151,14 @@ snapshots:
       jiti: 1.21.6
       postcss: 8.4.39
 
+  postcss-load-config@5.1.0(jiti@1.21.6)(postcss@8.4.41):
+    dependencies:
+      lilconfig: 3.1.2
+      yaml: 2.4.5
+    optionalDependencies:
+      jiti: 1.21.6
+      postcss: 8.4.41
+
   postcss-loader@7.3.3(postcss@8.4.39)(typescript@5.2.2)(webpack@5.88.2(@swc/core@1.3.92(@swc/helpers@0.5.5))(esbuild@0.18.20)):
     dependencies:
       cosmiconfig: 8.3.6(typescript@5.2.2)
@@ -21085,6 +21204,12 @@ snapshots:
     dependencies:
       picocolors: 1.0.1
       postcss: 8.4.39
+      thenby: 1.3.4
+
+  postcss-reporter@7.1.0(postcss@8.4.41):
+    dependencies:
+      picocolors: 1.0.1
+      postcss: 8.4.41
       thenby: 1.3.4
 
   postcss-selector-parser@6.0.13:

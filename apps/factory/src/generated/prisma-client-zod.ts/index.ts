@@ -88,9 +88,9 @@ export const CopilotPromptScalarFieldEnumSchema = z.enum(['id','userId','copilot
 
 export const FormScalarFieldEnumSchema = z.enum(['id','userId','name','description','startButtonText','messages','languages','formConfig','createdAt','updatedAt']);
 
-export const FormQuestionScalarFieldEnumSchema = z.enum(['id','userId','formId','question_type','question_text','question_params','validation','createdAt','updatedAt']);
+export const FormQuestionScalarFieldEnumSchema = z.enum(['id','userId','formId','question_type','question_text','question_params','validation','qualification','order','createdAt','updatedAt']);
 
-export const FormSubmissionScalarFieldEnumSchema = z.enum(['id','userId','clientUserId','formId','submittedAt','metadata','createdAt','updatedAt']);
+export const FormSubmissionScalarFieldEnumSchema = z.enum(['id','userId','clientUserId','formId','submittedAt','duration','metadata','createdAt','updatedAt']);
 
 export const FormSubmissionAnswersScalarFieldEnumSchema = z.enum(['id','userId','clientUserId','formId','submissionId','questionId','answer','metadata','createdAt','updatedAt']);
 
@@ -529,6 +529,8 @@ export const FormQuestionSchema = z.object({
   question_text: InputJsonValue,
   question_params: InputJsonValue,
   validation: InputJsonValue,
+  qualification: InputJsonValue,
+  order: z.number().int(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
@@ -545,6 +547,7 @@ export const FormSubmissionSchema = z.object({
   clientUserId: z.string(),
   formId: z.string(),
   submittedAt: z.coerce.date().nullable(),
+  duration: z.number().int(),
   metadata: InputJsonValue,
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

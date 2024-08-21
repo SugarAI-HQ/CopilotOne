@@ -170,6 +170,10 @@ export const questions: Question[] = [
         hi: "फ़ोन कॉलिंग या ग्राहक सहायता में अपने पिछले अनुभव का वर्णन करें।",
       },
     },
+    qualification:: {
+      type: "manual",
+      criteria: "previous_experience",
+    },
     question_params: {},
     validation: {
       max_length: 500,

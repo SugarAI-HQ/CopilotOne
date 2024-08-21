@@ -56,6 +56,9 @@ export const questionType = z.enum([
 ]);
 export type QuestionType = z.infer<typeof questionType>;
 
+export const qualificationType = z.enum(["none", "ai", "manual"]);
+export type QualificationType = z.infer<typeof qualificationType>;
+
 export const QuestionSchema = z.object({
   id: z.string(),
   question_type: questionType,
@@ -65,8 +68,6 @@ export const QuestionSchema = z.object({
       options: z.array(i18nMessageSchema).optional(),
     })
     .passthrough(),
-  evaluation: z.enum(["none", "ai", "manual"]).optional(),
-  qualificationCriteria: z.string().optional(),
   validation: z
     .object({
       // evaluation: z.boolean().optional().default(true),
@@ -74,6 +75,10 @@ export const QuestionSchema = z.object({
       validators: z.array(formFieldValidator).optional(),
     })
     .passthrough(),
+  qualification: z.object({
+    type: qualificationType.default(qualificationType.Enum.ai),
+    criteria: z.string().optional(),
+  }),
 });
 export type Question = z.infer<typeof QuestionSchema>;
 

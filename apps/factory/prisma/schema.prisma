@@ -389,9 +389,8 @@ model CopilotPrompt {
 }
 
 
-// prisma/schema.prisma
 model Form {
-  id          String        @id @default(uuid())
+  id          String        @id @default(uuid()) @db.Uuid
   userId        String
   name        String
   
@@ -413,61 +412,64 @@ model Form {
 }
 
 model FormQuestion {
-  id          String        @id @default(uuid())
+  id            String        @id @default(uuid()) @db.Uuid
   userId        String
   
-  formId  String
-  form    Form @relation(fields: [formId], references: [id])
-  question_type String
-  question_text Json
-  question_params Json
-  validation   Json
+  formId        String        @db.Uuid
+  form          Form          @relation(fields: [formId], references: [id])
+  
+  question_type String 
+  question_text Json    
+  question_params Json  
+  validation    Json     
+  qualification Json    
 
-  // answers     FormSubmissionAnswers[]
+  order         Int           @default(0)
+  answers       FormSubmissionAnswers[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
 
   @@index([userId, formId, id])
 }
 
 model FormSubmission {
-  id         String      @id @default(uuid())
-  userId     String
+  id            String        @id @default(uuid()) @db.Uuid
+  userId        String
   
   clientUserId  String
-  formId     String
-  form       Form   @relation(fields: [formId], references: [id])
-  answers    FormSubmissionAnswers[]
-  submittedAt DateTime?
-  // duration   Int @default(0)
+  formId        String        @db.Uuid
+  form          Form          @relation(fields: [formId], references: [id])
+  answers       FormSubmissionAnswers[]
+  submittedAt   DateTime?
+  duration      Int           @default(0)
 
-  metadata    Json @default("{}")
+  metadata      Json          @default("{}")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
 
   @@index([userId, clientUserId, formId])
 }
 
 model FormSubmissionAnswers {
-  id            String     @id @default(uuid())
+  id            String        @id @default(uuid()) @db.Uuid
   userId        String
 
   clientUserId  String
   
-  formId     String
-  form       Form   @relation(fields: [formId], references: [id])
-  submissionId  String
+  formId        String        @db.Uuid
+  form          Form          @relation(fields: [formId], references: [id])
+  submissionId  String        @db.Uuid
   submission    FormSubmission @relation(fields: [submissionId], references: [id])
-  questionId    String
-  // question      FormQuestion   @relation(fields: [questionId], references: [id])
+  questionId    String        @db.Uuid
+  question      FormQuestion  @relation(fields: [questionId], references: [id])
   
-  answer      Json @default("{}")
-  metadata    Json @default("{}")
+  answer        Json          @default("{}")
+  metadata      Json          @default("{}")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
 
   @@index([formId, submissionId, questionId])
   @@unique([submissionId, questionId])

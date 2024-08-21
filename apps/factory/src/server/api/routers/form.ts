@@ -18,9 +18,11 @@ import {
   getSubmissionResponse,
   GetSubmissionResponse,
   parsePrismaJsonb,
+  createOrUpdateQuestionsInput,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
-import { debounce } from "lodash";
+import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
+import { validate as isUuid, v4 as uuidv4 } from "uuid";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -159,6 +161,25 @@ export const formRouter = createTRPCRouter({
       // debugger;
       const form = await ctx.prisma.form.findUnique({
         where: query,
+        include: {
+          questions: {
+            select: {
+              id: true,
+              question_type: true,
+              question_text: true,
+              question_params: true,
+
+              validation: true,
+              qualification: true,
+              order: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+            orderBy: {
+              createdAt: "asc",
+            },
+          },
+        },
       });
 
       // console.log(`forms out -------------- ${JSON.stringify(forms)}`);
@@ -190,6 +211,55 @@ export const formRouter = createTRPCRouter({
           throw new Error(JSON.stringify(errorMessage));
         }
         throw new Error("Something went wrong");
+      }
+    }),
+
+  upsertQuestions: protectedProcedure
+    .input(createOrUpdateQuestionsInput)
+    .mutation(async ({ ctx, input }) => {
+      const { formId, questions } = input;
+      const userId = ctx.jwt?.id as string;
+      const questionsArray = [questions[0]];
+
+      try {
+        const upsertedQuestions = await ctx.prisma.$transaction(
+          await questions.map((question) => {
+            return ctx.prisma.formQuestion.upsert({
+              where: {
+                userId: userId,
+                formId: formId,
+                id: isUuid(question?.id) ? question?.id : uuidv4(),
+              },
+              update: {
+                question_type: question.question_type,
+                question_text: question.question_text,
+                question_params: question.question_params as InputJsonValueType,
+
+                validation: question.validation as InputJsonValueType,
+                // evaluation: question.evaluation,
+                // qualificationCriteria: question.qualification.criteria,
+                // order: question.order,
+              },
+              create: {
+                userId: userId,
+                formId: formId,
+                question_type: question.question_type,
+                question_text: question.question_text,
+                question_params: question.question_params as InputJsonValueType,
+                validation: question.validation as InputJsonValueType,
+                qualification: question.qualification as InputJsonValueType,
+                // order: question.order,
+              },
+            });
+          }),
+        );
+
+        return upsertedQuestions;
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to upsert questions",
+        });
       }
     }),
 

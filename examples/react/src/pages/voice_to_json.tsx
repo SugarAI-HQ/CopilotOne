@@ -17,14 +17,13 @@ import {
   VoiceFormProvider,
 } from "@sugar-ai/core";
 
-import { VoiceForm, LanguageSelector } from "@sugar-ai/copilot-one-js";
+import { VoiceToJson } from "@sugar-ai/copilot-one-js";
 
 import "@sugar-ai/copilot-one-js/style";
 import dynamic from "next/dynamic";
 import { getFormData } from "@/data/leadgen";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
-import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 import { Header } from "@/components/common/Header";
 
 const App: NextPage = () => {
@@ -114,59 +113,7 @@ const App: NextPage = () => {
     <>
       <Header />
       <CopilotProvider config={copilotConfig}>
-        <UnsupportedBrowser forceShow={showInUnSupportedBrowser}>
-          {/* <div>
-        <h1>Leadgen Form</h1>
-      </div> */}
-          <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
-            <WorkflowProvider>
-              <VoiceFormProvider formConfig={formConfig}>
-                <Suspense fallback={<p>Loading feed...</p>}>
-                  {showStart && fd && (
-                    <div className="leadgen-container flex flex-col items-center justify-center h-dvh p-4 bg-gray-100 dark:bg-gray-800">
-                      <LanguageSelector
-                        languagesEnabled={fd.languagesEnabled}
-                        xklass="fixed bottom-0 left-0 right-0"
-                      />
-                      <h1 className="text-3xl md:text-4xl lg:text-5xl p-2 m-4 text-center text-gray-800 dark:text-gray-200">
-                        {fd.translations &&
-                          extracti18nText(
-                            geti18nMessage("landingText", fd.translations),
-                            lang ?? "en"
-                          )}
-                      </h1>
-                      <button
-                        className={`w-full max-w-xs md:max-w-md lg:max-w-lg m-4 p-4 bg-[${themeColor}] dark:bg-[${themeColor}] hover:bg-[${themeColor}] dark:bg-[${themeColor}] text-white text-center rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105`}
-                        // style={`background-color: ${themeColor};`}
-                        style={{
-                          backgroundColor: themeColor,
-                        }}
-                        onClick={() => {
-                          setShowStart(false);
-                        }}
-                      >
-                        {fd.translations &&
-                          extracti18nText(
-                            geti18nMessage("startButton", fd.translations),
-                            lang ?? "en"
-                          )}
-                      </button>
-                    </div>
-                  )}
-
-                  {!showStart && fd && (
-                    <VoiceForm
-                      showStartButton={false}
-                      translations={fd.translations}
-                      questions={fd.questions}
-                      formConfig={formConfig}
-                    />
-                  )}
-                </Suspense>
-              </VoiceFormProvider>
-            </WorkflowProvider>
-          </LanguageProvider>
-        </UnsupportedBrowser>
+        <VoiceToJson></VoiceToJson>
       </CopilotProvider>
     </>
   );

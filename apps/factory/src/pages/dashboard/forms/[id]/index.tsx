@@ -1,16 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardHeader,
-  Chip,
-  Grid,
-  Paper,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { TabPanel } from "~/components/Layouts/tabs";
