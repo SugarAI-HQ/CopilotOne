@@ -79,6 +79,7 @@ export const QuestionSchema = z.object({
     type: qualificationType.default(qualificationType.Enum.ai),
     criteria: z.string().optional(),
   }),
+  order: z.number().optional(),
 });
 export type Question = z.infer<typeof QuestionSchema>;
 

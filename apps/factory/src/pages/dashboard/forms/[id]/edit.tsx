@@ -13,6 +13,8 @@ import { NextPageWithLayout } from "~/pages/_app";
 import { FormDetails } from "~/components/voice_forms/create/settings";
 import { FormErrors } from "~/components/voice_forms/create/errors";
 import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
+import { DraggableList } from "~/components/voice_forms/questions/drag";
+import { Drag2 } from "~/components/voice_forms/questions/drag2";
 import { Question } from "@sugar-ai/core";
 import { api } from "~/utils/api";
 

@@ -191,3 +191,15 @@ export const createOrUpdateQuestionsInput = z.object({
   formId: z.string(),
   questions: z.array(QuestionSchema),
 });
+
+export const updateQuestionOrderInput = z.object({
+  formId: z.string(),
+  orderedQuestions: z.array(
+    z.object({
+      id: z.string(),
+      order: z.number(),
+    }),
+  ),
+});
+
+export type UpdateQuestionOrderInput = z.infer<typeof updateQuestionOrderInput>;

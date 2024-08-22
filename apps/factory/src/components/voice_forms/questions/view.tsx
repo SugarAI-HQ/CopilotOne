@@ -13,6 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ViewI18nMessage from "../view_i18n_message";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
+import DragHandleIcon from "@mui/icons-material/DragHandle";
 
 import { LanguageCode, Question } from "@sugar-ai/core";
 
@@ -22,6 +23,7 @@ interface QuestionViewProps {
   onEdit: (id: string) => void;
   onClone: (id: string) => void;
   onDelete: (id: string) => void;
+  dragHandleProps?: any; // Add this prop for the drag handle
 }
 
 const QuestionView: React.FC<QuestionViewProps> = ({
@@ -30,6 +32,7 @@ const QuestionView: React.FC<QuestionViewProps> = ({
   onEdit,
   onClone,
   onDelete,
+  dragHandleProps,
 }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
     languages[0] || "en",
@@ -60,6 +63,24 @@ const QuestionView: React.FC<QuestionViewProps> = ({
           width: "60%", // Fix the width of the main content area
         }}
       >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            pr: 2,
+          }}
+        >
+          <Chip
+            label={question.order}
+            color="primary"
+            variant="outlined"
+            sx={{}}
+          />
+          <IconButton {...dragHandleProps} className="cursor-grab">
+            <DragHandleIcon />
+          </IconButton>
+        </Box>
         <Box
           sx={{
             display: "flex",

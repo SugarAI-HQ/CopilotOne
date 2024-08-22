@@ -30,7 +30,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 interface QuestionNewProps {
   voiceForm: VoiceForm;
   initQuestion: Question | null;
-  onSubmit: (data: Question) => Primise<void>;
+  onSubmit: (data: Question) => Promise<void>;
   isLoading: boolean;
   open: boolean;
   onClose: () => void;

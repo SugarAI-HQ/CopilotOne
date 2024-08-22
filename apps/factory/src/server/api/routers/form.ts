@@ -19,10 +19,12 @@ import {
   GetSubmissionResponse,
   parsePrismaJsonb,
   createOrUpdateQuestionsInput,
+  updateQuestionOrderInput,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
 import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
 import { validate as isUuid, v4 as uuidv4 } from "uuid";
+import { bulkUpdate } from "~/services/prisma"; // Adjust import paths as necessary
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -176,7 +178,7 @@ export const formRouter = createTRPCRouter({
               updatedAt: true,
             },
             orderBy: {
-              createdAt: "asc",
+              order: "asc",
             },
           },
         },
@@ -219,8 +221,6 @@ export const formRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { formId, questions } = input;
       const userId = ctx.jwt?.id as string;
-      const questionsArray = [questions[0]];
-
       try {
         const upsertedQuestions = await ctx.prisma.$transaction(
           await questions.map((question) => {
@@ -234,11 +234,9 @@ export const formRouter = createTRPCRouter({
                 question_type: question.question_type,
                 question_text: question.question_text,
                 question_params: question.question_params as InputJsonValueType,
-
                 validation: question.validation as InputJsonValueType,
-                // evaluation: question.evaluation,
-                // qualificationCriteria: question.qualification.criteria,
-                // order: question.order,
+                qualification: question.qualification as InputJsonValueType,
+                order: question.order,
               },
               create: {
                 userId: userId,
@@ -248,7 +246,7 @@ export const formRouter = createTRPCRouter({
                 question_params: question.question_params as InputJsonValueType,
                 validation: question.validation as InputJsonValueType,
                 qualification: question.qualification as InputJsonValueType,
-                // order: question.order,
+                order: question.order,
               },
             });
           }),
@@ -407,6 +405,27 @@ export const formRouter = createTRPCRouter({
       const counts = submissions.map((item) => Number(item.count));
 
       return { dates, counts };
+    }),
+
+  updateQuestionOrder: protectedProcedure
+    .input(updateQuestionOrderInput)
+    // .output()
+    .mutation(async ({ ctx, input }) => {
+      const { orderedQuestions } = input;
+
+      // // Prepare the entries for bulk update
+      // const entries = orderedQuestions.map((question, index) => ({
+      //   id: question.id,
+      //   order: index + 1,
+      // }));
+
+      // Call the bulkUpdate function to perform the update
+      const result = await bulkUpdate(
+        ctx.prisma,
+        "FormQuestion",
+        orderedQuestions,
+      );
+      return { success: !!result };
     }),
 
   // getLanguageBreakdown: protectedProcedure
