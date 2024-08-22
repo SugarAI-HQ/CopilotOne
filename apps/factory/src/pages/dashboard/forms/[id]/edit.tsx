@@ -1,21 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Box, Button, Stack } from "@mui/material";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { getLayout } from "~/app/layout";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { createFormInput, Form, I18nMessageWithRules } from "~/validators/form";
-
-import Loading from "~/components/Layouts/loading";
 import { VoiceEditTabs } from "~/components/voice_forms/create/tabs";
-import { FormLanguagesSelector } from "~/components/voice_forms/create/language_selector";
 import { NextPageWithLayout } from "~/pages/_app";
-import { FormDetails } from "~/components/voice_forms/create/settings";
-import { FormErrors } from "~/components/voice_forms/create/errors";
-import CreateI18nMessage from "~/components/voice_forms/create_i18n_message";
-import { DraggableList } from "~/components/voice_forms/questions/drag";
-import { Drag2 } from "~/components/voice_forms/questions/drag2";
-import { Question } from "@sugar-ai/core";
 import { api } from "~/utils/api";
 
 const FormEdit: NextPageWithLayout = () => {

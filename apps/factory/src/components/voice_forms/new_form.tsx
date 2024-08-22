@@ -16,7 +16,8 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
-import { voiceForm, QuestionSchema } from "@sugar-ai/core"; // Update with actual import path
+import { ZodSchema } from "zod";
+import { voiceForm, questionSchema } from "@sugar-ai/core"; // Update with actual import path
 
 interface CreateVoiceFormProps {
   onSubmit: Function;
@@ -58,7 +59,7 @@ export const CreateVoiceForm: React.FC<CreateVoiceFormProps> = ({
       //   languages: [],
       //   formConfig: {},
     },
-    resolver: zodResolver(voiceForm),
+    resolver: zodResolver(voiceForm as unknown as ZodSchema),
     mode: "onChange",
     reValidateMode: "onChange",
   });
@@ -231,7 +232,7 @@ export const CreateQuestion: React.FC<CreateQuestionProps> = ({
       question_params: {},
       validation: {},
     },
-    resolver: zodResolver(QuestionSchema),
+    resolver: zodResolver(questionSchema),
     mode: "onChange",
     reValidateMode: "onChange",
   });

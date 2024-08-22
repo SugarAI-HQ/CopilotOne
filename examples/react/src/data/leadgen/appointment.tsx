@@ -39,9 +39,14 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "ai",
+    order: 1,
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
     // evalyuation: "none",
     validation: {
+      validators: [],
       max_length: 100,
     },
   },
@@ -58,6 +63,11 @@ export const questions: Question[] = [
     validation: {
       max_length: 20,
       validators: ["mobile"],
+    },
+    order: 2,
+    qualification: {
+      type: "ai",
+      criteria: "",
     },
   },
   {
@@ -103,7 +113,13 @@ export const questions: Question[] = [
         },
       ],
     },
+    order: 3,
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
     validation: {
+      validators: [],
       max_length: 50,
     },
   },
@@ -117,8 +133,13 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "none",
+    order: 1,
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
     validation: {
+      validators: [],
       max_length: 200,
     },
   },
@@ -160,7 +181,13 @@ export const questions: Question[] = [
       ],
     },
     validation: {
+      validators: [],
       max_length: 50,
+    },
+    order: 6,
+    qualification: {
+      type: "ai",
+      criteria: "",
     },
   },
 ];

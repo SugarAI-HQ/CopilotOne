@@ -24,7 +24,7 @@ import dynamic from "next/dynamic";
 import { getFormData } from "@/data/leadgen";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
-import { Header } from "@/components/common/Header";
+import { Header } from "@/components/common/header";
 
 const App: NextPage = () => {
   const router = useRouter();

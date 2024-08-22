@@ -338,11 +338,6 @@ export const VoiceAssistant = ({
       ...scope,
     };
 
-    // const { voice, lang } = await getPreferredVoiceAndLang(
-    //   currentAiConfig.voice,
-    //   currentAiConfig.lang,
-    //   root.speechSynthesis,
-    // );
     const currentPromptVariables = {
       ...currentAiConfig?.defaultPromptVariables,
       ...promptVariables,
@@ -384,11 +379,6 @@ export const VoiceAssistant = ({
 
     setIsprocessing(true);
 
-    // const { voice, lang } = await getPreferredVoiceAndLang(
-    //   currentAiConfig.voice,
-    //   currentAiConfig.lang,
-    //   root.speechSynthesis,
-    // );
     const currentPromptVariables = {
       ...currentAiConfig?.defaultPromptVariables,
       ...promptVariables,

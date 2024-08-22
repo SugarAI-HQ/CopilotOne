@@ -41,12 +41,15 @@ RUN cd /app && npm link @sugar-ai/core
 
 RUN mkdir -p /sdks/js
 COPY sdks/js /sdks/js
-RUN cd /sdks/js &&sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
+RUN cd /sdks/js && sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
 RUN cd /sdks/js && npm install && npm link @sugar-ai/core 
-RUN cd /sdks/js npm run build && npm link
+RUN cd /sdks/js && npm run build && npm link
 RUN cd /app && npm link @sugar-ai/copilot-one-js
 
+
 # Build
+# RUN --mount=type=cache,id=npm,target=/root/.npm npm install --ignore-scripts
+RUN npm install /sdks/core /sdks/js --force
 COPY apps/${PROJECT_NAME}/  .
 
 # Postinstall tasks

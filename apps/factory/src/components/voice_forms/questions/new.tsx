@@ -19,7 +19,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import {
   Question,
   LanguageCode,
-  I18nMessage,
+  i18nMessage,
   questionType,
   VoiceForm,
 } from "@sugar-ai/core";
@@ -56,9 +56,11 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
       id: initQuestion?.id || "",
       question_type: initQuestion?.question_type || "text",
       question_text: initQuestion?.question_text || { lang: { en: "" } },
+      // @ts-ignore
       question_params: initQuestion?.question_params || { options: [] },
       qualification_type: initQuestion?.qualification?.type || "ai",
       qualification_criteria: initQuestion?.qualification?.criteria || "",
+      // @ts-ignore
       validation: initQuestion?.validation || {
         max_length: 120,
         validators: [],
@@ -103,24 +105,25 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
     );
   };
 
-  const handleSaveMessage = (key: string, message: I18nMessage) => {
+  const handleSaveMessage = (key: any, message: i18nMessage) => {
     setValue(key, message);
   };
 
-  const handleSaveOption = (index: number, message: I18nMessage) => {
+  const handleSaveOption = (index: any, message: i18nMessage) => {
     debugger;
     setValue(index, message);
   };
 
-  const onSubmitForm = async (data: Question) => {
-    await onSubmit({
+  const onSubmitForm = async (data: any) => {
+    const q: Question = {
       ...data,
       qualification: {
         type: data?.qualification_type,
         criteria: data?.qualification_criteria,
       },
       id: data.id,
-    });
+    };
+    await onSubmit(q);
     onClose();
   };
 
@@ -184,6 +187,7 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
                   <CreateI18nMessage
                     fieldKey={`question_params.options.${index}`}
                     fieldName={`Option ${index + 1}`}
+                    // @ts-ignore
                     initialMessage={field}
                     allowedLanguages={voiceForm?.languages}
                     onSave={handleSaveOption}
@@ -206,14 +210,14 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
           <FormControl fullWidth>
             <InputLabel>Qualification Type</InputLabel>
             <Controller
-              name="qualitification_type"
+              name="qualification.type"
               control={control}
               render={({ field }) => (
                 <Select
                   {...field}
                   label="Evaluation"
                   fullWidth
-                  error={!!errors.qualitification_type}
+                  error={!!errors.qualification?.type}
                 >
                   <MenuItem value="none">None</MenuItem>
                   <MenuItem value="ai">AI</MenuItem>
@@ -224,7 +228,7 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
           </FormControl>
 
           <Controller
-            name="qualification_criteria"
+            name="qualification.criteria"
             control={control}
             render={({ field }) => (
               <TextField

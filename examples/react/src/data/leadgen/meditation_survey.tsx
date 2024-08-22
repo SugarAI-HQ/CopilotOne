@@ -39,8 +39,13 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "ai",
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 1,
     validation: {
+      validators: [],
       max_length: 100,
     },
   },
@@ -54,8 +59,13 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "ai",
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 2,
     validation: {
+      validators: [],
       max_length: 3,
     },
   },
@@ -69,8 +79,13 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "ai",
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 3,
     validation: {
+      validators: [],
       max_length: 50,
     },
   },
@@ -88,6 +103,11 @@ export const questions: Question[] = [
       max_length: 50,
       validators: ["mobile"],
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 4,
   },
   {
     id: "5",
@@ -119,8 +139,13 @@ export const questions: Question[] = [
         { lang: { en: "Currently Unemployed", hi: "वर्तमान में बेरोजगार" } },
       ],
     },
-    evaluation: "ai",
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 6,
     validation: {
+      validators: [],
       max_length: 50,
     },
   },
@@ -141,8 +166,14 @@ export const questions: Question[] = [
       ],
     },
     validation: {
+      validators: [],
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 6,
   },
   {
     id: "7",
@@ -161,8 +192,14 @@ export const questions: Question[] = [
       ],
     },
     validation: {
+      validators: [],
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 7,
   },
   {
     id: "7.1",
@@ -187,8 +224,14 @@ export const questions: Question[] = [
       ],
     },
     validation: {
+      validators: [],
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 8,
   },
   {
     id: "8",
@@ -237,8 +280,14 @@ export const questions: Question[] = [
       ],
     },
     validation: {
+      validators: [],
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 9,
   },
   {
     id: "9",
@@ -281,8 +330,14 @@ export const questions: Question[] = [
       ],
     },
     validation: {
+      validators: [],
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 10,
   },
   {
     id: "10",
@@ -322,8 +377,14 @@ export const questions: Question[] = [
     },
 
     validation: {
+      validators: [],
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 11,
   },
   {
     id: "11",
@@ -349,8 +410,13 @@ export const questions: Question[] = [
         },
       ],
     },
-    evaluation: "ai",
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 12,
     validation: {
+      validators: [],
       max_length: 50,
     },
   },
@@ -394,8 +460,13 @@ export const questions: Question[] = [
         },
       ],
     },
-    evaluation: "ai",
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 5,
     validation: {
+      validators: [],
       max_length: 200,
     },
   },
@@ -409,9 +480,15 @@ export const questions: Question[] = [
       },
     },
     question_params: {},
-    evaluation: "none",
+
     validation: {
+      validators: [],
       max_length: 200,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 13,
   },
 ];

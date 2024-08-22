@@ -14,6 +14,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ViewI18nMessage from "../view_i18n_message";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
+import ToggleOffIcon from "@mui/icons-material/ToggleOff";
+import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 
 import { LanguageCode, Question } from "@sugar-ai/core";
 
@@ -112,25 +114,26 @@ const QuestionView: React.FC<QuestionViewProps> = ({
             />
           </Typography>
 
-          {question.question_params?.options?.length > 0 && (
-            <Box sx={{ mt: 1 }}>
-              <Typography variant="subtitle1" className="font-semibold">
-                Options:
-              </Typography>
-              <Grid container sx={{ mt: 1 }} spacing={1}>
-                {question.question_params.options.map((option, index) => (
-                  <Grid item xs={6} key={index}>
-                    <Typography variant="body2">
-                      <ViewI18nMessage
-                        message={option}
-                        languages={[selectedLanguage]}
-                      />
-                    </Typography>
-                  </Grid>
-                ))}
-              </Grid>
-            </Box>
-          )}
+          {question.question_params?.options &&
+            question.question_params?.options.length > 0 && (
+              <Box sx={{ mt: 1 }}>
+                <Typography variant="subtitle1" className="font-semibold">
+                  Options:
+                </Typography>
+                <Grid container sx={{ mt: 1 }} spacing={1}>
+                  {question.question_params.options.map((option, index) => (
+                    <Grid item xs={6} key={index}>
+                      <Typography variant="body2">
+                        <ViewI18nMessage
+                          message={option}
+                          languages={[selectedLanguage]}
+                        />
+                      </Typography>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
+            )}
         </Box>
       </Box>
 
@@ -170,8 +173,13 @@ const QuestionView: React.FC<QuestionViewProps> = ({
           <IconButton color="primary" onClick={() => onClone(question.id)}>
             <FileCopyIcon />
           </IconButton>
+          {/* <IconButton color="secondary" onClick={() => onDelete(question.id)}>
+          <DeleteIcon />
+          </IconButton> */}
+
           <IconButton color="secondary" onClick={() => onDelete(question.id)}>
             <DeleteIcon />
+            question.active ? <ToggleOnIcon /> : <ToggleOffIcon />
           </IconButton>
         </Box>
       </Box>

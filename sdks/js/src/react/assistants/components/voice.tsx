@@ -4,7 +4,8 @@ import OpenMic from "../../icons/open_mic";
 import Speak from "../../icons/speak";
 import Spinner from "../../icons/spinner";
 import { VoiceButton } from "../base_styled";
-import { Hourglass } from "lucide-react";
+// import { Hourglass } from "lucide-react";
+import { FaRegHourglass } from "react-icons/fa";
 
 const VoiceButtonWithStates = ({
   startListening,
@@ -78,7 +79,8 @@ const VoiceButtonWithStates = ({
             }}
           />
         ) : iswaiting ? (
-          <Hourglass style={iconStyle} />
+          // <Hourglass style={iconStyle} />
+          <FaRegHourglass style={iconStyle} />
         ) : (
           <Mic
             style={iconStyle}

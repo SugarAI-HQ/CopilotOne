@@ -22,7 +22,11 @@ import {
   validateAnswerWithUser,
   SELECTED_QUESTION_TYPES,
 } from "~/react/helpers/form";
-import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
+// import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
+import { IoMdSkipForward } from "react-icons/io";
+
+import { FaA, FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
+
 import Initializing from "./Initializing";
 import {
   answeredBy,
@@ -439,7 +443,8 @@ export const VoiceQuestion: React.FC<{
 
           <div className="sai-vf-actions">
             <button onClick={onBack} className="sai-vf-action action-back">
-              <ArrowLeft className="w-5 h-5" />
+              {/* <ArrowLeft className="w-5 h-5" /> */}
+              <FaArrowLeftLong className="w-5 h-5" />
             </button>
             <VoiceButtonWithStates
               currentStyle={{ voiceButton: formConfig.voiceButton }}
@@ -465,14 +470,16 @@ export const VoiceQuestion: React.FC<{
                 }
                 className="sai-vf-action action-skip "
               >
-                <SkipForward className="w-5 h-5" />
+                {/* <SkipForward className="w-5 h-5" /> */}
+                <IoMdSkipForward className="w-5 h-5" />
               </button>
             ) : (
               <button
                 onClick={() => setAnswerReady(submissionStates.Enum.ready)}
                 className="sai-vf-action action-next"
               >
-                <ArrowRight className="w-5 h-5" />
+                {/* <ArrowRight className="w-5 h-5" /> */}
+                <FaArrowRightLong className="w-5 h-5" />
               </button>
             )}
           </div>

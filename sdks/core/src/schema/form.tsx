@@ -59,7 +59,7 @@ export type QuestionType = z.infer<typeof questionType>;
 export const qualificationType = z.enum(["none", "ai", "manual"]);
 export type QualificationType = z.infer<typeof qualificationType>;
 
-export const QuestionSchema = z.object({
+export const questionSchema = z.object({
   id: z.string(),
   question_type: questionType,
   question_text: i18nMessageSchema,
@@ -71,8 +71,8 @@ export const QuestionSchema = z.object({
   validation: z
     .object({
       // evaluation: z.boolean().optional().default(true),
-      max_length: z.number().optional().default(120),
-      validators: z.array(formFieldValidator).optional(),
+      max_length: z.number().default(120),
+      validators: z.array(formFieldValidator).default([]),
     })
     .passthrough(),
   qualification: z.object({
@@ -80,8 +80,9 @@ export const QuestionSchema = z.object({
     criteria: z.string().optional(),
   }),
   order: z.number().optional(),
+  active: z.boolean().default(true),
 });
-export type Question = z.infer<typeof QuestionSchema>;
+export type Question = z.infer<typeof questionSchema>;
 
 export const streamingi18nTextSchema = z.object({
   auto: z.boolean().optional(),
@@ -180,11 +181,12 @@ export const formMessageType = z.enum([
 export type FormMessageType = z.infer<typeof formMessageType>;
 
 export const voiceForm = z.object({
+  id: z.string(),
   name: z.string(),
   description: i18nMessageSchema,
   startButtonText: i18nMessageSchema,
 
-  questions: z.array(QuestionSchema),
+  questions: z.array(questionSchema),
   messages: z.record(formMessageType, z.string()),
 
   languages: z.array(languageCode),

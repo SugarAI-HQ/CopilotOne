@@ -427,6 +427,8 @@ model FormQuestion {
   order         Int           @default(0)
   answers       FormSubmissionAnswers[]
 
+  active        Boolean       @default(true)
+
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @default(now()) @updatedAt @map("updated_at")
 

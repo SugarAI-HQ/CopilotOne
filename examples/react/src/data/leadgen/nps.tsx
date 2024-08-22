@@ -140,8 +140,14 @@ export const questions: Question[] = [
       ],
     },
     validation: {
+      validators: [],
       max_length: 100,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 1,
   },
   {
     id: "2",
@@ -159,8 +165,14 @@ export const questions: Question[] = [
       options: [],
     },
     validation: {
+      validators: [],
       max_length: 500,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 2,
   },
   {
     id: "3",
@@ -178,7 +190,13 @@ export const questions: Question[] = [
       options: [],
     },
     validation: {
+      validators: [],
       max_length: 500,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 3,
   },
 ];

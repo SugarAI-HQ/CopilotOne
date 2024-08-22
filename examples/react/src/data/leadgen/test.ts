@@ -22,6 +22,7 @@ export const translations: Translations = {
 
 export const questions: Question[] = [
   {
+    id: "1",
     question_type: "single_choice",
     question_text: {
       // mode: "manual",
@@ -72,7 +73,14 @@ export const questions: Question[] = [
         },
       ],
     },
-    validation: {},
+    validation: {
+      max_length: 500,
+    },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
+    order: 1,
   },
   // Add more questions as needed
 ];

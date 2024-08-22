@@ -16,7 +16,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoadingButton } from "@mui/lab";
-import { VoiceForm, QuestionSchema } from "@sugar-ai/core"; // Update with actual import path
+import { VoiceForm, questionSchema } from "@sugar-ai/core"; // Update with actual import path
 import { createFormInput } from "~/validators/form";
 
 interface CreateVoiceFormProps {

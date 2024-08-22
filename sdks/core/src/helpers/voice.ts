@@ -72,7 +72,7 @@ export const speakMessage = (
 
   let speechEnded = false;
   let boundaryTriggered = false;
-  const fallbackTimeout = 5000; // Time after last boundary to consider as end
+  const fallbackTimeout = 2000; // Time after last boundary to consider as end
 
   const checkEnd = () => {
     if (!speechEnded) {

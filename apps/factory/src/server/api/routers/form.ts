@@ -20,6 +20,7 @@ import {
   parsePrismaJsonb,
   createOrUpdateQuestionsInput,
   updateQuestionOrderInput,
+  createOrUpdateQuestionsResponse,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
 import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
@@ -218,6 +219,7 @@ export const formRouter = createTRPCRouter({
 
   upsertQuestions: protectedProcedure
     .input(createOrUpdateQuestionsInput)
+    // .output(createOrUpdateQuestionsResponse)
     .mutation(async ({ ctx, input }) => {
       const { formId, questions } = input;
       const userId = ctx.jwt?.id as string;

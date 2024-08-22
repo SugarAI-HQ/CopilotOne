@@ -295,20 +295,6 @@ export const determinePreferredLang = (inputLang) => {
   return inputLang || defaultLang;
 };
 
-// export const getPreferredVoiceAndLang = async (
-//   inputVoice,
-//   inputLang,
-//   synth,
-// ) => {
-//   const preferredLang = determinePreferredLang(inputLang);
-//   const preferredVoice = await determinePreferredVoice(
-//     inputVoice,
-//     preferredLang,
-//     synth,
-//   );
-//   return { lang: preferredLang, voice: preferredVoice };
-// };
-
 export const getGender = (voice: SpeechSynthesisVoice) => {
   if (voice && voices.female.includes(voice.name)) {
     return "female";

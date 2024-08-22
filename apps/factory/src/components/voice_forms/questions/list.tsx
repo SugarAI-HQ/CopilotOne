@@ -54,7 +54,8 @@ const QuestionList: React.FC<QuestionListProps> = ({
       formQuestionsMutation.mutate(
         { formId, questions: questionsWithOrder },
         {
-          onSuccess: async (upsertedQuestions: Question[]) => {
+          onSuccess: async (data: any) => {
+            const upsertedQuestions = data as Question[];
             const uniqueQuestions = mergeUniqueById(
               questions,
               upsertedQuestions,
@@ -74,16 +75,24 @@ const QuestionList: React.FC<QuestionListProps> = ({
   const formQuestionsMutation = api.form.upsertQuestions.useMutation({});
 
   const handleClone = (questionId: string) => {
-    const filteredQuestion: Question = questions.filter(
+    const filteredQuestion = questions.filter(
       (q) => q.id === questionId,
-    )[0];
+    )[0] as Question;
 
-    filteredQuestion.id = null;
+    filteredQuestion.id = "";
     setEditingQuestion(filteredQuestion);
   };
 
-  const handleAdd = (questionId: string) => {
-    const newQuestion: Question = {};
+  const handleAdd = () => {
+    const newQuestion: Question = {
+      id: "",
+      question_type: "text",
+      question_text: { lang: { en: "" } },
+      question_params: {},
+      validation: { max_length: 120 },
+      qualification: { type: "ai", criteria: "" },
+      order: 0,
+    };
     setEditingQuestion(newQuestion);
   };
 
@@ -94,9 +103,9 @@ const QuestionList: React.FC<QuestionListProps> = ({
   };
 
   const handleEdit = (questionId: string) => {
-    const filteredQuestion: Question = questions.filter(
+    const filteredQuestion = questions.filter(
       (q) => q.id === questionId,
-    )[0];
+    )[0] as Question;
 
     setEditingQuestion(filteredQuestion);
   };
@@ -105,8 +114,14 @@ const QuestionList: React.FC<QuestionListProps> = ({
     if (!result.destination) return;
 
     const reorderedQuestions = Array.from(questions);
-    const [movedQuestion] = reorderedQuestions.splice(result.source.index, 1);
-    reorderedQuestions.splice(result.destination.index, 0, movedQuestion);
+
+    if (
+      result.destination &&
+      result.source.index !== result.destination.index
+    ) {
+      const [movedQuestion] = reorderedQuestions.splice(result.source.index, 1);
+      reorderedQuestions.splice(result.destination.index, 0, movedQuestion);
+    }
 
     // Identify only the questions whose index has effectively changed
     const changedQuestions = reorderedQuestions
@@ -143,7 +158,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
 
   const updateQuestionOrder = (toBeUpdatedQuestionsOrder: any) => {
     questionOrderMutation.mutate({
-      formId: voiceForm.id,
+      formId: voiceForm?.id,
       orderedQuestions: toBeUpdatedQuestionsOrder,
     });
   };
@@ -154,22 +169,24 @@ const QuestionList: React.FC<QuestionListProps> = ({
     <>
       {isLoading && <Loading></Loading>}
       <VoiceToJson
+        schema={{}}
         onJson={async (questions) => {
-          await onQuestions(voiceForm.id, questions);
+          await onQuestions(voiceForm?.id, questions);
         }}
+        editorConfig={{}}
       ></VoiceToJson>
       {questions && (
         <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">
           <h2 className="mb-4 text-lg font-bold">
             Questions{" "}
-            <Button onClick={handleAdd}>
+            <Button variant="outlined" onClick={handleAdd}>
               <AddIcon /> Add
             </Button>
           </h2>
 
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="questions">
-              {(provided) => (
+              {(provided: any) => (
                 <ul
                   {...provided.droppableProps}
                   ref={provided.innerRef}
@@ -181,7 +198,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
                       draggableId={question.id}
                       index={index}
                     >
-                      {(provided) => (
+                      {(provided: any) => (
                         <li
                           ref={provided.innerRef}
                           {...provided.draggableProps}
