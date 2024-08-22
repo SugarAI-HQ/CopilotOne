@@ -85,7 +85,6 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
-    "@sugar-ai/copilot-one-js": "workspace:*",
     "@sugar-ai/core": "workspace:*",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/easy-speech": "^1.2.4",

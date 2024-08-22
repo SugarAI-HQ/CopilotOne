@@ -40,6 +40,10 @@ export const questions: Question[] = [
     validation: {
       max_length: 100,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
   },
   {
     id: "2",
@@ -54,6 +58,10 @@ export const questions: Question[] = [
     validation: {
       max_length: 20,
       validators: ["mobile"],
+    },
+    qualification: {
+      type: "ai",
+      criteria: "",
     },
   },
   {
@@ -90,6 +98,10 @@ export const questions: Question[] = [
     validation: {
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
   },
   {
     id: "4",
@@ -118,6 +130,10 @@ export const questions: Question[] = [
     },
     validation: {
       max_length: 50,
+    },
+    qualification: {
+      type: "ai",
+      criteria: "",
     },
   },
   {
@@ -160,6 +176,10 @@ export const questions: Question[] = [
     validation: {
       max_length: 50,
     },
+    qualification: {
+      type: "ai",
+      criteria: "",
+    },
   },
   {
     id: "6",
@@ -170,7 +190,7 @@ export const questions: Question[] = [
         hi: "फ़ोन कॉलिंग या ग्राहक सहायता में अपने पिछले अनुभव का वर्णन करें।",
       },
     },
-    qualification:: {
+    qualification: {
       type: "manual",
       criteria: "previous_experience",
     },

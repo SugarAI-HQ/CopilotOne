@@ -50,8 +50,6 @@ const QuestionList: React.FC<QuestionListProps> = ({
       return q;
     });
 
-    debugger;
-
     return new Promise<void>((resolve, reject) => {
       formQuestionsMutation.mutate(
         { formId, questions: questionsWithOrder },

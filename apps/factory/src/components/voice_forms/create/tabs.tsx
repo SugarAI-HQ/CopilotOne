@@ -6,7 +6,6 @@ import QuestionList from "~/components/voice_forms/questions/list";
 import QuestionNew from "~/components/voice_forms/questions/new";
 import { FormDetails } from "./settings";
 import humanizeString from "humanize-string";
-import { FormLanguagesSelector } from "./language_selector";
 
 export const VoiceEditTabs = ({
   voiceForm,

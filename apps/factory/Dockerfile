@@ -1,4 +1,18 @@
 # Builder image
+
+# FROM node:20.12-alpine AS deps
+
+# RUN mkdir -p /sdks/core
+# COPY sdks/core /sdks/core
+# RUN cd /sdks/core && npm install && npm run build && npm link
+# # RUN cd /app && npm link @sugar-ai/core
+
+# RUN mkdir -p /sdks/js
+# COPY sdks/js /sdks/js
+# RUN cd /sdks/js && npm install && npm run build && npm link
+# # RUN cd /app && npm link @sugar-ai/copilot-one-js
+
+
 FROM node:20.12-alpine AS build
 
 RUN apk add --update --no-cache curl bash git python3 make g++ vips-dev build-base
@@ -12,7 +26,9 @@ RUN npm install -g npm@latest
 COPY apps/${PROJECT_NAME}/package.json package-lock.json* ./
 
 # Install dependencies using npm
+RUN sed -i 's/"@sugar-ai\/copilot-one-js": "workspace:\*"/"@sugar-ai\/copilot-one-js": "0.0.42"/' package.json
 RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
+
 # RUN npm install
 RUN --mount=type=cache,id=npm,target=/root/.npm npm install --ignore-scripts
 # RUN cd ../../sdks/core/ && npm install && npm run build
@@ -22,6 +38,13 @@ RUN mkdir -p /sdks/core
 COPY sdks/core /sdks/core
 RUN cd /sdks/core && npm install && npm run build && npm link
 RUN cd /app && npm link @sugar-ai/core
+
+RUN mkdir -p /sdks/js
+COPY sdks/js /sdks/js
+RUN cd /sdks/js &&sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
+RUN cd /sdks/js && npm install && npm link @sugar-ai/core 
+RUN cd /sdks/js npm run build && npm link
+RUN cd /app && npm link @sugar-ai/copilot-one-js
 
 # Build
 COPY apps/${PROJECT_NAME}/  .
