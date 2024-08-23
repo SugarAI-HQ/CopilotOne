@@ -232,7 +232,7 @@ export const CreateQuestion: React.FC<CreateQuestionProps> = ({
       question_params: {},
       validation: {},
     },
-    resolver: zodResolver(questionSchema),
+    resolver: zodResolver(questionSchema as unknown as ZodSchema),
     mode: "onChange",
     reValidateMode: "onChange",
   });

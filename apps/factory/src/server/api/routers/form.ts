@@ -173,12 +173,14 @@ export const formRouter = createTRPCRouter({
               question_params: true,
 
               validation: true,
+              // @ts-ignore
               qualification: true,
               order: true,
               createdAt: true,
               updatedAt: true,
             },
             orderBy: {
+              // @ts-ignore
               order: "asc",
             },
           },
@@ -226,19 +228,22 @@ export const formRouter = createTRPCRouter({
       try {
         const upsertedQuestions = await ctx.prisma.$transaction(
           await questions.map((question) => {
+            const questionId = isUuid(question?.id) ? question?.id : uuidv4();
             return ctx.prisma.formQuestion.upsert({
               where: {
                 userId: userId,
                 formId: formId,
-                id: isUuid(question?.id) ? question?.id : uuidv4(),
+                id: questionId,
               },
               update: {
                 question_type: question.question_type,
                 question_text: question.question_text,
                 question_params: question.question_params as InputJsonValueType,
                 validation: question.validation as InputJsonValueType,
+                // @ts-ignore
                 qualification: question.qualification as InputJsonValueType,
                 order: question.order,
+                active: question.active,
               },
               create: {
                 userId: userId,
@@ -247,8 +252,10 @@ export const formRouter = createTRPCRouter({
                 question_text: question.question_text,
                 question_params: question.question_params as InputJsonValueType,
                 validation: question.validation as InputJsonValueType,
+                // @ts-ignore
                 qualification: question.qualification as InputJsonValueType,
                 order: question.order,
+                active: true,
               },
             });
           }),
@@ -402,7 +409,7 @@ export const formRouter = createTRPCRouter({
     `;
 
       const dates = submissions.map(
-        (item) => item.date.toISOString().split("T")[0],
+        (item) => new Date(item.date).toISOString().split("T")[0],
       );
       const counts = submissions.map((item) => Number(item.count));
 

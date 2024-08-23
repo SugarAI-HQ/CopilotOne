@@ -26,6 +26,7 @@ export const translations: Translations = {
 export const questions: Question[] = [
   {
     id: "1",
+    active: true,
     question_type: "single_choice",
     question_text: {
       // mode: "manual",
@@ -151,6 +152,7 @@ export const questions: Question[] = [
   },
   {
     id: "2",
+    active: true,
     question_type: "text",
     question_text: {
       // mode: "manual",
@@ -176,6 +178,7 @@ export const questions: Question[] = [
   },
   {
     id: "3",
+    active: true,
     question_type: "text",
     question_text: {
       // mode: "manual",

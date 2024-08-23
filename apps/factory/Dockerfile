@@ -23,7 +23,7 @@ ARG PROJECT_NAME
 # Set up npm
 RUN npm install -g npm@latest
 
-COPY apps/${PROJECT_NAME}/package.json package-lock.json* ./
+COPY apps/${PROJECT_NAME}/package.json ./
 
 # Install dependencies using npm
 RUN sed -i 's/"@sugar-ai\/copilot-one-js": "workspace:\*"/"@sugar-ai\/copilot-one-js": "0.0.42"/' package.json
@@ -32,7 +32,7 @@ RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' pac
 # RUN npm install
 RUN --mount=type=cache,id=npm,target=/root/.npm npm install --ignore-scripts
 # RUN cd ../../sdks/core/ && npm install && npm run build
-# RUN npm link @sugar-ai/core
+# RUN npm link @sugar-ai/coregs
 
 RUN mkdir -p /sdks/core
 COPY sdks/core /sdks/core

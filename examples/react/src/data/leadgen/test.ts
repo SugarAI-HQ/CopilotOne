@@ -75,12 +75,14 @@ export const questions: Question[] = [
     },
     validation: {
       max_length: 500,
+      validators: [],
     },
     qualification: {
       type: "ai",
       criteria: "",
     },
     order: 1,
+    active: true,
   },
   // Add more questions as needed
 ];

@@ -60,7 +60,7 @@ export const VoiceToJson: React.FC<{
       </div>
 
       {jsonOutput && (
-        <pre className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 p-4 rounded-lg w-full overflow-x-auto">
+        <pre className="p-4 rounded-lg w-full overflow-x-auto">
           {JSON.stringify(jsonOutput, null, 2)}
         </pre>
       )}

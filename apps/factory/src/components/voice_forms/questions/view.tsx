@@ -16,7 +16,6 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-
 import { LanguageCode, Question } from "@sugar-ai/core";
 
 interface QuestionViewProps {
@@ -25,7 +24,9 @@ interface QuestionViewProps {
   onEdit: (id: string) => void;
   onClone: (id: string) => void;
   onDelete: (id: string) => void;
+  onActive: (id: string, active: boolean) => void;
   dragHandleProps?: any; // Add this prop for the drag handle
+  isLoading: boolean;
 }
 
 const QuestionView: React.FC<QuestionViewProps> = ({
@@ -34,7 +35,9 @@ const QuestionView: React.FC<QuestionViewProps> = ({
   onEdit,
   onClone,
   onDelete,
+  onActive,
   dragHandleProps,
+  isLoading,
 }) => {
   const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>(
     languages[0] || "en",
@@ -81,6 +84,12 @@ const QuestionView: React.FC<QuestionViewProps> = ({
           />
           <IconButton {...dragHandleProps} className="cursor-grab">
             <DragHandleIcon />
+          </IconButton>
+          <IconButton
+            color={question.active ? "primary" : "default"}
+            onClick={() => onActive(question.id, !question.active)}
+          >
+            {question.active ? <ToggleOnIcon /> : <ToggleOffIcon />}
           </IconButton>
         </Box>
         <Box
@@ -176,11 +185,6 @@ const QuestionView: React.FC<QuestionViewProps> = ({
           {/* <IconButton color="secondary" onClick={() => onDelete(question.id)}>
           <DeleteIcon />
           </IconButton> */}
-
-          <IconButton color="secondary" onClick={() => onDelete(question.id)}>
-            <DeleteIcon />
-            question.active ? <ToggleOnIcon /> : <ToggleOffIcon />
-          </IconButton>
         </Box>
       </Box>
     </Paper>

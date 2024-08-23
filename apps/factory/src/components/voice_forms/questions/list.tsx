@@ -6,7 +6,7 @@ import QuestionNew from "./new";
 import { VoiceToJson } from "@sugar-ai/copilot-one-js";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { mergeUniqueById } from "~/utils/array";
 import {
@@ -16,6 +16,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { debounce } from "lodash";
+import { LoadingButton } from "@mui/lab";
 
 interface QuestionListProps {
   voiceForm: VoiceForm;
@@ -89,7 +90,9 @@ const QuestionList: React.FC<QuestionListProps> = ({
       question_type: "text",
       question_text: { lang: { en: "" } },
       question_params: {},
-      validation: { max_length: 120 },
+      // @ts-ignore
+      validation: { max_length: 120, validators: [] },
+      active: true,
       qualification: { type: "ai", criteria: "" },
       order: 0,
     };
@@ -101,12 +104,18 @@ const QuestionList: React.FC<QuestionListProps> = ({
       prevQuestions.filter((q) => q.id !== questionId),
     );
   };
+  const handleActive = async (questionId: string, active: boolean) => {
+    let activeQuestion = questions.filter((q) => q.id == questionId)[0];
+
+    if (activeQuestion) {
+      await onQuestions(voiceForm.id, [{ ...activeQuestion, active: active }]);
+    }
+  };
 
   const handleEdit = (questionId: string) => {
     const filteredQuestion = questions.filter(
       (q) => q.id === questionId,
     )[0] as Question;
-
     setEditingQuestion(filteredQuestion);
   };
 
@@ -120,7 +129,9 @@ const QuestionList: React.FC<QuestionListProps> = ({
       result.source.index !== result.destination.index
     ) {
       const [movedQuestion] = reorderedQuestions.splice(result.source.index, 1);
-      reorderedQuestions.splice(result.destination.index, 0, movedQuestion);
+      if (movedQuestion) {
+        reorderedQuestions.splice(result.destination.index, 0, movedQuestion);
+      }
     }
 
     // Identify only the questions whose index has effectively changed
@@ -170,7 +181,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
       {isLoading && <Loading></Loading>}
       <VoiceToJson
         schema={{}}
-        onJson={async (questions) => {
+        onJson={async (questions: Question[]) => {
           await onQuestions(voiceForm?.id, questions);
         }}
         editorConfig={{}}
@@ -182,6 +193,13 @@ const QuestionList: React.FC<QuestionListProps> = ({
             <Button variant="outlined" onClick={handleAdd}>
               <AddIcon /> Add
             </Button>
+            {formQuestionsMutation.isLoading && (
+              <CircularProgress
+                size={30}
+                className="ml-4"
+                style={{ marginBottom: -10 }}
+              />
+            )}
           </h2>
 
           <DragDropContext onDragEnd={handleDragEnd}>
@@ -209,7 +227,9 @@ const QuestionList: React.FC<QuestionListProps> = ({
                             onEdit={handleEdit}
                             onClone={handleClone}
                             onDelete={handleDelete}
+                            onActive={handleActive}
                             dragHandleProps={provided.dragHandleProps} // Pass dragHandleProps here
+                            isLoading={formQuestionsMutation.isLoading}
                           />
                         </li>
                       )}

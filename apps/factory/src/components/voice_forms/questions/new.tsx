@@ -58,7 +58,9 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
       question_text: initQuestion?.question_text || { lang: { en: "" } },
       // @ts-ignore
       question_params: initQuestion?.question_params || { options: [] },
+      // @ts-ignore
       qualification_type: initQuestion?.qualification?.type || "ai",
+      // @ts-ignore
       qualification_criteria: initQuestion?.qualification?.criteria || "",
       // @ts-ignore
       validation: initQuestion?.validation || {
@@ -70,6 +72,7 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
 
   const { fields, append, remove } = useFieldArray({
     control,
+    // @ts-ignore
     name: "question_params.options",
   });
 
@@ -121,7 +124,7 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
         type: data?.qualification_type,
         criteria: data?.qualification_criteria,
       },
-      id: data.id,
+      id: initQuestion?.id || "",
     };
     await onSubmit(q);
     onClose();
@@ -260,7 +263,7 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
           </FormControl>
 
           <DialogActions>
-            <Button onClick={onClose} color="secondary">
+            <Button disabled={isLoading} onClick={onClose} color="secondary">
               Cancel
             </Button>
 

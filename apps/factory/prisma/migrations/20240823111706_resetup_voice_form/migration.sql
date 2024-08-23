@@ -25,6 +25,7 @@ CREATE TABLE "FormQuestion" (
     "validation" JSONB NOT NULL,
     "qualification" JSONB NOT NULL,
     "order" INTEGER NOT NULL DEFAULT 0,
+    "active" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

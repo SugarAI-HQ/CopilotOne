@@ -10,6 +10,7 @@
   "type": "module",
   "scripts": {
     "build": "next build",
+    "build:all-ts-errors": "__NEXT_TEST_MODE=true next build",
     "cibuild": "cp .env.example .env && SKIP_ENV_VALIDATION=1 next build",
     "dev": "next dev",
     "postinstall": "npx prisma generate",
@@ -60,7 +61,7 @@
     "next-seo": "^6.4.0",
     "nextjs-cors": "^2.2.0",
     "nextjs-google-analytics": "^2.3.3",
-    "openai": "^4.24.7",
+    "openai": "^4.56.0",
     "prisma": "^5.3.1",
     "prismjs": "^1.29.0",
     "react": "18.2.0",
@@ -86,7 +87,7 @@
     "swagger-ui-react": "5.10.5",
     "trpc-openapi": "^1.2.0",
     "uuid": "^9.0.0",
-    "zod": "^3.21.4",
+    "zod": "3.23.8",
     "zod-prisma-types": "^2.7.9"
   },
   "devDependencies": {
@@ -105,6 +106,7 @@
     "@types/node": "^18.16.0",
     "@types/prismjs": "^1.26.3",
     "@types/react": "^18.2.20",
+    "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^18.2.7",
     "@types/react-modal": "^3.16.0",
     "@types/react-syntax-highlighter": "^15.5.7",

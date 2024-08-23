@@ -31,6 +31,7 @@ export const translations: Translations = {
 export const questions: Question[] = [
   {
     id: "1",
+    active: true,
     question_type: "text",
     question_text: {
       lang: {
@@ -51,6 +52,7 @@ export const questions: Question[] = [
   },
   {
     id: "2",
+    active: true,
     question_type: "text",
     question_text: {
       lang: {
@@ -71,6 +73,7 @@ export const questions: Question[] = [
   },
   {
     id: "3",
+    active: true,
     question_type: "text",
     question_text: {
       lang: {
@@ -91,6 +94,7 @@ export const questions: Question[] = [
   },
   {
     id: "4",
+    active: true,
     question_type: "text",
     question_text: {
       lang: {
@@ -111,6 +115,7 @@ export const questions: Question[] = [
   },
   {
     id: "5",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -151,6 +156,7 @@ export const questions: Question[] = [
   },
   {
     id: "6",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -177,6 +183,7 @@ export const questions: Question[] = [
   },
   {
     id: "7",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -203,6 +210,7 @@ export const questions: Question[] = [
   },
   {
     id: "7.1",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -235,6 +243,7 @@ export const questions: Question[] = [
   },
   {
     id: "8",
+    active: true,
     question_type: "multiple_choice",
     question_text: {
       lang: {
@@ -291,6 +300,7 @@ export const questions: Question[] = [
   },
   {
     id: "9",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -341,6 +351,7 @@ export const questions: Question[] = [
   },
   {
     id: "10",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -388,6 +399,7 @@ export const questions: Question[] = [
   },
   {
     id: "11",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -422,6 +434,7 @@ export const questions: Question[] = [
   },
   {
     id: "12",
+    active: true,
     question_type: "single_choice",
     question_text: {
       lang: {
@@ -472,6 +485,7 @@ export const questions: Question[] = [
   },
   {
     id: "13",
+    active: true,
     question_type: "text",
     question_text: {
       lang: {

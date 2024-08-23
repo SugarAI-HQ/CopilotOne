@@ -104,6 +104,7 @@ export const questions: Question[] = [
       validators: [],
     },
     order: 1,
+    active: true,
   },
   {
     id: "2",
@@ -132,6 +133,7 @@ export const questions: Question[] = [
       validators: ["mobile"],
     },
     order: 2,
+    active: true,
   },
   {
     id: "3",
@@ -234,6 +236,7 @@ export const questions: Question[] = [
       validators: [],
     },
     order: 3,
+    active: true,
   },
   {
     id: "4",
@@ -336,6 +339,7 @@ export const questions: Question[] = [
       validators: [],
     },
     order: 4,
+    active: true,
   },
   {
     id: "5",
@@ -367,6 +371,7 @@ export const questions: Question[] = [
       validators: [],
     },
     order: 4,
+    active: true,
   },
   {
     id: "6",
@@ -399,6 +404,7 @@ export const questions: Question[] = [
       validators: [],
     },
     order: 5,
+    active: true,
   },
   {
     id: "7",
@@ -434,5 +440,6 @@ export const questions: Question[] = [
       validators: [],
     },
     order: 6,
+    active: true,
   },
 ];
