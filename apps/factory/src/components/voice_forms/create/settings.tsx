@@ -29,6 +29,8 @@ export const FormDetails = ({
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
 
+  const defaulti18nMessage = { lang: { en: "" } };
+
   const {
     control,
     handleSubmit,
@@ -42,11 +44,11 @@ export const FormDetails = ({
     defaultValues: {
       id: "",
       name: "",
-      description: { lang: { en: "" } },
-      startButtonText: { lang: { en: "" } },
+      description: defaulti18nMessage,
+      startButtonText: defaulti18nMessage,
       messages: {
-        welcome: "",
-        submit: "",
+        welcome: defaulti18nMessage,
+        submit: defaulti18nMessage,
       },
       languages: ["en"],
       formConfig: {},
@@ -186,6 +188,22 @@ export const FormDetails = ({
             fieldKey="startButtonText"
             fieldName="Start Button Text"
             initialMessage={voiceForm?.startButtonText}
+            allowedLanguages={voiceForm?.languages}
+            onSave={handleSaveMessage}
+          />
+
+          <CreateI18nMessage
+            fieldKey="messages.welcome"
+            fieldName="Welcome Message"
+            initialMessage={voiceForm?.messages?.welcome}
+            allowedLanguages={voiceForm?.languages}
+            onSave={handleSaveMessage}
+          />
+
+          <CreateI18nMessage
+            fieldKey="messages.submit"
+            fieldName="On Submit Message"
+            initialMessage={voiceForm?.messages?.submit}
             allowedLanguages={voiceForm?.languages}
             onSave={handleSaveMessage}
           />

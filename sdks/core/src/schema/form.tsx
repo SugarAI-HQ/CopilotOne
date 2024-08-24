@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { i18nMessageSchema } from "./message";
+import { i18nMessageSchema, i18nMessage } from "./message";
 import { languageCode } from "./lang";
 import { copilotStyleVoiceButtonSchema } from "./copilot";
 
@@ -25,8 +25,8 @@ export const ListenConfigDefaults = {
 export const CharcterPerSec = 20;
 
 export const formConfig = z.object({
-  id: z.string(),
-  userId: z.string().optional(),
+  // id: z.string(),
+  // userId: z.string().optional(),
 
   characterPerSec: z.number().optional().default(CharcterPerSec),
   // lang: z.string().optional().default("auto"),
@@ -38,7 +38,7 @@ export const formConfig = z.object({
 export type FormConfig = z.infer<typeof formConfig>;
 
 export const FormConfigDefaults: FormConfig = {
-  id: "",
+  // id: "",
   characterPerSec: CharcterPerSec,
 
   // maxAnswerLength
@@ -170,15 +170,12 @@ export const StreamingHtmlRefSchema = z.object({
 
 export type Streamingi18nHtmlRef = z.infer<typeof StreamingHtmlRefSchema>;
 
-export const formMessageType = z.enum([
-  "welcome",
-  "submit",
-  "success",
-  "error",
-  "thankyou",
-  "thankyou-message",
-]);
+export const formMessageType = z.enum(["welcome", "submit"]);
+
 export type FormMessageType = z.infer<typeof formMessageType>;
+
+export const formMessages = z.record(formMessageType, i18nMessageSchema);
+export type FormMessages = z.infer<typeof formMessages>;
 
 export const voiceForm = z.object({
   id: z.string(),
@@ -187,7 +184,7 @@ export const voiceForm = z.object({
   startButtonText: i18nMessageSchema,
 
   questions: z.array(questionSchema),
-  messages: z.record(formMessageType, z.string()),
+  messages: formMessages,
 
   languages: z.array(languageCode),
   formConfig: formConfig,
@@ -221,3 +218,32 @@ export const questionAnswer = z
     },
   );
 export type QuestionAnswer = z.infer<typeof questionAnswer>;
+
+export const defaultFormTranslations = {
+  welcome: {
+    "en-US": "Welcome",
+    "pt-BR": "Bem-vindo",
+    hi: "स्वागत है",
+    "bn-IN": "স্বাগতম",
+    "te-IN": "స్వాగతం",
+    "mr-IN": "स्वागत आहे",
+    "ta-IN": "வரவேற்கிறோம்",
+    es: "Bienvenido",
+    fr: "Bienvenue",
+    de: "Willkommen",
+    zh: "欢迎",
+  },
+  submit: {
+    "en-US": "Submit",
+    "pt-BR": "Enviar",
+    hi: "प्रस्तुत करें",
+    "bn-IN": "জমা দিন",
+    "te-IN": "సమర్పించండి",
+    "mr-IN": "सबमिट करा",
+    "ta-IN": "சமர்ப்பிக்க",
+    es: "Enviar",
+    fr: "Soumettre",
+    de: "Einreichen",
+    zh: "提交",
+  },
+};

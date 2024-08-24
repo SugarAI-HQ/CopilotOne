@@ -336,8 +336,7 @@ export const VoiceQuestion: React.FC<{
   };
 
   const handleManualEdit = (e: any) => {
-    console.log("switing to manual mode");
-    // setBy(answeredBy.Enum.manual);
+    console.log(`switing to manual mode`);
     setVoiceAnswer((lva: QuestionAnswer | null) => {
       if (!lva) {
         return null;
@@ -387,7 +386,7 @@ export const VoiceQuestion: React.FC<{
           />
           {voiceAnswer?.by == answeredBy.Enum.keyboard && (
             <button
-              className="justify-center w-full m-4 p-4  text-white text-center"
+              className="justify-center w-full m-4 p-4 text-white text-center"
               onClick={() => {
                 setAnswerReady(submissionStates.Enum.ready);
               }}

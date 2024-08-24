@@ -78,7 +78,7 @@ export const FormTranslations: Translations = {
 export function geti18nMessage(
   key: string,
   translations: Translations = FormTranslations,
-) {
+): i18nMessage {
   const translation = translations[key];
   if (!translation) {
     throw new Error(`translations for "${key}" not found`);

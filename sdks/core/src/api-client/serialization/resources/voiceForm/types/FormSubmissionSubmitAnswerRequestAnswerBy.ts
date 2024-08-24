@@ -9,8 +9,8 @@ import * as core from "../../../../core";
 export const FormSubmissionSubmitAnswerRequestAnswerBy: core.serialization.Schema<
   serializers.FormSubmissionSubmitAnswerRequestAnswerBy.Raw,
   SugarAiApi.FormSubmissionSubmitAnswerRequestAnswerBy
-> = core.serialization.enum_(["voice", "manual"]);
+> = core.serialization.enum_(["voice", "keyboard"]);
 
 export declare namespace FormSubmissionSubmitAnswerRequestAnswerBy {
-  type Raw = "voice" | "manual";
+  type Raw = "voice" | "keyboard";
 }

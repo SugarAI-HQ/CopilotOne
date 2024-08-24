@@ -1601,7 +1601,7 @@
                         type: "string"
                         enum: 
                           - "voice"
-                          - "manual"
+                          - "keyboard"
                       qualificationScore: 
                         type: "number"
                         nullable: true

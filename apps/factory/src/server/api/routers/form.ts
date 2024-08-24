@@ -26,6 +26,7 @@ import { TRPCError } from "@trpc/server";
 import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
 import { validate as isUuid, v4 as uuidv4 } from "uuid";
 import { bulkUpdate } from "~/services/prisma"; // Adjust import paths as necessary
+import { defaultFormTranslations, geti18nMessage } from "@sugar-ai/core";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -67,7 +68,8 @@ export const formRouter = createTRPCRouter({
         startButtonText: getEmptyMessage("Start"),
 
         messages: {
-          welcome: getEmptyMessage("Welcome"),
+          welcome: geti18nMessage("welcome", defaultFormTranslations),
+          submit: geti18nMessage("submit", defaultFormTranslations),
         },
         languages: ["en"],
         formConfig: {},
@@ -104,23 +106,19 @@ export const formRouter = createTRPCRouter({
 
       const formId = input.id;
 
-      const formDefaults = {
-        description: getEmptyMessage("description"),
-        startButtonText: getEmptyMessage("Start"),
-        messages: {
-          welcome: getEmptyMessage("Welcome"),
-        },
-        languages: ["en"],
-        formConfig: {},
-      };
-
       const updateData: any = {
-        ...formDefaults,
-        ...{
-          name: input.name,
-          description: input.description,
-          startButtonText: input.startButtonText,
-          languages: input.languages,
+        name: input.name,
+        description: input.description ?? getEmptyMessage("description"),
+        startButtonText: input.startButtonText ?? getEmptyMessage("Start"),
+        languages: input.languages ?? ["en"],
+        formConfig: {},
+        messages: {
+          welcome:
+            input.messages.welcome ??
+            geti18nMessage("welcome", defaultFormTranslations),
+          submit:
+            input.messages.submit ??
+            geti18nMessage("submit", defaultFormTranslations),
         },
       };
 

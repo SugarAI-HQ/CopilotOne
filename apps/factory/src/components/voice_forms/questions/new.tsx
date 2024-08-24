@@ -113,7 +113,6 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
   };
 
   const handleSaveOption = (index: any, message: i18nMessage) => {
-    debugger;
     setValue(index, message);
   };
 

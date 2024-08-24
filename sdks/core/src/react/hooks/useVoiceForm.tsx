@@ -17,13 +17,13 @@ import { getBrowserAndOSDetails } from "~/helpers";
 import { useLanguage } from "./useLanguage";
 
 export interface VoiceFormContextType {
+  formId: string;
   formConfig: FormConfig;
   submissionId: string | null;
   getForm: (formId: string) => Promise<any>;
   createSubmission: (formId: string) => Promise<any>;
   submitAnswer: (
     formId: string,
-    // submissionId: string,
     question: Question,
     answer: QuestionAnswer,
   ) => Promise<any>;
@@ -34,26 +34,30 @@ export interface VoiceFormContextType {
 const VoiceFormContext = createContext<VoiceFormContextType | null>(null);
 
 export const VoiceFormProvider: React.FC<{
+  formId: string;
   formConfig: FormConfig;
   children: ReactNode;
-}> = ({ formConfig, children }) => {
+}> = ({ formId, formConfig, children }) => {
   const [submissionId, setSubmissionId] = useState<string | null>(null);
-
-  const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
   const { apiClient, config } = useCopilot();
   const { language, voice } = useLanguage();
 
   const currentFormConfig = { ...FormConfigDefaults, ...formConfig };
 
-  async function init(formId) {
-    // 1. load form with questions
-    // TODO : load form with questions
-    const form = getForm(formId);
+  useEffect(() => {
+    if (formId !== "") {
+      init(formId);
+    }
+  }, [formId]);
 
-    // 2. Create submission when user click start
-    await createSubmission(formConfig.id);
+  async function init(formId: string) {
+    // 1. Load form with questions
+    const form = await getForm(formId);
 
-    // 3. Submit answers on each successful submission
+    // 2. Create submission when user clicks start
+    await createSubmission(formId);
+
+    // 3. Submit answers on each successful submission (if needed)
     // const submitted = await submitAnswer(
     //   formId,
     //   submissionId as string,
@@ -65,12 +69,6 @@ export const VoiceFormProvider: React.FC<{
     //   },
     // );
   }
-
-  useEffect(() => {
-    if (formConfig.id && formConfig.id !== "") {
-      // init(formConfig.id);
-    }
-  }, [formConfig]);
 
   const getForm = async (formId: string): Promise<any | null> => {
     // TODO: Implement this
@@ -96,20 +94,18 @@ export const VoiceFormProvider: React.FC<{
 
   const submitAnswer = async (
     formId: string,
-    // submissionId: string,
     question: Question,
     answer: QuestionAnswer,
   ) => {
-    if (!formId) throw new Error("Form Id is not set");
+    if (!formId) throw new Error("Form ID is not set");
     if (!submissionId) {
       await createSubmission(formId);
-      // throw new Error("Submission ID is not set");
     }
 
     try {
       const { id } = (await apiClient.voiceForm.formSubmissionSubmitAnswer(
         formId,
-        submissionId,
+        submissionId as string,
         question.id,
         {
           clientUserId: config?.clientUserId,
@@ -161,10 +157,9 @@ export const VoiceFormProvider: React.FC<{
   return (
     <VoiceFormContext.Provider
       value={{
+        formId,
         formConfig,
         submissionId,
-        // answers,
-        // setAnswers,
         getForm,
         createSubmission,
         submitAnswer,
@@ -179,7 +174,7 @@ export const VoiceFormProvider: React.FC<{
 export const useVoiceForm = () => {
   const context = useContext(VoiceFormContext);
   if (!context) {
-    throw new Error("useLanguage must be used within a LanguageProvider");
+    throw new Error("useVoiceForm must be used within a VoiceFormProvider");
   }
   return context;
 };

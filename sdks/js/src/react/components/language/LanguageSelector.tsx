@@ -19,31 +19,25 @@ export const LanguageSelector: React.FC<{
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // const userLanguages =
-    //   languagesEnabled || Array.from(navigator.languages || [language]);
+    if (language && voices.length > 0 && languagesEnabled.length > 0) {
+      // Filter all the languages that are supported by the browser
+      const allLanguages: LanguageCode[] = languageCode._def.values;
+      const filteredLangauges = allLanguages.filter(
+        (l) =>
+          languagesEnabled.includes(l.split("-")[0] as LanguageCode) ||
+          languagesEnabled.includes(l),
+      );
+      setLanguages(filteredLangauges);
 
-    // Filter all the languages that are supported by the browser
-    const allLanguages: LanguageCode[] = languageCode._def.values;
-    const filteredLangauges = allLanguages.filter(
-      (l) =>
-        languagesEnabled.includes(l.split("-")[0] as LanguageCode) ||
-        languagesEnabled.includes(l),
-    );
-    setLanguages(filteredLangauges);
+      const fv = shorlistVoices(voices, language);
 
-    const fv = shorlistVoices(voices, language);
+      setFilteredVoices(fv);
 
-    setFilteredVoices(fv);
-    console.log(
-      "FilteredVoices",
-      fv.map((l) => `${l.name} ${l.lang}`),
-    );
-
-    // const listLangs = userLanguages.length > 0 ? userLanguages :
-    // const allLanguages = Array.from(
-    //   new Set(userLanguages.concat(languageCode._def.values)),
-    // );
-    // setLanguages(allLanguages);
+      DEV: console.log(
+        "FilteredVoices",
+        fv.map((l) => `${l.name} ${l.lang}`),
+      );
+    }
   }, [language, voices, languagesEnabled]);
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

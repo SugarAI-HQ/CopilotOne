@@ -10,23 +10,36 @@ import {
   useVoiceForm,
   QuestionAnswer,
   geti18nMessage,
+  VoiceForm,
+  FormMessages,
+  defaultFormTranslations,
+  i18nMessage,
 } from "@sugar-ai/core";
 import "~/react/styles/form.css";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 
 let renderCount = 0;
 
-export const VoiceForm: React.FC<{
+export const VoiceFormComponent: React.FC<{
+  voiceForm: VoiceForm;
   showStartButton: boolean;
-  translations: Translations;
   questions: Question[];
-  formConfig: FormConfig;
-}> = ({ showStartButton, translations, questions, formConfig }) => {
+}> = ({ voiceForm, showStartButton, questions }) => {
+  const [messages, setMessages] = useState<FormMessages>({
+    welcome: geti18nMessage("welcome", defaultFormTranslations),
+    submit: geti18nMessage("submit", defaultFormTranslations),
+  });
   renderCount++;
   console.log("[re-render] VoiceForm", renderCount);
 
-  const { submissionId, createSubmission, submitAnswer, completeSubmission } =
-    useVoiceForm();
+  const {
+    formId,
+    formConfig,
+    submissionId,
+    createSubmission,
+    submitAnswer,
+    completeSubmission,
+  } = useVoiceForm();
   const initialStep = parseInt(
     new URLSearchParams(window.location.search).get("step") || "0",
   );
@@ -38,10 +51,26 @@ export const VoiceForm: React.FC<{
     handleOnboardingComplete(false);
   }, []);
 
+  useEffect(() => {
+    if (voiceForm) {
+      const ms: FormMessages = {
+        welcome:
+          voiceForm.messages?.welcome ||
+          geti18nMessage("welcome", defaultFormTranslations),
+        submit:
+          voiceForm.messages?.submit ||
+          geti18nMessage("submit", defaultFormTranslations),
+      };
+
+      setMessages(ms);
+      DEV: console.log("loaded voice Form");
+    }
+  }, [voiceForm]);
+
   const handleOnboardingComplete = useCallback(
     async (isOnboardingComplete: boolean = true) => {
       if (!submissionId) {
-        await createSubmission(formConfig.id);
+        await createSubmission(formId);
       }
 
       isOnboardingComplete && setStep((prevStep) => prevStep + 1);
@@ -50,10 +79,7 @@ export const VoiceForm: React.FC<{
   );
 
   const handleQuestionsComplete = async () => {
-    const resp = await completeSubmission(
-      formConfig.id,
-      submissionId as string,
-    );
+    const resp = await completeSubmission(formId, submissionId as string);
     // setStep((prevStep) => prevStep + 1);
   };
 
@@ -64,7 +90,7 @@ export const VoiceForm: React.FC<{
     // Check if the answer is not null before submitting
     if (answer) {
       await submitAnswer(
-        formConfig.id,
+        formId,
         // submissionId as string,
         question,
         answer,
@@ -83,9 +109,6 @@ export const VoiceForm: React.FC<{
     });
   };
 
-  const welcomeMessage = geti18nMessage("welcome", translations);
-  const postSubmissionMessage = geti18nMessage("postSubmission", translations);
-
   return (
     <div className="sai-vf-container container">
       {!submissionId && <Initializing></Initializing>}
@@ -95,7 +118,7 @@ export const VoiceForm: React.FC<{
             <Onboarding
               showStartButton={showStartButton}
               onComplete={handleOnboardingComplete}
-              welcomeMessage={welcomeMessage}
+              welcomeMessage={messages.welcome as i18nMessage}
               formConfig={formConfig}
             />
           )}
@@ -118,7 +141,7 @@ export const VoiceForm: React.FC<{
             )}
           {step > questions.length && (
             <Submission
-              postSubmissionMessage={postSubmissionMessage}
+              postSubmissionMessage={messages.submit as i18nMessage}
               answers={answers}
               formConfig={formConfig}
             />
@@ -129,4 +152,4 @@ export const VoiceForm: React.FC<{
   );
 };
 
-export default VoiceForm;
+export default VoiceFormComponent;
