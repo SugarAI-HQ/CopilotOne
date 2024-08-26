@@ -10,6 +10,7 @@ import {
   FormConfigDefaults,
   Question,
   QuestionAnswer,
+  VoiceForm,
 } from "~/schema";
 import { useCopilot } from "./useCopilot";
 import { SugarAiApi } from "~/api-client";
@@ -18,7 +19,8 @@ import { useLanguage } from "./useLanguage";
 
 export interface VoiceFormContextType {
   formId: string;
-  formConfig: FormConfig;
+  voiceForm: VoiceForm | null;
+  // formConfig: FormConfig;
   submissionId: string | null;
   getForm: (formId: string) => Promise<any>;
   createSubmission: (formId: string) => Promise<any>;
@@ -35,14 +37,15 @@ const VoiceFormContext = createContext<VoiceFormContextType | null>(null);
 
 export const VoiceFormProvider: React.FC<{
   formId: string;
-  formConfig: FormConfig;
+  formConfigOverride: FormConfig;
   children: ReactNode;
-}> = ({ formId, formConfig, children }) => {
+}> = ({ formId, formConfigOverride, children }) => {
   const [submissionId, setSubmissionId] = useState<string | null>(null);
+  const [voiceForm, setVoiceForm] = useState<VoiceForm | null>(null);
   const { apiClient, config } = useCopilot();
   const { language, voice } = useLanguage();
 
-  const currentFormConfig = { ...FormConfigDefaults, ...formConfig };
+  // const currentFormConfig = { ...FormConfigDefaults, ...voiceForm?.formConfig };
 
   useEffect(() => {
     if (formId !== "") {
@@ -52,7 +55,7 @@ export const VoiceFormProvider: React.FC<{
 
   async function init(formId: string) {
     // 1. Load form with questions
-    const form = await getForm(formId);
+    const form = (await getForm(formId)) as VoiceForm;
 
     // 2. Create submission when user clicks start
     await createSubmission(formId);
@@ -71,8 +74,25 @@ export const VoiceFormProvider: React.FC<{
   }
 
   const getForm = async (formId: string): Promise<any | null> => {
-    // TODO: Implement this
-    return null;
+    try {
+      const vf = await apiClient.voiceForm.formGetForm(formId);
+
+      const overridenForm = {
+        ...vf,
+        formConfig: {
+          FormConfigDefaults,
+          ...vf.formConfig,
+          ...formConfigOverride,
+        },
+      };
+
+      setVoiceForm(overridenForm);
+      console.log(`Loaded form ${JSON.stringify(vf)}`);
+      return vf;
+    } catch (error) {
+      console.error("Error loading form:", error);
+      return null;
+    }
   };
 
   const createSubmission = async (formId: string): Promise<string | null> => {
@@ -141,7 +161,7 @@ export const VoiceFormProvider: React.FC<{
   const getMetadata = () => {
     const uaData = getBrowserAndOSDetails();
     return {
-      formConfig: currentFormConfig,
+      formConfig: voiceForm?.formConfig,
       language: language,
       voice: {
         voiceURI: voice?.voiceURI,
@@ -158,7 +178,8 @@ export const VoiceFormProvider: React.FC<{
     <VoiceFormContext.Provider
       value={{
         formId,
-        formConfig,
+        voiceForm,
+        // formConfig,
         submissionId,
         getForm,
         createSubmission,

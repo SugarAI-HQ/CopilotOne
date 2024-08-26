@@ -25,7 +25,7 @@ const FormEdit: NextPageWithLayout = () => {
   };
 
   const { data: form, isLoading: isFormLoading } = api.form.getForm.useQuery(
-    { id: formId },
+    { formId: formId },
     {
       enabled: !!formId,
       onSuccess(form: Form) {

@@ -7,20 +7,23 @@ import {
   i18nMessage,
   geti18nMessage,
   MessageWorkflow,
+  VoiceForm,
+  extracti18nText,
 } from "@sugar-ai/core";
 
 // import MessageWorkflow from "~/react/workflow/MessageWorkflow";
 import Streamingi18nText from "~/react/components/streaming/Streamingi18nText";
 import "~/react/styles/form.css";
+import LanguageSelector from "../language/LanguageSelector";
 
 let renderCount = 0;
 
 export const Onboarding: React.FC<{
+  voiceForm: VoiceForm;
   showStartButton: boolean;
   onComplete: () => void;
   welcomeMessage: i18nMessage;
-  formConfig: FormConfig;
-}> = ({ showStartButton, onComplete, welcomeMessage, formConfig }) => {
+}> = ({ voiceForm, showStartButton, onComplete, welcomeMessage }) => {
   renderCount++;
   DEV: console.log("[re-render] Onboarding: ", renderCount);
 
@@ -53,15 +56,27 @@ export const Onboarding: React.FC<{
     }
   }, [welcomeMessage, language, voice]);
 
+  // const themeColor = color ?? "#0057FF";
+  const themeColor = "#0057FF";
+
   return (
     <div>
       {showStart ? (
-        <div className="flex-col p-2 justify-center">
-          <h1 className="text-2xl p-2	justify-center m-4 text-center">
-            This is demo of voice forms for lead generation
+        <div className="h-dvh flex flex-col items-center justify-center ">
+          <LanguageSelector
+            languagesEnabled={voiceForm?.languages}
+            // xklass="fixed bottom-0 left-0 right-0"
+          />
+          <h1 className="m-4 p-2 text-center text-3xl text-gray-800 dark:text-gray-200 md:text-4xl lg:text-5xl">
+            {voiceForm?.messages &&
+              extracti18nText(voiceForm?.description, language ?? "en")}
           </h1>
+
           <button
-            className="justify-center w-full m-4 p-4 bg-blue-500 text-white text-center"
+            className={`m-4 w-full max-w-xs p-4 md:max-w-md lg:max-w-lg bg-[${themeColor}] dark:bg-[${themeColor}] hover:bg-[${themeColor}] dark:bg-[${themeColor}] transform rounded-lg text-center text-white shadow-lg transition duration-300 ease-in-out hover:scale-105`}
+            style={{
+              backgroundColor: themeColor,
+            }}
             onClick={() => {
               setShowStart(false);
               setShowStart((k) => {
@@ -70,7 +85,8 @@ export const Onboarding: React.FC<{
               });
             }}
           >
-            Book Appointment
+            {voiceForm?.messages &&
+              extracti18nText(voiceForm?.startButtonText, language ?? "en")}
           </button>
         </div>
       ) : (
@@ -80,7 +96,7 @@ export const Onboarding: React.FC<{
             auto={false}
             ref={welcomeMessageRef}
             message={welcomeMessage}
-            formConfig={formConfig}
+            formConfig={voiceForm?.formConfig}
           />
           {!isMicEnabled && (
             <Streamingi18nText
@@ -88,7 +104,7 @@ export const Onboarding: React.FC<{
               auto={false}
               ref={requestMicPermissionsRef}
               message={geti18nMessage("requestMicPermissions")}
-              formConfig={formConfig}
+              formConfig={voiceForm?.formConfig}
               beforeSpeak={async () => {
                 return new Promise(async (resolve, reject) => {
                   const granted = await checkIfAudioPermissionGranted();

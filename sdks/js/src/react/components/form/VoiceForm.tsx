@@ -21,10 +21,8 @@ import Streamingi18nText from "../streaming/Streamingi18nText";
 let renderCount = 0;
 
 export const VoiceFormComponent: React.FC<{
-  voiceForm: VoiceForm;
   showStartButton: boolean;
-  questions: Question[];
-}> = ({ voiceForm, showStartButton, questions }) => {
+}> = ({ showStartButton }) => {
   const [messages, setMessages] = useState<FormMessages>({
     welcome: geti18nMessage("welcome", defaultFormTranslations),
     submit: geti18nMessage("submit", defaultFormTranslations),
@@ -34,7 +32,8 @@ export const VoiceFormComponent: React.FC<{
 
   const {
     formId,
-    formConfig,
+    voiceForm,
+    // formConfig,
     submissionId,
     createSubmission,
     submitAnswer,
@@ -102,7 +101,7 @@ export const VoiceFormComponent: React.FC<{
       const nextStep = prevStep + 1;
 
       // If we're at the last question, complete the submission
-      if (nextStep > questions.length) {
+      if (voiceForm && nextStep > voiceForm?.questions?.length) {
         handleQuestionsComplete();
       }
       return nextStep;
@@ -112,38 +111,38 @@ export const VoiceFormComponent: React.FC<{
   return (
     <div className="sai-vf-container container">
       {!submissionId && <Initializing></Initializing>}
-      {submissionId && (
+      {voiceForm && submissionId && (
         <>
           {step === 0 && (
             <Onboarding
               showStartButton={showStartButton}
               onComplete={handleOnboardingComplete}
+              voiceForm={voiceForm}
               welcomeMessage={messages.welcome as i18nMessage}
-              formConfig={formConfig}
             />
           )}
           {step > 0 &&
-            step <= questions.length &&
-            questions.map(
+            step <= voiceForm?.questions?.length &&
+            voiceForm?.questions?.map(
               (question, index) =>
                 index === step - 1 && (
                   <VoiceQuestion
                     key={index}
+                    voiceForm={voiceForm}
                     question={question}
                     onAnswered={(answer) =>
                       handleQuestionComplete(question, answer)
                     }
                     onBack={() => setStep((prevStep) => prevStep - 1)}
                     onSkip={() => handleQuestionComplete(question, null)}
-                    formConfig={formConfig}
                   />
                 ),
             )}
-          {step > questions.length && (
+          {step > voiceForm?.questions?.length && (
             <Submission
               postSubmissionMessage={messages.submit as i18nMessage}
               answers={answers}
-              formConfig={formConfig}
+              formConfig={voiceForm?.formConfig}
             />
           )}
         </>

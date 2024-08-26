@@ -24,6 +24,54 @@ export declare namespace VoiceForm {
 export class VoiceForm {
   constructor(protected readonly _options: VoiceForm.Options = {}) {}
 
+  public async formGetForm(
+    formId: string,
+    requestOptions?: VoiceForm.RequestOptions,
+  ): Promise<unknown> {
+    const _response = await core.fetcher({
+      url: urlJoin(
+        (await core.Supplier.get(this._options.environment)) ??
+          environments.SugarAiApiEnvironment.Default,
+        `voice-forms/${formId}`,
+      ),
+      method: "GET",
+      headers: {
+        Authorization: await this._getAuthorizationHeader(),
+        "X-Fern-Language": "JavaScript",
+      },
+      contentType: "application/json",
+      timeoutMs:
+        requestOptions?.timeoutInSeconds != null
+          ? requestOptions.timeoutInSeconds * 1000
+          : 60000,
+      maxRetries: requestOptions?.maxRetries,
+    });
+    if (_response.ok) {
+      return _response.body;
+    }
+
+    if (_response.error.reason === "status-code") {
+      throw new errors.SugarAiApiError({
+        statusCode: _response.error.statusCode,
+        body: _response.error.body,
+      });
+    }
+
+    switch (_response.error.reason) {
+      case "non-json":
+        throw new errors.SugarAiApiError({
+          statusCode: _response.error.statusCode,
+          body: _response.error.rawBody,
+        });
+      case "timeout":
+        throw new errors.SugarAiApiTimeoutError();
+      case "unknown":
+        throw new errors.SugarAiApiError({
+          message: _response.error.errorMessage,
+        });
+    }
+  }
+
   public async formGetSubmissions(
     formId: string,
     requestOptions?: VoiceForm.RequestOptions,

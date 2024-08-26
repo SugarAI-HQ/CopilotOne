@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 .sai-vf-container {
-  @apply m-4 mx-auto w-full rounded-lg h-[65dvh] flex items-center justify-center
+  @apply m-4 mx-auto w-full rounded-lg h-[85dvh] flex items-center justify-center
+  /* @apply w-full h-[65dvh] */
+  /* rounded-lg h-[65dvh] flex items-center justify-center */
 }
 
 

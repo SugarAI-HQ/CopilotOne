@@ -14,6 +14,7 @@ import {
   useLanguage,
   Recording,
   QuestionAnswer,
+  VoiceForm,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
@@ -45,12 +46,12 @@ export type SubmissionState = z.infer<typeof submissionStates>;
 let renderCount = 0;
 
 export const VoiceQuestion: React.FC<{
+  voiceForm: VoiceForm;
   question: Question;
   onAnswered: (voiceAnswer: QuestionAnswer) => Promise<void>;
   onSkip: () => void;
   onBack: () => void;
-  formConfig: FormConfig;
-}> = ({ question, onAnswered, onSkip, onBack, formConfig }) => {
+}> = ({ voiceForm, question, onAnswered, onSkip, onBack }) => {
   renderCount++;
   // console.log("[re-render] VoiceQuestion", renderCount);
 
@@ -201,7 +202,7 @@ export const VoiceQuestion: React.FC<{
       question,
       language,
       voice,
-      formConfig,
+      voiceForm?.formConfig,
       getUserResponseContinous,
       setIsEvaluating,
       registerAction,
@@ -355,7 +356,7 @@ export const VoiceQuestion: React.FC<{
         ref={questionRef}
         auto={false}
         message={question.question_text}
-        formConfig={formConfig}
+        formConfig={voiceForm.formConfig}
         klasses={"font-medium text-3xl mb-4 text-gray-900 dark:text-white"}
       />
 
@@ -391,7 +392,7 @@ export const VoiceQuestion: React.FC<{
                 setAnswerReady(submissionStates.Enum.ready);
               }}
               style={{
-                backgroundColor: formConfig.voiceButton?.bgColor,
+                backgroundColor: voiceForm?.formConfig.voiceButton?.bgColor,
               }}
             >
               Submit
@@ -405,7 +406,7 @@ export const VoiceQuestion: React.FC<{
           auto={false}
           question={question}
           language={language}
-          formConfig={formConfig}
+          formConfig={voiceForm?.formConfig}
           optionRefs={optionRefs}
           handleOptionClick={handleOptionClick}
           useRadio={question.question_type == "single_choice" ? true : false}
@@ -446,7 +447,7 @@ export const VoiceQuestion: React.FC<{
               <FaArrowLeftLong className="w-5 h-5" />
             </button>
             <VoiceButtonWithStates
-              currentStyle={{ voiceButton: formConfig.voiceButton }}
+              currentStyle={{ voiceButton: voiceForm?.formConfig?.voiceButton }}
               voiceButtonStyle={{}}
               startListening={startListening}
               buttonId={"voice-form"}

@@ -102,11 +102,11 @@ export const captureVoiceResponseAndEvaluate = async (
         unregisterAction,
         textToAction,
       );
-
+      DEV: console.log("aiEvaluationResponse", aiEvaluationResponse);
       finalResponse.qualificationScore =
-        aiEvaluationResponse.qualificationScore;
+        aiEvaluationResponse?.qualificationScore;
       finalResponse.qualificationSummary =
-        aiEvaluationResponse.qualificationSummary;
+        aiEvaluationResponse?.qualificationSummary;
 
       // Ask followup question if needed
       if (!aiEvaluationResponse) {

@@ -107,7 +107,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
       const stopRecognition = (timeout = true) => {
         autoStopped = false;
         if (timeout) {
-          console.log(`[ListeningContinous][${counter}] timed out`);
+          console.log(
+            `[ListeningContinous][${counter}] timed out ${timeout ? "auto" : "manual"}`,
+          );
         }
 
         if (recognitionRef.current) {
@@ -169,9 +171,9 @@ export const useSpeechToText = (options: SpeechRecognitionOptions = {}) => {
               ? options.userPauseTimeout
               : options.userNoSpeechTimeout;
 
-          // console.log(
-          //   `[ListeningContinous][${counter}] answer: ${answer} setting timeout ${ts}`,
-          // );
+          console.log(
+            `[ListeningContinous][${counter}] answer: ${answer} setting timeout ${ts}`,
+          );
 
           timeout = setTimeout(stopRecognition, ts);
         }

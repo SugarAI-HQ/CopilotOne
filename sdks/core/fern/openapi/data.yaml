@@ -1380,6 +1380,27 @@
                     additionalProperties: false
           default: 
             $ref: "#/components/responses/error"
+    /voice-forms/{formId}: 
+      get: 
+        operationId: "form-getForm"
+        summary: "Get voice form"
+        tags: 
+          - "VoiceForm"
+        parameters: 
+          - 
+            name: "formId"
+            in: "path"
+            required: true
+            schema: 
+              type: "string"
+        responses: 
+          200: 
+            description: "Successful response"
+            content: 
+              application/json: 
+                schema: {}
+          default: 
+            $ref: "#/components/responses/error"
     /voice-forms/{formId}/submissions: 
       get: 
         operationId: "form-getSubmissions"

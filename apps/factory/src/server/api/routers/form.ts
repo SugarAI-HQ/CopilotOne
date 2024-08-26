@@ -141,19 +141,11 @@ export const formRouter = createTRPCRouter({
     }),
 
   getForm: protectedProcedure
-    // .meta({
-    //   openapi: {
-    //     method: "GET",
-    //     path: "/packages",
-    //     tags: ["packages"],
-    //     summary: "Read all packages",
-    //   },
-    // })
     .input(getFormInput)
     .output(form)
     .query(async ({ ctx, input }) => {
       let query = {
-        id: input.id,
+        id: input.formId,
         userId: ctx.jwt?.id as string,
       };
 

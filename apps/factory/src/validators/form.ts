@@ -65,7 +65,7 @@ export type UpdateFormInput = z.infer<typeof updateFormInput>;
 
 export const getFormInput = z.object({
   // userId: z.string().optional(),
-  id: z.string(),
+  formId: z.string(),
 });
 export type GetFormInput = z.infer<typeof getFormInput>;
 

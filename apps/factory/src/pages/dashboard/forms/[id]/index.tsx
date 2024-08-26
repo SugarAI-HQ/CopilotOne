@@ -15,7 +15,7 @@ const FormShow: NextPageWithLayout = () => {
   const router = useRouter();
   const formId = router.query.id as string;
 
-  const { data: form } = api.form.getForm.useQuery({ id: formId });
+  const { data: form } = api.form.getForm.useQuery({ formId: formId });
 
   return (
     <>

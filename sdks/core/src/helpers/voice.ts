@@ -84,7 +84,6 @@ export const speakMessage = (
   };
 
   let timeoutId = setTimeout(checkEnd, fallbackTimeout);
-
   EasySpeech.speak({
     text: message,
     voice: voice,

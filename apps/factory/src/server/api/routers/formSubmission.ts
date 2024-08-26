@@ -12,12 +12,58 @@ import {
   submitAnswer,
   completeSubmissionInput,
   completeSubmissionResponse,
+  getFormInput,
+  form,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
 
 import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
 
 export const formSubmissionRouter = createTRPCRouter({
+  getForm: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/voice-forms/{formId}",
+        tags: ["VoiceForm"],
+        summary: "Get voice form",
+      },
+    })
+    .input(getFormInput)
+    .output(form)
+    .query(async ({ ctx, input }) => {
+      let query = {
+        id: input.formId,
+        userId: ctx.jwt?.id as string,
+      };
+
+      const form = await ctx.prisma.form.findUnique({
+        where: query,
+        include: {
+          questions: {
+            select: {
+              id: true,
+              question_type: true,
+              question_text: true,
+              question_params: true,
+
+              validation: true,
+              // @ts-ignore
+              qualification: true,
+              order: true,
+              createdAt: true,
+              updatedAt: true,
+            },
+            orderBy: {
+              // @ts-ignore
+              order: "asc",
+            },
+          },
+        },
+      });
+      return form;
+    }),
+
   createSubmission: publicProcedure
     .meta({
       openapi: {

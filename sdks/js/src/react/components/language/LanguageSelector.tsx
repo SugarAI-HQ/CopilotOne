@@ -6,7 +6,7 @@ import Modal from "../common/Modal";
 import { allLanguages } from "@sugar-ai/core";
 
 export const LanguageSelector: React.FC<{
-  klass: string;
+  klass?: string;
   languagesEnabled: LanguageCode[];
 }> = ({ klass, languagesEnabled = [] }) => {
   const { language, setLanguage, voice, setVoice, voices } = useLanguage();
