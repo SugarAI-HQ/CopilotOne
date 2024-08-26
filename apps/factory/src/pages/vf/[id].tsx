@@ -22,9 +22,10 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { NextPage } from "next";
 import Header from "~/components/marketplace/header";
+import { NextPageWithLayout } from "../_app";
 // import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
-const VoiceFormShow: NextPage = () => {
+const VoiceFormShow: NextPageWithLayout = () => {
   const router = useRouter();
   let { id, lang, show, color, record } = router.query as {
     id: string;
@@ -102,5 +103,7 @@ const VoiceFormShow: NextPage = () => {
     </div>
   );
 };
+
+VoiceFormShow.isPublic = true;
 
 export default VoiceFormShow;

@@ -11,6 +11,7 @@ import React from "react";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
+  isPublic?: boolean;
 };
 
 type AppPropsWithLayout = AppProps & {
@@ -35,6 +36,7 @@ const MyApp = ({
   pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
+
   return (
     <SessionProvider session={session as Session}>
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
@@ -42,7 +44,9 @@ const MyApp = ({
           gaMeasurementId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
         />
       )}
-      <Auth>{getLayout(<Component {...pageProps} />)}</Auth>
+      <Auth isPublic={(Component as any).isPublic ?? false}>
+        {getLayout(<Component {...pageProps} />)}
+      </Auth>
       <Toaster position="top-right" />
     </SessionProvider>
   );
@@ -50,18 +54,19 @@ const MyApp = ({
 
 interface AuthProps {
   children: React.ReactNode;
+  isPublic?: boolean;
 }
 
-const Auth: React.FC<AuthProps> = ({ children }) => {
+const Auth: React.FC<AuthProps> = ({ children, isPublic }) => {
   const { data: session, status } = useSession();
   const isUser = !!session?.user;
 
   React.useEffect(() => {
     if (status === "loading") return;
-    if (!isUser) signIn();
-  }, [isUser, status]);
+    if (!isUser && !isPublic) signIn();
+  }, [isUser, status, isPublic]);
 
-  if (isUser) {
+  if (isUser || isPublic) {
     return <>{children}</>;
   }
   return null;

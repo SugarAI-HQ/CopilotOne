@@ -3,10 +3,10 @@ import Onboarding from "./Onboarding";
 import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
 import Initializing from "./Initializing";
+import root from "window-or-global";
+
 import {
-  Translations,
   Question,
-  FormConfig,
   useVoiceForm,
   QuestionAnswer,
   geti18nMessage,
@@ -39,8 +39,11 @@ export const VoiceFormComponent: React.FC<{
     submitAnswer,
     completeSubmission,
   } = useVoiceForm();
+
   const initialStep = parseInt(
-    new URLSearchParams(window.location.search).get("step") || "0",
+    root?.location
+      ? new URLSearchParams(root.location.search).get("step") || "0"
+      : "0",
   );
   const [step, setStep] = useState<number>(initialStep);
 
