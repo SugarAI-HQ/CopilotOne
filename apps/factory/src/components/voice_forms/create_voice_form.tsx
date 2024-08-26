@@ -24,6 +24,7 @@ interface CreateVoiceFormProps {
   isLoading: boolean;
   status: string;
   customError: any;
+  position?: string;
 }
 
 export const CreateVoiceForm: React.FC<CreateVoiceFormProps> = ({
@@ -31,6 +32,7 @@ export const CreateVoiceForm: React.FC<CreateVoiceFormProps> = ({
   isLoading,
   status,
   customError,
+  position = "flex-end",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -92,7 +94,7 @@ export const CreateVoiceForm: React.FC<CreateVoiceFormProps> = ({
 
   return (
     <>
-      <Grid container justifyContent="flex-end">
+      <Grid container justifyContent={position}>
         <Button size="small" variant="outlined" onClick={() => setIsOpen(true)}>
           Create Form
         </Button>

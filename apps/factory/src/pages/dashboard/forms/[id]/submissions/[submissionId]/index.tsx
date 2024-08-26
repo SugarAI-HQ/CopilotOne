@@ -1,12 +1,9 @@
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
-import { DataGrid } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
-import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
-import { useMemo } from "react";
 import React from "react";
 import SubmissionAnswers from "../../../../../../components/voice_forms/submissions/answers";
 import { getLayout } from "~/app/layout";
+import Loading from "~/components/Layouts/loading";
 
 const ShowSubmission = () => {
   const router = useRouter();
@@ -18,7 +15,7 @@ const ShowSubmission = () => {
     { enabled: !!formId },
   );
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   return (
     <div className="w-full pt-3">

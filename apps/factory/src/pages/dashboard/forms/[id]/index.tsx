@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Link, Typography } from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { TabPanel } from "~/components/Layouts/tabs";
@@ -10,6 +10,9 @@ import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import SubmissionAnalytics from "../../../../components/voice_forms/submissions/analytics";
 import SubmissionsDashboard from "../../../../components/voice_forms/submissions/list";
+// import PreviewIcon from "@mui/icons-material/Preview";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
 
 const FormShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -19,10 +22,37 @@ const FormShow: NextPageWithLayout = () => {
 
   return (
     <>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexGrow: 1,
+        }}
+      >
         <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
           {form?.name}
         </Typography>
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            target="_blank"
+            startIcon={<VisibilityIcon />}
+            href={`/vf/${form?.id}`}
+          >
+            Preview
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<EditIcon />}
+            href={`/dashboard/forms/${form?.id}/edit`}
+          >
+            Edit
+          </Button>
+        </Box>
       </Box>
       <VoiceFormTabs formId={formId}></VoiceFormTabs>
     </>

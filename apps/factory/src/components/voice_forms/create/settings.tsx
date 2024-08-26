@@ -147,21 +147,6 @@ export const FormDetails = ({
           />
 
           <FormErrors errors={errors} />
-          {
-            <div>
-              <Typography variant="body1">
-                Errors: ({Object.keys(errors).length})
-              </Typography>
-              <List>
-                {Object.keys(errors).map((key) => (
-                  <ListItem key={key}>
-                    {/* @ts-ignore */}
-                    <Alert severity="error">{errors[key].message}</Alert>
-                  </ListItem>
-                ))}
-              </List>
-            </div>
-          }
           {/* <form onSubmit={handleSubmit(onFormSubmit)}> */}
           <Controller
             name="name"

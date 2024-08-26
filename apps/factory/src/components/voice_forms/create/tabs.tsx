@@ -1,17 +1,17 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Box, Typography } from "@mui/material";
+import { Tabs, Tab, Box, Typography, Link, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { TabPanel } from "~/components/Layouts/tabs";
 import QuestionList from "~/components/voice_forms/questions/list";
-import QuestionNew from "~/components/voice_forms/questions/new";
 import { FormDetails } from "./settings";
-import humanizeString from "humanize-string";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn"; // or use ListAltIcon
 
 export const VoiceEditTabs = ({
   voiceForm,
   setVoiceForm, // handleAddOrEditQuestion, // handleEdit,
-} // handleDelete,
-: {
+  // handleDelete,
+}: {
   voiceForm: any;
   setVoiceForm: Function;
   // handleAddOrEditQuestion: any;
@@ -30,11 +30,39 @@ export const VoiceEditTabs = ({
 
   return (
     <div className="w-full">
-      <Box className="rounded-md p-4 shadow-md ">
-        <Typography variant="h4" component="h1" className="font-bold  ">
-          Voice Form: {humanizeString(voiceForm?.name || "")}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexGrow: 1,
+        }}
+      >
+        <Typography variant="h4" component="span" sx={{ mt: 1, mb: 2 }}>
+          {voiceForm?.name}
         </Typography>
+
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Button
+            variant="outlined"
+            target="_blank"
+            color="primary"
+            startIcon={<VisibilityIcon />}
+            href={`/vf/${voiceForm?.id}`}
+          >
+            Preview
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<AssignmentTurnedInIcon />} // or <ListAltIcon />
+            href={`/dashboard/forms/${voiceForm?.id}?tab=submissions`}
+          >
+            Submissions
+          </Button>
+        </Box>
       </Box>
+
       <Tabs
         value={tab}
         onChange={handleChange}

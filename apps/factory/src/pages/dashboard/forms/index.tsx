@@ -116,6 +116,7 @@ const VoiceFormHome = () => {
               isLoading={formMutation.isLoading}
               status={status}
               customError={customError}
+              position="center"
             />
           </Grid>
         </Grid>

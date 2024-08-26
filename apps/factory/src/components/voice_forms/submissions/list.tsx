@@ -3,6 +3,7 @@ import { api } from "~/utils/api";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import React from "react";
+import Loading from "~/components/Layouts/loading";
 
 const SubmissionsList = ({ formId }: { formId: string }) => {
   const router = useRouter();
@@ -44,7 +45,7 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
     },
   ];
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   return (
     <div className="w-full pt-3">
