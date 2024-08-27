@@ -179,13 +179,13 @@ const QuestionList: React.FC<QuestionListProps> = ({
   return (
     <>
       {isLoading && <Loading></Loading>}
-      <VoiceToJson
+      {/* <VoiceToJson
         schema={{}}
         onJson={async (questions: Question[]) => {
           await onQuestions(voiceForm?.id, questions);
         }}
         editorConfig={{}}
-      ></VoiceToJson>
+      ></VoiceToJson> */}
       {questions && (
         <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">
           <h2 className="mb-4 text-lg font-bold">

@@ -271,7 +271,6 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
               size="small"
               color="primary"
               variant="contained"
-              loadingPosition="start"
               loading={isLoading}
               sx={{ width: "8rem" }}
             >
