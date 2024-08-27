@@ -43,6 +43,7 @@ export const formSubmissionRouter = createTRPCRouter({
           questions: {
             select: {
               id: true,
+              active: true,
               question_type: true,
               question_text: true,
               question_params: true,

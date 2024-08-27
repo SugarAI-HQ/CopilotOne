@@ -53,7 +53,7 @@ export const VoiceQuestion: React.FC<{
   onBack: () => void;
 }> = ({ voiceForm, question, onAnswered, onSkip, onBack }) => {
   renderCount++;
-  // console.log("[re-render] VoiceQuestion", renderCount);
+  DEV: console.log("[re-render] VoiceQuestion", renderCount);
 
   // Depdencies
   const { language, voice } = useLanguage();

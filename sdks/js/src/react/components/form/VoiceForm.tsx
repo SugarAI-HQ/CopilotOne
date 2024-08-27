@@ -28,7 +28,7 @@ export const VoiceFormComponent: React.FC<{
     submit: geti18nMessage("submit", defaultFormTranslations),
   });
   renderCount++;
-  console.log("[re-render] VoiceForm", renderCount);
+  DEV: console.log("[re-render] VoiceForm", renderCount);
 
   const {
     formId,

@@ -221,7 +221,7 @@ export type QuestionAnswer = z.infer<typeof questionAnswer>;
 
 export const defaultFormTranslations = {
   welcome: {
-    "en-US": "Welcome",
+    en: "Welcome",
     "pt-BR": "Bem-vindo",
     hi: "स्वागत है",
     "bn-IN": "স্বাগতম",
@@ -234,16 +234,16 @@ export const defaultFormTranslations = {
     zh: "欢迎",
   },
   submit: {
-    "en-US": "Submit",
-    "pt-BR": "Enviar",
-    hi: "प्रस्तुत करें",
-    "bn-IN": "জমা দিন",
-    "te-IN": "సమర్పించండి",
-    "mr-IN": "सबमिट करा",
-    "ta-IN": "சமர்ப்பிக்க",
-    es: "Enviar",
-    fr: "Soumettre",
-    de: "Einreichen",
-    zh: "提交",
+    en: "Thank you for submitting",
+    "pt-BR": "Obrigado por enviar",
+    hi: "प्रस्तुत करने के लिए धन्यवाद",
+    "bn-IN": "জমা দেওয়ার জন্য ধন্যবাদ",
+    "te-IN": "సమర్పించినందుకు ధన్యవాదాలు",
+    "mr-IN": "सबमिट केल्याबद्दल धन्यवाद",
+    "ta-IN": "சமர்ப்பித்ததற்கு நன்றி",
+    es: "Gracias por enviar",
+    fr: "Merci d'avoir soumis",
+    de: "Vielen Dank für Ihre Einreichung",
+    zh: "感谢您的提交",
   },
 };

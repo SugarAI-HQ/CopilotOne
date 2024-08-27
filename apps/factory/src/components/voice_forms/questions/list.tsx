@@ -3,7 +3,7 @@ import QuestionView from "./view"; // Import the QuestionView component
 import { LanguageCode, Question, VoiceForm } from "@sugar-ai/core";
 import Loading from "~/components/Layouts/loading";
 import QuestionNew from "./new";
-import { VoiceToJson } from "@sugar-ai/copilot-one-js";
+// import { VoiceToJson } from "@sugar-ai/copilot-one-js";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { Button, CircularProgress } from "@mui/material";
@@ -16,7 +16,6 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { debounce } from "lodash";
-import { LoadingButton } from "@mui/lab";
 
 interface QuestionListProps {
   voiceForm: VoiceForm;

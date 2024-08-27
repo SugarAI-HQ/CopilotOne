@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import ViewI18nMessage from "~/components/voice_forms/view_i18n_message";
 import { LanguageCode, i18nMessage } from "@sugar-ai/core";
 import { I18nMessageWithRules, Form } from "~/validators/form";
+import Loading from "~/components/Layouts/loading";
 
 const VoiceFormHome = () => {
   const [status, setStatus] = useState("");
@@ -56,7 +57,7 @@ const VoiceFormHome = () => {
     },
   });
 
-  api.form.getForms.useQuery(
+  const { data: f, isLoading } = api.form.getForms.useQuery(
     {},
     {
       onSuccess(data) {
@@ -85,7 +86,6 @@ const VoiceFormHome = () => {
 
   return (
     <>
-      {/* <ViewI18nMessage message={message} languages={languages} /> */}
       {voiceForms && voiceForms.length > 0 ? (
         <>
           <CreateVoiceForm
@@ -107,18 +107,22 @@ const VoiceFormHome = () => {
           alignItems="center"
           style={{ minHeight: "80vh" }}
         >
-          <Grid item xs={12} justifyContent="center" alignItems="center">
-            <Typography align="center" variant="h5" padding={3}>
-              Create your first Voice Form
-            </Typography>
-            <CreateVoiceForm
-              onSubmit={formMutation.mutate}
-              isLoading={formMutation.isLoading}
-              status={status}
-              customError={customError}
-              position="center"
-            />
-          </Grid>
+          {isLoading ? (
+            <Loading />
+          ) : (
+            <Grid item xs={12} justifyContent="center" alignItems="center">
+              <Typography align="center" variant="h5" padding={3}>
+                Create your first Voice Form
+              </Typography>
+              <CreateVoiceForm
+                onSubmit={formMutation.mutate}
+                isLoading={formMutation.isLoading}
+                status={status}
+                customError={customError}
+                position="center"
+              />
+            </Grid>
+          )}
         </Grid>
       )}
     </>
@@ -160,7 +164,7 @@ const VoiceForms = ({
                 >
                   <ViewI18nMessage
                     message={form?.description}
-                    languages={languages}
+                    languages={[languages[0]] as LanguageCode[]}
                   />
                   {/* {form?.description} */}
                 </Typography>

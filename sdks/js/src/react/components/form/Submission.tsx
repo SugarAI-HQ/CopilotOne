@@ -51,6 +51,7 @@ export const Submission: React.FC<{
   return (
     <div className="p-4">
       <Streamingi18nText
+        klasses="sai-vf-welcome-message"
         ref={postSubmissionMessageRef}
         message={postSubmissionMessage}
         formConfig={formConfig}
