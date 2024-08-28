@@ -11,3 +11,5 @@ export * from "./streaming/Streamingi18nText";
 // export * from "./streaming/Streamingi18nHtml";
 
 export * from "./prompt_ide/VoiceToJson";
+
+export * from "./common/ErrorBoundary";

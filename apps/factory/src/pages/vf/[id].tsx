@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import { NextPage } from "next";
 import Header from "~/components/marketplace/header";
 import { NextPageWithLayout } from "../_app";
+import { ErrorBoundary } from "@sentry/nextjs";
 // import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
 const VoiceFormShow: NextPageWithLayout = () => {
@@ -86,21 +87,26 @@ const VoiceFormShow: NextPageWithLayout = () => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col">
-      <Header headerName={`Sugar AI`}></Header>
+    <ErrorBoundary>
+      <div className="flex h-full w-full flex-col">
+        <Header headerName={`Sugar AI`}></Header>
 
-      <CopilotProvider config={copilotConfig}>
-        <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
-          <WorkflowProvider>
-            <VoiceFormProvider formId={id} formConfigOverride={initFormConfig}>
-              <Suspense fallback={<p>Loading feed...</p>}>
-                <VoiceFormComponent showStartButton={true} />
-              </Suspense>
-            </VoiceFormProvider>
-          </WorkflowProvider>
-        </LanguageProvider>
-      </CopilotProvider>
-    </div>
+        <CopilotProvider config={copilotConfig}>
+          <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
+            <WorkflowProvider>
+              <VoiceFormProvider
+                formId={id}
+                formConfigOverride={initFormConfig}
+              >
+                <Suspense fallback={<p>Loading feed...</p>}>
+                  <VoiceFormComponent showStartButton={true} />
+                </Suspense>
+              </VoiceFormProvider>
+            </WorkflowProvider>
+          </LanguageProvider>
+        </CopilotProvider>
+      </div>
+    </ErrorBoundary>
   );
 };
 
