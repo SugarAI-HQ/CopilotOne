@@ -98,11 +98,11 @@ const App: NextPage = () => {
       const data = getFormData(id);
       setFd(data);
 
-      setFormConfig((fc) => {
-        // debugger;
-        fc.id = formId || data.formId;
-        return fc;
-      });
+      // setFormConfig((fc) => {
+      //   // debugger;
+      //   fc.id = formId || data.formId;
+      //   return fc;
+      // });
 
       // const imsg = geti18nMessage("startButton", data.translations);
       // const buttonText = extracti18nText(imsg, lang);

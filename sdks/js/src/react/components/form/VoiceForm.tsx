@@ -71,13 +71,13 @@ export const VoiceFormComponent: React.FC<{
 
   const handleOnboardingComplete = useCallback(
     async (isOnboardingComplete: boolean = true) => {
-      if (!submissionId) {
-        await createSubmission(formId);
-      }
+      // if (!submissionId) {
+      //   await createSubmission(formId);
+      // }
 
       isOnboardingComplete && setStep((prevStep) => prevStep + 1);
     },
-    [],
+    [formId],
   );
 
   const handleQuestionsComplete = async () => {

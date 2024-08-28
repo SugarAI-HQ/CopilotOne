@@ -48,7 +48,7 @@ export const VoiceFormProvider: React.FC<{
   // const currentFormConfig = { ...FormConfigDefaults, ...voiceForm?.formConfig };
 
   useEffect(() => {
-    if (formId !== "") {
+    if (formId && formId !== "") {
       init(formId);
     }
   }, [formId]);
@@ -96,6 +96,9 @@ export const VoiceFormProvider: React.FC<{
   };
 
   const createSubmission = async (formId: string): Promise<string | null> => {
+    if (!formId) {
+      throw "form Id not defined";
+    }
     try {
       const { submissionId } =
         (await apiClient.voiceForm.formSubmissionCreateSubmission(formId, {
