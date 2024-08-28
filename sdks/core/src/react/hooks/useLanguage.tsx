@@ -53,6 +53,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 
   useEffect(() => {
     if (!language || language == "auto") {
+      console.log(`Lang: ${language}, default: ${defaultLang}`);
       setLanguage(
         defaultLang == "auto"
           ? (root.navigator.language as LanguageCode)

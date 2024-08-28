@@ -34,9 +34,7 @@ const config = {
   },
   transpilePackages: ["@mui/x-charts"],
 
-  optimization: {
-    minimize: false,
-  },
+  swcMinify: false,
 
   eslint: {
     // Warning: This allows production builds to successfully complete even if
