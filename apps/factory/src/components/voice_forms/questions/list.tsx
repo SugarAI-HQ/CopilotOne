@@ -192,13 +192,14 @@ const QuestionList: React.FC<QuestionListProps> = ({
             <Button variant="outlined" onClick={handleAdd}>
               <AddIcon /> Add
             </Button>
-            {formQuestionsMutation.isLoading && (
-              <CircularProgress
-                size={30}
-                className="ml-4"
-                style={{ marginBottom: -10 }}
-              />
-            )}
+            {formQuestionsMutation.isLoading ||
+              (questionOrderMutation.isLoading && (
+                <CircularProgress
+                  size={30}
+                  className="ml-4"
+                  style={{ marginBottom: -10 }}
+                />
+              ))}
           </h2>
 
           <DragDropContext onDragEnd={handleDragEnd}>

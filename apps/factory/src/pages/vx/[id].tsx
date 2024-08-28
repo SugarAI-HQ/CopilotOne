@@ -1,3 +1,4 @@
+import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
 import {
@@ -26,21 +27,11 @@ import { NextPageWithLayout } from "../_app";
 import { ErrorBoundary } from "@sentry/nextjs";
 // import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 
-const VoiceFormShow: NextPageWithLayout = () => {
-  const router = useRouter();
-  let { id, lang, show, color, record } = router.query as {
-    id: string;
-    lang: LanguageCode;
-    show: string;
-    color: string;
-    record: string;
-  };
-
-  //   let showInUnSupportedBrowser = show ? true : false;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { id, lang, show, color, record } = context.query;
 
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
-  const themeColor = color ?? "#0057FF";
-  // const themeColor = "#3b83f6";
+  const themeColor = (color ?? "#0057FF") as string;
 
   let copilotConfig: CopilotConfigType = {
     copilotId: process.env.NEXT_PUBLIC_COPILOT_ID as string,
@@ -75,22 +66,33 @@ const VoiceFormShow: NextPageWithLayout = () => {
       },
     },
   };
-
   const initFormConfig: FormConfig = {
     ...FormConfigDefaults,
     listen: {
       ...FormConfigDefaults.listen,
-      record: record ? true : false,
+      record: record === "true",
     },
     voiceButton: copilotConfig.style.voiceButton,
-    // userId: fd.userId,
   };
 
+  return {
+    props: {
+      id,
+      copilotConfig,
+      initFormConfig,
+    },
+  };
+};
+
+const VoiceFormShow: NextPageWithLayout = ({
+  id,
+  copilotConfig,
+  initFormConfig,
+}: any) => {
   return (
     <ErrorBoundary>
       <div className="flex h-full w-full flex-col">
-        <Header headerName={`Sugar AI`}></Header>
-
+        <Header headerName={`Sugar AI`} />
         <CopilotProvider config={copilotConfig}>
           <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
             <WorkflowProvider>
@@ -110,11 +112,4 @@ const VoiceFormShow: NextPageWithLayout = () => {
   );
 };
 
-VoiceFormShow.isPublic = true;
-
 export default VoiceFormShow;
-
-// // Dynamically load the component without server-side rendering
-// export default dynamic(() => Promise.resolve(VoiceFormShow), {
-//   ssr: false,
-// });

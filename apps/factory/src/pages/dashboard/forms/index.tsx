@@ -180,6 +180,9 @@ const VoiceForms = ({
               >
                 Submissions
               </Button>
+              <Button size="small" href={`/vf/${form?.id}`} target="_blank">
+                Preview
+              </Button>
             </CardActions>
           </Card>
         </Grid>
