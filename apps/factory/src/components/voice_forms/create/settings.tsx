@@ -18,6 +18,7 @@ import {
   defaultFormTranslations,
   geti18nMessage,
   LanguageCode,
+  VoiceForm,
 } from "@sugar-ai/core";
 import LanguagesSelector from "../langauges_selector";
 import { FormErrors } from "./errors";
@@ -30,6 +31,10 @@ export const FormDetails = ({
   voiceForm: any;
   setVoiceForm: Function;
 }) => {
+  const [availableLanguages, setAvailableLanguages] = useState<LanguageCode[]>(
+    voiceForm?.languages || ["en"],
+  );
+  console.log(`availableLanguages: ${JSON.stringify(availableLanguages)}`);
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
 
@@ -54,7 +59,7 @@ export const FormDetails = ({
         welcome: defaulti18nMessage,
         submit: defaulti18nMessage,
       },
-      languages: ["en"],
+      languages: voiceForm?.languages || ["en"],
       formConfig: {},
     },
     resolver: zodResolver(createFormInput),
@@ -87,9 +92,13 @@ export const FormDetails = ({
     }
   };
   const formMutation = api.form.updateForm.useMutation({
-    onSuccess: (data) => {
-      setVoiceForm(voiceForm);
-      toast.success("Form saved successfully");
+    onSuccess: (updatedForm: any) => {
+      debugger;
+      setVoiceForm({
+        ...updatedForm,
+        questions: voiceForm?.questions,
+      });
+      toast.success("Form Settings saved successfully");
       setStatus("success");
     },
     onError: (error: any) => {
@@ -115,7 +124,11 @@ export const FormDetails = ({
     if (!allowedLanguages.includes(langCode)) {
       const updatedLanguages = [...allowedLanguages, langCode];
       setValue("languages", updatedLanguages);
-      setVoiceForm({ ...voiceForm, ...{ languages: updatedLanguages } });
+      // setAvailableLanguages({
+      //   ...voiceForm,
+      //   ...{ languages: updatedLanguages },
+      // });
+      setAvailableLanguages(updatedLanguages);
     }
   };
 
@@ -129,7 +142,7 @@ export const FormDetails = ({
         ...allowedLanguages.slice(index + 1),
       ];
       setValue("languages", newAllowedLanguages);
-      setVoiceForm({ ...voiceForm, ...{ languages: newAllowedLanguages } });
+      setAvailableLanguages(newAllowedLanguages);
     }
   };
 
@@ -138,14 +151,8 @@ export const FormDetails = ({
       {!voiceForm && <Loading></Loading>}
       {voiceForm && (
         <Stack spacing={2} mt={2} mb={2}>
-          {/* <FormLanguagesSelector
-          voiceForm={voiceForm}
-          setVoiceForm={setVoiceForm}
-          setValue={setValue}
-        /> */}
-
           <LanguagesSelector
-            initialLanguages={voiceForm?.languages}
+            initialLanguages={availableLanguages}
             onAddLanguage={handleAddLanguage}
             onRemoveLanguage={handleRemoveLanguage}
           />
@@ -171,7 +178,7 @@ export const FormDetails = ({
             fieldName="Description"
             defaults={geti18nMessage("description", defaultFormTranslations)}
             initialMessage={voiceForm?.description}
-            allowedLanguages={voiceForm?.languages}
+            allowedLanguages={availableLanguages}
             onSave={handleSaveMessage}
           />
           <CreateI18nMessage
@@ -182,7 +189,7 @@ export const FormDetails = ({
               "startButtonText",
               defaultFormTranslations,
             )}
-            allowedLanguages={voiceForm?.languages}
+            allowedLanguages={availableLanguages}
             onSave={handleSaveMessage}
           />
 
@@ -191,7 +198,7 @@ export const FormDetails = ({
             fieldName="Welcome Message"
             initialMessage={voiceForm?.messages?.welcome}
             defaults={geti18nMessage("welcome", defaultFormTranslations)}
-            allowedLanguages={voiceForm?.languages}
+            allowedLanguages={availableLanguages}
             onSave={handleSaveMessage}
           />
 
@@ -200,7 +207,7 @@ export const FormDetails = ({
             fieldName="On Submit Message"
             initialMessage={voiceForm?.messages?.submit}
             defaults={geti18nMessage("submit", defaultFormTranslations)}
-            allowedLanguages={voiceForm?.languages}
+            allowedLanguages={availableLanguages}
             onSave={handleSaveMessage}
           />
 

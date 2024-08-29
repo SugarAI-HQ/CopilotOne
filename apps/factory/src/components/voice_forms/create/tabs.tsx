@@ -4,14 +4,16 @@ import { useRouter } from "next/router";
 import { TabPanel } from "~/components/Layouts/tabs";
 import QuestionList from "~/components/voice_forms/questions/list";
 import { FormDetails } from "./settings";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn"; // or use ListAltIcon
+import {
+  FormPreviewButton,
+  FormSubmissionsButton,
+} from "~/components/voice_forms/buttons";
 
 export const VoiceEditTabs = ({
   voiceForm,
   setVoiceForm, // handleAddOrEditQuestion, // handleEdit,
-  // handleDelete,
-}: {
+} // handleDelete,
+: {
   voiceForm: any;
   setVoiceForm: Function;
   // handleAddOrEditQuestion: any;
@@ -43,23 +45,8 @@ export const VoiceEditTabs = ({
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Button
-            variant="outlined"
-            target="_blank"
-            color="primary"
-            startIcon={<VisibilityIcon />}
-            href={`/vf/${voiceForm?.id}`}
-          >
-            Preview
-          </Button>
-
-          <Button
-            variant="outlined"
-            startIcon={<AssignmentTurnedInIcon />} // or <ListAltIcon />
-            href={`/dashboard/forms/${voiceForm?.id}?tab=submissions`}
-          >
-            Submissions
-          </Button>
+          <FormPreviewButton voiceForm={voiceForm} />
+          <FormSubmissionsButton voiceForm={voiceForm} />
         </Box>
       </Box>
 

@@ -69,16 +69,25 @@ export const VoiceFormComponent: React.FC<{
     }
   }, [voiceForm]);
 
-  const handleOnboardingComplete = useCallback(
-    async (isOnboardingComplete: boolean = true) => {
-      // if (!submissionId) {
-      //   await createSubmission(formId);
-      // }
+  // const handleOnboardingComplete = useCallback(
+  //   async (isOnboardingComplete: boolean = true) => {
+  //     // if (!submissionId) {
+  //     //   await createSubmission(formId);
+  //     // }
 
-      isOnboardingComplete && setStep((prevStep) => prevStep + 1);
-    },
-    [formId],
-  );
+  //     isOnboardingComplete && setStep((prevStep) => prevStep + 1);
+  //   },
+  //   [formId],
+  // );
+  const handleOnboardingComplete = async (
+    isOnboardingComplete: boolean = true,
+  ) => {
+    // if (!submissionId) {
+    //   await createSubmission(formId);
+    // }
+
+    isOnboardingComplete && setStep((prevStep) => prevStep + 1);
+  };
 
   const handleQuestionsComplete = async () => {
     const resp = await completeSubmission(formId, submissionId as string);

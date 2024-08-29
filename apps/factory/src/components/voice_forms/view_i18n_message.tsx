@@ -17,10 +17,18 @@ const ViewI18nMessage: React.FC<I18nMessageViewProps> = ({
     <Box className="flex flex-wrap">
       {languages.map((lang) => (
         <Box key={lang} className={`mb-1 mr-4 flex items-center`}>
-          <Typography variant="subtitle2" sx={{ fontWeight: "bold", mr: 1 }}>
+          <Typography
+            component={"span"}
+            variant="subtitle2"
+            sx={{ fontWeight: "bold", mr: 1 }}
+          >
             {/* {allLanguages[lang]}: */}
           </Typography>
-          <Typography variant="subtitle1" className={`klassName font-semibold`}>
+          <Typography
+            component={"span"}
+            variant="subtitle1"
+            className={`klassName font-semibold`}
+          >
             {message.lang[lang] || "No translation available"}
           </Typography>
 

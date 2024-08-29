@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import QuestionView from "./view"; // Import the QuestionView component
-import { LanguageCode, Question, VoiceForm } from "@sugar-ai/core";
+import {
+  LanguageCode,
+  allLanguages,
+  Question,
+  VoiceForm,
+} from "@sugar-ai/core";
+import { Chip } from "@mui/material";
 import Loading from "~/components/Layouts/loading";
 import QuestionNew from "./new";
 // import { VoiceToJson } from "@sugar-ai/copilot-one-js";
@@ -16,6 +22,7 @@ import {
   DropResult,
 } from "react-beautiful-dnd";
 import { debounce } from "lodash";
+import { SelectedLanguages } from "../langauges_selector";
 
 interface QuestionListProps {
   voiceForm: VoiceForm;
@@ -185,9 +192,11 @@ const QuestionList: React.FC<QuestionListProps> = ({
         }}
         editorConfig={{}}
       ></VoiceToJson> */}
+
       {questions && (
         <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">
-          <h2 className="mb-4 text-lg font-bold">
+          <SelectedLanguages selectedLanguages={voiceForm?.languages || []} />
+          <h2 className="mb-4 mt-4 text-lg font-bold">
             Questions{" "}
             <Button variant="outlined" onClick={handleAdd}>
               <AddIcon /> Add
@@ -242,6 +251,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
           </DragDropContext>
 
           <QuestionNew
+            key={editingQuestion?.id || "new"}
             voiceForm={voiceForm}
             initQuestion={editingQuestion}
             onSubmit={async (question) => {

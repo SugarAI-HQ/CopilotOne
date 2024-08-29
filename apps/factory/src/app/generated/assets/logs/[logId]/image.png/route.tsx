@@ -1,5 +1,6 @@
 import { prisma } from "~/server/db";
-import { ImageResponse, type NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
+import { ImageResponse } from "next/og";
 import { env } from "~/env.mjs";
 import { resizeBase64Image } from "~/utils/images_backend";
 import { LlmResponse, processLlmResponse } from "~/validators/llm_respose";
@@ -46,7 +47,6 @@ export async function GET(
     width: w,
     height: h,
   };
-
   return new ImageResponse(
     (
       <div

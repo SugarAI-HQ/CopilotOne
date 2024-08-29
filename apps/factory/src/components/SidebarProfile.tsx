@@ -11,14 +11,14 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import RouteGuard from "~/components/RouteGuard";
 import { MdLogout } from "react-icons/md";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export default function SidebarProfile() {
-  const router = useRouter();
+  // const router = useRouter();
   const { data: sessionData } = useSession();
 
   async function handleProfileCardClick() {
-    await router.push("/dashboard/profile");
+    // await router.push("/dashboard/profile");
   }
 
   return (
@@ -28,7 +28,7 @@ export default function SidebarProfile() {
         <div className="absolute bottom-0 w-full p-3">
           <Card
             className="flex cursor-pointer items-center gap-2 px-2 py-3"
-            onClick={handleProfileCardClick}
+            // onClick={handleProfileCardClick}
           >
             <Avatar
               className="h-8 w-8"

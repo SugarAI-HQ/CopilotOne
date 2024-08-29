@@ -187,7 +187,7 @@ export const CreateVoiceForm: React.FC<CreateVoiceFormProps> = ({
             size="small"
             variant="outlined"
             onClick={handleSubmit(onFormSubmit)}
-            loadingPosition="start"
+            // loadingPosition="start"
             loading={isLoading}
             sx={{ width: "8rem" }}
           >

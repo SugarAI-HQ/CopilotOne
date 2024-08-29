@@ -15,22 +15,15 @@ const FormEdit: NextPageWithLayout = () => {
 
   const loadForm = (form: Form) => {
     setVoiceForm(form);
-    // setValue("id", form.id);
-    // setValue("name", form.name);
-    // setValue("description", form.description);
-    // setValue("startButtonText", form.startButtonText);
-    // setValue("languages", form.languages);
-    // setValue("messages", form.messages);
-    // setValue("formConfig", form.formConfig || {});
   };
 
   const { data: form, isLoading: isFormLoading } = api.form.getForm.useQuery(
     { formId: formId },
     {
       enabled: !!formId,
-      onSuccess(form: Form) {
-        setVoiceForm(form);
-        loadForm(form);
+      onSuccess(updatedForm: Form) {
+        setVoiceForm(updatedForm);
+        loadForm(updatedForm);
       },
     },
   );

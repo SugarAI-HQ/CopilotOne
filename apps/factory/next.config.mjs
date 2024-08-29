@@ -10,6 +10,8 @@ await import("./src/env.mjs");
 
 /** @type {import("next").NextConfig} */
 const config = {
+  distDir: process.env.NODE_ENV === "development" ? "dist" : ".next",
+
   output: "standalone",
   reactStrictMode: false,
 
@@ -30,11 +32,11 @@ const config = {
         hostname: "**",
       },
     ],
-    domains: ["localhost", "*.sugarcaneai.dev", "sugarcaneai.dev"], // add sugarcane host
+    // domains: ["localhost", "*.sugarcaneai.dev", "sugarcaneai.dev"], // add sugarcane host
   },
   transpilePackages: ["@mui/x-charts"],
 
-  swcMinify: false,
+  // swcMinify: false,
 
   eslint: {
     // Warning: This allows production builds to successfully complete even if

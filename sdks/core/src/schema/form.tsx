@@ -174,7 +174,12 @@ export const formMessageType = z.enum(["welcome", "submit"]);
 
 export type FormMessageType = z.infer<typeof formMessageType>;
 
-export const formMessages = z.record(formMessageType, i18nMessageSchema);
+// export const formMessages = z.record(formMessageType, i18nMessageSchema);
+export const formMessages = z.object({
+  welcome: i18nMessageSchema,
+  submit: i18nMessageSchema,
+});
+
 export type FormMessages = z.infer<typeof formMessages>;
 
 export const voiceForm = z.object({

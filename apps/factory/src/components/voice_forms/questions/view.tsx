@@ -115,7 +115,7 @@ const QuestionView: React.FC<QuestionViewProps> = ({
         </Box>
 
         <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="subtitle1" component={"div"} gutterBottom>
             <ViewI18nMessage
               klassName="text-4xl font-semibold"
               message={question.question_text}
@@ -132,7 +132,7 @@ const QuestionView: React.FC<QuestionViewProps> = ({
                 <Grid container sx={{ mt: 1 }} spacing={1}>
                   {question.question_params.options.map((option, index) => (
                     <Grid item xs={6} key={index}>
-                      <Typography variant="body2">
+                      <Typography variant="body2" component={"div"}>
                         <ViewI18nMessage
                           message={option}
                           languages={[selectedLanguage]}

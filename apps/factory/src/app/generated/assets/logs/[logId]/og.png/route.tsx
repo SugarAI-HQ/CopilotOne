@@ -1,5 +1,7 @@
 import { prisma } from "~/server/db";
-import { ImageResponse, type NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
+import { ImageResponse } from "next/og";
+
 import { env } from "~/env.mjs";
 import { resizeBase64Image } from "~/utils/images_backend";
 import { ResponseType } from "openai/_shims/auto/types";

@@ -10,9 +10,10 @@ import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import SubmissionAnalytics from "../../../../components/voice_forms/submissions/analytics";
 import SubmissionsDashboard from "../../../../components/voice_forms/submissions/list";
-// import PreviewIcon from "@mui/icons-material/Preview";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
+import {
+  FormPreviewButton,
+  FormEditButton,
+} from "~/components/voice_forms/buttons";
 
 const FormShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -35,23 +36,8 @@ const FormShow: NextPageWithLayout = () => {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-          <Button
-            variant="outlined"
-            color="primary"
-            target="_blank"
-            startIcon={<VisibilityIcon />}
-            href={`/vf/${form?.id}`}
-          >
-            Preview
-          </Button>
-
-          <Button
-            variant="outlined"
-            startIcon={<EditIcon />}
-            href={`/dashboard/forms/${form?.id}/edit`}
-          >
-            Edit
-          </Button>
+          <FormPreviewButton voiceForm={form} />
+          <FormEditButton voiceForm={form} />
         </Box>
       </Box>
       <VoiceFormTabs formId={formId}></VoiceFormTabs>

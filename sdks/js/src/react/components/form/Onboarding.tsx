@@ -141,5 +141,5 @@ export const Onboarding: React.FC<{
   );
 };
 
-export default React.memo(Onboarding);
+export default Onboarding;
 // export default Onboarding;

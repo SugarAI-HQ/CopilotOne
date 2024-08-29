@@ -118,7 +118,6 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
   };
 
   const onSubmitForm = async (data: any) => {
-    debugger;
     const q: Question = {
       ...data,
       id: initQuestion?.id || "",

@@ -41,6 +41,9 @@ export const formSubmissionRouter = createTRPCRouter({
         where: query,
         include: {
           questions: {
+            where: {
+              active: true,
+            },
             select: {
               id: true,
               // @ts-ignore

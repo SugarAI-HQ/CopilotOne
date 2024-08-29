@@ -14,6 +14,11 @@ import ViewI18nMessage from "~/components/voice_forms/view_i18n_message";
 import { LanguageCode, i18nMessage } from "@sugar-ai/core";
 import { I18nMessageWithRules, Form } from "~/validators/form";
 import Loading from "~/components/Layouts/loading";
+import {
+  formEditUrl,
+  formPreviewUrl,
+  formSubmissionsUrl,
+} from "~/components/voice_forms/buttons";
 
 const VoiceFormHome = () => {
   const [status, setStatus] = useState("");
@@ -147,7 +152,7 @@ const VoiceForms = ({
               <CardHeader
                 title={form?.name}
                 action={form?.languages.map((lang: LanguageCode) => (
-                  <Chip sx={{ mr: 2 }} size="small" label={lang} />
+                  <Chip key={lang} sx={{ mr: 2 }} size="small" label={lang} />
                 ))}
               />
 
@@ -161,6 +166,7 @@ const VoiceForms = ({
                     WebkitLineClamp: "2",
                     WebkitBoxOrient: "vertical",
                   }}
+                  component={"div"}
                 >
                   <ViewI18nMessage
                     message={form?.description}
@@ -171,16 +177,13 @@ const VoiceForms = ({
               </CardContent>
             </CardActionArea>
             <CardActions>
-              <Button size="small" href={`/dashboard/forms/${form?.id}/edit`}>
+              <Button size="small" href={formEditUrl(form)}>
                 Edit
               </Button>
-              <Button
-                size="small"
-                href={`/dashboard/forms/${form?.id}?tab=submissions`}
-              >
+              <Button size="small" href={formSubmissionsUrl(form)}>
                 Submissions
               </Button>
-              <Button size="small" href={`/vf/${form?.id}`} target="_blank">
+              <Button size="small" href={formPreviewUrl(form)} target="_blank">
                 Preview
               </Button>
             </CardActions>

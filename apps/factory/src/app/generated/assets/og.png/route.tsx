@@ -1,4 +1,4 @@
-import { ImageResponse } from "next/server";
+import { ImageResponse } from "next/og";
 import { env } from "~/env.mjs";
 import { getLogoImage } from "~/utils/log";
 

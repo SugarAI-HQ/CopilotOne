@@ -42,15 +42,10 @@ const LanguagesSelector: React.FC<LanguagesSelectorProps> = ({
 
   return (
     <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
-      {selectedLanguages?.map((langCode) => (
-        <Chip
-          key={langCode}
-          label={allLanguages[langCode]}
-          onDelete={() => handleRemoveLanguage(langCode)}
-          color="primary"
-          style={{ margin: "4px" }}
-        />
-      ))}
+      <SelectedLanguages
+        selectedLanguages={selectedLanguages}
+        onDelete={handleRemoveLanguage}
+      ></SelectedLanguages>
       <Autocomplete
         value={inputValue}
         clearOnBlur={true}
@@ -78,3 +73,25 @@ const LanguagesSelector: React.FC<LanguagesSelectorProps> = ({
 };
 
 export default LanguagesSelector;
+
+export const SelectedLanguages = ({
+  selectedLanguages,
+  onDelete,
+}: {
+  selectedLanguages: LanguageCode[];
+  onDelete?: (langCode: LanguageCode) => void;
+}) => {
+  return (
+    <>
+      {selectedLanguages?.map((langCode) => (
+        <Chip
+          key={langCode}
+          label={allLanguages[langCode]}
+          onDelete={onDelete ? (event) => onDelete(langCode) : undefined}
+          color="primary"
+          style={{ margin: "4px" }}
+        />
+      ))}
+    </>
+  );
+};

@@ -1,5 +1,6 @@
 import { z, ZodType } from "zod";
 import {
+  formMessages,
   formMessageType,
   i18nMessageSchema,
   languageCode,
@@ -57,7 +58,7 @@ export const updateFormInput = createFormInput.extend({
   languages: z.array(z.string()),
   startButtonText: i18nMessageWithRules.passthrough(),
 
-  messages: z.record(formMessageType, i18nMessageWithRules),
+  messages: formMessages,
   // formConfig: z.object({}).passthrough(),
 });
 

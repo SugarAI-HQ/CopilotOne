@@ -122,7 +122,7 @@ export const formRouter = createTRPCRouter({
           submit:
             input.messages.submit ??
             geti18nMessage("submit", defaultFormTranslations),
-        },
+        } as InputJsonValueType,
       };
 
       try {
