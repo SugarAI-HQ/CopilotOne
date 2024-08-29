@@ -23,39 +23,39 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItemButton>
     </Link>
-    <Link href="/dashboard/copilots">
+    {/* <Link href="/dashboard/copilots">
       <ListItemButton>
         <ListItemIcon>
           <PrecisionManufacturingIcon />
         </ListItemIcon>
         <ListItemText primary="Copilots" />
       </ListItemButton>
-    </Link>
+    </Link> */}
     <Link href="/dashboard/forms">
       <ListItemButton>
         <ListItemIcon>
           <VoiceChatIcon />
         </ListItemIcon>
-        <ListItemText primary="Forms" />
+        <ListItemText primary="Voice Forms" />
       </ListItemButton>
     </Link>
-    <Link href="/dashboard/prompts">
+    {/* <Link href="/dashboard/prompts">
       <ListItemButton>
         <ListItemIcon>
           <DocumentScanner />
         </ListItemIcon>
         <ListItemText primary="Packages" />
       </ListItemButton>
-    </Link>
+    </Link> */}
 
-    <Link href="/settings/api-keys">
+    {/* <Link href="/settings/api-keys">
       <ListItemButton>
         <ListItemIcon>
           <LockOutlinedIcon />
         </ListItemIcon>
         <ListItemText primary="API Keys" />
       </ListItemButton>
-    </Link>
+    </Link> */}
     {/* <Link href="/dashboard/dataset">
       <ListItemButton >
         <ListItemIcon>
@@ -86,13 +86,13 @@ export const secondaryListItems = (
       Components
     </ListSubheader> */}
 
-    <Link href="/marketplace/packages" target="blank">
+    {/* <Link href="/marketplace/packages" target="blank">
       <ListItemButton>
         <ListItemIcon>
           <LocalGroceryStoreIcon />
         </ListItemIcon>
         <ListItemText primary="Sugar Hub" />
       </ListItemButton>
-    </Link>
+    </Link> */}
   </React.Fragment>
 );

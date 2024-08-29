@@ -15,7 +15,7 @@ const Hero = () => {
         <title>Sugarcane AI</title>
         <meta
           name="description"
-          content="Supercharge your cross LLM App development by decoupling your prompts from the Application Layer"
+          content="Engage Users, Capture Voice Data & Analyse to qualify"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -26,12 +26,32 @@ const Hero = () => {
           </h1> */}
           <Image src={getLogoImage()} width={600} height={600} alt="Logo" />
           <h2 className="mb-5 p-3 text-center text-2xl font-bold text-white">
-            Supercharge your Web/Mobile Apps with Siri-like Siri Native AI
-            Assistants
+            Capture Multilingual Voice Data & Analyse to Qualify Users
           </h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
+              href={sessionData ? "/dashboard/forms" : "/api/auth/signin"}
+            >
+              <h3 className="text-2xl font-bold">Create Voice Forms →</h3>
+              <div className="text-lg">
+                Create and manage voice forms to collect user data.
+              </div>
+            </Link>
+
+            {/* <Link
+              className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
+              href="https://youtu.be/t2e0CThWZUE"
+              target="_blank"
+            >
+              <h3 className="text-2xl font-bold">Copilot Demo →</h3>
+              <div className="text-lg">
+                Learn what kind of Experiences you can build.
+              </div>
+            </Link> */}
+
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               href={sessionData ? "/dashboard/copilots" : "/api/auth/signin"}
             >
@@ -50,7 +70,7 @@ const Hero = () => {
               <div className="text-lg">
                 Learn what kind of Experiences you can build.
               </div>
-            </Link>
+            </Link> */}
 
             {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
@@ -69,7 +89,7 @@ const Hero = () => {
               <h3 className="text-2xl font-bold">View Demo →</h3>
             </Link> */}
 
-            <Link
+            {/* <Link
               href={sessionData ? "/dashboard/prompts" : "/api/auth/signin"}
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
             >
@@ -87,28 +107,21 @@ const Hero = () => {
               <div className="text-lg">
                 Discover and Integrate Prompt Packages built by the community.
               </div>
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://sugarcaneai.dev/docs"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Documentation →</h3>
-              {/* <div className="text-lg">
-                 Learn more about Sugarcane AI, architecture, problem it solves,
-                 and how to deploy it.
-               </div> */}
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               className="flex max-w-xs flex-col gap-4 rounded-md bg-white/10 p-4 text-white hover:bg-white/20"
               href="https://github.com/sugarcane-ai/sugarcane-ai"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Contribute →</h3>
-              {/* <div className="text-lg">
-                 Checkout the code and make your first contribution.
-               </div> */}
-            </Link>
+            </Link> */}
           </div>
 
           <div className="m-2 flex flex-col items-center gap-2">
@@ -124,7 +137,7 @@ function AuthShowcase() {
   const { data: sessionData } = useSession();
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4">
+    <div className="mt-4 flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.username}</span>}
       </p>

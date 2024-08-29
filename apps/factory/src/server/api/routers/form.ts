@@ -64,8 +64,11 @@ export const formRouter = createTRPCRouter({
       const userId = ctx.jwt?.id as string;
 
       const formDefaults = {
-        description: getEmptyMessage("description"),
-        startButtonText: getEmptyMessage("Start"),
+        description: geti18nMessage("description", defaultFormTranslations),
+        startButtonText: geti18nMessage(
+          "startButtonText",
+          defaultFormTranslations,
+        ),
 
         messages: {
           welcome: geti18nMessage("welcome", defaultFormTranslations),

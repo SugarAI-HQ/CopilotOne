@@ -220,6 +220,32 @@ export const questionAnswer = z
 export type QuestionAnswer = z.infer<typeof questionAnswer>;
 
 export const defaultFormTranslations = {
+  description: {
+    en: "Please fill out this form.",
+    "pt-BR": "Por favor, preencha este formulário.",
+    hi: "कृपया इस फॉर्म को भरें।",
+    "bn-IN": "এই ফর্মটি পূরণ করুন।",
+    "te-IN": "దయచేసి ఈ ఫారాన్ని పూరించండి.",
+    "mr-IN": "कृपया हा फॉर्म भरा.",
+    "ta-IN": "தயவுசெய்து இந்த படிவத்தை நிரப்பவும்.",
+    es: "Por favor complete este formulario.",
+    fr: "Veuillez remplir ce formulaire.",
+    de: "Bitte füllen Sie dieses Formular aus.",
+    zh: "请填写此表格。",
+  },
+  startButtonText: {
+    en: "Start",
+    "pt-BR": "Começar",
+    hi: "प्रारंभ करें",
+    "bn-IN": "শুরু করুন",
+    "te-IN": "ప్రారంభించు",
+    "mr-IN": "प्रारंभ करा",
+    "ta-IN": "தொடங்கு",
+    es: "Comenzar",
+    fr: "Commencer",
+    de: "Start",
+    zh: "开始",
+  },
   welcome: {
     en: "Welcome",
     "pt-BR": "Bem-vindo",

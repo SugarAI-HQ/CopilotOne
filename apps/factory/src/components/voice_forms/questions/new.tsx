@@ -13,6 +13,7 @@ import {
   Stack,
   IconButton,
   TextField,
+  Grid,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
@@ -58,10 +59,10 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
       question_text: initQuestion?.question_text || { lang: { en: "" } },
       // @ts-ignore
       question_params: initQuestion?.question_params || { options: [] },
-      // @ts-ignore
-      qualification_type: initQuestion?.qualification?.type || "ai",
-      // @ts-ignore
-      qualification_criteria: initQuestion?.qualification?.criteria || "",
+      qualification: {
+        type: initQuestion?.qualification?.type || "ai",
+        criteria: initQuestion?.qualification?.criteria || "",
+      },
       // @ts-ignore
       validation: initQuestion?.validation || {
         max_length: 120,
@@ -117,12 +118,9 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
   };
 
   const onSubmitForm = async (data: any) => {
+    debugger;
     const q: Question = {
       ...data,
-      qualification: {
-        type: data?.qualification_type,
-        criteria: data?.qualification_criteria,
-      },
       id: initQuestion?.id || "",
     };
     await onSubmit(q);
@@ -169,7 +167,6 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
               )}
             />
           </FormControl>
-
           <CreateI18nMessage
             fieldKey="question_text"
             fieldName="Question Text"
@@ -177,7 +174,6 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
             allowedLanguages={voiceForm?.languages}
             onSave={handleSaveMessage}
           />
-
           {isChoiceQuestion && (
             <Box>
               <h3 className="mb-2 font-semibold">Options</h3>
@@ -209,40 +205,44 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
             </Box>
           )}
 
-          <FormControl fullWidth>
-            <InputLabel>Qualification Type</InputLabel>
-            <Controller
-              name="qualification.type"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  label="Evaluation"
-                  fullWidth
-                  error={!!errors.qualification?.type}
-                >
-                  <MenuItem value="none">None</MenuItem>
-                  <MenuItem value="ai">AI</MenuItem>
-                  <MenuItem value="manual">Manual</MenuItem>
-                </Select>
-              )}
-            />
-          </FormControl>
-
-          <Controller
-            name="qualification.criteria"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                label="Qualification Criteria"
-                fullWidth
-                error={!!errors.qualification?.criteria}
-                helperText={errors.qualification?.criteria?.message || ""}
+          <Grid container spacing={2}>
+            <Grid item xs={3}>
+              <FormControl fullWidth>
+                <InputLabel>Qualification Type</InputLabel>
+                <Controller
+                  name="qualification.type"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label="Qualification Type"
+                      fullWidth
+                      error={!!errors.qualification?.type}
+                    >
+                      <MenuItem value="none">None</MenuItem>
+                      <MenuItem value="ai">AI</MenuItem>
+                      <MenuItem value="manual">Manual</MenuItem>
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={9}>
+              <Controller
+                name="qualification.criteria"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Qualification Criteria"
+                    fullWidth
+                    error={!!errors.qualification?.criteria}
+                    helperText={errors.qualification?.criteria?.message || ""}
+                  />
+                )}
               />
-            )}
-          />
-
+            </Grid>
+          </Grid>
           <FormControl fullWidth>
             <InputLabel></InputLabel>
             <Controller
@@ -260,7 +260,6 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
               )}
             />
           </FormControl>
-
           <DialogActions>
             <Button disabled={isLoading} onClick={onClose} color="secondary">
               Cancel

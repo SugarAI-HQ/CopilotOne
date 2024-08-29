@@ -9,13 +9,13 @@ import {
 import { TextField, Box, Typography, IconButton } from "@mui/material";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
-import { Delete } from "@mui/icons-material";
 import classNames from "classnames";
 
 interface CreateI18nMessageProps {
   fieldKey: string;
   fieldName: string;
   initialMessage: i18nMessage;
+  defaults?: i18nMessage;
   allowedLanguages: LanguageCode[];
   onSave: (key: string, message: i18nMessage) => void;
   minLength?: number;
@@ -26,6 +26,7 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
   fieldKey,
   fieldName,
   initialMessage,
+  defaults,
   allowedLanguages,
   onSave,
   minLength = 1,
@@ -74,14 +75,16 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
       }
     });
 
-    // Add new languages only if they are not already present
+    // Add new languages with defaults if they are not already present
     existingLanguages.forEach((lang) => {
       if (
         !updateLanguagesSet.current.has(lang) &&
         !fields.some((field) => Object.keys(field)[0] === lang)
       ) {
         updateLanguagesSet.current.add(lang);
-        append({ [lang]: initialMessage.lang[lang] || "" });
+        append({
+          [lang]: initialMessage.lang[lang] || defaults?.lang[lang] || "",
+        });
       }
     });
   }, [allowedLanguages, initialMessage, append, remove]);

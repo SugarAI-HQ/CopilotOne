@@ -14,7 +14,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createFormInput, Form, I18nMessageWithRules } from "~/validators/form";
 import { api } from "~/utils/api";
 import CreateI18nMessage from "../create_i18n_message";
-import { LanguageCode } from "@sugar-ai/core";
+import {
+  defaultFormTranslations,
+  geti18nMessage,
+  LanguageCode,
+} from "@sugar-ai/core";
 import LanguagesSelector from "../langauges_selector";
 import { FormErrors } from "./errors";
 import Loading from "~/components/Layouts/loading";
@@ -165,6 +169,7 @@ export const FormDetails = ({
           <CreateI18nMessage
             fieldKey="description"
             fieldName="Description"
+            defaults={geti18nMessage("description", defaultFormTranslations)}
             initialMessage={voiceForm?.description}
             allowedLanguages={voiceForm?.languages}
             onSave={handleSaveMessage}
@@ -173,6 +178,10 @@ export const FormDetails = ({
             fieldKey="startButtonText"
             fieldName="Start Button Text"
             initialMessage={voiceForm?.startButtonText}
+            defaults={geti18nMessage(
+              "startButtonText",
+              defaultFormTranslations,
+            )}
             allowedLanguages={voiceForm?.languages}
             onSave={handleSaveMessage}
           />
@@ -181,6 +190,7 @@ export const FormDetails = ({
             fieldKey="messages.welcome"
             fieldName="Welcome Message"
             initialMessage={voiceForm?.messages?.welcome}
+            defaults={geti18nMessage("welcome", defaultFormTranslations)}
             allowedLanguages={voiceForm?.languages}
             onSave={handleSaveMessage}
           />
@@ -189,6 +199,7 @@ export const FormDetails = ({
             fieldKey="messages.submit"
             fieldName="On Submit Message"
             initialMessage={voiceForm?.messages?.submit}
+            defaults={geti18nMessage("submit", defaultFormTranslations)}
             allowedLanguages={voiceForm?.languages}
             onSave={handleSaveMessage}
           />
