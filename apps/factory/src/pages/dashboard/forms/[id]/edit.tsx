@@ -5,6 +5,7 @@ import { VoiceEditTabs } from "~/components/voice_forms/create/tabs";
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import { Form } from "~/validators/form";
+import Head from "next/head";
 
 const FormEdit: NextPageWithLayout = () => {
   const router = useRouter();
@@ -30,6 +31,9 @@ const FormEdit: NextPageWithLayout = () => {
 
   return (
     <div className="w-full p-4">
+      <Head>
+        <title>Edit {voiceForm?.name} - Voice Form</title>
+      </Head>
       <VoiceEditTabs
         voiceForm={voiceForm}
         // questions={voiceForm?.questions}

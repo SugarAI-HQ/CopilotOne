@@ -45,7 +45,7 @@ export const FormConfigDefaults: FormConfig = {
   listen: ListenConfigDefaults,
 };
 
-export const formFieldValidator = z.enum(["mobile", "email"]);
+export const formFieldValidator = z.enum(["mobile"]);
 export type FormFieldValidator = z.infer<typeof formFieldValidator>;
 
 export const questionType = z.enum([

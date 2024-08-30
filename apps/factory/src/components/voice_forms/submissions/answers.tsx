@@ -1,23 +1,49 @@
 import {
   Avatar,
+  Box,
   IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Paper,
+  Typography,
+  Card,
+  CardContent,
+  Grid,
 } from "@mui/material";
 
-import { allLanguages, LanguageCode, QuestionAnswer } from "@sugar-ai/core";
+import {
+  allLanguages,
+  LanguageCode,
+  Question,
+  QuestionAnswer,
+  VoiceForm,
+} from "@sugar-ai/core";
 
 import { SubmittedAnswer } from "~/validators/form";
 import React from "react";
-import CheckIcon from "@mui/icons-material/Check";
-import LabelIcon from "@mui/icons-material/Label";
 import RecordVoiceOverSharpIcon from "@mui/icons-material/RecordVoiceOverSharp";
 import KeyboardAltSharpIcon from "@mui/icons-material/KeyboardAltSharp";
 
-const SubmissionAnswers = ({ submission }: any) => {
+const SubmissionAnswers = ({
+  voiceForm,
+  submission,
+}: {
+  voiceForm: VoiceForm;
+  submission: any;
+}) => {
+  const questions = voiceForm?.questions;
+  const languages = voiceForm?.languages;
+
+  // Create a Map for quick lookup by id
+  const questionMap = new Map(questions.map((q) => [q.id, q]));
+
+  // Function to get a question by id
+  const getQuestionById = (id: string): Question | undefined =>
+    questionMap.get(id);
+
+  questions;
   return (
     <div className="p-6">
       <h1 className="mb-4 text-xl font-semibold">Submission {submission.id}</h1>
@@ -53,30 +79,12 @@ const SubmissionAnswers = ({ submission }: any) => {
 
         <List>
           {submission?.answers.map((sa: SubmittedAnswer) => (
-            <ListItem
-              key={sa?.questionId}
-              className="border-b"
-              secondaryAction={
-                <IconButton aria-label="comment">
-                  {sa.answer.qualificationScore || "-"}
-                </IconButton>
-              }
-            >
-              <ListItemAvatar>
-                {(sa.answer as QuestionAnswer).by == "voice" ? (
-                  <RecordVoiceOverSharpIcon />
-                ) : (
-                  <KeyboardAltSharpIcon />
-                )}
-              </ListItemAvatar>
-
-              <ListItemText
-                // secondary={`${sa?.questionId}: ${
-                //   sa.answer.qualificationScore || ""
-                // }`}
-                primary={`${(sa.answer as QuestionAnswer).evaluatedAnswer}`}
-              />
-            </ListItem>
+            <SubmittedAnswerComponent
+              key={sa.questionId}
+              sa={sa}
+              question={getQuestionById(sa?.questionId) as Question}
+              languages={languages}
+            />
           ))}
         </List>
       </Paper>
@@ -85,3 +93,103 @@ const SubmissionAnswers = ({ submission }: any) => {
 };
 
 export default SubmissionAnswers;
+
+export const SubmittedAnswerComponentx = ({
+  sa,
+  question,
+  languages,
+}: {
+  sa: SubmittedAnswer;
+  question: Question;
+  languages: LanguageCode[];
+}) => {
+  const qa = sa.answer as QuestionAnswer;
+
+  return (
+    <Box>
+      <ListItem key={sa?.questionId} className="w-full border-b">
+        <ListItemAvatar>
+          {qa.by === "voice" ? (
+            <RecordVoiceOverSharpIcon />
+          ) : (
+            <KeyboardAltSharpIcon />
+          )}
+        </ListItemAvatar>
+
+        <ListItemText
+          primary={question.question_text.lang[languages[0] as LanguageCode]}
+          secondary={
+            <Typography component="span" variant="body2" color="text.primary">
+              {qa.evaluatedAnswer}
+            </Typography>
+          }
+        />
+        <IconButton aria-label="comment">
+          {sa.answer.qualificationScore || "-"}
+        </IconButton>
+      </ListItem>
+
+      {qa.rawAnswer == qa.evaluatedAnswer && (
+        <ListItem key={`${sa?.questionId}-raw`} className="w-full border-b">
+          <ListItemText
+            secondary={
+              <Typography
+                component="span"
+                variant="body2"
+                color="text.secondary"
+              >
+                Raw: {qa.rawAnswer}
+              </Typography>
+            }
+          />
+        </ListItem>
+      )}
+    </Box>
+  );
+};
+
+export const SubmittedAnswerComponent = ({
+  sa,
+  question,
+  languages,
+}: {
+  sa: SubmittedAnswer;
+  question: Question;
+  languages: LanguageCode[];
+}) => {
+  const qa = sa.answer as QuestionAnswer;
+
+  return (
+    <Card variant="outlined" sx={{ mb: 2 }}>
+      <CardContent>
+        <Grid container alignItems="center" spacing={2}>
+          <Grid item>
+            {qa.by === "voice" ? (
+              <RecordVoiceOverSharpIcon />
+            ) : (
+              <KeyboardAltSharpIcon />
+            )}
+          </Grid>
+          <Grid item xs>
+            <Typography variant="h6">
+              {question.question_text.lang[languages[0] as LanguageCode]}
+            </Typography>
+            <Typography variant="body1" color="text.primary">
+              {qa.evaluatedAnswer}
+            </Typography>
+            {qa.rawAnswer !== qa.evaluatedAnswer && (
+              <Typography variant="body2" color="text.secondary">
+                Raw: {qa.rawAnswer}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item>
+            <IconButton aria-label="qualification-score">
+              {sa.answer.qualificationScore || "-"}
+            </IconButton>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+};

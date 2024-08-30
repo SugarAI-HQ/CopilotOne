@@ -216,7 +216,7 @@ export const VoiceQuestion: React.FC<{
       evaluatedAnswer: questionEvaluation.aiResponse.answer,
       qualificationScore: questionEvaluation.aiResponse.qualificationScore,
       qualificationSummary: questionEvaluation.aiResponse.qualificationSummary,
-      by: "voice",
+      by: answeredBy.Enum.voice,
     };
 
     setVoiceAnswer(finalAnswer);

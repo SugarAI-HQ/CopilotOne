@@ -15,11 +15,24 @@ const ShowSubmission = () => {
     { enabled: !!formId },
   );
 
-  if (isLoading) return <Loading />;
+  const { data: form, isLoading: isFormLoading } = api.form.getForm.useQuery(
+    { formId: formId },
+    {
+      enabled: !!formId,
+      onSuccess(updatedForm: any) {},
+    },
+  );
+  if (isLoading) return;
 
   return (
     <div className="w-full pt-3">
-      <SubmissionAnswers submission={submission}></SubmissionAnswers>
+      {(isLoading || isFormLoading) && <Loading />}
+      {!(isLoading || isFormLoading) && (
+        <SubmissionAnswers
+          voiceForm={form}
+          submission={submission}
+        ></SubmissionAnswers>
+      )}
     </div>
   );
 };

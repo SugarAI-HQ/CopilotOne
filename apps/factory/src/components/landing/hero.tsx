@@ -12,7 +12,7 @@ const Hero = () => {
   return (
     <div className="w-full">
       <Head>
-        <title>Sugarcane AI</title>
+        <title>Welcome to Sugar AI</title>
         <meta
           name="description"
           content="Engage Users, Capture Voice Data & Analyse to qualify"

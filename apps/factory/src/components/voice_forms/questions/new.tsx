@@ -11,9 +11,11 @@ import {
   FormControl,
   InputLabel,
   Stack,
+  Typography,
   IconButton,
   TextField,
   Grid,
+  Chip,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
@@ -23,6 +25,7 @@ import {
   i18nMessage,
   questionType,
   VoiceForm,
+  formFieldValidator,
 } from "@sugar-ai/core";
 import CreateI18nMessage from "../create_i18n_message";
 import AddIcon from "@mui/icons-material/Add";
@@ -32,8 +35,8 @@ interface QuestionNewProps {
   voiceForm: VoiceForm;
   initQuestion: Question | null;
   onSubmit: (data: Question) => Promise<void>;
-  isLoading: boolean;
   open: boolean;
+  isLoading: boolean;
   onClose: () => void;
 }
 
@@ -63,11 +66,13 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
         type: initQuestion?.qualification?.type || "ai",
         criteria: initQuestion?.qualification?.criteria || "",
       },
+
       // @ts-ignore
       validation: initQuestion?.validation || {
         max_length: 120,
         validators: [],
       },
+      order: initQuestion?.order,
     },
   });
 
@@ -129,6 +134,12 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
+        <Chip
+          sx={{ mr: 2 }}
+          label={initQuestion?.order}
+          color="primary"
+          variant="outlined"
+        />
         {initQuestion?.id ? "Edit Question" : "Add New Question"}
       </DialogTitle>
       <DialogContent className="pt-5">
@@ -242,23 +253,65 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
               />
             </Grid>
           </Grid>
-          <FormControl fullWidth>
-            <InputLabel></InputLabel>
-            <Controller
-              name="validation.max_length"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Max Length"
-                  type="number"
-                  fullWidth
-                  error={!!errors.validation?.max_length}
-                  helperText={errors.validation?.max_length?.message || ""}
+          <Box sx={{ mb: 4 }}>
+            <Typography component="h2" className="text-3xl font-bold">
+              Speech Settings
+            </Typography>
+          </Box>
+
+          <Grid container spacing={2}>
+            <Grid item xs={6} sx={{ mb: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel></InputLabel>
+                <Controller
+                  name="validation.max_length"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Max Length"
+                      type="number"
+                      fullWidth
+                      error={!!errors.validation?.max_length}
+                      helperText={errors.validation?.max_length?.message || ""}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
+                  )}
                 />
-              )}
-            />
-          </FormControl>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6} sx={{ mb: 2 }}>
+              <FormControl fullWidth>
+                <InputLabel>Validate For</InputLabel>
+                <Controller
+                  name="validation.validators"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label="Validate For"
+                      fullWidth
+                      error={!!errors.validation?.validators}
+                      multiple
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(value.length === 0 ? [] : value);
+                        // handleQuestionTypeChange(value);
+                      }}
+                      renderValue={(selected) => selected.join(", ")} // This is optional, for better UI
+                    >
+                      {formFieldValidator._def.values.map((validator) => (
+                        <MenuItem key={validator} value={validator}>
+                          {validator}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            </Grid>
+          </Grid>
+
           <DialogActions>
             <Button disabled={isLoading} onClick={onClose} color="secondary">
               Cancel

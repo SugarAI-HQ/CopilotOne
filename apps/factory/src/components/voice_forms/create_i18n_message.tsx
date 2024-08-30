@@ -59,8 +59,6 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
       return;
     }
 
-    console.log(`field ${fieldName}: ${JSON.stringify(initialMessage)}`);
-
     const existingLanguages = allowedLanguages || [];
 
     // Set of existing language codes for quick lookup
@@ -129,7 +127,9 @@ const CreateI18nMessage: React.FC<CreateI18nMessageProps> = ({
 
   return (
     <Box className="rounded-lg border-2 border-gray-700 p-4 shadow-md dark:border-gray-600">
-      <Typography className="mb-4 text-3xl font-bold">{fieldName}</Typography>
+      <Typography component="span" className="mb-4 text-3xl font-bold">
+        {fieldName}
+      </Typography>
       <Box className="space-y-4">
         {fields.map((field, index) => {
           const langCode = Object.keys(field)[0] as LanguageCode;

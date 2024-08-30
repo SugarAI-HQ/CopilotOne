@@ -20,6 +20,14 @@ import {
   formSubmissionsUrl,
 } from "~/components/voice_forms/buttons";
 
+import { Metadata } from "next";
+import Head from "next/head";
+
+export const metadata: Metadata = {
+  title: "Voice Forms List",
+  description: "Manage Voice Forms",
+};
+
 const VoiceFormHome = () => {
   const [status, setStatus] = useState("");
   const [customError, setCustomError] = useState({});
@@ -91,6 +99,9 @@ const VoiceFormHome = () => {
 
   return (
     <>
+      <Head>
+        <title>Voice Forms List</title>
+      </Head>
       {voiceForms && voiceForms.length > 0 ? (
         <>
           <CreateVoiceForm

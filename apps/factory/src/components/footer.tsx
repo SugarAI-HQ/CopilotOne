@@ -32,7 +32,7 @@ const Footer = () => {
               style={{ borderRadius: "50%" }}
             />
           </IconButton>
-          Powered by Sugarcane AI
+          Powered by Sugar AI
         </Link>
       </Typography>
     </Box>

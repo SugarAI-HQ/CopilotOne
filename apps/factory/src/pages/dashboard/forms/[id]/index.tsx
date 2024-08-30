@@ -14,6 +14,7 @@ import {
   FormPreviewButton,
   FormEditButton,
 } from "~/components/voice_forms/buttons";
+import Head from "next/head";
 
 const FormShow: NextPageWithLayout = () => {
   const router = useRouter();
@@ -23,6 +24,9 @@ const FormShow: NextPageWithLayout = () => {
 
   return (
     <>
+      <Head>
+        <title>{form?.name} - Voice Form</title>
+      </Head>
       <Box
         sx={{
           display: "flex",

@@ -37,6 +37,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
   const [questions, setQuestions] = useState<Question[]>(initQuestions);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeLang, setActiveLang] = useState(languages[0] || "en");
 
   useEffect(() => {
     console.log("voiceForm", voiceForm);
@@ -87,7 +88,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
     )[0] as Question;
 
     filteredQuestion.id = "";
-    setEditingQuestion(filteredQuestion);
+    setEditingQuestion({ ...filteredQuestion, order: questions.length + 1 });
   };
 
   const handleAdd = () => {
@@ -100,7 +101,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
       validation: { max_length: 120, validators: [] },
       active: true,
       qualification: { type: "ai", criteria: "" },
-      order: 0,
+      order: questions.length + 1,
     };
     setEditingQuestion(newQuestion);
   };
@@ -180,6 +181,10 @@ const QuestionList: React.FC<QuestionListProps> = ({
     });
   };
 
+  const handleSectedLanguage = (language: LanguageCode) => {
+    setActiveLang(language);
+  };
+
   const debouncedUpdateQuestionOrder = debounce(updateQuestionOrder, 2000);
 
   return (
@@ -195,7 +200,10 @@ const QuestionList: React.FC<QuestionListProps> = ({
 
       {questions && (
         <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">
-          <SelectedLanguages selectedLanguages={voiceForm?.languages || []} />
+          <SelectedLanguages
+            selectedLanguages={voiceForm?.languages || []}
+            onClick={handleSectedLanguage}
+          />
           <h2 className="mb-4 mt-4 text-lg font-bold">
             Questions{" "}
             <Button variant="outlined" onClick={handleAdd}>
@@ -233,12 +241,12 @@ const QuestionList: React.FC<QuestionListProps> = ({
                           <QuestionView
                             question={question}
                             languages={languages}
+                            activeLang={activeLang}
                             onEdit={handleEdit}
                             onClone={handleClone}
                             onDelete={handleDelete}
                             onActive={handleActive}
                             dragHandleProps={provided.dragHandleProps} // Pass dragHandleProps here
-                            isLoading={formQuestionsMutation.isLoading}
                           />
                         </li>
                       )}
@@ -258,9 +266,9 @@ const QuestionList: React.FC<QuestionListProps> = ({
               // Handle question submission
               return await onQuestions(voiceForm.id, [question]);
             }}
-            isLoading={formQuestionsMutation.isLoading}
             open={!!editingQuestion}
             onClose={() => setEditingQuestion(null)}
+            isLoading={formQuestionsMutation.isLoading}
           />
         </div>
       )}

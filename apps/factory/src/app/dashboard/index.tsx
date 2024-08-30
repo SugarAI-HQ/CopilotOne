@@ -129,7 +129,7 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Sugarcane AI
+              Sugar AI
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -147,7 +147,7 @@ export default function Dashboard() {
               px: [1],
             }}
           >
-            Sugarcane AI
+            Sugar AI
             <IconButton onClick={toggleDrawer}>
               <ChevronLeftIcon />
             </IconButton>

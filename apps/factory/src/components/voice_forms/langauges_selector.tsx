@@ -76,9 +76,11 @@ export default LanguagesSelector;
 
 export const SelectedLanguages = ({
   selectedLanguages,
+  onClick,
   onDelete,
 }: {
   selectedLanguages: LanguageCode[];
+  onClick?: (langCode: LanguageCode) => void;
   onDelete?: (langCode: LanguageCode) => void;
 }) => {
   return (
@@ -87,6 +89,7 @@ export const SelectedLanguages = ({
         <Chip
           key={langCode}
           label={allLanguages[langCode]}
+          onClick={onClick ? (event) => onClick(langCode) : undefined}
           onDelete={onDelete ? (event) => onDelete(langCode) : undefined}
           color="primary"
           style={{ margin: "4px" }}
