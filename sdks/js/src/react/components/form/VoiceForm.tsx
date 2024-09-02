@@ -14,6 +14,7 @@ import {
   FormMessages,
   defaultFormTranslations,
   i18nMessage,
+  LanguageProvider,
 } from "@sugar-ai/core";
 import "~/react/styles/form.css";
 import Streamingi18nText from "../streaming/Streamingi18nText";

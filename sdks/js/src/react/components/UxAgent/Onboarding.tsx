@@ -64,7 +64,6 @@ export const Onboarding: React.FC<{
       {showStart ? (
         <div className="h-dvh flex flex-col items-center justify-center ">
           <LanguageSelector
-            themeColor={themeColor}
             languagesEnabled={voiceForm?.languages}
             // xklass="fixed bottom-0 left-0 right-0"
           />

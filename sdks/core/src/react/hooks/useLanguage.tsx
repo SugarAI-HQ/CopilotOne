@@ -35,12 +35,14 @@ interface LanguageProviderProps {
   defaultLang: LanguageCode;
   defaultVoiceLang?: LanguageCode;
   defaultTranslations?: Translations;
+  languagesEnabled?: LanguageCode[];
   children: ReactNode;
 }
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   defaultLang = "auto",
   defaultVoiceLang = "auto",
+  languagesEnabled = [],
   defaultTranslations = {},
   children,
 }) => {
@@ -54,11 +56,20 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   useEffect(() => {
     if (!language || language == "auto") {
       console.log(`Lang: ${language}, default: ${defaultLang}`);
-      setLanguage(
+      const selectLang =
         defaultLang == "auto"
           ? (root.navigator.language as LanguageCode)
-          : defaultLang,
-      );
+          : defaultLang;
+      if (
+        languagesEnabled.length > 0 &&
+        languagesEnabled.includes(selectLang)
+      ) {
+        setLanguage(selectLang);
+      } else if (languagesEnabled.length > 0) {
+        setLanguage(languagesEnabled[0]);
+      } else {
+        setLanguage(selectLang);
+      }
     }
 
     const synth = root.speechSynthesis;

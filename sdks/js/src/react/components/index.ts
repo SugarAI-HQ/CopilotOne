@@ -13,3 +13,6 @@ export * from "./streaming/Streamingi18nText";
 export * from "./prompt_ide/VoiceToJson";
 
 export * from "./common/ErrorBoundary";
+
+export * from "./UxAgent/Pages";
+export * from "./UxAgent/Page";

@@ -15,7 +15,7 @@ import {
 import { useCopilot } from "./useCopilot";
 import { SugarAiApi } from "~/api-client";
 import { getBrowserAndOSDetails } from "~/helpers";
-import { useLanguage } from "./useLanguage";
+import { LanguageProvider, useLanguage } from "./useLanguage";
 
 export interface VoiceFormContextType {
   formId: string;
@@ -35,15 +35,28 @@ export interface VoiceFormContextType {
 // Create the context
 const VoiceFormContext = createContext<VoiceFormContextType | null>(null);
 
+const LoadingDefault: React.FC = () => {
+  return (
+    <div className="flex justify-center items-center">
+      Loading ...
+      {/* <FaSpinner
+        className="animate-spin text-gray-800 dark:text-gray-200"
+        size={24}
+      /> */}
+    </div>
+  );
+};
+
 export const VoiceFormProvider: React.FC<{
   formId: string;
   formConfigOverride: FormConfig;
+  Loading?: ReactNode;
   children: ReactNode;
-}> = ({ formId, formConfigOverride, children }) => {
+}> = ({ formId, formConfigOverride, Loading, children }) => {
   const [submissionId, setSubmissionId] = useState<string | null>(null);
   const [voiceForm, setVoiceForm] = useState<VoiceForm | null>(null);
   const { apiClient, config } = useCopilot();
-  const { language, voice } = useLanguage();
+  // const { language, voice } = useLanguage();
 
   // const currentFormConfig = { ...FormConfigDefaults, ...voiceForm?.formConfig };
 
@@ -165,14 +178,14 @@ export const VoiceFormProvider: React.FC<{
     const uaData = getBrowserAndOSDetails();
     return {
       formConfig: voiceForm?.formConfig,
-      language: language,
-      voice: {
-        voiceURI: voice?.voiceURI,
-        name: voice?.name,
-        lang: voice?.lang,
-        localService: voice?.localService,
-        default: voice?.default,
-      },
+      // language: language,
+      // voice: {
+      //   voiceURI: voice?.voiceURI,
+      //   name: voice?.name,
+      //   lang: voice?.lang,
+      //   localService: voice?.localService,
+      //   default: voice?.default,
+      // },
       ...uaData,
     };
   };
@@ -190,7 +203,16 @@ export const VoiceFormProvider: React.FC<{
         completeSubmission,
       }}
     >
-      {children}
+      {!voiceForm && (Loading ? Loading : <LoadingDefault />)}
+      {voiceForm && (
+        <LanguageProvider
+          languagesEnabled={voiceForm?.languages || []}
+          defaultLang={"auto"}
+          defaultVoiceLang={"auto"}
+        >
+          {children}
+        </LanguageProvider>
+      )}
     </VoiceFormContext.Provider>
   );
 };

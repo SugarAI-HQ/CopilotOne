@@ -5,6 +5,7 @@ import {
   LanguageCode,
   formConfig,
   FormConfig,
+  voiceForm,
 } from "@sugar-ai/core";
 
 import {
@@ -17,7 +18,11 @@ import {
   VoiceFormProvider,
 } from "@sugar-ai/core";
 
-import { VoiceFormComponent, LanguageSelector } from "@sugar-ai/copilot-one-js";
+import {
+  VoiceFormComponent,
+  LanguageSelector,
+  Initializing,
+} from "@sugar-ai/copilot-one-js";
 
 import "@sugar-ai/copilot-one-js/style";
 import dynamic from "next/dynamic";
@@ -92,18 +97,17 @@ const App: NextPage = () => {
       <Header />
       <CopilotProvider config={copilotConfig}>
         <UnsupportedBrowser forceShow={showInUnSupportedBrowser}>
-          {/* <div>
-        <h1>Leadgen Form</h1>
-      </div> */}
-          <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
-            <WorkflowProvider>
-              <VoiceFormProvider formId={id} formConfigOverride={formConfig}>
-                <Suspense fallback={<p>Loading feed...</p>}>
-                  {<VoiceFormComponent showStartButton={true} />}
-                </Suspense>
-              </VoiceFormProvider>
-            </WorkflowProvider>
-          </LanguageProvider>
+          <WorkflowProvider>
+            <VoiceFormProvider
+              formId={id}
+              formConfigOverride={formConfig}
+              Loading={<Initializing />}
+            >
+              <Suspense fallback={<p>Loading feed...</p>}>
+                {<VoiceFormComponent showStartButton={true} />}
+              </Suspense>
+            </VoiceFormProvider>
+          </WorkflowProvider>
         </UnsupportedBrowser>
       </CopilotProvider>
     </>
