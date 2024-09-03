@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Chip,
   IconButton,
   List,
   ListItem,
@@ -25,6 +26,8 @@ import { SubmittedAnswer } from "~/validators/form";
 import React from "react";
 import RecordVoiceOverSharpIcon from "@mui/icons-material/RecordVoiceOverSharp";
 import KeyboardAltSharpIcon from "@mui/icons-material/KeyboardAltSharp";
+import ReactTimeAgo from "react-timeago";
+import { formatDistanceStrict } from "date-fns";
 
 const SubmissionAnswers = ({
   voiceForm,
@@ -46,17 +49,39 @@ const SubmissionAnswers = ({
   questions;
   return (
     <div className="p-6">
-      <h1 className="mb-4 text-xl font-semibold">Submission {submission.id}</h1>
+      <h1 className="mb-4 text-xl font-semibold">
+        Id: <span className="font-normal">{submission.id}</span>
+      </h1>
+
       <Paper className="border-2 p-4">
         <h3 className="text-md mb-2 font-medium">
-          Started At: {new Date(submission?.createdAt).toLocaleString()}
+          Started At: {new Date(submission?.createdAt).toLocaleString()} (
+          {<ReactTimeAgo date={submission?.createdAt} />})
         </h3>
         <h3 className="text-md mb-4 font-medium">
           Submitted At:{" "}
           {submission?.submittedAt
             ? new Date(submission?.submittedAt).toLocaleString()
             : "Not Submitted"}
+          {" ("}
+          {submission?.submittedAt ? (
+            <ReactTimeAgo date={submission?.submittedAt} />
+          ) : (
+            ""
+          )}
+          {")"}
         </h3>
+        <h3 className="text-md mb-4 font-medium">
+          Duration:{" "}
+          {submission?.submittedAt
+            ? formatDistanceStrict(
+                new Date(submission.submittedAt),
+                new Date(submission.createdAt),
+                { addSuffix: false },
+              )
+            : "-"}
+        </h3>
+
         <h3 className="text-md mb-4 font-medium">
           Device: {submission?.metadata?.device?.vendor}{" "}
           {submission?.metadata?.device?.model} /{" "}
@@ -67,12 +92,12 @@ const SubmissionAnswers = ({
           {"-"}
           {submission?.metadata?.browser?.version}
         </h3>
-        <h3 className="text-md mb-4 font-medium">
+        {/* <h3 className="text-md mb-4 font-medium">
           Language:{" "}
           {allLanguages[submission?.metadata?.language as LanguageCode]}
           {" / "}
           {submission?.metadata?.voice?.name}
-        </h3>
+        </h3> */}
         <h3 className="mb-2 text-lg font-medium">
           User ID: {submission?.clientUserId}
         </h3>
@@ -184,9 +209,16 @@ export const SubmittedAnswerComponent = ({
             )}
           </Grid>
           <Grid item>
-            <IconButton aria-label="qualification-score">
+            {sa.answer.qualificationScore && (
+              <Chip
+                label={sa.answer.qualificationScore}
+                color={"primary"}
+                variant="outlined"
+              />
+            )}
+            {/* <IconButton aria-label="qualification-score">
               {sa.answer.qualificationScore || "-"}
-            </IconButton>
+            </IconButton> */}
           </Grid>
         </Grid>
       </CardContent>

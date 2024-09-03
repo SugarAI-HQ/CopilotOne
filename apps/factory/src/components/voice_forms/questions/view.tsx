@@ -159,43 +159,96 @@ const QuestionView: React.FC<QuestionViewProps> = ({
 
         <Box
           sx={{
-            width: "40%", // Fix the width of the actions and qualification area
-            display: "inline-flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
+            width: "40%",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gridTemplateRows: "auto auto 1fr auto",
+            gap: 2,
             ml: 2,
+            position: "relative",
           }}
         >
           <Box
             sx={{
-              display: "inline-flex",
+              gridColumn: "1",
+              display: "flex",
               flexDirection: "row",
             }}
           >
-            <Chip label={question.question_type} color="primary" sx={{}} />
             <Chip
-              label={question.qualification?.type}
-              color="secondary"
-              sx={{ ml: 1 }}
+              label={question.question_type}
+              color="primary"
+              variant="outlined"
+              size="small"
             />
           </Box>
-          {question.qualification && (
-            <Box sx={{ mt: 1 }}>
-              <Typography variant="body2">
-                {question.qualification.criteria}
-              </Typography>
-            </Box>
-          )}
-          <Box sx={{ mt: "auto", display: "flex" }}>
+          <Box
+            sx={{
+              gridColumn: "2",
+              display: "flex",
+              flexDirection: "row-reverse", // Reverses the order of the buttons
+              justifyContent: "right", // Aligns items to the right
+              alignItems: "center", // Vertically centers the items
+            }}
+          >
             <IconButton color="primary" onClick={() => onEdit(question.id)}>
               <EditIcon />
             </IconButton>
             <IconButton color="primary" onClick={() => onClone(question.id)}>
               <FileCopyIcon />
             </IconButton>
-            {/* <IconButton color="secondary" onClick={() => onDelete(question.id)}>
-          <DeleteIcon />
-          </IconButton> */}
+          </Box>
+
+          <Box
+            sx={{
+              gridColumn: "1",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {question.validation && (
+              <>
+                <Typography variant="body2" color="textSecondary">
+                  <strong>Validation:</strong>{" "}
+                  {/* {question.validation?.type || "ai"} */}
+                  <Chip
+                    variant="outlined"
+                    size="small"
+                    label={question.validation?.type || "ai"}
+                    color="default"
+                  />
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {question.validation?.criteria}
+                </Typography>
+              </>
+            )}
+          </Box>
+
+          <Box
+            sx={{
+              gridColumn: "2",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {question.qualification && (
+              <>
+                <Typography variant="body2" color="textSecondary">
+                  <strong>Qualification:</strong>
+                  {/* {question.qualification?.type} */}
+                  <Chip
+                    variant="outlined"
+                    size="small"
+                    label={question.qualification?.type}
+                    color="default"
+                  />
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {question.qualification.criteria}
+                </Typography>
+              </>
+            )}
           </Box>
         </Box>
       </Paper>

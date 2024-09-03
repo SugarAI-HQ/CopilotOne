@@ -93,7 +93,6 @@ export const FormDetails = ({
   };
   const formMutation = api.form.updateForm.useMutation({
     onSuccess: (updatedForm: any) => {
-      debugger;
       setVoiceForm({
         ...updatedForm,
         questions: voiceForm?.questions,

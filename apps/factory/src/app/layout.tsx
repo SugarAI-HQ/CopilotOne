@@ -25,6 +25,7 @@ import { MdAccountCircle } from "react-icons/md";
 import { ListItemButton } from "@mui/material";
 import SidebarProfile from "~/components/SidebarProfile";
 import type { ReactElement, ReactNode } from "react";
+import { useSession } from "next-auth/react";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
@@ -109,6 +110,8 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const { data: sessionData } = useSession();
+  const isAdmin = (sessionData?.user?.id as string) == process.env.DEMO_USER_ID;
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -161,9 +164,9 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
           </Toolbar>
           <Divider />
           <List>
-            {mainListItems}
+            {mainListItems(isAdmin)}
             <Divider sx={{ my: 1 }} />
-            {/* {secondaryListItems} */}
+            {/* {secondaryListItems(isAdmin)} */}
           </List>
           <SidebarProfile />
         </Drawer>

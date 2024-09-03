@@ -31,6 +31,7 @@ import { Chip, Icon } from "@mui/material";
 // import Chart from './Dashboard/Chart';
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
+import VoiceFormBreadcrumbs from "~/components/voice_forms/breadcrumbs";
 
 function Copyright(props: any) {
   return (
@@ -229,6 +230,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
         >
           <Toolbar />
           <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
+            <VoiceFormBreadcrumbs />
             <Grid container spacing={1}>
               {children}
             </Grid>

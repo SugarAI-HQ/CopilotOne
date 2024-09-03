@@ -23,7 +23,7 @@ export const FormSubmissionSubmitAnswerRequestAnswer: core.serialization.ObjectS
     async () =>
       (await import("../../..")).FormSubmissionSubmitAnswerRequestAnswerBy,
   ),
-  qualificationScore: core.serialization.number().optional(),
+  qualificationScore: core.serialization.string().optional(),
   qualificationSummary: core.serialization.string().optional(),
 });
 
@@ -33,7 +33,7 @@ export declare namespace FormSubmissionSubmitAnswerRequestAnswer {
     rawAnswer?: string | null;
     evaluatedAnswer?: string | null;
     by: serializers.FormSubmissionSubmitAnswerRequestAnswerBy.Raw;
-    qualificationScore?: number | null;
+    qualificationScore?: string | null;
     qualificationSummary?: string | null;
   }
 }

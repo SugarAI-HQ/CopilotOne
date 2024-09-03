@@ -13,7 +13,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import Link from "next/link";
 import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
 
-export const mainListItems = (
+export const mainListItems = (isAdmin: boolean = false) => (
   <React.Fragment>
     <Link href="/dashboard">
       <ListItemButton>
@@ -23,14 +23,7 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItemButton>
     </Link>
-    {/* <Link href="/dashboard/copilots">
-      <ListItemButton>
-        <ListItemIcon>
-          <PrecisionManufacturingIcon />
-        </ListItemIcon>
-        <ListItemText primary="Copilots" />
-      </ListItemButton>
-    </Link> */}
+
     <Link href="/dashboard/forms">
       <ListItemButton>
         <ListItemIcon>
@@ -39,23 +32,37 @@ export const mainListItems = (
         <ListItemText primary="Voice Forms" />
       </ListItemButton>
     </Link>
-    {/* <Link href="/dashboard/prompts">
-      <ListItemButton>
-        <ListItemIcon>
-          <DocumentScanner />
-        </ListItemIcon>
-        <ListItemText primary="Packages" />
-      </ListItemButton>
-    </Link> */}
+    {isAdmin && (
+      <Link href="/dashboard/copilots">
+        <ListItemButton>
+          <ListItemIcon>
+            <PrecisionManufacturingIcon />
+          </ListItemIcon>
+          <ListItemText primary="Copilots" />
+        </ListItemButton>
+      </Link>
+    )}
+    {isAdmin && (
+      <Link href="/dashboard/prompts">
+        <ListItemButton>
+          <ListItemIcon>
+            <DocumentScanner />
+          </ListItemIcon>
+          <ListItemText primary="Packages" />
+        </ListItemButton>
+      </Link>
+    )}
 
-    {/* <Link href="/settings/api-keys">
-      <ListItemButton>
-        <ListItemIcon>
-          <LockOutlinedIcon />
-        </ListItemIcon>
-        <ListItemText primary="API Keys" />
-      </ListItemButton>
-    </Link> */}
+    {isAdmin && (
+      <Link href="/settings/api-keys">
+        <ListItemButton>
+          <ListItemIcon>
+            <LockOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="API Keys" />
+        </ListItemButton>
+      </Link>
+    )}
     {/* <Link href="/dashboard/dataset">
       <ListItemButton >
         <ListItemIcon>
@@ -80,7 +87,7 @@ export const mainListItems = (
   </React.Fragment>
 );
 
-export const secondaryListItems = (
+export const secondaryListItems = (isAdmin: boolean = false) => (
   <React.Fragment>
     {/* <ListSubheader component="div" inset>
       Components

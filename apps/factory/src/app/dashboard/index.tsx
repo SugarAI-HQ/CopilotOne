@@ -21,7 +21,7 @@ import { mainListItems, secondaryListItems } from "~/app/dashboard/listItems";
 import Chart from "./Chart";
 import Deposits from "./Deposits";
 import Orders from "./Orders";
-// import Footer from "./footer";
+import { useSession } from "next-auth/react";
 
 function Copyright(props: any) {
   return (
@@ -99,6 +99,8 @@ export default function Dashboard() {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const { data: sessionData } = useSession();
+  const isAdmin = (sessionData?.user?.id as string) == process.env.DEMO_USER_ID;
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -154,9 +156,9 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            {mainListItems(isAdmin)}
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            {secondaryListItems(isAdmin)}
           </List>
         </Drawer>
         <Box

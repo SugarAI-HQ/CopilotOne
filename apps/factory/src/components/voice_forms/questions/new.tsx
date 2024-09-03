@@ -69,6 +69,8 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
 
       // @ts-ignore
       validation: initQuestion?.validation || {
+        type: initQuestion?.validation?.type || "ai",
+        criteria: initQuestion?.validation?.criteria || "",
         max_length: 120,
         validators: [],
       },
@@ -215,102 +217,154 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
             </Box>
           )}
 
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <FormControl fullWidth>
-                <InputLabel>Qualification Type</InputLabel>
-                <Controller
-                  name="qualification.type"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      label="Qualification Type"
-                      fullWidth
-                      error={!!errors.qualification?.type}
-                    >
-                      <MenuItem value="none">None</MenuItem>
-                      <MenuItem value="ai">AI</MenuItem>
-                      <MenuItem value="manual">Manual</MenuItem>
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={9}>
-              <Controller
-                name="qualification.criteria"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Qualification Criteria"
-                    fullWidth
-                    error={!!errors.qualification?.criteria}
-                    helperText={errors.qualification?.criteria?.message || ""}
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-          <Box sx={{ mb: 4 }}>
-            <Typography component="h2" className="text-3xl font-bold">
-              Speech Settings
+          <Box className="border-2 border-gray-700 p-2" sx={{ mb: 4 }}>
+            <Typography component="h2" className="pb-4 text-3xl font-bold">
+              Validation
             </Typography>
-          </Box>
 
-          <Grid container spacing={2}>
-            <Grid item xs={6} sx={{ mb: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel></InputLabel>
+            <Grid container spacing={2}>
+              <Grid item xs={3}>
+                <FormControl fullWidth>
+                  <InputLabel>Validation Type</InputLabel>
+                  <Controller
+                    name="validation.type"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        label="Validation Type"
+                        fullWidth
+                        error={!!errors.validation?.type}
+                      >
+                        <MenuItem value="none">None</MenuItem>
+                        <MenuItem value="ai">AI</MenuItem>
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={9}>
                 <Controller
-                  name="validation.max_length"
+                  name="validation.criteria"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label="Max Length"
-                      type="number"
+                      label="Validation Criteria"
                       fullWidth
-                      error={!!errors.validation?.max_length}
-                      helperText={errors.validation?.max_length?.message || ""}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      error={!!errors.validation?.criteria}
+                      helperText={errors.validation?.criteria?.message || ""}
                     />
                   )}
                 />
-              </FormControl>
+              </Grid>
             </Grid>
-            <Grid item xs={6} sx={{ mb: 2 }}>
-              <FormControl fullWidth>
-                <InputLabel>Validate For</InputLabel>
+          </Box>
+
+          <Box className="border-2 border-gray-700 p-2" sx={{ mb: 4 }}>
+            <Typography component="h2" className="pb-4 text-3xl font-bold">
+              Qualfication
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={3}>
+                <FormControl fullWidth>
+                  <InputLabel>Qualification Type</InputLabel>
+                  <Controller
+                    name="qualification.type"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        label="Qualification Type"
+                        fullWidth
+                        error={!!errors.qualification?.type}
+                      >
+                        <MenuItem value="none">None</MenuItem>
+                        <MenuItem value="ai">AI</MenuItem>
+                        <MenuItem value="manual">Manual</MenuItem>
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={9}>
                 <Controller
-                  name="validation.validators"
+                  name="qualification.criteria"
                   control={control}
                   render={({ field }) => (
-                    <Select
+                    <TextField
                       {...field}
-                      label="Validate For"
+                      label="Qualification Criteria"
                       fullWidth
-                      error={!!errors.validation?.validators}
-                      multiple
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        field.onChange(value.length === 0 ? [] : value);
-                        // handleQuestionTypeChange(value);
-                      }}
-                      renderValue={(selected) => selected.join(", ")} // This is optional, for better UI
-                    >
-                      {formFieldValidator._def.values.map((validator) => (
-                        <MenuItem key={validator} value={validator}>
-                          {validator}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                      error={!!errors.qualification?.criteria}
+                      helperText={errors.qualification?.criteria?.message || ""}
+                    />
                   )}
                 />
-              </FormControl>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
+          <Box className="border-2 border-gray-700 p-2" sx={{ mb: 4 }}>
+            <Typography component="h2" className="pb-4 text-3xl font-bold">
+              Speech Settings
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={6} sx={{ mb: 2 }}>
+                <FormControl fullWidth>
+                  <InputLabel></InputLabel>
+                  <Controller
+                    name="validation.max_length"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Max Length"
+                        type="number"
+                        fullWidth
+                        error={!!errors.validation?.max_length}
+                        helperText={
+                          errors.validation?.max_length?.message || ""
+                        }
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={6} sx={{ mb: 2 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Validate For</InputLabel>
+                  <Controller
+                    name="validation.validators"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        label="Validate For"
+                        fullWidth
+                        error={!!errors.validation?.validators}
+                        multiple
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          field.onChange(value.length === 0 ? [] : value);
+                          // handleQuestionTypeChange(value);
+                        }}
+                        renderValue={(selected) => selected.join(", ")} // This is optional, for better UI
+                      >
+                        {formFieldValidator._def.values.map((validator) => (
+                          <MenuItem key={validator} value={validator}>
+                            {validator}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
+          </Box>
 
           <DialogActions>
             <Button disabled={isLoading} onClick={onClose} color="secondary">

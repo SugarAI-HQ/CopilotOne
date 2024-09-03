@@ -20,7 +20,6 @@ export default function SidebarProfile() {
   async function handleProfileCardClick() {
     // await router.push("/dashboard/profile");
   }
-
   return (
     <>
       {" "}

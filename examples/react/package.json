@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx next dev -p 4000",
+    "prod": "NODE_ENV=production npx next start -p 4000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

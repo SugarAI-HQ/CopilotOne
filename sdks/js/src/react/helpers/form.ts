@@ -15,6 +15,7 @@ import {
   speaki18nMessageAsync,
   aiEvaluationResponse,
   qualificationType,
+  validationType,
 } from "@sugar-ai/core";
 import { QuestionAnswer } from "@sugar-ai/core";
 
@@ -89,8 +90,8 @@ export const captureVoiceResponseAndEvaluate = async (
 
     // AI Evaluation
     if (
-      !question?.qualification?.type ||
-      question?.qualification?.type == qualificationType.Enum.ai
+      !question?.validation?.type ||
+      question?.validation?.type == validationType.Enum.ai
     ) {
       console.log("Evaluating");
       setIsEvaluating(true);
@@ -254,6 +255,7 @@ const aiEvaluate = async (
     "@language": language,
     "@question_type": question.question_type,
     "@question": extracti18nText(question.question_text, language),
+    "@rules": question.validation?.criteria || "",
   };
 
   if (question.qualification?.criteria) {
@@ -297,7 +299,8 @@ const aiEvaluate = async (
       {
         name: "qualificationScore",
         type: "string",
-        enum: ["0", "1", "2", "3", "4", "5", "6", "7", "9", "10"],
+        // enum: ["0", "1", "2", "3", "4", "5", "6", "7", "9", "10"],
+        enum: ["low", "mid", "high"],
         description:
           "qualification score on the user response based on the Qualification Criteria",
         required: true,
@@ -334,14 +337,14 @@ const aiEvaluate = async (
     DEV: console.log(
       `answer: ${answer}, ${isQuestionAnswered}, ${followupResponse}, ${followupQuestion}, ${qualificationScore}, ${qualificationSummary}`,
     );
-    const qualificationScoreInt = parseInt(qualificationScore, 10) || 0;
+    // const qualificationScoreInt = parseInt(qualificationScore, 10) || 0;
 
     if (isQuestionAnswered === "fully") {
       return {
         answer,
         followupResponse,
         followupQuestion: null,
-        qualificationScore: qualificationScoreInt,
+        qualificationScore: qualificationScore,
         qualificationSummary,
       };
     }
@@ -351,7 +354,7 @@ const aiEvaluate = async (
         answer,
         followupResponse: null,
         followupQuestion,
-        qualificationScore: qualificationScoreInt,
+        qualificationScore: qualificationScore,
         qualificationSummary,
       };
     }

@@ -88,7 +88,7 @@ export const VoiceFormProvider: React.FC<{
 
   const getForm = async (formId: string): Promise<any | null> => {
     try {
-      const vf = await apiClient.voiceForm.formGetForm(formId);
+      const vf = await apiClient.voiceForm.formSubmissionGetForm(formId);
 
       const overridenForm = {
         ...vf,
@@ -137,7 +137,7 @@ export const VoiceFormProvider: React.FC<{
     if (!submissionId) {
       await createSubmission(formId);
     }
-
+    debugger;
     try {
       const { id } = (await apiClient.voiceForm.formSubmissionSubmitAnswer(
         formId,
