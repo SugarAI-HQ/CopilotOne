@@ -68,13 +68,13 @@ export const Onboarding: React.FC<{
             languagesEnabled={voiceForm?.languages}
             // xklass="fixed bottom-0 left-0 right-0"
           />
-          <h1 className="m-4 p-2 text-center text-3xl text-gray-800 dark:text-gray-200 md:text-4xl lg:text-5xl">
+          <h1 className="m-4 p-2 text-center text-3xl text-gray-800 dark:text-gray-200 md:text-4xl lg:text-5xl min-w-[300px] sm:min-w-[300px]">
             {voiceForm?.messages &&
               extracti18nText(voiceForm?.description, language ?? "en")}
           </h1>
 
           <button
-            className={`m-4 w-full max-w-xs p-4 md:max-w-md lg:max-w-lg bg-[${themeColor}] dark:bg-[${themeColor}] hover:bg-[${themeColor}] dark:bg-[${themeColor}] transform rounded-lg text-center text-white shadow-lg transition duration-300 ease-in-out hover:scale-105`}
+            className={`m-4 w-full max-w-xs p-4 md:max-w-md lg:max-w-lg bg-[${themeColor}] dark:bg-[${themeColor}] hover:bg-[${themeColor}] dark:bg-[${themeColor}] transform rounded-lg text-center text-white shadow-lg transition duration-300 ease-in-out hover:scale-105 min-w-[300px] sm:min-w-[300px]`}
             style={{
               backgroundColor: themeColor,
             }}

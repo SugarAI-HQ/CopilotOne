@@ -86,7 +86,7 @@ export const questionSchema = z.object({
     .passthrough(),
   qualification: z.object({
     type: qualificationType.default(qualificationType.Enum.ai),
-    // segments: qualificationSegment.default(QualificationSegmentsDefaults),
+    segments: qualificationSegment.default(QualificationSegmentsDefaults),
     criteria: z.string().optional(),
   }),
   order: z.number().optional(),

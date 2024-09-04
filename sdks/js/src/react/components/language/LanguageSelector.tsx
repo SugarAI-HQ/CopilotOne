@@ -79,7 +79,7 @@ export const LanguageSelector: React.FC<{
 
   return (
     <div
-      className={`${klass ?? ""} bg-gray-200 dark:bg-gray-700 shadow-md p-2 rounded-lg`}
+      className={`${klass ?? ""} bg-gray-200 dark:bg-gray-700 shadow-md p-2 rounded-lg min-w-[300px] sm:min-w-[300px]`}
     >
       <div className="mb-2 flex justify-around">
         <MdLanguage

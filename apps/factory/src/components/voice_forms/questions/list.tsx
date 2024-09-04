@@ -103,7 +103,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
       active: true,
       qualification: {
         type: "ai",
-        // segments: QualificationSegmentsDefaults,
+        segments: QualificationSegmentsDefaults,
         criteria: "",
       },
       order: questions.length + 1,

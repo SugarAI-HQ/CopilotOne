@@ -301,7 +301,7 @@ const aiEvaluate = async (
         name: "qualificationScore",
         type: "string",
         // enum: ["0", "1", "2", "3", "4", "5", "6", "7", "9", "10"],
-        enum: QualificationSegmentsDefaults,
+        enum: question.qualification.segments || QualificationSegmentsDefaults,
         description:
           "qualification score on the user response based on the Qualification Criteria",
         required: true,

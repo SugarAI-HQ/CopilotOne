@@ -137,7 +137,6 @@ export const VoiceFormProvider: React.FC<{
     if (!submissionId) {
       await createSubmission(formId);
     }
-    debugger;
     try {
       const { id } = (await apiClient.voiceForm.formSubmissionSubmitAnswer(
         formId,

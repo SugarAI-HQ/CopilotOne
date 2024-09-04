@@ -16,6 +16,7 @@ import {
   TextField,
   Grid,
   Chip,
+  Autocomplete,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
@@ -64,9 +65,9 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
       // @ts-ignore
       question_params: initQuestion?.question_params || { options: [] },
       qualification: {
-        // segments:
-        //   initQuestion?.qualification?.segments ||
-        //   QualificationSegmentsDefaults,
+        segments:
+          initQuestion?.qualification?.segments ||
+          QualificationSegmentsDefaults,
         type: initQuestion?.qualification?.type || "ai",
         criteria: initQuestion?.qualification?.criteria || "",
       },
@@ -138,7 +139,7 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         <Chip
           sx={{ mr: 2 }}
@@ -292,72 +293,48 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
                   />
                 </FormControl>
               </Grid>
-              {/* <Grid item xs={6} sx={{ mb: 2 }}>
+              <Grid item xs={9} sx={{ mb: 2 }}>
                 <FormControl fullWidth>
-                  <InputLabel>Segments</InputLabel>
+                  <InputLabel shrink>Segments</InputLabel>
                   <Controller
                     name="qualification.segments"
                     control={control}
                     render={({ field }) => {
-                      const [inputValue, setInputValue] = useState("");
-
-                      const handleAddChip = () => {
-                        if (inputValue.trim() !== "") {
-                          const newValue = [...field.value, inputValue.trim()];
-                          field.onChange(newValue);
-                          setInputValue(""); // Clear the input after adding
-                        }
-                      };
-
-                      const handleDeleteChip = (chipToDelete) => {
-                        const newValue = field.value.filter(
-                          (chip) => chip !== chipToDelete,
-                        );
-                        field.onChange(newValue);
-                      };
-
                       return (
-                        <Box>
-                          <TextField
-                            {...field}
-                            label="Segments"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            onKeyPress={(e) => {
-                              if (e.key === "Enter") {
-                                e.preventDefault();
-                                handleAddChip();
-                              }
-                            }}
-                            fullWidth
-                            error={!!errors.validation?.validators}
-                            helperText="Press Enter to add segments"
-                          />
-                          <Box
-                            sx={{
-                              mt: 2,
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: 0.5,
-                            }}
-                          >
-                            {field.value.map((chip) => (
+                        <Autocomplete
+                          {...field}
+                          multiple
+                          freeSolo
+                          options={[]}
+                          value={field.value || []}
+                          onChange={(event, newValue) => {
+                            field.onChange(newValue);
+                          }}
+                          renderTags={(value, getTagProps) =>
+                            value.map((option, index) => (
                               <Chip
-                                key={chip}
-                                label={chip}
-                                onDelete={() => handleDeleteChip(chip)}
-                                color="primary"
                                 variant="outlined"
+                                label={option}
+                                {...getTagProps({ index })}
                               />
-                            ))}
-                          </Box>
-                        </Box>
+                            ))
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Segments"
+                              placeholder="Add segments"
+                              fullWidth
+                              error={!!errors.qualification?.segments}
+                            />
+                          )}
+                        />
                       );
                     }}
                   />
                 </FormControl>
-              </Grid> */}
-              <Grid item xs={9}>
+              </Grid>
+              <Grid item xs={12}>
                 <Controller
                   name="qualification.criteria"
                   control={control}
@@ -366,6 +343,8 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
                       {...field}
                       label="Qualification Criteria"
                       fullWidth
+                      multiline
+                      rows={4} // Adjust the number of rows as needed
                       error={!!errors.qualification?.criteria}
                       helperText={errors.qualification?.criteria?.message || ""}
                     />
