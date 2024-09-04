@@ -32,6 +32,7 @@ import { Chip, Icon } from "@mui/material";
 // import Deposits from './Dashboard/Deposits';
 // import Orders from './Dashboard/Orders';
 import VoiceFormBreadcrumbs from "~/components/voice_forms/breadcrumbs";
+import { useSession } from "next-auth/react";
 
 function Copyright(props: any) {
   return (
@@ -136,6 +137,9 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
   // Check if the current route matches the pattern '/dashboard/prompts/[id]'
   const isPromptsRoute = router.pathname.startsWith("/dashboard/prompts/");
 
+  const { data: sessionData } = useSession();
+  const isAdmin = (sessionData?.user?.id as string) == process.env.DEMO_USER_ID;
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -210,9 +214,9 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
           </Toolbar>
           <Divider />
           <List>
-            {mainListItems}
+            {mainListItems(isAdmin)}
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            {secondaryListItems(isAdmin)}
           </List>
           <SidebarProfile />
         </Drawer>

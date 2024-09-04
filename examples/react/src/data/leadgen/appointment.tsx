@@ -29,170 +29,170 @@ export const translations: Translations = {
 };
 
 export const questions: Question[] = [
-  {
-    id: "1",
-    active: true,
-    question_type: "text",
-    question_text: {
-      lang: {
-        en: "What is your name?",
-        hi: "आपका नाम क्या है?",
-      },
-    },
-    question_params: {},
-    order: 1,
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-    // evalyuation: "none",
-    validation: {
-      validators: [],
-      max_length: 100,
-    },
-  },
-  {
-    id: "2",
-    active: true,
-    question_type: "text",
-    question_text: {
-      lang: {
-        en: "Tell me your phone number.",
-        hi: "मुझे अपना फोन नंबर बताएं।",
-      },
-    },
-    question_params: {},
-    validation: {
-      max_length: 20,
-      validators: ["mobile"],
-    },
-    order: 2,
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-  },
-  {
-    id: "3",
-    active: true,
-    question_type: "single_choice",
-    question_text: {
-      lang: {
-        en: "How long have you been experiencing the problem?",
-        hi: "आप इस समस्या का अनुभव कब से कर रहे हैं?",
-      },
-    },
-    question_params: {
-      options: [
-        {
-          lang: {
-            en: "Less than 15 days",
-            hi: "15 दिन से कम",
-          },
-        },
-        {
-          lang: {
-            en: "15 to 30 days",
-            hi: "15 से 30 दिन",
-          },
-        },
-        {
-          lang: {
-            en: "1 to 6 months",
-            hi: "1 महीने से 6 महीने",
-          },
-        },
-        {
-          lang: {
-            en: "6 to 12 months",
-            hi: "6 से 12 महीने",
-          },
-        },
-        {
-          lang: {
-            en: "More than a year",
-            hi: "1 साल से अधिक",
-          },
-        },
-      ],
-    },
-    order: 3,
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-    validation: {
-      validators: [],
-      max_length: 50,
-    },
-  },
-  {
-    id: "4",
-    active: true,
-    question_type: "text",
-    question_text: {
-      lang: {
-        en: "Please explain your current problem. Mention the pain, affected areas etc.",
-        hi: "आप अपने दर्द और समस्या के बारे में बताएं",
-      },
-    },
-    question_params: {},
-    order: 1,
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-    validation: {
-      validators: [],
-      max_length: 200,
-    },
-  },
-  {
-    id: "5",
-    active: true,
-    question_type: "single_choice",
-    question_text: {
-      lang: {
-        en: "What will the most convenient time for the treatment of your pain?",
-        hi: "आपके दर्द के इलाज के लिए सबसे सुविधाजनक समय क्या होगा?",
-      },
-    },
-    question_params: {
-      options: [
-        {
-          lang: {
-            en: "7 AM to 10 AM",
-            hi: "7 बजे से 10 बजे तक",
-          },
-        },
-        {
-          lang: {
-            en: "10 AM to 5 PM",
-            hi: "10 बजे से 5 बजे तक",
-          },
-        },
-        {
-          lang: {
-            en: "5 PM to 8 PM",
-            hi: "5 बजे से 8 बजे तक",
-          },
-        },
-        {
-          lang: {
-            en: "Any other time",
-            hi: "कोई और समय",
-          },
-        },
-      ],
-    },
-    validation: {
-      validators: [],
-      max_length: 50,
-    },
-    order: 6,
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-  },
+  // {
+  //   id: "1",
+  //   active: true,
+  //   question_type: "text",
+  //   question_text: {
+  //     lang: {
+  //       en: "What is your name?",
+  //       hi: "आपका नाम क्या है?",
+  //     },
+  //   },
+  //   question_params: {},
+  //   order: 1,
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  //   // evalyuation: "none",
+  //   validation: {
+  //     validators: [],
+  //     max_length: 100,
+  //   },
+  // },
+  // {
+  //   id: "2",
+  //   active: true,
+  //   question_type: "text",
+  //   question_text: {
+  //     lang: {
+  //       en: "Tell me your phone number.",
+  //       hi: "मुझे अपना फोन नंबर बताएं।",
+  //     },
+  //   },
+  //   question_params: {},
+  //   validation: {
+  //     max_length: 20,
+  //     validators: ["mobile"],
+  //   },
+  //   order: 2,
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  // },
+  // {
+  //   id: "3",
+  //   active: true,
+  //   question_type: "single_choice",
+  //   question_text: {
+  //     lang: {
+  //       en: "How long have you been experiencing the problem?",
+  //       hi: "आप इस समस्या का अनुभव कब से कर रहे हैं?",
+  //     },
+  //   },
+  //   question_params: {
+  //     options: [
+  //       {
+  //         lang: {
+  //           en: "Less than 15 days",
+  //           hi: "15 दिन से कम",
+  //         },
+  //       },
+  //       {
+  //         lang: {
+  //           en: "15 to 30 days",
+  //           hi: "15 से 30 दिन",
+  //         },
+  //       },
+  //       {
+  //         lang: {
+  //           en: "1 to 6 months",
+  //           hi: "1 महीने से 6 महीने",
+  //         },
+  //       },
+  //       {
+  //         lang: {
+  //           en: "6 to 12 months",
+  //           hi: "6 से 12 महीने",
+  //         },
+  //       },
+  //       {
+  //         lang: {
+  //           en: "More than a year",
+  //           hi: "1 साल से अधिक",
+  //         },
+  //       },
+  //     ],
+  //   },
+  //   order: 3,
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  //   validation: {
+  //     validators: [],
+  //     max_length: 50,
+  //   },
+  // },
+  // {
+  //   id: "4",
+  //   active: true,
+  //   question_type: "text",
+  //   question_text: {
+  //     lang: {
+  //       en: "Please explain your current problem. Mention the pain, affected areas etc.",
+  //       hi: "आप अपने दर्द और समस्या के बारे में बताएं",
+  //     },
+  //   },
+  //   question_params: {},
+  //   order: 1,
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  //   validation: {
+  //     validators: [],
+  //     max_length: 200,
+  //   },
+  // },
+  // {
+  //   id: "5",
+  //   active: true,
+  //   question_type: "single_choice",
+  //   question_text: {
+  //     lang: {
+  //       en: "What will the most convenient time for the treatment of your pain?",
+  //       hi: "आपके दर्द के इलाज के लिए सबसे सुविधाजनक समय क्या होगा?",
+  //     },
+  //   },
+  //   question_params: {
+  //     options: [
+  //       {
+  //         lang: {
+  //           en: "7 AM to 10 AM",
+  //           hi: "7 बजे से 10 बजे तक",
+  //         },
+  //       },
+  //       {
+  //         lang: {
+  //           en: "10 AM to 5 PM",
+  //           hi: "10 बजे से 5 बजे तक",
+  //         },
+  //       },
+  //       {
+  //         lang: {
+  //           en: "5 PM to 8 PM",
+  //           hi: "5 बजे से 8 बजे तक",
+  //         },
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Any other time",
+  //           hi: "कोई और समय",
+  //         },
+  //       },
+  //     ],
+  //   },
+  //   validation: {
+  //     validators: [],
+  //     max_length: 50,
+  //   },
+  //   order: 6,
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  // },
 ];

@@ -62,6 +62,10 @@ export type ValidationType = z.infer<typeof validationType>;
 export const qualificationType = z.enum(["none", "ai", "manual"]);
 export type QualificationType = z.infer<typeof qualificationType>;
 
+export const QualificationSegmentsDefaults = ["low", "mid", "high"];
+export const qualificationSegment = z.array(z.string());
+export type QualificationSegment = z.infer<typeof qualificationSegment>;
+
 export const questionSchema = z.object({
   id: z.string(),
   question_type: questionType,
@@ -82,6 +86,7 @@ export const questionSchema = z.object({
     .passthrough(),
   qualification: z.object({
     type: qualificationType.default(qualificationType.Enum.ai),
+    // segments: qualificationSegment.default(QualificationSegmentsDefaults),
     criteria: z.string().optional(),
   }),
   order: z.number().optional(),

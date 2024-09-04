@@ -26,6 +26,7 @@ import {
   questionType,
   VoiceForm,
   formFieldValidator,
+  QualificationSegmentsDefaults,
 } from "@sugar-ai/core";
 import CreateI18nMessage from "../create_i18n_message";
 import AddIcon from "@mui/icons-material/Add";
@@ -63,6 +64,9 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
       // @ts-ignore
       question_params: initQuestion?.question_params || { options: [] },
       qualification: {
+        // segments:
+        //   initQuestion?.qualification?.segments ||
+        //   QualificationSegmentsDefaults,
         type: initQuestion?.qualification?.type || "ai",
         criteria: initQuestion?.qualification?.criteria || "",
       },
@@ -288,6 +292,71 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
                   />
                 </FormControl>
               </Grid>
+              {/* <Grid item xs={6} sx={{ mb: 2 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Segments</InputLabel>
+                  <Controller
+                    name="qualification.segments"
+                    control={control}
+                    render={({ field }) => {
+                      const [inputValue, setInputValue] = useState("");
+
+                      const handleAddChip = () => {
+                        if (inputValue.trim() !== "") {
+                          const newValue = [...field.value, inputValue.trim()];
+                          field.onChange(newValue);
+                          setInputValue(""); // Clear the input after adding
+                        }
+                      };
+
+                      const handleDeleteChip = (chipToDelete) => {
+                        const newValue = field.value.filter(
+                          (chip) => chip !== chipToDelete,
+                        );
+                        field.onChange(newValue);
+                      };
+
+                      return (
+                        <Box>
+                          <TextField
+                            {...field}
+                            label="Segments"
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleAddChip();
+                              }
+                            }}
+                            fullWidth
+                            error={!!errors.validation?.validators}
+                            helperText="Press Enter to add segments"
+                          />
+                          <Box
+                            sx={{
+                              mt: 2,
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: 0.5,
+                            }}
+                          >
+                            {field.value.map((chip) => (
+                              <Chip
+                                key={chip}
+                                label={chip}
+                                onDelete={() => handleDeleteChip(chip)}
+                                color="primary"
+                                variant="outlined"
+                              />
+                            ))}
+                          </Box>
+                        </Box>
+                      );
+                    }}
+                  />
+                </FormControl>
+              </Grid> */}
               <Grid item xs={9}>
                 <Controller
                   name="qualification.criteria"

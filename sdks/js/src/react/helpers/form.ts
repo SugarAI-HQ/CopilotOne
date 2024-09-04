@@ -16,6 +16,7 @@ import {
   aiEvaluationResponse,
   qualificationType,
   validationType,
+  QualificationSegmentsDefaults,
 } from "@sugar-ai/core";
 import { QuestionAnswer } from "@sugar-ai/core";
 
@@ -300,7 +301,7 @@ const aiEvaluate = async (
         name: "qualificationScore",
         type: "string",
         // enum: ["0", "1", "2", "3", "4", "5", "6", "7", "9", "10"],
-        enum: ["low", "mid", "high"],
+        enum: QualificationSegmentsDefaults,
         description:
           "qualification score on the user response based on the Qualification Criteria",
         required: true,

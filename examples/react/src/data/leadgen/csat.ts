@@ -25,174 +25,174 @@ export const translations: Translations = {
 };
 
 export const questions: Question[] = [
-  {
-    id: "1",
-    active: true,
-    question_type: "single_choice",
-    question_text: {
-      // mode: "manual",
-      lang: {
-        en: "How would you rate your overall satisfaction with our product?",
-        hi: "आप हमारे प्रोडक्ट से कुल मिलाकर कितने संतुष्ट हैं?",
-      },
-      // voice: true,
-      // output: "none",
-    },
-    question_params: {
-      options: [
-        {
-          lang: {
-            en: "Very Unsatisfied",
-            hi: "बहुत असंतुष्ट",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "Unsatisfied",
-            hi: "असंतुष्ट",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "Neutral",
-            hi: "संतोषजनक",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "Satisfied",
-            hi: "संतुष्ट",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "Very Satisfied",
-            hi: "बहुत संतुष्ट",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-      ],
-    },
-    validation: {
-      validators: [],
-      max_length: 100,
-    },
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-    order: 1,
-  },
-  {
-    id: "2",
-    active: true,
-    question_type: "single_choice",
-    question_text: {
-      // mode: "manual",
-      lang: {
-        en: "How often do you usually use our product or service?",
-        hi: "आप हमारे प्रोडक्ट/सर्विस का कितनी बार उपयोग करते हैं?",
-      },
-      // voice: true,
-      // output: "none",
-    },
-    question_params: {
-      options: [
-        {
-          lang: {
-            en: "Daily",
-            hi: "रोजाना",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "Weekly",
-            hi: "साप्ताहिक",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "Monthly",
-            hi: "मासिक",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "Rarely",
-            hi: "कभी-कभार",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-        {
-          lang: {
-            en: "First time user",
-            hi: "पहली बार उपयोग कर रहे हैं",
-          },
-          // mode: "manual",
-          // voice: true,
-          // output: "none",
-        },
-      ],
-    },
-    validation: {
-      validators: [],
-      max_length: 100,
-    },
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-    order: 2,
-  },
-  {
-    id: "3",
-    active: true,
-    question_type: "text",
-    question_text: {
-      // mode: "manual",
-      lang: {
-        en: "What could we have improved on today?",
-        hi: "हम आज क्या सुधार कर सकते थे?",
-      },
-      // voice: true,
-      // output: "none",
-    },
-    question_params: {
-      options: [],
-    },
-    validation: {
-      validators: [],
-      max_length: 500,
-    },
-    qualification: {
-      type: "ai",
-      criteria: "",
-    },
-    order: 3,
-  },
+  // {
+  //   id: "1",
+  //   active: true,
+  //   question_type: "single_choice",
+  //   question_text: {
+  //     // mode: "manual",
+  //     lang: {
+  //       en: "How would you rate your overall satisfaction with our product?",
+  //       hi: "आप हमारे प्रोडक्ट से कुल मिलाकर कितने संतुष्ट हैं?",
+  //     },
+  //     // voice: true,
+  //     // output: "none",
+  //   },
+  //   question_params: {
+  //     options: [
+  //       {
+  //         lang: {
+  //           en: "Very Unsatisfied",
+  //           hi: "बहुत असंतुष्ट",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Unsatisfied",
+  //           hi: "असंतुष्ट",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Neutral",
+  //           hi: "संतोषजनक",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Satisfied",
+  //           hi: "संतुष्ट",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Very Satisfied",
+  //           hi: "बहुत संतुष्ट",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //     ],
+  //   },
+  //   validation: {
+  //     validators: [],
+  //     max_length: 100,
+  //   },
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  //   order: 1,
+  // },
+  // {
+  //   id: "2",
+  //   active: true,
+  //   question_type: "single_choice",
+  //   question_text: {
+  //     // mode: "manual",
+  //     lang: {
+  //       en: "How often do you usually use our product or service?",
+  //       hi: "आप हमारे प्रोडक्ट/सर्विस का कितनी बार उपयोग करते हैं?",
+  //     },
+  //     // voice: true,
+  //     // output: "none",
+  //   },
+  //   question_params: {
+  //     options: [
+  //       {
+  //         lang: {
+  //           en: "Daily",
+  //           hi: "रोजाना",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Weekly",
+  //           hi: "साप्ताहिक",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Monthly",
+  //           hi: "मासिक",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "Rarely",
+  //           hi: "कभी-कभार",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //       {
+  //         lang: {
+  //           en: "First time user",
+  //           hi: "पहली बार उपयोग कर रहे हैं",
+  //         },
+  //         // mode: "manual",
+  //         // voice: true,
+  //         // output: "none",
+  //       },
+  //     ],
+  //   },
+  //   validation: {
+  //     validators: [],
+  //     max_length: 100,
+  //   },
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  //   order: 2,
+  // },
+  // {
+  //   id: "3",
+  //   active: true,
+  //   question_type: "text",
+  //   question_text: {
+  //     // mode: "manual",
+  //     lang: {
+  //       en: "What could we have improved on today?",
+  //       hi: "हम आज क्या सुधार कर सकते थे?",
+  //     },
+  //     // voice: true,
+  //     // output: "none",
+  //   },
+  //   question_params: {
+  //     options: [],
+  //   },
+  //   validation: {
+  //     validators: [],
+  //     max_length: 500,
+  //   },
+  //   qualification: {
+  //     type: "ai",
+  //     criteria: "",
+  //   },
+  //   order: 3,
+  // },
 ];

@@ -5,6 +5,7 @@ import {
   allLanguages,
   Question,
   VoiceForm,
+  QualificationSegmentsDefaults,
 } from "@sugar-ai/core";
 import { Chip } from "@mui/material";
 import Loading from "~/components/Layouts/loading";
@@ -100,7 +101,11 @@ const QuestionList: React.FC<QuestionListProps> = ({
       // @ts-ignore
       validation: { max_length: 120, validators: [] },
       active: true,
-      qualification: { type: "ai", criteria: "" },
+      qualification: {
+        type: "ai",
+        // segments: QualificationSegmentsDefaults,
+        criteria: "",
+      },
       order: questions.length + 1,
     };
     setEditingQuestion(newQuestion);

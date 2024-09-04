@@ -80,7 +80,7 @@ const VoiceButtonWithStates = ({
           />
         ) : iswaiting ? (
           // <Hourglass style={iconStyle} />
-          <FaRegHourglass style={iconStyle} />
+          <FaRegHourglass style={{ fontSize: "1.5rem", ...iconStyle }} />
         ) : (
           <Mic
             style={iconStyle}
