@@ -234,7 +234,7 @@ export function Dashboard({ children }: { children: React.ReactNode }) {
         >
           <Toolbar />
           <Container maxWidth={false} sx={{ mt: 4, mb: 4 }}>
-            <VoiceFormBreadcrumbs />
+            {/* <VoiceFormBreadcrumbs /> */}
             <Grid container spacing={1}>
               {children}
             </Grid>

@@ -53,6 +53,7 @@ export const questionType = z.enum([
   "multiple_choice",
   "text",
   "number",
+  "attachment",
 ]);
 export type QuestionType = z.infer<typeof questionType>;
 
@@ -206,7 +207,7 @@ export const voiceForm = z.object({
 });
 export type VoiceForm = z.infer<typeof voiceForm>;
 
-export const answeredBy = z.enum(["voice", "keyboard"]);
+export const answeredBy = z.enum(["voice", "keyboard", "document"]);
 export type AnsweredBy = z.infer<typeof answeredBy>;
 
 // Question answer

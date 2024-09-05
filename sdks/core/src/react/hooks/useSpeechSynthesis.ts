@@ -6,6 +6,7 @@ import {
   stopSpeaking as sp,
   extracti18nText,
 } from "~/helpers/voice";
+import { i18nMessage, LanguageCode } from "~/schema";
 
 const useSpeechSynthesis = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -65,9 +66,22 @@ const useSpeechSynthesis = () => {
     return;
   };
 
-  const speaki18nMessageAsync = async (message, language, voice) => {
+  // const speaki18nMessageAsync = async (message, language, voice) => {
+  //   return speakMessageAsync(
+  //     extracti18nText(message, language),
+  //     language,
+  //     voice,
+  //   );
+  // };
+
+  const speaki18nMessageAsync = async (
+    message: i18nMessage,
+    language: LanguageCode,
+    voice: SpeechSynthesisVoice,
+    appendText: string = "",
+  ): Promise<void> => {
     return speakMessageAsync(
-      extracti18nText(message, language),
+      extracti18nText(message, language) + appendText,
       language,
       voice,
     );

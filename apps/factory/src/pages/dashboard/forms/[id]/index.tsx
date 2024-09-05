@@ -9,7 +9,7 @@ import { getLayout } from "~/app/layout";
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import SubmissionAnalytics from "../../../../components/voice_forms/submissions/analytics";
-import SubmissionsDashboard from "../../../../components/voice_forms/submissions/list";
+import SubmissionsList from "../../../../components/voice_forms/submissions/list";
 import {
   FormPreviewButton,
   FormEditButton,
@@ -88,7 +88,7 @@ function VoiceFormTabs({ formId }: { formId: string }) {
       </TabPanel>
 
       <TabPanel value={value} index={1}>
-        <SubmissionsDashboard formId={formId}></SubmissionsDashboard>
+        <SubmissionsList formId={formId}></SubmissionsList>
       </TabPanel>
     </div>
   );

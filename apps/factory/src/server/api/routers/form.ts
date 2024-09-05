@@ -27,6 +27,7 @@ import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
 import { validate as isUuid, v4 as uuidv4 } from "uuid";
 import { bulkUpdate } from "~/services/prisma"; // Adjust import paths as necessary
 import { defaultFormTranslations, geti18nMessage } from "@sugar-ai/core";
+import { orderBy } from "lodash";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -316,6 +317,9 @@ export const formRouter = createTRPCRouter({
           clientUserId: true,
           submittedAt: true,
           createdAt: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
 

@@ -136,8 +136,13 @@ export const speaki18nMessageAsync = async (
   message: i18nMessage,
   language: LanguageCode,
   voice: SpeechSynthesisVoice,
+  appendText: string = "",
 ): Promise<void> => {
-  return speakMessageAsync(extracti18nText(message, language), language, voice);
+  return speakMessageAsync(
+    extracti18nText(message, language) + appendText,
+    language,
+    voice,
+  );
 };
 
 export const stopSpeaking = () => {

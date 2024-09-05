@@ -15,6 +15,8 @@ import {
   Recording,
   QuestionAnswer,
   VoiceForm,
+  geti18nMessage,
+  extracti18nText,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
@@ -22,6 +24,7 @@ import {
   captureVoiceResponseAndEvaluate,
   validateAnswerWithUser,
   SELECTED_QUESTION_TYPES,
+  runOcrAndExtractDetails,
 } from "~/react/helpers/form";
 // import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
 import { IoMdSkipForward } from "react-icons/io";
@@ -34,6 +37,7 @@ import {
   AnsweredBy,
 } from "node_modules/@sugar-ai/core/src/schema/form";
 import { z } from "zod";
+import AttachmentQuestion from "./AttachmentQuestion";
 
 export const submissionStates = z.enum([
   "notReady",
@@ -54,6 +58,8 @@ export const VoiceQuestion: React.FC<{
 }> = ({ voiceForm, question, onAnswered, onSkip, onBack }) => {
   renderCount++;
   DEV: console.log("[re-render] VoiceQuestion", renderCount);
+
+  const themeColor = "#0057FF";
 
   // Depdencies
   const { language, voice } = useLanguage();
@@ -198,6 +204,10 @@ export const VoiceQuestion: React.FC<{
       return v;
     });
 
+    if (question.question_type == "attachment") {
+      return;
+    }
+
     const questionEvaluation = await captureVoiceResponseAndEvaluate(
       question,
       language,
@@ -282,6 +292,10 @@ export const VoiceQuestion: React.FC<{
       await onAnswered(va as QuestionAnswer);
     }
 
+    if (va?.by === answeredBy.Enum.document) {
+      await onAnswered(va as QuestionAnswer);
+    }
+
     setAnswerReady(submissionStates.Enum.submitted);
   };
 
@@ -350,6 +364,41 @@ export const VoiceQuestion: React.FC<{
     });
   };
 
+  const handleFiles = async (files: File[]) => {
+    console.log(files);
+
+    const qe = await runOcrAndExtractDetails(
+      question,
+      language,
+      files,
+      voiceForm.formConfig,
+      setIsEvaluating,
+      registerAction,
+      unregisterAction,
+      textToAction,
+    );
+    console.log(qe);
+
+    const finalAnswer: QuestionAnswer = {
+      recording: qe.userResponse.recording,
+      rawAnswer: qe.userResponse.text,
+      evaluatedAnswer: qe.aiResponse.answer,
+      qualificationScore: qe.aiResponse.qualificationScore,
+      qualificationSummary: qe.aiResponse.qualificationSummary,
+      by: answeredBy.Enum.document,
+    };
+    setVoiceAnswer(finalAnswer);
+    // set voice answer
+    await speaki18nMessageAsync(
+      geti18nMessage("welcome"),
+      language,
+      voice as SpeechSynthesisVoice,
+      finalAnswer.evaluatedAnswer as string,
+    );
+
+    setAnswerReady(submissionStates.Enum.ready);
+  };
+
   return (
     <div className="sai-vq-container">
       <Streamingi18nText
@@ -359,6 +408,17 @@ export const VoiceQuestion: React.FC<{
         formConfig={voiceForm.formConfig}
         klasses={"font-medium text-3xl mb-4 text-gray-900 dark:text-white"}
       />
+
+      {["attachment"].includes(question.question_type) && (
+        <div className="flex flex-col items-center mt-2">
+          <AttachmentQuestion
+            onFileSelect={handleFiles}
+            onPhotoCapture={handleFiles}
+            themeColor={themeColor}
+            allowMultipleFiles={false}
+          />
+        </div>
+      )}
 
       {["text", "number"].includes(question.question_type) && (
         <div className="flex flex-col items-center mt-2">
@@ -395,7 +455,7 @@ export const VoiceQuestion: React.FC<{
                 backgroundColor: voiceForm?.formConfig.voiceButton?.bgColor,
               }}
             >
-              Submit
+              {extracti18nText(geti18nMessage("submit"), language)}
             </button>
           )}
         </div>
@@ -441,48 +501,52 @@ export const VoiceQuestion: React.FC<{
             )}
           </div>
 
-          <div className="sai-vf-actions">
-            <button onClick={onBack} className="sai-vf-action action-back">
-              {/* <ArrowLeft className="w-5 h-5" /> */}
-              <FaArrowLeftLong className="w-5 h-5" />
-            </button>
-            <VoiceButtonWithStates
-              currentStyle={{ voiceButton: voiceForm?.formConfig?.voiceButton }}
-              voiceButtonStyle={{}}
-              startListening={startListening}
-              buttonId={"voice-form"}
-              ispermissiongranted={true}
-              isprocessing={isEvaluating}
-              iswaiting={isWaiting}
-              islistening={isListening}
-              isSpeaking={isSpeaking}
-              stopSpeaking={stopSpeaking}
-            />
-            {!isWaiting ? (
-              <button
-                disabled={
-                  voiceAnswer == null || voiceAnswer?.evaluatedAnswer == ""
-                }
-                onClick={() =>
-                  voiceAnswer?.evaluatedAnswer != ""
-                    ? setAnswerReady(submissionStates.Enum.ready)
-                    : onSkip()
-                }
-                className="sai-vf-action action-skip "
-              >
-                {/* <SkipForward className="w-5 h-5" /> */}
-                <IoMdSkipForward className="w-5 h-5" />
+          {
+            <div className="sai-vf-actions">
+              <button onClick={onBack} className="sai-vf-action action-back">
+                {/* <ArrowLeft className="w-5 h-5" /> */}
+                <FaArrowLeftLong className="w-5 h-5" />
               </button>
-            ) : (
-              <button
-                onClick={() => setAnswerReady(submissionStates.Enum.ready)}
-                className="sai-vf-action action-next"
-              >
-                {/* <ArrowRight className="w-5 h-5" /> */}
-                <FaArrowRightLong className="w-5 h-5" />
-              </button>
-            )}
-          </div>
+              <VoiceButtonWithStates
+                currentStyle={{
+                  voiceButton: voiceForm?.formConfig?.voiceButton,
+                }}
+                voiceButtonStyle={{}}
+                startListening={startListening}
+                buttonId={"voice-form"}
+                ispermissiongranted={true}
+                isprocessing={isEvaluating}
+                iswaiting={isWaiting}
+                islistening={isListening}
+                isSpeaking={isSpeaking}
+                stopSpeaking={stopSpeaking}
+              />
+              {!isWaiting ? (
+                <button
+                  disabled={
+                    voiceAnswer == null || voiceAnswer?.evaluatedAnswer == ""
+                  }
+                  onClick={() =>
+                    voiceAnswer?.evaluatedAnswer != ""
+                      ? setAnswerReady(submissionStates.Enum.ready)
+                      : onSkip()
+                  }
+                  className="sai-vf-action action-skip "
+                >
+                  {/* <SkipForward className="w-5 h-5" /> */}
+                  <IoMdSkipForward className="w-5 h-5" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => setAnswerReady(submissionStates.Enum.ready)}
+                  className="sai-vf-action action-next"
+                >
+                  {/* <ArrowRight className="w-5 h-5" /> */}
+                  <FaArrowRightLong className="w-5 h-5" />
+                </button>
+              )}
+            </div>
+          }
         </div>
       </div>
     </div>

@@ -84,10 +84,27 @@ export const getPromptOutput = z
   .or(z.null());
 export type GetPromptOutput = z.infer<typeof getPromptOutput>;
 
+export const messageContentSchema = z.union([
+  z.object({
+    type: z.literal("text"),
+    text: z.string(),
+  }),
+  z.object({
+    type: z.literal("image_url"),
+    image_url: z.object({
+      url: z.string().url(), // Ensure the URL is valid
+    }),
+  }),
+]);
+
 export const messageRoleEnum = z.enum(["user", "assistant", "system", "tool"]);
 export const messageSchema = z.object({
   role: messageRoleEnum,
-  content: z.string(),
+  content: z.string(), // Old schema: content is a simple string
+  // content: z.union([
+  //   z.string(), // Old schema: content is a simple string
+  //   z.array(messageContentSchema), // New schema: content is an array of objects
+  // ]),
 });
 export const messagesSchema = z.array(messageSchema).default([]);
 

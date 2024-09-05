@@ -23,19 +23,37 @@ import {
 } from "@sugar-ai/core";
 
 import { SubmittedAnswer } from "~/validators/form";
-import React from "react";
+import React, { useState } from "react";
 import RecordVoiceOverSharpIcon from "@mui/icons-material/RecordVoiceOverSharp";
 import KeyboardAltSharpIcon from "@mui/icons-material/KeyboardAltSharp";
+import CameraAltSharpIcon from "@mui/icons-material/CameraAltSharp";
+import AttachFileSharpIcon from "@mui/icons-material/AttachFileSharp";
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
+
 import ReactTimeAgo from "react-timeago";
 import { formatDistanceStrict } from "date-fns";
+import Loading from "~/components/Layouts/loading";
+import { api } from "~/utils/api";
 
 const SubmissionAnswers = ({
+  submissionId,
   voiceForm,
-  submission,
 }: {
+  submissionId: string;
   voiceForm: VoiceForm;
-  submission: any;
 }) => {
+  // Fetch the submission and form data
+  const { data: submission, isLoading } = api.form.getSubmission.useQuery(
+    { formId: voiceForm?.id, submissionId },
+    { enabled: !!submissionId },
+  );
+
+  if (isLoading) return <Loading />;
+
+  if (!submission || !voiceForm)
+    return <div>No submission or form data found.</div>;
+
   const questions = voiceForm?.questions;
   const languages = voiceForm?.languages;
 
@@ -46,9 +64,8 @@ const SubmissionAnswers = ({
   const getQuestionById = (id: string): Question | undefined =>
     questionMap.get(id);
 
-  questions;
   return (
-    <div className="p-6">
+    <div className="">
       <h1 className="mb-4 text-xl font-semibold">
         Id: <span className="font-normal">{submission.id}</span>
       </h1>
@@ -82,22 +99,8 @@ const SubmissionAnswers = ({
             : "-"}
         </h3>
 
-        <h3 className="text-md mb-4 font-medium">
-          Device: {submission?.metadata?.device?.vendor}{" "}
-          {submission?.metadata?.device?.model} /{" "}
-          {submission?.metadata?.os?.name}
-          {"-"}
-          {submission?.metadata?.os?.version} /{" "}
-          {submission?.metadata?.browser?.name}
-          {"-"}
-          {submission?.metadata?.browser?.version}
-        </h3>
-        {/* <h3 className="text-md mb-4 font-medium">
-          Language:{" "}
-          {allLanguages[submission?.metadata?.language as LanguageCode]}
-          {" / "}
-          {submission?.metadata?.voice?.name}
-        </h3> */}
+        <AnswerMetadata metadata={submission?.metadata} />
+
         <h3 className="mb-2 text-lg font-medium">
           User ID: {submission?.clientUserId}
         </h3>
@@ -119,60 +122,6 @@ const SubmissionAnswers = ({
 
 export default SubmissionAnswers;
 
-export const SubmittedAnswerComponentx = ({
-  sa,
-  question,
-  languages,
-}: {
-  sa: SubmittedAnswer;
-  question: Question;
-  languages: LanguageCode[];
-}) => {
-  const qa = sa.answer as QuestionAnswer;
-
-  return (
-    <Box>
-      <ListItem key={sa?.questionId} className="w-full border-b">
-        <ListItemAvatar>
-          {qa.by === "voice" ? (
-            <RecordVoiceOverSharpIcon />
-          ) : (
-            <KeyboardAltSharpIcon />
-          )}
-        </ListItemAvatar>
-
-        <ListItemText
-          primary={question.question_text.lang[languages[0] as LanguageCode]}
-          secondary={
-            <Typography component="span" variant="body2" color="text.primary">
-              {qa.evaluatedAnswer}
-            </Typography>
-          }
-        />
-        <IconButton aria-label="comment">
-          {sa.answer.qualificationScore || "-"}
-        </IconButton>
-      </ListItem>
-
-      {qa.rawAnswer == qa.evaluatedAnswer && (
-        <ListItem key={`${sa?.questionId}-raw`} className="w-full border-b">
-          <ListItemText
-            secondary={
-              <Typography
-                component="span"
-                variant="body2"
-                color="text.secondary"
-              >
-                Raw: {qa.rawAnswer}
-              </Typography>
-            }
-          />
-        </ListItem>
-      )}
-    </Box>
-  );
-};
-
 export const SubmittedAnswerComponent = ({
   sa,
   question,
@@ -189,11 +138,7 @@ export const SubmittedAnswerComponent = ({
       <CardContent>
         <Grid container alignItems="center" spacing={2}>
           <Grid item>
-            {qa.by === "voice" ? (
-              <RecordVoiceOverSharpIcon />
-            ) : (
-              <KeyboardAltSharpIcon />
-            )}
+            <AnswerBy by={qa?.by as string} />
           </Grid>
           <Grid item xs>
             <Typography variant="h6">
@@ -223,5 +168,36 @@ export const SubmittedAnswerComponent = ({
         </Grid>
       </CardContent>
     </Card>
+  );
+};
+
+export const AnswerBy = ({ by }: { by: string }) => {
+  const renderIcon = () => {
+    switch (by) {
+      case "voice":
+        return <RecordVoiceOverSharpIcon />;
+      case "keyboard":
+        return <KeyboardAltSharpIcon />;
+      case "document":
+        return <DocumentScannerIcon />;
+      default:
+        return <QuestionMarkIcon />;
+    }
+  };
+  return <div>{renderIcon()}</div>;
+};
+
+export const AnswerMetadata = ({ metadata }: { metadata: any }) => {
+  if (!metadata) return null;
+
+  return (
+    <h3 className="text-md mb-4 font-medium">
+      Device: {metadata.device?.vendor ?? "Unknown Vendor"}{" "}
+      {metadata.device?.model ?? "Unknown Model"} /{" "}
+      {metadata.os?.name ?? "Unknown OS"} {"-"}
+      {metadata.os?.version ?? "Unknown Version"} /{" "}
+      {metadata.browser?.name ?? "Unknown Browser"} {"-"}
+      {metadata.browser?.version ?? "Unknown Version"}
+    </h3>
   );
 };

@@ -1623,6 +1623,7 @@
                         enum: 
                           - "voice"
                           - "keyboard"
+                          - "document"
                       qualificationScore: 
                         type: "string"
                         nullable: true

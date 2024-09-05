@@ -19,9 +19,74 @@ import {
   QualificationSegmentsDefaults,
 } from "@sugar-ai/core";
 import { QuestionAnswer } from "@sugar-ai/core";
+import Tesseract from "tesseract.js";
 
 export const SELECTED_QUESTION_TYPES = ["single_choice", "multiple_choice"];
 export const SELECTED_QUESTION_ANSWER_SPLIT = ",";
+
+export const runOcrAndExtractDetails = async (
+  question: Question,
+  language: LanguageCode,
+  files: File[],
+  formConfig: FormConfig,
+  setIsEvaluating: Function,
+  registerAction: Function,
+  unregisterAction: Function,
+  textToAction,
+): Promise<QuestionEvaluation> => {
+  setIsEvaluating(true);
+
+  const ocrText = await processOCR(files[0]);
+  if (!ocrText) {
+    console.error("Failed to process OCR");
+  }
+
+  const aiEvaluationResponse: AiEvaluationResponse = await aiEvaluate(
+    question,
+    ocrText as string,
+    language,
+    registerAction,
+    unregisterAction,
+    textToAction,
+  );
+
+  setIsEvaluating(false);
+
+  const qe: QuestionEvaluation = {
+    userResponse: {
+      text: ocrText as string,
+      recording: null,
+      autoStopped: false,
+    },
+    aiResponse: {
+      answer: aiEvaluationResponse.answer as string,
+      followupResponse: aiEvaluationResponse.followupResponse as string,
+      followupQuestion: "",
+      qualificationScore: aiEvaluationResponse.qualificationScore,
+      qualificationSummary: aiEvaluationResponse.qualificationSummary,
+    },
+  };
+  DEV: console.log(qe.aiResponse, qe.userResponse);
+  return qe;
+};
+
+export const processOCR = async (file): Promise<string | null> => {
+  try {
+    // const result = await Tesseract.recognize(file, "eng", {
+    //   logger: (m) => console.log(m), // Progress logging
+    // });
+
+    const result = await Tesseract.recognize(file);
+
+    const text = result.data.text;
+
+    console.log("OCR Result:", text);
+    return text;
+  } catch (error) {
+    console.error("Error during OCR processing:", error);
+    return null;
+  }
+};
 
 export const captureVoiceResponseAndEvaluate = async (
   question: Question,

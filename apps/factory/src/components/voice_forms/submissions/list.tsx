@@ -1,19 +1,47 @@
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import { DataGrid } from "@mui/x-data-grid";
-import { IconButton, Button } from "@mui/material";
+import {
+  IconButton,
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh"; // Import the Refresh icon
-import React from "react";
+import React, { useState } from "react";
 import Loading from "~/components/Layouts/loading";
+import SubmissionAnswers from "~/components/voice_forms/submissions/answers";
 import ReactTimeAgo from "react-timeago";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 const SubmissionsList = ({ formId }: { formId: string }) => {
   const router = useRouter();
+
+  // State to handle modal visibility and submission data
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<
+    string | null
+  >(null);
+
   const {
     data: submissions,
     isLoading,
     refetch,
   } = api.form.getSubmissions.useQuery({ formId }, { enabled: !!formId });
+
+  const { data: form, isLoading: isFormLoading } = api.form.getForm.useQuery(
+    { formId: formId },
+    {
+      enabled: !!formId,
+      onSuccess(updatedForm: any) {},
+    },
+  );
+
+  const handleOpenModal = (submissionId: string) => {
+    setSelectedSubmissionId(submissionId);
+    setOpenModal(true);
+  };
 
   const columns = [
     { field: "id", headerName: "Submission ID", flex: 1 },
@@ -43,16 +71,27 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
       headerName: "Actions",
       flex: 1,
       renderCell: (params: any) => (
-        <Button
-          variant="text"
-          size="small"
-          color="primary"
-          onClick={() =>
-            router.push(`/dashboard/forms/${formId}/submissions/${params.id}`)
-          }
-        >
-          View
-        </Button>
+        <>
+          <Button
+            variant="text"
+            size="small"
+            onClick={() => handleOpenModal(params.id)} // Open modal to submit answers
+          >
+            View
+          </Button>
+          <Button
+            variant="text"
+            startIcon={<OpenInNewIcon />}
+            size="small"
+            color="primary"
+            onClick={() =>
+              window.open(
+                `/dashboard/forms/${formId}/submissions/${params.id}`,
+                "_blank",
+              )
+            }
+          ></Button>
+        </>
       ),
     },
   ];
@@ -74,6 +113,28 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
           disableColumnMenu
         />
       </div>
+
+      {/* Modal for Submission Answers */}
+      <Dialog
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Submission</DialogTitle>
+        <DialogContent>
+          {isFormLoading ? (
+            <Loading />
+          ) : selectedSubmissionId && form ? (
+            <SubmissionAnswers
+              voiceForm={form}
+              submissionId={selectedSubmissionId}
+            />
+          ) : (
+            <p>No data available.</p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

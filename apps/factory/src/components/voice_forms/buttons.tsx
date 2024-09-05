@@ -13,7 +13,7 @@ interface FormButtonProps {
 export const formPreviewUrl = (vf: any) =>
   (process.env.NODE_ENV === "development"
     ? `http://localhost:4000`
-    : `https://demo.sugarai.dev`) + `/voice_forms/${vf?.id}`;
+    : `https://app.sugarai.dev`) + `/voice_forms/${vf?.id}`;
 export const formSubmissionsUrl = (vf: any) =>
   `/dashboard/forms/${vf?.id}?tab=submissions`;
 export const formEditUrl = (vf: any) => `/dashboard/forms/${vf?.id}/edit`;

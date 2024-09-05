@@ -180,6 +180,9 @@ const QuestionNew: React.FC<QuestionNewProps> = ({
                   </MenuItem>
                   <MenuItem value={questionType.Enum.text}>Text</MenuItem>
                   <MenuItem value={questionType.Enum.number}>Number</MenuItem>
+                  <MenuItem value={questionType.Enum.attachment}>
+                    Attachment
+                  </MenuItem>
                 </Select>
               )}
             />
