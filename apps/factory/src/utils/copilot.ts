@@ -1,8 +1,8 @@
 import { type CopilotConfigType } from "@sugar-ai/core";
 
 export function getCopilotConfig(
-  promptPackage = null,
-  color = null,
+  promptPackage: string | null = null,
+  color: string | null = null,
 ): CopilotConfigType {
   const copilotPackage =
     promptPackage ?? "sugar/copilotexample/todoexample/0.0.3";

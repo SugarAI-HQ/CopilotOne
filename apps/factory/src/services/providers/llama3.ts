@@ -2,7 +2,6 @@ import {
   LlmConfigSchema,
   PromptDataSchemaType,
 } from "~/validators/prompt_version";
-import { ModelTypeType } from "~/generated/prisma-client-zod.ts";
 import DeepInfraVendor from "../vendors/deepinfra_vendor";
 import BedrockVendor from "../vendors/bedrock_vendor";
 import { PromptRoleEnum } from "~/validators/base";
@@ -18,6 +17,11 @@ import {
   LlmResponse,
   getTextResponseV2,
 } from "~/validators/llm_respose";
+import {
+  MessagesSchema,
+  SkillChoicesType,
+  skillsSchema,
+} from "~/validators/service";
 
 export interface LLMConfig {
   max_tokens: number;

@@ -5,7 +5,7 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
-  klass: string;
+  klass;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -14,7 +14,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
   klass = "",
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null; // Only render modal if it is open
 
   return (
     <div

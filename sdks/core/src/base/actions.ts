@@ -341,19 +341,19 @@ export async function textToJson(
 
   promptVariables["@schema"] = zodSchemString;
 
-  // const response = await textToAction(
-  //   promptTemplate,
-  //   userQuery,
-  //   promptVariables,
-  //   {} as EmbeddingScopeType,
-  //   config,
-  //   false,
-  //   1,
-  //   [],
-  //   [],
-  // );
+  const response = await textToAction(
+    promptTemplate,
+    userQuery,
+    promptVariables,
+    {} as EmbeddingScopeType,
+    config,
+    false,
+    1,
+    [],
+    [],
+  );
 
-  const response = { textOutput: jsonSampleResponse };
+  // const response = { textOutput: jsonSampleResponse };
 
   // console.log("response", response);
   const codeBlocks = extractCode(response.textOutput);
@@ -394,206 +394,206 @@ function parseAndValidateJson(codeBlock: string, schema) {
   }
 }
 
-const jsonSampleResponse = `
+// const jsonSampleResponse = `
 
-Based on the JD provided, below are the questions with clear validation and qualification criteria.
+// Based on the JD provided, below are the questions with clear validation and qualification criteria.
 
-\`\`\`json
-[
-  {
-    "active": true,
-    "question_type": "email",
-    "question_text": {
-      "lang": {
-        "en": "What is your official email address?",
-        "hi": "आपका आधिकारिक ईमेल पता क्या है?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 255,
-      "validators": [
-        {
-          "type": "email",
-          "message": "Invalid email format"
-        }
-      ]
-    },
-    "qualification": {
-      "type": "mandatory",
-      "criteria": ""
-    },
-    "order": 2
-  },
-  {
-    "active": true,
-    "question_type": "text",
-    "question_text": {
-      "lang": {
-        "en": "What is your contact number?",
-        "hi": "आपका संपर्क नंबर क्या है?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 20,
-      "validators": [
-        {
-          "type": "regex",
-          "regex": "^[0-9]{10}$",
-          "message": "Invalid contact number format"
-        }
-      ]
-    },
-    "qualification": {
-      "type": "mandatory",
-      "criteria": ""
-    },
-    "order": 3
-  },
-  {
-    "active": true,
-    "question_type": "text",
-    "question_text": {
-      "lang": {
-        "en": "How many years of experience do you have in e-commerce catalog management or a similar role?",
-        "hi": "ई-कॉमर्स कैटलॉग प्रबंधन या एक समान भूमिका में आपका कितना अनुभव है?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 50,
-      "validators": []
-    },
-    "qualification": {
-      "type": "numeric",
-      "criteria": "min:1,max:3"
-    },
-    "order": 4
-  },
-  {
-    "active": true,
-    "question_type": "yes_no",
-    "question_text": {
-      "lang": {
-        "en": "Do you have experience handling e-commerce portals/websites?",
-        "hi": "क्या आपके पास ई-कॉमर्स पोर्टल/वेबसाइट को संभालने का अनुभव है?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 50,
-      "validators": []
-    },
-    "qualification": {
-      "type": "mandatory",
-      "criteria": ""
-    },
-    "order": 5
-  },
-  {
-    "active": true,
-    "question_type": "text",
-    "question_text": {
-      "lang": {
-        "en": "Please elaborate on your current roles and responsibilities.",
-        "hi": "कृपया अपनी वर्तमान भूमिकाओं और जिम्मेदारियों के बारे में विस्तार से बताएं।"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 1000,
-      "validators": []
-    },
-    "qualification": {
-      "type": "ai",
-      "criteria": ""
-    },
-    "order": 6
-  },
-  {
-    "active": true,
-    "question_type": "yes_no",
-    "question_text": {
-      "lang": {
-        "en": "Are you fine with the job location?",
-        "hi": "क्या आपको नौकरी का स्थान स्वीकार है?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 50,
-      "validators": []
-    },
-    "qualification": {
-      "type": "mandatory",
-      "criteria": ""
-    },
-    "order": 7
-  },
-  {
-    "active": true,
-    "question_type": "numeric",
-    "question_text": {
-      "lang": {
-        "en": "What is your current CTC?",
-        "hi": "आपका वर्तमान CTC क्या है?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 10,
-      "validators": []
-    },
-    "qualification": {
-      "type": "mandatory",
-      "criteria": ""
-    },
-    "order": 8
-  },
-  {
-    "active": true,
-    "question_type": "numeric",
-    "question_text": {
-      "lang": {
-        "en": "What is your expected CTC?",
-        "hi": "आपकी अपेक्षित CTC क्या है?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 10,
-      "validators": []
-    },
-    "qualification": {
-      "type": "mandatory",
-      "criteria": ""
-    },
-    "order": 9
-  },
-  {
-    "active": true,
-    "question_type": "numeric",
-    "question_text": {
-      "lang": {
-        "en": "What would be your notice period?",
-        "hi": "आपकी नोटिस अवधि कितनी होगी?"
-      }
-    },
-    "question_params": {},
-    "validation": {
-      "max_length": 10,
-      "validators": []
-    },
-    "qualification": {
-      "type": "mandatory",
-      "criteria": ""
-    },
-    "order": 10
-  }
-]
+// \`\`\`json
+// [
+//   {
+//     "active": true,
+//     "question_type": "email",
+//     "question_text": {
+//       "lang": {
+//         "en": "What is your official email address?",
+//         "hi": "आपका आधिकारिक ईमेल पता क्या है?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 255,
+//       "validators": [
+//         {
+//           "type": "email",
+//           "message": "Invalid email format"
+//         }
+//       ]
+//     },
+//     "qualification": {
+//       "type": "mandatory",
+//       "criteria": ""
+//     },
+//     "order": 2
+//   },
+//   {
+//     "active": true,
+//     "question_type": "text",
+//     "question_text": {
+//       "lang": {
+//         "en": "What is your contact number?",
+//         "hi": "आपका संपर्क नंबर क्या है?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 20,
+//       "validators": [
+//         {
+//           "type": "regex",
+//           "regex": "^[0-9]{10}$",
+//           "message": "Invalid contact number format"
+//         }
+//       ]
+//     },
+//     "qualification": {
+//       "type": "mandatory",
+//       "criteria": ""
+//     },
+//     "order": 3
+//   },
+//   {
+//     "active": true,
+//     "question_type": "text",
+//     "question_text": {
+//       "lang": {
+//         "en": "How many years of experience do you have in e-commerce catalog management or a similar role?",
+//         "hi": "ई-कॉमर्स कैटलॉग प्रबंधन या एक समान भूमिका में आपका कितना अनुभव है?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 50,
+//       "validators": []
+//     },
+//     "qualification": {
+//       "type": "numeric",
+//       "criteria": "min:1,max:3"
+//     },
+//     "order": 4
+//   },
+//   {
+//     "active": true,
+//     "question_type": "yes_no",
+//     "question_text": {
+//       "lang": {
+//         "en": "Do you have experience handling e-commerce portals/websites?",
+//         "hi": "क्या आपके पास ई-कॉमर्स पोर्टल/वेबसाइट को संभालने का अनुभव है?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 50,
+//       "validators": []
+//     },
+//     "qualification": {
+//       "type": "mandatory",
+//       "criteria": ""
+//     },
+//     "order": 5
+//   },
+//   {
+//     "active": true,
+//     "question_type": "text",
+//     "question_text": {
+//       "lang": {
+//         "en": "Please elaborate on your current roles and responsibilities.",
+//         "hi": "कृपया अपनी वर्तमान भूमिकाओं और जिम्मेदारियों के बारे में विस्तार से बताएं।"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 1000,
+//       "validators": []
+//     },
+//     "qualification": {
+//       "type": "ai",
+//       "criteria": ""
+//     },
+//     "order": 6
+//   },
+//   {
+//     "active": true,
+//     "question_type": "yes_no",
+//     "question_text": {
+//       "lang": {
+//         "en": "Are you fine with the job location?",
+//         "hi": "क्या आपको नौकरी का स्थान स्वीकार है?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 50,
+//       "validators": []
+//     },
+//     "qualification": {
+//       "type": "mandatory",
+//       "criteria": ""
+//     },
+//     "order": 7
+//   },
+//   {
+//     "active": true,
+//     "question_type": "numeric",
+//     "question_text": {
+//       "lang": {
+//         "en": "What is your current CTC?",
+//         "hi": "आपका वर्तमान CTC क्या है?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 10,
+//       "validators": []
+//     },
+//     "qualification": {
+//       "type": "mandatory",
+//       "criteria": ""
+//     },
+//     "order": 8
+//   },
+//   {
+//     "active": true,
+//     "question_type": "numeric",
+//     "question_text": {
+//       "lang": {
+//         "en": "What is your expected CTC?",
+//         "hi": "आपकी अपेक्षित CTC क्या है?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 10,
+//       "validators": []
+//     },
+//     "qualification": {
+//       "type": "mandatory",
+//       "criteria": ""
+//     },
+//     "order": 9
+//   },
+//   {
+//     "active": true,
+//     "question_type": "numeric",
+//     "question_text": {
+//       "lang": {
+//         "en": "What would be your notice period?",
+//         "hi": "आपकी नोटिस अवधि कितनी होगी?"
+//       }
+//     },
+//     "question_params": {},
+//     "validation": {
+//       "max_length": 10,
+//       "validators": []
+//     },
+//     "qualification": {
+//       "type": "mandatory",
+//       "criteria": ""
+//     },
+//     "order": 10
+//   }
+// ]
 
-\`\`\`
+// \`\`\`
 
-These questions are mandatory and cover all the qualifications mentioned in the JD. The validation criteria are also set accordingly.
-`;
+// These questions are mandatory and cover all the qualifications mentioned in the JD. The validation criteria are also set accordingly.
+// `;

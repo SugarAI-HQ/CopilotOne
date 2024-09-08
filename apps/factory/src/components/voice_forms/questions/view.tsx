@@ -208,7 +208,11 @@ const QuestionView: React.FC<QuestionViewProps> = ({
           >
             {question.validation && (
               <>
-                <Typography variant="body2" color="textSecondary">
+                <Typography
+                  variant="body2"
+                  component="div"
+                  color="textSecondary"
+                >
                   <strong>Validation:</strong>{" "}
                   {/* {question.validation?.type || "ai"} */}
                   <Chip
@@ -218,7 +222,11 @@ const QuestionView: React.FC<QuestionViewProps> = ({
                     color="default"
                   />
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
+                <Typography
+                  variant="body2"
+                  component="div"
+                  color="textSecondary"
+                >
                   {question.validation?.criteria}
                 </Typography>
               </>
@@ -234,7 +242,11 @@ const QuestionView: React.FC<QuestionViewProps> = ({
           >
             {question.qualification && (
               <>
-                <Typography variant="body2" color="textSecondary">
+                <Typography
+                  variant="body2"
+                  component="div"
+                  color="textSecondary"
+                >
                   <strong>Qualification:</strong>
                   {/* {question.qualification?.type} */}
                   <Chip

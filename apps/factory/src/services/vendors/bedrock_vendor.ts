@@ -30,7 +30,9 @@ class BedrockVendor extends BaseVendor {
     retryDelay = 1000,
   ) {
     super("https://api.aws.com/v1/models", maxRetries, retryDelay);
-    this.bedrockClient = new BedrockRuntimeClient({ region: env.AWS_REGION });
+    this.bedrockClient = new BedrockRuntimeClient({
+      region: process.env.AWS_REGION,
+    });
     this.provider = provider;
     this.model = getModelIdVersion(provider, model);
     console.log(`model`, this.model); // Output: "meta.llama3-8b-instruct-v1:0"
@@ -75,16 +77,15 @@ class BedrockVendor extends BaseVendor {
   }
 
   protected parsePromptChat(prompt: PromptDataType): MessagesSchema {
-    return prompt.filter(
-      (item: { id: string; role: string; content: string }) => {
-        if (item.role !== "system") {
-          return {
-            role: item.role,
-            content: item.content,
-          } as MessageSchema;
-        }
-      },
-    );
+    return prompt
+      .filter(
+        (item: { id: string; role: string; content: string }) =>
+          item.role !== "system",
+      )
+      .map((item: { id: string; role: string; content: string }) => ({
+        role: item.role,
+        content: item.content,
+      })) as MessagesSchema;
   }
 
   protected async executeLama3(
@@ -181,7 +182,7 @@ class BedrockVendor extends BaseVendor {
 
 export default BedrockVendor;
 
-function getModelIdVersion(provider, modelName) {
+function getModelIdVersion(provider: string, modelName: string) {
   const model = BEDROCK_MODELS.find(
     (m) =>
       m.provider.toLowerCase() === provider.toLowerCase() &&

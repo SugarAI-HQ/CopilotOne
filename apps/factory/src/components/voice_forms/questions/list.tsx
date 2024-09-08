@@ -9,10 +9,10 @@ import {
   QualificationSegmentsDefaults,
   CopilotProvider,
 } from "@sugar-ai/core";
-import { Chip } from "@mui/material";
+
 import Loading from "~/components/Layouts/loading";
 import QuestionNew from "./new";
-import { VoiceToJson } from "@sugar-ai/copilot-one-js";
+import { SchemaToJson } from "@sugar-ai/copilot-one-js";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { Button, CircularProgress } from "@mui/material";
@@ -49,11 +49,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
     console.log(
       "questions",
       JSON.stringify(
-        questions.map(
-          (q) => omit(q, ["id", "createdAt", "updatedAt"]),
-          null,
-          "\t",
-        ),
+        questions.map((q) => omit(q, ["id", "createdAt", "updatedAt"])),
       ),
     );
   }, [voiceForm]);
@@ -211,91 +207,104 @@ const QuestionList: React.FC<QuestionListProps> = ({
 
   return (
     <>
-      {isLoading && <Loading></Loading>}
       <CopilotProvider config={getCopilotConfig()}>
-        <VoiceToJson
-          schema={questionSchema}
-          onJson={async (questions: Question[]) => {
-            await onQuestions(voiceForm?.id, questions);
-          }}
-          config={{}}
-        ></VoiceToJson>
-      </CopilotProvider>
-
-      {questions && (
-        <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">
-          <SelectedLanguages
-            selectedLanguages={voiceForm?.languages || []}
-            onClick={handleSectedLanguage}
-          />
-          <h2 className="mb-4 mt-4 text-lg font-bold">
-            Questions{" "}
-            <Button variant="outlined" onClick={handleAdd}>
-              <AddIcon /> Add
-            </Button>
-            {formQuestionsMutation.isLoading ||
-              (questionOrderMutation.isLoading && (
-                <CircularProgress
-                  size={30}
-                  className="ml-4"
-                  style={{ marginBottom: -10 }}
-                />
-              ))}
-          </h2>
-
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="questions">
-              {(provided: any) => (
-                <ul
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  className="space-y-4"
-                >
-                  {questions?.map((question, index) => (
-                    <Draggable
-                      key={question.id}
-                      draggableId={question.id}
-                      index={index}
-                    >
-                      {(provided: any) => (
-                        <li
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                        >
-                          <QuestionView
-                            question={question}
-                            languages={languages}
-                            activeLang={activeLang}
-                            onEdit={handleEdit}
-                            onClone={handleClone}
-                            onDelete={handleDelete}
-                            onActive={handleActive}
-                            dragHandleProps={provided.dragHandleProps} // Pass dragHandleProps here
-                          />
-                        </li>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </ul>
-              )}
-            </Droppable>
-          </DragDropContext>
-
-          <QuestionNew
-            key={editingQuestion?.id || "new"}
-            voiceForm={voiceForm}
-            initQuestion={editingQuestion}
-            onSubmit={async (question) => {
-              // Handle question submission
-              return await onQuestions(voiceForm.id, [question]);
+        {isLoading && <Loading></Loading>}
+        {!isLoading && questions && questions.length == 0 && (
+          <SchemaToJson
+            schema={questionSchema}
+            config={{
+              generateButtonText: "Generate Questions",
+              generatingButtonText: "Generating ...",
             }}
-            open={!!editingQuestion}
-            onClose={() => setEditingQuestion(null)}
-            isLoading={formQuestionsMutation.isLoading}
+            onGenerate={async (requirement: string) => {
+              const newRequirement =
+                requirement +
+                "\n Add support for languages " +
+                languages.join(", ");
+
+              return newRequirement;
+            }}
+            onJson={async (questions: Question[]) => {
+              await onQuestions(voiceForm?.id, questions);
+            }}
           />
-        </div>
-      )}
+        )}
+
+        {questions && (
+          <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">
+            <SelectedLanguages
+              selectedLanguages={voiceForm?.languages || []}
+              onClick={handleSectedLanguage}
+            />
+            <h2 className="mb-4 mt-4 text-lg font-bold">
+              Questions{" "}
+              <Button variant="outlined" onClick={handleAdd}>
+                <AddIcon /> Add
+              </Button>
+              {formQuestionsMutation.isLoading ||
+                (questionOrderMutation.isLoading && (
+                  <CircularProgress
+                    size={30}
+                    className="ml-4"
+                    style={{ marginBottom: -10 }}
+                  />
+                ))}
+            </h2>
+
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="questions">
+                {(provided: any) => (
+                  <ul
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="space-y-4"
+                  >
+                    {questions?.map((question, index) => (
+                      <Draggable
+                        key={question.id}
+                        draggableId={question.id}
+                        index={index}
+                      >
+                        {(provided: any) => (
+                          <li
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                          >
+                            <QuestionView
+                              question={question}
+                              languages={languages}
+                              activeLang={activeLang}
+                              onEdit={handleEdit}
+                              onClone={handleClone}
+                              onDelete={handleDelete}
+                              onActive={handleActive}
+                              dragHandleProps={provided.dragHandleProps} // Pass dragHandleProps here
+                            />
+                          </li>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </ul>
+                )}
+              </Droppable>
+            </DragDropContext>
+
+            <QuestionNew
+              key={editingQuestion?.id || "new"}
+              voiceForm={voiceForm}
+              initQuestion={editingQuestion}
+              onSubmit={async (question: Question) => {
+                // Handle question submission
+                return await onQuestions(voiceForm.id, [question]);
+              }}
+              open={!!editingQuestion}
+              onClose={() => setEditingQuestion(null)}
+              isLoading={formQuestionsMutation.isLoading}
+            />
+          </div>
+        )}
+      </CopilotProvider>
     </>
   );
 };

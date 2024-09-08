@@ -17,7 +17,7 @@ import {
   VoiceFormProvider,
 } from "@sugar-ai/core";
 
-import { VoiceToJson } from "@sugar-ai/copilot-one-js";
+import { SchemaToJson } from "@sugar-ai/copilot-one-js";
 
 import "@sugar-ai/copilot-one-js/style";
 import dynamic from "next/dynamic";
@@ -113,7 +113,7 @@ const App: NextPage = () => {
     <>
       <Header />
       <CopilotProvider config={copilotConfig}>
-        <VoiceToJson></VoiceToJson>
+        <SchemaToJson></SchemaToJson>
       </CopilotProvider>
     </>
   );

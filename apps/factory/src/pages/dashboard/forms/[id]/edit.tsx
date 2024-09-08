@@ -6,6 +6,7 @@ import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
 import { Form } from "~/validators/form";
 import Head from "next/head";
+import Loading from "~/components/Layouts/loading";
 
 const FormEdit: NextPageWithLayout = () => {
   const router = useRouter();
@@ -18,7 +19,7 @@ const FormEdit: NextPageWithLayout = () => {
     setVoiceForm(form);
   };
 
-  const { data: form, isLoading: isFormLoading } = api.form.getForm.useQuery(
+  const { data: form, isLoading } = api.form.getForm.useQuery(
     { formId: formId },
     {
       enabled: !!formId,
@@ -34,14 +35,17 @@ const FormEdit: NextPageWithLayout = () => {
       <Head>
         <title>Edit {voiceForm?.name} - Voice Form</title>
       </Head>
-      <VoiceEditTabs
-        voiceForm={voiceForm}
-        // questions={voiceForm?.questions}
-        setVoiceForm={setVoiceForm}
-        // handleAddOrEditQuestion={handleAddOrEditQuestion}
-        // handleEdit={handleEdit}
-        // handleDelete={handleDelete}
-      />
+      {isLoading && <Loading />}
+      {!isLoading && (
+        <VoiceEditTabs
+          voiceForm={voiceForm}
+          // questions={voiceForm?.questions}
+          setVoiceForm={setVoiceForm}
+          // handleAddOrEditQuestion={handleAddOrEditQuestion}
+          // handleEdit={handleEdit}
+          // handleDelete={handleDelete}
+        />
+      )}
     </div>
   );
 };

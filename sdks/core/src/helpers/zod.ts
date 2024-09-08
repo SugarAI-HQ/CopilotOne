@@ -1,28 +1,37 @@
 import {
   z,
+  ZodArray,
   ZodSchema,
+  ZodEnum,
   ZodObject,
+  ZodOptional,
   ZodString,
   ZodNumber,
   ZodBoolean,
-  ZodEnum,
-  ZodArray,
-  ZodOptional,
+  ZodRecord,
 } from "zod";
 
 // Helper function to translate a Zod object schema
-export const translateZodObject = (schema: ZodObject<any>): string => {
-  const shape = schema.shape;
-  const result: string[] = [];
-  for (const [key, value] of Object.entries(shape)) {
-    result.push(`${key}: ${translateZodSchema(value as ZodSchema<any>)}`);
-  }
-  return `{ ${result.join(", ")} }`;
+const translateZodObject = (schema: ZodObject<any>): string => {
+  const entries = Object.entries(schema.shape).map(
+    ([key, value]) => `${key}: ${translateZodSchema(value as any)}`,
+  );
+  return `z.object({ ${entries.join(", ")} })`;
 };
 
 // Helper function to translate a Zod array schema
 const translateZodArray = (schema: ZodArray<any, any>): string => {
-  return `array(${translateZodSchema(schema.element)})`;
+  return `z.array(${translateZodSchema(schema._def.type)})`;
+};
+
+// Helper function to translate a Zod enum schema
+const translateZodEnum = (schema: ZodEnum<any>): string => {
+  return `z.enum(${JSON.stringify(schema._def.values)})`;
+};
+
+// Helper function to translate a Zod record schema
+const translateZodRecord = (schema: ZodRecord<any, any>): string => {
+  return `z.record(${translateZodSchema(schema._def.keyType)}, ${translateZodSchema(schema._def.valueType)})`;
 };
 
 // Main function to translate any Zod schema to string
@@ -34,13 +43,17 @@ export const translateZodSchema = (schema: ZodSchema<any>): string => {
   } else if (schema instanceof ZodBoolean) {
     return "z.boolean()";
   } else if (schema instanceof ZodEnum) {
-    return `z.enum(${JSON.stringify(schema.options)})`;
+    return translateZodEnum(schema);
   } else if (schema instanceof ZodArray) {
     return translateZodArray(schema);
   } else if (schema instanceof ZodObject) {
     return translateZodObject(schema);
   } else if (schema instanceof ZodOptional) {
-    return `${translateZodSchema(schema._def.innerType)}.optional()`;
+    return `${translateZodSchema(schema.unwrap())}.optional()`;
+  } else if (schema instanceof z.ZodDefault) {
+    return `${translateZodSchema(schema._def.innerType)}.default(${JSON.stringify(schema._def.defaultValue())})`;
+  } else if (schema instanceof ZodRecord) {
+    return translateZodRecord(schema);
   } else {
     return "unknown";
   }
