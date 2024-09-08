@@ -15,6 +15,7 @@ import {
 } from "@sugar-ai/core";
 
 import { VoiceFormComponent, LanguageSelector } from "@sugar-ai/copilot-one-js";
+import { getCopilotConfig } from "~/utils/copilot";
 
 import "@sugar-ai/copilot-one-js/style";
 import dynamic from "next/dynamic";
@@ -41,40 +42,7 @@ const VoiceFormShow: NextPageWithLayout = () => {
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
   const themeColor = color ?? "#0057FF";
   // const themeColor = "#3b83f6";
-
-  let copilotConfig: CopilotConfigType = {
-    copilotId: process.env.NEXT_PUBLIC_COPILOT_ID as string,
-    server: {
-      endpoint: process.env.NEXT_PUBLIC_COPILOT_ENDPOINT as string,
-      token: process.env.NEXT_PUBLIC_COPILOT_SECRET as string,
-    },
-    ai: {
-      defaultPromptTemplate: copilotPackage,
-      defaultPromptVariables: {
-        "#AGENT_NAME": "Tudy",
-      },
-      successResponse: "Task Done",
-      failureResponse: "I am not able to do this",
-    },
-    nudges: {
-      welcome: {
-        textMode: "manual",
-        text: "Hi, I am John. How may I help you today?",
-        delay: 1,
-        enabled: true,
-        chatHistorySize: 0,
-      },
-    },
-    style: {
-      container: { position: "bottom-center" },
-
-      theme: { primaryColor: themeColor },
-      voiceButton: {
-        bgColor: themeColor,
-        iconSize: "28",
-      },
-    },
-  };
+  const copilotConfig = getCopilotConfig(copilotPackage, color);
 
   const initFormConfig: FormConfig = {
     ...FormConfigDefaults,

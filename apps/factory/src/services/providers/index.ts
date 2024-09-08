@@ -1,5 +1,6 @@
 // Import individual providers
 import * as llama2 from "./llama2";
+import * as llama3 from "./llama3";
 import * as ph from "./prompthero";
 import * as runwayml from "./runwayml";
 import * as stabilityai from "./stabilityai";
@@ -21,6 +22,7 @@ interface Provider {
 const providers: Record<string, Provider> = {
   mistral: mistral,
   llama2: llama2,
+  llama3: llama3,
   openai: openai,
   prompthero: ph,
   runwayml: runwayml,

@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import { createUseStateEmbedding } from "./useStateEmbedding";
 
-import { any } from "zod";
+import { any, ZodSchema } from "zod";
 import {
   ActionDefinitionType,
   ActionRegistrationType,
@@ -18,6 +18,7 @@ import {
   register,
   unregister,
   textToAction as nativeTextoAction,
+  textToJson as nativeTextoJson,
 } from "~/base/actions";
 
 export const CopilotContext = createContext({
@@ -37,6 +38,13 @@ export const CopilotContext = createContext({
   ) => {},
 
   unregisterAction: (name: string) => {},
+
+  textToJson: async (
+    schema: ZodSchema<any>,
+    promptTemplate: string,
+    userQuery: string,
+    promptVariables: any,
+  ) => Promise<TextToActionResponse>,
 
   textToAction: async (
     promptTemplate: string,
@@ -126,6 +134,21 @@ export const CopilotProvider = function ({
   const style: CopilotSytleType = config.style;
   DEV: console.log(`default style: ${JSON.stringify(style)}`);
 
+  async function textToJson(
+    schema,
+    promptTemplate,
+    userQuery,
+    promptVariables,
+  ): Promise<TextToActionResponse> {
+    return await nativeTextoJson(
+      schema,
+      promptTemplate,
+      userQuery,
+      promptVariables,
+      config,
+    );
+  }
+
   async function textToAction(
     promptTemplate,
     userQuery,
@@ -162,6 +185,8 @@ export const CopilotProvider = function ({
         unregisterAction,
         // @ts-expect-error
         textToAction,
+        // @ts-expect-error
+        textToJson,
       }}
     >
       {children}

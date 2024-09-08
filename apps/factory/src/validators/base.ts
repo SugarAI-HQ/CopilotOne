@@ -49,10 +49,17 @@ export const providerModels: ProviderModels = {
     defaultModel: "gpt-4o-mini",
     toolEnabled: true,
     providers: [
+      // {
+      //   name: "llama3",
+      //   label: "Llama3",
+      //   enabled: true,
+      //   editorVersion: 1,
+      //   toolEnabled: true,
+      // },
       {
         name: "llama2",
         label: "Llama2",
-        enabled: true,
+        enabled: false,
         editorVersion: 0,
         toolEnabled: false,
       },
@@ -112,6 +119,22 @@ export const providerModels: ProviderModels = {
         {
           name: "gpt-4o-mini",
           label: "GPT 4o Mini",
+          enabled: true,
+          editorVersion: 1,
+          toolEnabled: true,
+        },
+      ],
+      llama3: [
+        {
+          name: "8b-instruct",
+          label: "8B Instruct",
+          enabled: true,
+          editorVersion: 1,
+          toolEnabled: true,
+        },
+        {
+          name: "70b-instruct",
+          label: "70B Instruct",
           enabled: true,
           editorVersion: 1,
           toolEnabled: true,

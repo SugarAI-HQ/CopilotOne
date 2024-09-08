@@ -90,6 +90,7 @@ import {
 } from "~/validators/llm_respose";
 import { escapeStringRegexp } from "~/utils/template";
 import PromptInputAttachment from "./prompt_input_attachment";
+import { copilotRouterDefaults } from "@sugar-ai/core";
 
 function PromptVersion({
   ns,
@@ -248,6 +249,7 @@ function PromptVersion({
     }
     const pl = await generateMutation.mutateAsync(
       {
+        router: copilotRouterDefaults,
         username: ns?.username,
         packageName: pp?.name || "",
         template: pt?.name || "",

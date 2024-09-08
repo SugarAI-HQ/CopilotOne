@@ -200,6 +200,7 @@ export const serviceRouter = createTRPCRouter({
         const variables = replaceDataVariables(templateVariables || {});
         trackTime("end");
         // 4.2 Save prompt data to database
+        debugger;
         try {
           pl = await ctx.prisma.promptLog.create({
             data: {

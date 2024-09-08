@@ -4,13 +4,15 @@ import {
   LanguageCode,
   allLanguages,
   Question,
+  questionSchema,
   VoiceForm,
   QualificationSegmentsDefaults,
+  CopilotProvider,
 } from "@sugar-ai/core";
 import { Chip } from "@mui/material";
 import Loading from "~/components/Layouts/loading";
 import QuestionNew from "./new";
-// import { VoiceToJson } from "@sugar-ai/copilot-one-js";
+import { VoiceToJson } from "@sugar-ai/copilot-one-js";
 import { api } from "~/utils/api";
 import toast from "react-hot-toast";
 import { Button, CircularProgress } from "@mui/material";
@@ -24,6 +26,8 @@ import {
 } from "react-beautiful-dnd";
 import { debounce } from "lodash";
 import { SelectedLanguages } from "../langauges_selector";
+import { omit } from "lodash";
+import { getCopilotConfig } from "~/utils/copilot";
 
 interface QuestionListProps {
   voiceForm: VoiceForm;
@@ -42,7 +46,16 @@ const QuestionList: React.FC<QuestionListProps> = ({
 
   useEffect(() => {
     console.log("voiceForm", voiceForm);
-    console.log("questions", questions);
+    console.log(
+      "questions",
+      JSON.stringify(
+        questions.map(
+          (q) => omit(q, ["id", "createdAt", "updatedAt"]),
+          null,
+          "\t",
+        ),
+      ),
+    );
   }, [voiceForm]);
 
   const onQuestions = async (
@@ -50,6 +63,10 @@ const QuestionList: React.FC<QuestionListProps> = ({
     toBeUpsertedQuestions: Question[],
   ): Promise<void> => {
     const orderStart = questions.length;
+
+    toBeUpsertedQuestions.map((q) => {
+      q.id = q.id || "";
+    });
 
     // Ensure each question has an order set
     const questionsWithOrder = toBeUpsertedQuestions.map((q, index) => {
@@ -195,13 +212,15 @@ const QuestionList: React.FC<QuestionListProps> = ({
   return (
     <>
       {isLoading && <Loading></Loading>}
-      {/* <VoiceToJson
-        schema={{}}
-        onJson={async (questions: Question[]) => {
-          await onQuestions(voiceForm?.id, questions);
-        }}
-        editorConfig={{}}
-      ></VoiceToJson> */}
+      <CopilotProvider config={getCopilotConfig()}>
+        <VoiceToJson
+          schema={questionSchema}
+          onJson={async (questions: Question[]) => {
+            await onQuestions(voiceForm?.id, questions);
+          }}
+          config={{}}
+        ></VoiceToJson>
+      </CopilotProvider>
 
       {questions && (
         <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">

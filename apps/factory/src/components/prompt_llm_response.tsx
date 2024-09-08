@@ -158,8 +158,8 @@ const LlmLlmErrorResponse: React.FC<PromptLlmResponseProps> = ({ pl }) => {
 
 export const LlmResponseAction: React.FC<PromptLlmResponseProps> = ({ pl }) => {
   let lr = pl?.llmResponse as LlmResponse;
-  let llrImage = lr.data as ImageResponseV1;
-  let llrText = lr.data as TextResponseV1;
+  let llrImage = lr?.data as ImageResponseV1;
+  let llrText = lr?.data as TextResponseV1;
   return (
     <>
       {pl?.completion &&
