@@ -28,6 +28,7 @@ import { debounce } from "lodash";
 import { SelectedLanguages } from "../langauges_selector";
 import { omit } from "lodash";
 import { getCopilotConfig } from "~/utils/copilot";
+import { useRouter } from "next/router";
 
 interface QuestionListProps {
   voiceForm: VoiceForm;
@@ -38,6 +39,11 @@ const QuestionList: React.FC<QuestionListProps> = ({
   voiceForm,
   languages,
 }) => {
+  const router = useRouter();
+  let { generate } = router.query as {
+    generate: string;
+  };
+
   const initQuestions = voiceForm?.questions || [];
   const [questions, setQuestions] = useState<Question[]>(initQuestions);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
@@ -209,46 +215,54 @@ const QuestionList: React.FC<QuestionListProps> = ({
     <>
       <CopilotProvider config={getCopilotConfig()}>
         {isLoading && <Loading></Loading>}
-        {!isLoading && questions && questions.length == 0 && (
-          <SchemaToJson
-            schema={questionSchema}
-            config={{
-              generateButtonText: "Generate Questions",
-              generatingButtonText: "Generating ...",
-            }}
-            onGenerate={async (requirement: string) => {
-              const newRequirement =
-                requirement +
-                "\n Add support for languages " +
-                languages.join(", ");
+        {!isLoading &&
+          ((questions && questions.length == 0) || generate?.length > 0) && (
+            <SchemaToJson
+              schema={questionSchema}
+              config={{
+                generateButtonText: "Generate Questions",
+                generatingButtonText: "Generating ...",
+              }}
+              onGenerate={async (requirement: string) => {
+                const newRequirement =
+                  requirement +
+                  "\n Add support for languages " +
+                  languages.join(", ");
 
-              return newRequirement;
-            }}
-            onJson={async (questions: Question[]) => {
-              await onQuestions(voiceForm?.id, questions);
-            }}
-          />
-        )}
+                return newRequirement;
+              }}
+              onJson={async (questions: Question[]) => {
+                await onQuestions(voiceForm?.id, questions);
+              }}
+            />
+          )}
 
         {questions && (
           <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">
-            <SelectedLanguages
-              selectedLanguages={voiceForm?.languages || []}
-              onClick={handleSectedLanguage}
-            />
-            <h2 className="mb-4 mt-4 text-lg font-bold">
-              Questions{" "}
-              <Button variant="outlined" onClick={handleAdd}>
-                <AddIcon /> Add
-              </Button>
-              {formQuestionsMutation.isLoading ||
-                (questionOrderMutation.isLoading && (
+            <h2 className="mb-4 mt-4 flex items-center justify-between text-lg">
+              <div>
+                <SelectedLanguages
+                  selectedLanguages={voiceForm?.languages || []}
+                  onClick={handleSectedLanguage}
+                />
+              </div>
+              <div className="flex items-center">
+                {(formQuestionsMutation.isLoading ||
+                  questionOrderMutation.isLoading) && (
                   <CircularProgress
                     size={30}
-                    className="ml-4"
+                    className="mr-4"
                     style={{ marginBottom: -10 }}
                   />
-                ))}
+                )}
+                <Button
+                  variant="outlined"
+                  className="font-bold"
+                  onClick={handleAdd}
+                >
+                  <AddIcon /> Add
+                </Button>
+              </div>
             </h2>
 
             <DragDropContext onDragEnd={handleDragEnd}>
@@ -271,6 +285,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
                             {...provided.draggableProps}
                           >
                             <QuestionView
+                              key={question.id + question.updatedAt}
                               question={question}
                               languages={languages}
                               activeLang={activeLang}

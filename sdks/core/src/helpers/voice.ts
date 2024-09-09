@@ -156,7 +156,11 @@ export const extracti18nText = (
 ) => {
   const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
   let text = NOT_FOUND;
-  text = message?.lang[language] ?? (message?.lang[userLang] as string);
+  // text = message?.lang[language] ?? (message?.lang[userLang] as string);
+  text =
+    message?.lang[language] ||
+    (message?.lang[userLang] as string) ||
+    (message?.lang["en"] as string);
   if (text == NOT_FOUND) {
     console.error(
       `i18n message not found for ${language}: ${JSON.stringify(message)}`,

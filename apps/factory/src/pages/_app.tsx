@@ -8,6 +8,7 @@ import type { NextPage } from "next";
 import type { AppProps, NextWebVitalsMetric } from "next/app";
 import { GoogleAnalytics, event } from "nextjs-google-analytics";
 import React from "react";
+import { ThemeProvider, createTheme, useTheme } from "@mui/material/styles";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -37,6 +38,45 @@ const MyApp = ({
 }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page) => page);
 
+  const theme = useTheme(); // Access the MUI theme
+
+  // console.log("theme", theme);
+
+  // Toast options
+  const toastOptions = {
+    style: {
+      background:
+        theme.palette.mode !== "dark"
+          ? theme.palette.background.default // Better matches dark mode background
+          : theme.palette.background.paper, // Matches light mode surface
+      color: theme.palette.text.primary, // Keeps text readable in both modes
+      border: `1px solid ${theme.palette.divider}`, // Adds a subtle divider for better contrast
+      boxShadow: theme.shadows[3], // MUI-style shadow for depth
+    },
+    success: {
+      duration: 4000,
+      iconTheme: {
+        primary: theme.palette.success.main, // Success icon matches MUI success color
+        secondary:
+          theme.palette.mode !== "dark"
+            ? theme.palette.background.paper // Better contrast for dark mode icons
+            : theme.palette.grey[200], // Subtle for light mode
+      },
+    },
+    error: {
+      duration: 4000,
+      iconTheme: {
+        primary: theme.palette.error.main, // Error icon matches MUI error color
+        secondary:
+          theme.palette.mode !== "dark"
+            ? theme.palette.background.paper // Better contrast for dark mode icons
+            : theme.palette.grey[200], // Light contrast for error icon
+      },
+    },
+  };
+
+  console.log("toastOptions", toastOptions);
+
   return (
     <SessionProvider session={session as Session}>
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
@@ -47,7 +87,7 @@ const MyApp = ({
       <Auth isPublic={(Component as any).isPublic ?? false}>
         {getLayout(<Component {...pageProps} />)}
       </Auth>
-      <Toaster position="top-right" />
+      <Toaster position="top-right" toastOptions={toastOptions} />
     </SessionProvider>
   );
 };
