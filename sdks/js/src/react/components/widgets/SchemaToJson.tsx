@@ -18,7 +18,7 @@ export const SchemaToJson: React.FC<{
   onJson: (json: any) => Promise<void>;
   config?: SchemaToJsonConfig; // Additional configurations
 }> = ({ schema, examples = [], onGenerate, onJson, config = {} }) => {
-  debugger;
+  DEV: console.log(`React`, React);
   config = { ...SchemaToJsonConfigDefaults, ...config };
 
   const [userInput, setUserInput] = useState<string>("");

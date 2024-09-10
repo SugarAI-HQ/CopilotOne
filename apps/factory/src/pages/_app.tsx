@@ -75,8 +75,6 @@ const MyApp = ({
     },
   };
 
-  console.log("toastOptions", toastOptions);
-
   return (
     <SessionProvider session={session as Session}>
       {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (

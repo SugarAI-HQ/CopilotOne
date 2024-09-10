@@ -549,9 +549,6 @@ importers:
       postcss:
         specifier: ^8.4.41
         version: 8.4.41
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
       react-html5-camera-photo:
         specifier: ^1.5.11
         version: 1.5.11(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -640,6 +637,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
       tailwindcss:
         specifier: ^3.4.6
         version: 3.4.6
