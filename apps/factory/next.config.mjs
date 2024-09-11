@@ -1,5 +1,6 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import { configureRuntimeEnv } from "next-runtime-env/build/configure.js";
+import path from "path";
 
 configureRuntimeEnv();
 /**
@@ -42,6 +43,11 @@ const config = {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
+  },
+  resolve: {
+    alias: {
+      react: path.resolve(process.cwd(), "../node_modules/react"),
+    },
   },
 };
 

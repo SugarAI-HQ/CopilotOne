@@ -1,9 +1,10 @@
-import React, {
+import {
   useEffect,
   useState,
   useRef,
   useImperativeHandle,
   forwardRef,
+  ForwardRefRenderFunction,
 } from "react";
 
 const FAST_FORWARD = "fastForward";
@@ -22,7 +23,7 @@ import {
   stopSpeaking,
 } from "@sugar-ai/core";
 
-export const Streamingi18nText: React.ForwardRefRenderFunction<
+export const Streamingi18nText: ForwardRefRenderFunction<
   Streamingi18nTextRef,
   Streamingi18nTextProps
 > = (
@@ -45,7 +46,7 @@ export const Streamingi18nText: React.ForwardRefRenderFunction<
   const [isStarted, setIsStarted] = useState<boolean>(false);
   const [isCancelled, setIsCancelled] = useState<boolean>(false);
 
-  const elRef = React.useRef<HTMLParagraphElement>(null);
+  const elRef = useRef<HTMLParagraphElement>(null);
   const createRef = (): Streamingi18nTextRef => ({
     startStreaming: handleStart,
     focusElement: focusElement,

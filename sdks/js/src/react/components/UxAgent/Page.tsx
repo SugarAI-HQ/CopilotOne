@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import { ReactNode } from "react";
 import classNames from "classnames";
 
 // Page Component
 export interface PageProps {
-  children: React.ReactNode;
+  children: ReactNode;
   layout?: "default" | "headingOnly" | "headingWithText";
 }
 

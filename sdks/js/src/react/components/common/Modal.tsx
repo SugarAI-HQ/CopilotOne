@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import { type FC, ReactNode } from "react";
 import "~/react/styles/global.css";
 
 interface ModalProps {
@@ -8,12 +8,7 @@ interface ModalProps {
   klass;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  children,
-  klass = "",
-}) => {
+const Modal: FC<ModalProps> = ({ isOpen, onClose, children, klass = "" }) => {
   if (!isOpen) return null; // Only render modal if it is open
 
   return (

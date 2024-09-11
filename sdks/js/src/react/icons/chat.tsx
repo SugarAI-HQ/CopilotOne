@@ -1,11 +1,11 @@
-import React from "react";
+import { ReactElement } from "react";
 import SvgIcon, { type SvgIconProps } from "./svg_icons";
 
 export interface ChatSvgProps extends SvgIconProps {
   color?: string;
 }
 
-const Chat = (props: ChatSvgProps): React.ReactElement => {
+const Chat = (props: ChatSvgProps): ReactElement => {
   return (
     <SvgIcon {...props}>
       <g fill="none">

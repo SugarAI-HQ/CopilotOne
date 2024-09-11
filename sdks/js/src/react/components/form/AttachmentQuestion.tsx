@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaCamera, FaCloudUploadAlt } from "react-icons/fa";
 import Camera, { FACING_MODES, IMAGE_TYPES } from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
@@ -9,7 +9,8 @@ export const AttachmentQuestion = ({
   onPhotoCapture,
   themeColor = "text-blue-600",
   allowMultipleFiles = false,
-  fileTypes = ".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp", // Default file types
+  // fileTypes = ".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp", // Default file types
+  fileTypes = ".jpg,.jpeg,.png,.webp,.gif", // Default file types
 }) => {
   const fileInputRef = useRef(null);
   const [selectedFiles, setSelectedFiles] = useState([]);

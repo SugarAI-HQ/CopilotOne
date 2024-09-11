@@ -1,12 +1,12 @@
-import React from "react";
+import { CSSProperties, ReactElement } from "react";
 import SvgIcon, { type SvgIconProps } from "./svg_icons";
 
 export interface OpenMicSvgProps extends SvgIconProps {
   color?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
-const OpenMic = (props: OpenMicSvgProps): React.ReactElement => {
+const OpenMic = (props: OpenMicSvgProps): ReactElement => {
   const newWidth = parseInt((props?.width ?? props?.size) as string);
   const newHeight = parseInt((props?.height ?? props?.size) as string);
 

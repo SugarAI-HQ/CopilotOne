@@ -1,4 +1,4 @@
-import React from "react";
+import { CSSProperties, FC, ReactElement, ReactNode } from "react";
 
 export interface SvgIconProps {
   size?: string;
@@ -6,10 +6,10 @@ export interface SvgIconProps {
   width?: string;
   height?: string;
   onClick?: any;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
-const SvgIcon: React.FC<SvgIconProps & { children: React.ReactNode }> = ({
+const SvgIcon: FC<SvgIconProps & { children: ReactNode }> = ({
   className,
   size = 25,
   children,
@@ -17,7 +17,7 @@ const SvgIcon: React.FC<SvgIconProps & { children: React.ReactNode }> = ({
   height,
   onClick,
   style = {},
-}): React.ReactElement => {
+}): ReactElement => {
   const newWidth = width ?? size;
   const newHeight = height ?? size;
   return (

@@ -1,4 +1,4 @@
-import React from "react";
+import { CSSProperties, FC, ReactElement } from "react";
 
 export interface SpinnerProps {
   size?: string;
@@ -6,17 +6,17 @@ export interface SpinnerProps {
   color?: string;
   width?: string;
   height?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
-const Spinner: React.FC<SpinnerProps> = ({
+const Spinner: FC<SpinnerProps> = ({
   className,
   color = "#000",
   size = "60",
   width,
   height,
   style,
-}): React.ReactElement => {
+}): ReactElement => {
   const newWidth = width ?? size;
   const newHeight = height ?? size;
   return (

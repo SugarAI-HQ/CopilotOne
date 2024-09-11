@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { FaCamera, FaCloudUploadAlt, FaTrash } from "react-icons/fa";
 import Camera from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";

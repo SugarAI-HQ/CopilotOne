@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, type FC, ChangeEvent } from "react";
 // import { FaLanguage } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
 import { MdLanguage } from "react-icons/md";
@@ -8,7 +8,7 @@ import { LanguageCode, languageCode, useLanguage } from "@sugar-ai/core";
 import Modal from "../common/Modal";
 import { allLanguages } from "@sugar-ai/core";
 
-export const LanguageSelector: React.FC<{
+export const LanguageSelector: FC<{
   klass?: string;
   themeColor: string;
   languagesEnabled: LanguageCode[];
@@ -39,7 +39,7 @@ export const LanguageSelector: React.FC<{
     setLanguage(lang);
   };
 
-  const handleVoiceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleVoiceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedVoice = voices.find((v) => v.name === e.target.value);
     if (selectedVoice) {
       setVoice(selectedVoice);

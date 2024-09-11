@@ -1,12 +1,12 @@
-import React from "react";
+import { CSSProperties, ReactElement } from "react";
 import SvgIcon, { type SvgIconProps } from "./svg_icons";
 
 export interface MicSvgProps extends SvgIconProps {
   color?: string;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
-const Mic = (props: MicSvgProps): React.ReactElement => {
+const Mic = (props: MicSvgProps): ReactElement => {
   return (
     <SvgIcon {...props}>
       <g fill="none">

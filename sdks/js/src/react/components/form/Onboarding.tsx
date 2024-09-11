@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type FC } from "react";
 import {
   Streamingi18nTextRef,
   useLanguage,
@@ -18,7 +18,7 @@ import LanguageSelector from "../language/LanguageSelector";
 
 let renderCount = 0;
 
-export const Onboarding: React.FC<{
+export const Onboarding: FC<{
   voiceForm: VoiceForm;
   showStartButton: boolean;
   onComplete: () => void;

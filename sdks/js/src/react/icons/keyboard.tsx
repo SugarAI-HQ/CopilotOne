@@ -1,11 +1,11 @@
-import React from "react";
+import { ReactElement } from "react";
 import SvgIcon, { type SvgIconProps } from "./svg_icons";
 
 export interface MicSvgProps extends SvgIconProps {
   color?: string;
 }
 
-const KeyboardIcon = (props: MicSvgProps): React.ReactElement => {
+const KeyboardIcon = (props: MicSvgProps): ReactElement => {
   return (
     <SvgIcon {...props}>
       <g fill="none">

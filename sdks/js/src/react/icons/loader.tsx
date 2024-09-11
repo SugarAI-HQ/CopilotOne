@@ -1,11 +1,11 @@
-import React from "react";
+import { ReactElement } from "react";
 import SvgIcon, { type SvgIconProps } from "./svg_icons";
 
 export interface LoaderSvgProps extends SvgIconProps {
   color?: string;
 }
 
-const Loader = (props: LoaderSvgProps): React.ReactElement => {
+const Loader = (props: LoaderSvgProps): ReactElement => {
   return (
     <SvgIcon {...props}>
       <circle

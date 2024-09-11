@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, ReactElement } from "react";
 import classNames from "classnames";
 import { PageProps } from "./Page";
 
@@ -6,7 +6,7 @@ import { PageProps } from "./Page";
 
 // Pages Component
 interface PagesProps {
-  children: React.ReactElement<PageProps>[];
+  children: ReactElement<PageProps>[];
   config?: { fullScreen?: boolean; width?: string; height?: string };
 }
 

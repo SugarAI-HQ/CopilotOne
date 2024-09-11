@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { FC, RefObject, useEffect, useState } from "react";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import {
   Question,
@@ -10,12 +10,12 @@ import {
 } from "@sugar-ai/core";
 import "~/react/styles/form.css";
 
-export const VoiceQuestionOptions: React.FC<{
+export const VoiceQuestionOptions: FC<{
   auto: boolean;
   question: Question;
   language: LanguageCode;
   formConfig: FormConfig;
-  optionRefs: React.RefObject<Streamingi18nTextRef>[];
+  optionRefs: RefObject<Streamingi18nTextRef>[];
   handleOptionClick: (values: string[]) => void;
   useRadio: boolean; // Flag to switch between checkbox and radio button
   selected: string[];

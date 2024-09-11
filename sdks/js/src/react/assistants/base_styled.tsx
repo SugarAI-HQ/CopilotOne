@@ -10,7 +10,7 @@ import {
   messageRoleEnum,
   copilotStyleKeyboardButtonSchema,
 } from "@sugar-ai/core";
-import { type FC } from "react";
+import { type FC, ReactNode } from "react";
 
 const copilotVoiceButtonProps = z.object({
   button: copilotStyleVoiceButtonSchema,
@@ -58,7 +58,7 @@ export const sparkle = keyframes`
 export const CopilotContainer: FC<{
   container: CopilotSyleContainerType;
   position: CopilotStylePositionType;
-  children?: React.ReactNode;
+  children?: ReactNode;
   id: string;
   className: string;
   style: string;

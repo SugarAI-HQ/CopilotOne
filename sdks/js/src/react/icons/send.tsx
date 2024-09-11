@@ -1,4 +1,4 @@
-import React from "react";
+import { ReactElement } from "react";
 import SvgIcon, { type SvgIconProps } from "./svg_icons";
 
 export interface SendSvgProps extends SvgIconProps {
@@ -6,7 +6,7 @@ export interface SendSvgProps extends SvgIconProps {
   onClick?: any;
 }
 
-const Send = (props: SendSvgProps): React.ReactElement => {
+const Send = (props: SendSvgProps): ReactElement => {
   return (
     <SvgIcon {...props}>
       <g fill="none">

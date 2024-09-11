@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 import Onboarding from "./Onboarding";
 import VoiceQuestion from "./VoiceQuestion";
 import Submission from "./Submission";
@@ -21,7 +21,7 @@ import Streamingi18nText from "../streaming/Streamingi18nText";
 
 let renderCount = 0;
 
-export const VoiceFormComponent: React.FC<{
+export const VoiceFormComponent: FC<{
   showStartButton: boolean;
 }> = ({ showStartButton }) => {
   const [messages, setMessages] = useState<FormMessages>({

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, type FC } from "react";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import {
   FormConfig,
@@ -9,7 +9,7 @@ import {
 } from "@sugar-ai/core";
 import "~/react/styles/form.css";
 
-export const Submission: React.FC<{
+export const Submission: FC<{
   postSubmissionMessage: i18nMessage;
   answers: any[];
   formConfig: FormConfig;

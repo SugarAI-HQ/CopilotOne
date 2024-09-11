@@ -1,4 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FC,
+  RefObject,
+  KeyboardEvent,
+  FormEvent,
+} from "react";
 import "~/react/styles/form.css";
 // import isMobilePhone from "validator/es/lib/isMobilePhone";
 import TextareaAutosize from "react-textarea-autosize";
@@ -49,7 +57,7 @@ export type SubmissionState = z.infer<typeof submissionStates>;
 
 let renderCount = 0;
 
-export const VoiceQuestion: React.FC<{
+export const VoiceQuestion: FC<{
   voiceForm: VoiceForm;
   question: Question;
   onAnswered: (voiceAnswer: QuestionAnswer) => Promise<void>;
@@ -74,15 +82,15 @@ export const VoiceQuestion: React.FC<{
 
   const [selectedAnswer, setSelectedAnswer] = useState<string[]>([]);
   // Create refs for the question and options
-  const questionRef: React.RefObject<Streamingi18nTextRef> =
+  const questionRef: RefObject<Streamingi18nTextRef> =
     useRef<Streamingi18nTextRef>(null);
-  const optionRefs: React.RefObject<Streamingi18nTextRef>[] = [];
+  const optionRefs: RefObject<Streamingi18nTextRef>[] = [];
 
   // Text Question field
   const [input, setInput] = useState<string>("");
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
-  const inputRef = React.useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // const [formState, setFormState] = useState<VoiceFormStates>("none");
 
@@ -313,19 +321,19 @@ export const VoiceQuestion: React.FC<{
     // setSelectedOption(option);
   };
 
-  // const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  // const handleKeyPress = (e: KeyboardEvent<HTMLTextAreaElement>) => {
   //   if (e.key === "Enter" && !e.shiftKey) {
   //     // if (isLoading) return;
 
   //     e.preventDefault();
-  //     // handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+  //     // handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
   //     // onAnswered(e.target?.value as string);
   //   }
   // };
 
   const renderMCQ = async (
-    qRef: React.RefObject<Streamingi18nTextRef>,
-    optionRefs: React.RefObject<Streamingi18nTextRef>[],
+    qRef: RefObject<Streamingi18nTextRef>,
+    optionRefs: RefObject<Streamingi18nTextRef>[],
   ): Promise<void> => {
     // Speak the question
     if (qRef.current) {

@@ -1,9 +1,10 @@
-// import React, {
+// import {
 //   useEffect,
 //   useRef,
 //   useImperativeHandle,
 //   forwardRef,
 //   useState,
+//   ForwardRefRenderFunction,
 // } from "react";
 // import { stopSpeaking, speakMessageAsync } from "@/helpers/voice"; // Ensure the speakMessage function is properly imported
 // import { useLanguage } from "./LanguageContext";
@@ -13,7 +14,7 @@
 //   Streamingi18nTextRef,
 // } from "@/schema/voiceFormSchema";
 
-// const Streamingi18nText: React.ForwardRefRenderFunction<
+// const Streamingi18nText: ForwardRefRenderFunction<
 //   Streamingi18nTextRef,
 //   Streamingi18nTextProps
 // > = ({ message, formConfig }, ref) => {

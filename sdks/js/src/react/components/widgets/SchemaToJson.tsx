@@ -6,19 +6,18 @@ import {
   SchemaToJsonConfigDefaults,
   useCopilot,
 } from "@sugar-ai/core";
-import React, { useState } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 
 import { z, ZodSchema } from "zod";
 
-export const SchemaToJson: React.FC<{
+export const SchemaToJson: FC<{
   schema: ZodSchema<any>; // Zod schema for validation
   examples?: object[]; // Optional schema examples
   onGenerate: (requirement: string) => Promise<string>;
   onJson: (json: any) => Promise<void>;
   config?: SchemaToJsonConfig; // Additional configurations
 }> = ({ schema, examples = [], onGenerate, onJson, config = {} }) => {
-  DEV: console.log(`React`, React);
   config = { ...SchemaToJsonConfigDefaults, ...config };
 
   const [userInput, setUserInput] = useState<string>("");
@@ -27,7 +26,7 @@ export const SchemaToJson: React.FC<{
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleTextInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setUserInput(e.target.value);
   };
   const { textToJson } = useCopilot();

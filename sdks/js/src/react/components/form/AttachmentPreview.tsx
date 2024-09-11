@@ -1,15 +1,12 @@
-import React from "react";
 import { FaTrash } from "react-icons/fa";
+import { type FC } from "react";
 
 interface AttachmentPreviewProps {
   files: File[];
   onRemove: (index: number) => void;
 }
 
-const AttachmentPreview: React.FC<AttachmentPreviewProps> = ({
-  files,
-  onRemove,
-}) => {
+const AttachmentPreview: FC<AttachmentPreviewProps> = ({ files, onRemove }) => {
   // Determine the size based on the number of files
   const previewSizeClass =
     files.length === 1
