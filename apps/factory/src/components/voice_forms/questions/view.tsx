@@ -142,7 +142,7 @@ const QuestionView: React.FC<QuestionViewProps> = ({
                   </Typography>
                   <Grid container sx={{ mt: 1 }} spacing={1}>
                     {question.question_params.options.map((option, index) => (
-                      <Grid item xs={6} key={index}>
+                      <Grid item xs={6} key={JSON.stringify(option)}>
                         <Typography variant="body2" component={"div"}>
                           <ViewI18nMessage
                             message={option}

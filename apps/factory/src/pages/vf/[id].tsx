@@ -16,7 +16,7 @@ import {
   VoiceFormProvider,
 } from "@sugar-ai/core";
 
-import { VoiceFormComponent, LanguageSelector } from "@sugar-ai/copilot-one-js";
+import { LanguageSelector, VoiceFormComponent } from "@sugar-ai/copilot-one-js";
 import { getCopilotConfig } from "~/utils/copilot";
 
 import "@sugar-ai/copilot-one-js/style";

@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { FaCamera, FaCloudUploadAlt, FaTrash } from "react-icons/fa";
 import Camera from "react-html5-camera-photo";
-import "react-html5-camera-photo/build/css/index.css";
+// import "react-html5-camera-photo/build/css/index.css";
+import "~/react/styles/attachment.css";
 import Tesseract from "tesseract.js";
 
 export const AttachmentQuestionWithOcr = ({

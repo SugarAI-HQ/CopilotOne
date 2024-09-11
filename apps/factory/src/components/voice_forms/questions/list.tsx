@@ -215,26 +215,27 @@ const QuestionList: React.FC<QuestionListProps> = ({
     <>
       <CopilotProvider config={getCopilotConfig()}>
         {isLoading && <Loading></Loading>}
-        {!isLoading && generate?.length > 0 && (
-          <SchemaToJson
-            schema={questionSchema}
-            config={{
-              generateButtonText: "Generate Questions",
-              generatingButtonText: "Generating ...",
-            }}
-            onGenerate={async (requirement: string) => {
-              const newRequirement =
-                requirement +
-                "\n Add support for languages " +
-                languages.join(", ");
+        {!isLoading &&
+          ((questions && questions.length == 0) || generate?.length > 0) && (
+            <SchemaToJson
+              schema={questionSchema}
+              config={{
+                generateButtonText: "Generate Questions",
+                generatingButtonText: "Generating ...",
+              }}
+              onGenerate={async (requirement: string) => {
+                const newRequirement =
+                  requirement +
+                  "\n Add support for languages " +
+                  languages.join(", ");
 
-              return newRequirement;
-            }}
-            onJson={async (questions: Question[]) => {
-              await onQuestions(voiceForm?.id, questions);
-            }}
-          />
-        )}
+                return newRequirement;
+              }}
+              onJson={async (questions: Question[]) => {
+                await onQuestions(voiceForm?.id, questions);
+              }}
+            />
+          )}
 
         {questions && (
           <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">

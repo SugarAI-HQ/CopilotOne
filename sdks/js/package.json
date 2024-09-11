@@ -1,6 +1,6 @@
 {
   "name": "@sugar-ai/copilot-one-js",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "description": "Add Siri like features to your react app",
   "files": [
     "dist/**/*"
@@ -47,7 +47,8 @@
   },
   "peerDependencies": {
     "react": ">16.0.0",
-    "react-dom": ">16.0.0"
+    "react-dom": ">16.0.0",
+    "@sugar-ai/core": ">0.0.8"
   },
   "keywords": [
     "copilot",
@@ -62,6 +63,7 @@
   "author": "ankur@sugarai.dev",
   "license": "MIT",
   "devDependencies": {
+    "@sugar-ai/core": "workspace:*",
     "@types/node": "^20.11.30",
     "@types/qs": "^6.9.14",
     "@types/react": "^18.2.73",
@@ -88,7 +90,6 @@
     "typescript": "^5.4.4"
   },
   "dependencies": {
-    "@sugar-ai/core": "workspace:*",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/easy-speech": "^1.2.4",
     "build": "^0.1.4",

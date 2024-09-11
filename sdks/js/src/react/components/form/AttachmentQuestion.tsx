@@ -1,7 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { FaCamera, FaCloudUploadAlt } from "react-icons/fa";
-import Camera, { FACING_MODES, IMAGE_TYPES } from "react-html5-camera-photo";
-import "react-html5-camera-photo/build/css/index.css";
+import Camera from "react-html5-camera-photo";
+// import "react-html5-camera-photo/build/css/index.css";
+import "~/react/styles/attachment.css";
 import AttachmentPreview from "./AttachmentPreview";
 
 export const AttachmentQuestion = ({
@@ -140,9 +141,9 @@ export const AttachmentQuestion = ({
             onCameraError={(error) => {
               handleCameraError(error);
             }}
-            idealFacingMode={FACING_MODES.ENVIRONMENT}
+            // idealFacingMode={FACING_MODES.ENVIRONMENT}
             idealResolution={{ width: 640, height: 480 }}
-            imageType={IMAGE_TYPES.JPG}
+            // imageType={IMAGE_TYPES.JPG}
             imageCompression={0.97}
             isMaxResolution={true}
             isImageMirror={false}

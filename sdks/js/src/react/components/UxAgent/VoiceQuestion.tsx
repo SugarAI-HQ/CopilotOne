@@ -29,10 +29,7 @@ import { IoMdSkipForward } from "react-icons/io";
 import { FaA, FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
 import Initializing from "./Initializing";
-import {
-  answeredBy,
-  AnsweredBy,
-} from "node_modules/@sugar-ai/core/src/schema/form";
+import { answeredBy, AnsweredBy } from "@sugar-ai/core";
 import { z } from "zod";
 
 export const submissionStates = z.enum([

@@ -1,15 +1,16 @@
 # Stage 1: Dependencies Image
 FROM node:20.12-alpine AS deps
 
-RUN mkdir -p /sdks/core
+RUN mkdir -p /sdks/core /npms
 COPY sdks/core /sdks/core
-RUN cd /sdks/core && npm install && npm run build && npm link
+RUN cd /sdks/core && npm install && npm run build && npm pack --pack-destination /npms
 
 RUN mkdir -p /sdks/js
 COPY sdks/js /sdks/js
-RUN cd /sdks/js && sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
-RUN cd /sdks/js && npm install && npm link @sugar-ai/core 
-RUN cd /sdks/js && npm run build && npm link
+RUN cd /sdks/js && sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "file:\/npms\/sugar-ai-core-0.0.9.tgz"/' package.json
+# RUN cd /sdks/js && npm uninstall @sugar-ai/core && npm install /npms/sugar-ai-core-0.0.9.tgz
+RUN cd /sdks/js && npm install
+RUN cd /sdks/js && npm run build && npm pack --pack-destination /npms
 
 
 # Stage 2: Build Image
@@ -25,23 +26,23 @@ RUN npm install -g npm@latest
 RUN curl -sL https://sentry.io/get-cli/ | sh
 
 
-# Copy and install app dependencies
-COPY apps/${PROJECT_NAME}/package.json ./
-RUN sed -i 's/"@sugar-ai\/copilot-one-js": "workspace:\*"/"@sugar-ai\/copilot-one-js": "0.0.42"/' package.json
-RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
+# Optimisation doesnot works on github actions due to lack of caching
+# # Copy and install app dependencies
+# COPY apps/${PROJECT_NAME}/package.json ./
+# RUN sed -i 's/"@sugar-ai\/copilot-one-js": "workspace:\*"/"@sugar-ai\/copilot-one-js": "0.0.42"/' package.json
+# RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
+# RUN --mount=type=cache,id=npm,target=/root/.npm npm install --ignore-scripts
+
+# Copy rest of the code
+COPY apps/${PROJECT_NAME}/  .
+
+# Add latest npm dependencies
+RUN mkdir -p /npms
+COPY --from=deps --chown=nextjs:nodejs /npms /npms
+RUN sed -i 's/"@sugar-ai\/copilot-one-js": "workspace:\*"/"@sugar-ai\/copilot-one-js": "file:\/npms\/sugar-ai-copilot-one-js-0.0.46.tgz"/' package.json
+RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "file:\/npms\/sugar-ai-core-0.0.9.tgz"/' package.json
 RUN --mount=type=cache,id=npm,target=/root/.npm npm install --ignore-scripts
 
-# Use deps stage for npm links
-RUN mkdir -p /sdks
-COPY --from=deps --chown=nextjs:nodejs /sdks /sdks
-RUN cd /sdks/core && npm link && cd /sdks/js && npm link
-# RUN cd /app && npm link @sugar-ai/core @sugar-ai/copilot-one-js
-
-# Copy the rest of the application and build
-COPY apps/${PROJECT_NAME}/  .
-RUN sed -i 's/"@sugar-ai\/copilot-one-js": "workspace:\*"/"@sugar-ai\/copilot-one-js": "0.0.42"/' package.json
-RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
-RUN npm install /sdks/core/ /sdks/js/
 RUN npm run postinstall
 RUN npm run cibuild
 
