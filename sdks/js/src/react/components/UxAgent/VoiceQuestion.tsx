@@ -15,13 +15,13 @@ import {
   Recording,
   QuestionAnswer,
   VoiceForm,
+  QuestionTypesWithOptions,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
 import {
   captureVoiceResponseAndEvaluate,
   validateAnswerWithUser,
-  SELECTED_QUESTION_TYPES,
 } from "~/react/helpers/form";
 // import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
 import { IoMdSkipForward } from "react-icons/io";
@@ -388,7 +388,7 @@ export const VoiceQuestion: FC<{
         </div>
       )}
 
-      {SELECTED_QUESTION_TYPES.includes(question.question_type) && (
+      {QuestionTypesWithOptions.includes(question.question_type) && (
         <VoiceQuestionOptions
           auto={false}
           question={question}

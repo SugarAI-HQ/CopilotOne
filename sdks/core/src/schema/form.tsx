@@ -54,7 +54,13 @@ export const questionType = z.enum([
   "number",
   "attachment",
 ]);
+
 export type QuestionType = z.infer<typeof questionType>;
+
+export const QuestionTypesWithOptions: QuestionType[] = [
+  "single_choice",
+  "multiple_choice",
+];
 
 export const validationType = z.enum(["none", "ai"]);
 export type ValidationType = z.infer<typeof validationType>;

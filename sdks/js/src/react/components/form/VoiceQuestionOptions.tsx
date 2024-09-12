@@ -16,7 +16,7 @@ export const VoiceQuestionOptions: FC<{
   language: LanguageCode;
   formConfig: FormConfig;
   optionRefs: RefObject<Streamingi18nTextRef>[];
-  handleOptionClick: (values: string[]) => void;
+  handleOptionClick: (values: string[], isAuto: boolean) => void;
   useRadio: boolean; // Flag to switch between checkbox and radio button
   selected: string[];
 }> = ({
@@ -35,10 +35,10 @@ export const VoiceQuestionOptions: FC<{
   );
 
   useEffect(() => {
-    handleInputChange(selected);
+    handleInputChange(selected, true);
   }, [selected]);
 
-  const handleInputChange = (values: string[]) => {
+  const handleInputChange = (values: string[], isAuto: boolean = false) => {
     if (useRadio) {
       setSelectedOptions(values);
     } else {
@@ -53,7 +53,7 @@ export const VoiceQuestionOptions: FC<{
         setSelectedOptions(values);
       }
     }
-    handleOptionClick(values);
+    handleOptionClick(values, isAuto);
   };
 
   const handleStreamingStart = async (index: number) => {
@@ -71,7 +71,7 @@ export const VoiceQuestionOptions: FC<{
           <li
             key={index}
             onClick={(e) =>
-              handleInputChange([extracti18nText(option, language)])
+              handleInputChange([extracti18nText(option, language)], false)
             }
             className={`flex items-center cursor-pointer pl-2 rounded transition-colors duration-200 ease-in-out dark:text-gray-200
               ${
@@ -86,7 +86,9 @@ export const VoiceQuestionOptions: FC<{
                 id={`option-${question.id}-${index}`}
                 name={`option-${question.id}`}
                 value={extracti18nText(option, language)}
-                onChange={(e) => handleInputChange([e.currentTarget.value])}
+                onChange={(e) =>
+                  handleInputChange([e.currentTarget.value], false)
+                }
                 checked={selectedOptions.includes(
                   extracti18nText(option, language),
                 )}

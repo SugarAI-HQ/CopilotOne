@@ -17,11 +17,11 @@ import {
   qualificationType,
   validationType,
   QualificationSegmentsDefaults,
+  QuestionTypesWithOptions,
 } from "@sugar-ai/core";
 import { QuestionAnswer } from "@sugar-ai/core";
 import Tesseract from "tesseract.js";
 
-export const SELECTED_QUESTION_TYPES = ["single_choice", "multiple_choice"];
 export const SELECTED_QUESTION_ANSWER_SPLIT = ",";
 
 export const runOcrAndExtractDetails = async (
@@ -227,7 +227,7 @@ export const validateAnswerWithUser = async (
   // );
   const answer = voiceAnswer.evaluatedAnswer as string;
   // Show final evaluated answer
-  if (SELECTED_QUESTION_TYPES.includes(question.question_type)) {
+  if (QuestionTypesWithOptions.includes(question.question_type)) {
     setVoiceAnswer(voiceAnswer);
     let choices = answer
       .split(SELECTED_QUESTION_ANSWER_SPLIT)

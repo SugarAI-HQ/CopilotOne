@@ -17,7 +17,12 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
-import { LanguageCode, Question } from "@sugar-ai/core";
+import {
+  LanguageCode,
+  Question,
+  QuestionType,
+  QuestionTypesWithOptions,
+} from "@sugar-ai/core";
 
 interface QuestionViewProps {
   question: Question;
@@ -134,7 +139,8 @@ const QuestionView: React.FC<QuestionViewProps> = ({
               />
             </Typography>
 
-            {question.question_params?.options &&
+            {QuestionTypesWithOptions.includes(question.question_type) &&
+              question.question_params?.options &&
               question.question_params?.options.length > 0 && (
                 <Box sx={{ mt: 1 }}>
                   <Typography variant="subtitle1" className="font-semibold">

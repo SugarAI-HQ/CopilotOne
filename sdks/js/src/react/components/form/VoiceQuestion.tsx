@@ -25,13 +25,13 @@ import {
   VoiceForm,
   geti18nMessage,
   extracti18nText,
+  QuestionTypesWithOptions,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
 import {
   captureVoiceResponseAndEvaluate,
   validateAnswerWithUser,
-  SELECTED_QUESTION_TYPES,
   runOcrAndExtractDetails,
 } from "~/react/helpers/form";
 // import { ArrowLeft, ArrowRight, SkipForward } from "lucide-react";
@@ -304,12 +304,12 @@ export const VoiceQuestion: FC<{
     setAnswerReady(submissionStates.Enum.submitted);
   };
 
-  const handleOptionClick = (values: string[]) => {
+  const handleOptionClick = (values: string[], isAuto: boolean) => {
     const answer: QuestionAnswer = {
       rawAnswer: values.join(", "),
       evaluatedAnswer: values.join(", "),
       recording: null,
-      by: answeredBy.Enum.keyboard,
+      by: isAuto ? answeredBy.Enum.voice : answeredBy.Enum.keyboard,
       qualificationScore: null,
       qualificationSummary: null,
     };
@@ -357,6 +357,7 @@ export const VoiceQuestion: FC<{
 
   const handleManualEdit = (e: any) => {
     console.log(`switing to manual mode`);
+
     setVoiceAnswer((lva: QuestionAnswer | null) => {
       if (!lva) {
         return null;
@@ -424,60 +425,68 @@ export const VoiceQuestion: FC<{
           />
         </div>
       )}
+      <div className="mt-2">
+        {["text", "number"].includes(question.question_type) && (
+          <div className="flex flex-col items-center">
+            <TextareaAutosize
+              autoComplete="off"
+              ref={inputRef}
+              name="message"
+              minRows={5}
+              disabled={!isQuestionSpoken}
+              onClick={handleManualEdit}
+              onChange={(e) => {
+                setVoiceAnswer((va) => {
+                  let lva: QuestionAnswer = {
+                    rawAnswer: va?.rawAnswer || null, // Use existing 'raw' or the new value
+                    evaluatedAnswer: e.target.value, // Use existing 'evaluatedAnswer' or the new value
+                    recording: va?.recording || null, // Use existing 'recording' or default to null
+                    by: answeredBy.Enum.keyboard, // Use existing 'by' or default to "manual"
+                    qualificationScore: va?.qualificationScore || null,
+                    qualificationSummary: va?.qualificationSummary || null,
+                  };
+                  return lva;
+                });
+              }}
+              placeholder={
+                !isListening ? "Enter your answer here" : "Listening"
+              }
+              className="sai-vq-text-input"
+            />
+          </div>
+        )}
 
-      {["text", "number"].includes(question.question_type) && (
-        <div className="flex flex-col items-center mt-2">
-          <TextareaAutosize
-            autoComplete="off"
-            ref={inputRef}
-            name="message"
-            minRows={5}
-            disabled={!isQuestionSpoken}
-            onClick={handleManualEdit}
-            onChange={(e) => {
-              setVoiceAnswer((va) => {
-                let lva: QuestionAnswer = {
-                  rawAnswer: va?.rawAnswer || null, // Use existing 'raw' or the new value
-                  evaluatedAnswer: e.target.value, // Use existing 'evaluatedAnswer' or the new value
-                  recording: va?.recording || null, // Use existing 'recording' or default to null
-                  by: answeredBy.Enum.keyboard, // Use existing 'by' or default to "manual"
-                  qualificationScore: va?.qualificationScore || null,
-                  qualificationSummary: va?.qualificationSummary || null,
-                };
-                return lva;
-              });
+        {QuestionTypesWithOptions.includes(question.question_type) && (
+          <div className="flex flex-col items-left">
+            <VoiceQuestionOptions
+              auto={false}
+              question={question}
+              language={language}
+              formConfig={voiceForm?.formConfig}
+              optionRefs={optionRefs}
+              handleOptionClick={handleOptionClick}
+              useRadio={
+                question.question_type == "single_choice" ? true : false
+              }
+              selected={selectedAnswer ? selectedAnswer : []}
+            />
+          </div>
+        )}
+
+        {voiceAnswer?.by == answeredBy.Enum.keyboard && (
+          <button
+            className="justify-center w-full mt-4 p-4 text-white text-center"
+            onClick={() => {
+              setAnswerReady(submissionStates.Enum.ready);
             }}
-            placeholder={!isListening ? "Enter your answer here" : "Listening"}
-            className="sai-vq-text-input"
-          />
-          {voiceAnswer?.by == answeredBy.Enum.keyboard && (
-            <button
-              className="justify-center w-full m-4 p-4 text-white text-center"
-              onClick={() => {
-                setAnswerReady(submissionStates.Enum.ready);
-              }}
-              style={{
-                backgroundColor: voiceForm?.formConfig.voiceButton?.bgColor,
-              }}
-            >
-              {extracti18nText(geti18nMessage("submit"), language)}
-            </button>
-          )}
-        </div>
-      )}
-
-      {SELECTED_QUESTION_TYPES.includes(question.question_type) && (
-        <VoiceQuestionOptions
-          auto={false}
-          question={question}
-          language={language}
-          formConfig={voiceForm?.formConfig}
-          optionRefs={optionRefs}
-          handleOptionClick={handleOptionClick}
-          useRadio={question.question_type == "single_choice" ? true : false}
-          selected={selectedAnswer ? selectedAnswer : []}
-        />
-      )}
+            style={{
+              backgroundColor: voiceForm?.formConfig.voiceButton?.bgColor,
+            }}
+          >
+            {extracti18nText(geti18nMessage("submit"), language)}
+          </button>
+        )}
+      </div>
 
       <div className="sai-vf-actions-container">
         <div className="flex flex-col items-center space-y-2">
