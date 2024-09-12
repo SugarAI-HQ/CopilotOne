@@ -25,8 +25,7 @@ export const ListenConfigDefaults = {
 export const CharcterPerSec = 20;
 
 export const formConfig = z.object({
-  // id: z.string(),
-  // userId: z.string().optional(),
+  // embed: z.boolean().default(false),
 
   characterPerSec: z.number().optional().default(CharcterPerSec),
   // lang: z.string().optional().default("auto"),
@@ -38,7 +37,7 @@ export const formConfig = z.object({
 export type FormConfig = z.infer<typeof formConfig>;
 
 export const FormConfigDefaults: FormConfig = {
-  // id: "",
+  // embed: false,
   characterPerSec: CharcterPerSec,
 
   // maxAnswerLength

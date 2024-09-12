@@ -46,9 +46,9 @@
     "postversion": "git push && git push --tags"
   },
   "peerDependencies": {
+    "@sugar-ai/core": ">0.0.8",
     "react": ">16.0.0",
-    "react-dom": ">16.0.0",
-    "@sugar-ai/core": ">0.0.8"
+    "react-dom": ">16.0.0"
   },
   "keywords": [
     "copilot",
@@ -96,6 +96,7 @@
     "postcss": "^8.4.41",
     "react-html5-camera-photo": "^1.5.11",
     "react-icons": "^5.1.0",
+    "react-linkedin-login-oauth2": "^2.0.1",
     "react-textarea-autosize": "^8.5.3",
     "react-tooltip": "^5.27.1",
     "styled-components": "^6.1.8",

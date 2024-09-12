@@ -10,20 +10,18 @@ import {
   useVoiceForm,
   QuestionAnswer,
   geti18nMessage,
-  VoiceForm,
-  FormMessages,
   defaultFormTranslations,
+  FormMessages,
   i18nMessage,
-  LanguageProvider,
 } from "@sugar-ai/core";
 import "~/react/styles/form.css";
-import Streamingi18nText from "../streaming/Streamingi18nText";
+// import LinkedInVerify from "./LinkedInVerify";
 
 let renderCount = 0;
 
-export const VoiceFormComponent: FC<{
-  showStartButton: boolean;
-}> = ({ showStartButton }) => {
+export const VoiceFormComponent: FC<{ showStartButton: boolean }> = ({
+  showStartButton,
+}) => {
   const [messages, setMessages] = useState<FormMessages>({
     welcome: geti18nMessage("welcome", defaultFormTranslations),
     submit: geti18nMessage("submit", defaultFormTranslations),
@@ -34,21 +32,28 @@ export const VoiceFormComponent: FC<{
   const {
     formId,
     voiceForm,
-    // formConfig,
     submissionId,
     createSubmission,
     submitAnswer,
     completeSubmission,
   } = useVoiceForm();
 
+  // Parse initial step from URL
   const initialStep = parseInt(
     root?.location
       ? new URLSearchParams(root.location.search).get("step") || "0"
       : "0",
   );
   const [step, setStep] = useState<number>(initialStep);
-
   const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
+
+  // Update URL when step changes
+  useEffect(() => {
+    const params = new URLSearchParams(root.location.search);
+    params.set("step", step.toString());
+    const newUrl = `${root.location.pathname}?${params.toString()}`;
+    root.history.replaceState({}, "", newUrl);
+  }, [step]);
 
   useEffect(() => {
     handleOnboardingComplete(false);
@@ -70,29 +75,14 @@ export const VoiceFormComponent: FC<{
     }
   }, [voiceForm]);
 
-  // const handleOnboardingComplete = useCallback(
-  //   async (isOnboardingComplete: boolean = true) => {
-  //     // if (!submissionId) {
-  //     //   await createSubmission(formId);
-  //     // }
-
-  //     isOnboardingComplete && setStep((prevStep) => prevStep + 1);
-  //   },
-  //   [formId],
-  // );
   const handleOnboardingComplete = async (
     isOnboardingComplete: boolean = true,
   ) => {
-    // if (!submissionId) {
-    //   await createSubmission(formId);
-    // }
-
     isOnboardingComplete && setStep((prevStep) => prevStep + 1);
   };
 
   const handleQuestionsComplete = async () => {
     const resp = await completeSubmission(formId, submissionId as string);
-    // setStep((prevStep) => prevStep + 1);
   };
 
   const handleQuestionComplete = async (
@@ -101,19 +91,13 @@ export const VoiceFormComponent: FC<{
   ) => {
     // Check if the answer is not null before submitting
     if (answer) {
-      await submitAnswer(
-        formId,
-        // submissionId as string,
-        question,
-        answer,
-      );
+      await submitAnswer(formId, question, answer);
       setAnswers((prevAnswers) => [...prevAnswers, answer]);
     }
 
     setStep((prevStep) => {
       const nextStep = prevStep + 1;
 
-      // If we're at the last question, complete the submission
       if (voiceForm && nextStep > voiceForm?.questions?.length) {
         handleQuestionsComplete();
       }
@@ -123,7 +107,7 @@ export const VoiceFormComponent: FC<{
 
   return (
     <div className="sai-vf-container container">
-      {!submissionId && <Initializing></Initializing>}
+      {!submissionId && <Initializing />}
       {voiceForm && submissionId && (
         <>
           {step === 0 && (
