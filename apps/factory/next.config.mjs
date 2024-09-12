@@ -44,11 +44,6 @@ const config = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  resolve: {
-    alias: {
-      react: path.resolve(process.cwd(), "../node_modules/react"),
-    },
-  },
 };
 
 export default withSentryConfig(

@@ -4,7 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { TabPanel } from "~/components/Layouts/tabs";
 import { useRouter } from "next/router";
-import { getLayout } from "~/app/layout";
+import { getLayout } from "~/components/Layouts/DashboardLayout";
 
 import { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";

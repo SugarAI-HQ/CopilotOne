@@ -14,7 +14,7 @@ import {
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { useRouter } from "next/router";
-import { getLayout } from "~/app/layout";
+import { getLayout } from "~/components/Layouts/DashboardLayout";
 import CodeHighlight from "~/components/integration/code_highlight";
 
 import { NextPageWithLayout } from "~/pages/_app";

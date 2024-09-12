@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { api } from "~/utils/api";
 import React from "react";
 import SubmissionAnswers from "~/components/voice_forms/submissions/answers";
-import { getLayout } from "~/app/layout";
+import { getLayout } from "~/components/Layouts/DashboardLayout";
 import Loading from "~/components/Layouts/loading";
 import { Typography, Box } from "@mui/material";
 import {
