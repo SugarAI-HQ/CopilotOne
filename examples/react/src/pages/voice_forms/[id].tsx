@@ -17,6 +17,8 @@ import {
   VoiceFormProvider,
   displayMode,
   displayLocation,
+  DisplayMode,
+  DisplayLocation,
 } from "@sugar-ai/core";
 
 import {

@@ -3,6 +3,7 @@ import root from "window-or-global";
 import {
   speakMessage as sm,
   speakMessageAsync as sma,
+  speaki18nMessageAsync as smaa,
   stopSpeaking as sp,
   extracti18nText,
 } from "~/helpers/voice";
@@ -26,39 +27,6 @@ const useSpeechSynthesis = () => {
     sm(message, language, voice, callback, failureCallback);
   };
 
-  // const speakMessage = (
-  //   message,
-  //   language,
-  //   voice,
-  //   callback,
-  //   failureCallback,
-  // ) => {
-  //   console.log(`${voice?.name} Speaking in ${language}: ${message}`);
-
-  //   const utterance = new SpeechSynthesisUtterance(message);
-  //   utterance.voice = voice;
-  //   utterance.lang = language;
-
-  //   utterance.onstart = () => {
-  //     setIsSpeaking(true);
-  //   };
-
-  //   utterance.onend = () => {
-  //     setIsSpeaking(false);
-  //     if (callback) callback();
-  //   };
-
-  //   utterance.onerror = (event) => {
-  //     setIsSpeaking(false);
-  //     if (failureCallback) failureCallback(event);
-  //     console.error(
-  //       `speechSynthesisUtterance.onerror ${JSON.stringify(event)}`,
-  //     );
-  //   };
-
-  //   synthRef?.current?.speak(utterance);
-  // };
-
   const speakMessageAsync = async (message, language, voice) => {
     setIsSpeaking(true);
     await sma(message, language, voice);
@@ -66,25 +34,16 @@ const useSpeechSynthesis = () => {
     return;
   };
 
-  // const speaki18nMessageAsync = async (message, language, voice) => {
-  //   return speakMessageAsync(
-  //     extracti18nText(message, language),
-  //     language,
-  //     voice,
-  //   );
-  // };
-
   const speaki18nMessageAsync = async (
     message: i18nMessage,
     language: LanguageCode,
     voice: SpeechSynthesisVoice,
     appendText: string = "",
   ): Promise<void> => {
-    return speakMessageAsync(
-      extracti18nText(message, language) + appendText,
-      language,
-      voice,
-    );
+    setIsSpeaking(true);
+    await smaa(message, language, voice, appendText);
+    setIsSpeaking(false);
+    return;
   };
 
   const stopSpeaking = () => {

@@ -10,46 +10,82 @@ const NOT_FOUND = "not found";
 let recognition: any = null;
 let utterances: any[] = [];
 
-const speakMessagex = (
+export const speakMessage = (
   message: string,
   language: string,
   voice: SpeechSynthesisVoice,
-  callback?: () => void,
-  failureCallback?: (event: any) => void,
+  resolve?: () => void,
+  reject?: (event: any) => void,
 ) => {
-  root.synth = root.synth ?? root.speechSynthesis;
-  // let synth = root.synth;
+  root.saisynth = root.saisynth ?? root.speechSynthesis;
+  // let synth = root.saisynth;
   const utterance = new SpeechSynthesisUtterance(message);
   utterances.push(utterance);
 
   utterance.voice = voice;
   utterance.lang = language;
 
-  utterance.onend = () => {
-    DEV: console.log(`[Speaking](${utterances.length}) speaking done`);
-    if (callback) callback();
-    alert("Speaking done");
+  // Hack to handle the ios bug when onend not triggered
+  let speechEnded = false;
+  let boundaryTriggered = false;
+  const fallbackTimeout = 2000; // Time after last boundary to consider as end
+
+  const checkEnd = () => {
+    if (!speechEnded) {
+      console.warn(
+        `[Speaking](${utterances.length}) Speech ended due to fallback mechanism`,
+      );
+      resolve && resolve();
+    }
   };
 
-  utterance.onerror = (event) => {
-    DEV: console.error(
-      `[Speaking](${utterances.length}) Error ${JSON.stringify(event)}`,
-    );
-    if (failureCallback) failureCallback(event);
+  let timeoutId = setTimeout(checkEnd, fallbackTimeout);
+
+  utterance.onboundary = (e) => {
+    // console.debug(`[Speaking](${utterances.length}) Boundary reached`, e);
+    boundaryTriggered = true;
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(checkEnd, fallbackTimeout);
   };
+  utterance.onend = () => {
+    //   DEV: console.debug(`[Speaking](${utterances.length}) Speech ended naturally`);
+    speechEnded = true;
+    clearTimeout(timeoutId);
+    resolve && resolve();
+  };
+  utterance.onerror = (e) => {
+    PROD: console.error(
+      `[Speaking](${utterances.length}) Error ${JSON.stringify(e)}`,
+      e,
+    );
+    speechEnded = true;
+    clearTimeout(timeoutId);
+    reject && reject(e);
+  };
+
+  // utterance.onend = () => {
+  //   DEV: console.log(`[Speaking](${utterances.length}) speaking done`);
+  //   if (callback) callback();
+  //   alert("Speaking done");
+  // };
+
+  // utterance.onerror = (event) => {
+  //   DEV: console.error(
+  //     `[Speaking](${utterances.length}) Error ${JSON.stringify(event)}`,
+  //   );
+  //   if (failureCallback) failureCallback(event);
+  // };
 
   setTimeout(() => {
     console.log(
       `[Speaking](${utterances.length}) ${voice?.name} in ${language}: ${message}`,
     );
-    root.synth.speak(utterance);
+    root.saisynth.speak(utterance);
     // root.addEventListener("unload", stopSpeaking());
   }, 100);
-
-  // synth.speak(utterance);
 };
 
-export const speakMessage = (
+export const speakMessagex = (
   message: string,
   language: LanguageCode,
   voice: SpeechSynthesisVoice,
@@ -84,6 +120,7 @@ export const speakMessage = (
   };
 
   let timeoutId = setTimeout(checkEnd, fallbackTimeout);
+
   EasySpeech.speak({
     text: message,
     voice: voice,
@@ -146,8 +183,8 @@ export const speaki18nMessageAsync = async (
 };
 
 export const stopSpeaking = () => {
-  if (!root.synth) return;
-  root.synth.cancel();
+  if (!root.saisynth) return;
+  root.saisynth.cancel();
 };
 
 export const extracti18nText = (

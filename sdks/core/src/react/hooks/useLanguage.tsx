@@ -72,9 +72,9 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
       }
     }
 
-    const synth = root.speechSynthesis;
+    root.saisynth = root.saisynth ?? root.speechSynthesis;
     const onVoicesChanged = () => {
-      const availableVoices = synth.getVoices();
+      const availableVoices = root.saisynth.getVoices();
       setVoices(availableVoices);
 
       const filterLang =
@@ -95,7 +95,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
       }
       setVoice(filterVoice);
     };
-    synth.onvoiceschanged = onVoicesChanged;
+    root.saisynth.onvoiceschanged = onVoicesChanged;
     onVoicesChanged();
   }, [language]);
 
