@@ -4,6 +4,7 @@ export * from "./form/Onboarding";
 export * from "./form/Submission";
 export * from "./form/VoiceForm";
 export * from "./form/VoiceQuestion";
+export * from "./form/DisplayContainer";
 
 export * from "./language/LanguageSelector";
 

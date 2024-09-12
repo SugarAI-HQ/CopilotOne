@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
 import {
-  type CopilotConfigType,
+  CopilotConfigType,
   LanguageCode,
   formConfig,
   FormConfig,
   voiceForm,
 } from "@sugar-ai/core";
-
 import {
   extracti18nText,
   geti18nMessage,
@@ -16,12 +15,15 @@ import {
   WorkflowProvider,
   FormConfigDefaults,
   VoiceFormProvider,
+  displayMode,
+  displayLocation,
 } from "@sugar-ai/core";
 
 import {
   VoiceFormComponent,
   LanguageSelector,
   Initializing,
+  DisplayContainer
 } from "@sugar-ai/copilot-one-js";
 
 import "@sugar-ai/copilot-one-js/style";
@@ -31,22 +33,25 @@ import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 import { Header } from "@/components/common/header";
+import { displayPartsToString } from "typescript";
+
 
 const App: NextPage = () => {
   const router = useRouter();
-  let { id, lang, show, color, record } = router.query as {
+  let { id, lang, show, color, record, mode, location } = router.query as {
     id: string;
     lang: LanguageCode;
     show: string;
     color: string;
     record: string;
+    mode: DisplayMode; // Display mode from the query
+    location?: DisplayLocation
   };
 
   let showInUnSupportedBrowser = show ? true : false;
 
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
   const themeColor = color ?? "#0057FF";
-  // const themeColor = "#3b83f6";
 
   let copilotConfig: CopilotConfigType = {
     copilotId: process.env.NEXT_PUBLIC_COPILOT_ID as string,
@@ -73,7 +78,6 @@ const App: NextPage = () => {
     },
     style: {
       container: { position: "bottom-center" },
-
       theme: { primaryColor: themeColor },
       voiceButton: {
         bgColor: themeColor,
@@ -81,8 +85,15 @@ const App: NextPage = () => {
       },
     },
   };
+
   const initFormConfig: FormConfig = {
     ...FormConfigDefaults,
+    ui: {
+      ...FormConfigDefaults.ui,
+      displayMode: mode ? mode : displayMode.Enum.fullscreen,
+      displayLocation: location ? location : displayLocation.Enum.none,
+    },
+    
     listen: {
       ...FormConfigDefaults.listen,
       record: record ? true : false,
@@ -104,7 +115,9 @@ const App: NextPage = () => {
               Loading={<Initializing />}
             >
               <Suspense fallback={<p>Loading feed...</p>}>
-                {<VoiceFormComponent showStartButton={true} />}
+                <DisplayContainer displayMode={formConfig.ui?.displayMode} location={formConfig.ui?.displayLocation}>
+                  <VoiceFormComponent showStartButton={true} />
+                </DisplayContainer>
               </Suspense>
             </VoiceFormProvider>
           </WorkflowProvider>

@@ -24,8 +24,30 @@ export const ListenConfigDefaults = {
 
 export const CharcterPerSec = 20;
 
+// Define different layout modes
+export const displayMode = z.enum(["fullscreen", "chat-window", "modal"]);
+export type DisplayMode = z.infer<typeof displayMode>;
+
+export const displayLocation = z.enum([
+  "none",
+  "top-left",
+  "top-right",
+  "bottom-left",
+  "bottom-right",
+]);
+export type DisplayLocation = z.infer<typeof displayLocation>;
+
 export const formConfig = z.object({
   // embed: z.boolean().default(false),
+
+  ui: z
+    .object({
+      displayMode: displayMode.optional().default(displayMode.Enum.fullscreen),
+      displayLocation: displayLocation
+        .optional()
+        .default(displayLocation.Enum.none),
+    })
+    .optional(),
 
   characterPerSec: z.number().optional().default(CharcterPerSec),
   // lang: z.string().optional().default("auto"),
@@ -37,6 +59,11 @@ export const formConfig = z.object({
 export type FormConfig = z.infer<typeof formConfig>;
 
 export const FormConfigDefaults: FormConfig = {
+  ui: {
+    displayMode: displayMode.Enum.fullscreen,
+    displayLocation: displayLocation.Enum.none,
+  },
+
   // embed: false,
   characterPerSec: CharcterPerSec,
 
