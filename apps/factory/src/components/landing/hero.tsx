@@ -24,9 +24,15 @@ const Hero = () => {
           {/* <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Sugarcane <span className="text-[hsl(280,100%,70%)]">AI</span>
           </h1> */}
-          <Image src={getLogoImage()} width={600} height={600} alt="Logo" />
-          <h2 className="mb-5 p-3 text-center text-2xl font-bold text-white">
-            Capture Multilingual Voice Data & Analyse to Qualify Users
+          <Image
+            src={getLogoImage()}
+            width={600}
+            height={300}
+            alt="Logo"
+            className="mb-5 border-gray-300"
+          />
+          <h2 className="mb-5 p-3 text-center text-4xl font-bold text-white">
+            Experience the future of Forms on Voice
           </h2>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">

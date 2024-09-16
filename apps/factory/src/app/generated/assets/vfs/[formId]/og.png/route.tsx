@@ -47,7 +47,7 @@ function ogImageResponse() {
         <div tw="bg-gray-50 flex w-full">
           <div tw="flex flex-col md:flex-row w-full py-12 px-4 md:items-center justify-between p-8">
             <h2 tw="flex flex-col text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
-              <span>Experience the future of forms</span>
+              <span>Experience the Future of Forms with Voice</span>
               <span tw="text-indigo-600">
                 Complete forms using Voice in 30+ languages
               </span>
