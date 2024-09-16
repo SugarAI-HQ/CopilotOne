@@ -38,7 +38,7 @@ const SubmissionAnalytics = ({ formId }: { formId: string }) => {
             elevation={3}
             sx={{ padding: 2, backgroundColor: "#1e1e1e", color: "#ffffff" }}
           >
-            <Typography variant="h6">Total Submissions</Typography>
+            <Typography variant="h6">Inbox</Typography>
             <Typography variant="h3">{totalSubmissions || 0}</Typography>
           </Paper>
         </Grid>
@@ -85,7 +85,7 @@ const SubmissionAnalytics = ({ formId }: { formId: string }) => {
                   series={[
                     {
                       data: submissionTimeSeries.counts,
-                      label: "Submissions",
+                      label: "Inbox",
                     },
                   ]}
                   xAxis={[

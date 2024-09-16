@@ -121,7 +121,7 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
         fullWidth
         maxWidth="md"
       >
-        <DialogTitle>Submission</DialogTitle>
+        <DialogTitle>Inbox</DialogTitle>
         <DialogContent>
           {isFormLoading ? (
             <Loading />

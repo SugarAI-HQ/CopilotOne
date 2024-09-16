@@ -11,7 +11,7 @@ import { api } from "~/utils/api";
 import SubmissionAnalytics from "../../../../components/voice_forms/submissions/analytics";
 import SubmissionsList from "../../../../components/voice_forms/submissions/list";
 import {
-  FormPreviewButton,
+  FormShareButton,
   FormEditButton,
 } from "~/components/voice_forms/buttons";
 import Head from "next/head";
@@ -40,7 +40,7 @@ const FormShow: NextPageWithLayout = () => {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-          <FormPreviewButton voiceForm={form} />
+          <FormShareButton voiceForm={form} />
           <FormEditButton voiceForm={form} />
         </Box>
       </Box>
@@ -54,7 +54,7 @@ FormShow.getLayout = getLayout;
 export default FormShow;
 
 function VoiceFormTabs({ formId }: { formId: string }) {
-  const tabs = ["info", "submissions", "analytics"];
+  const tabs = ["info", "inbox", "analytics"];
 
   const router = useRouter();
   const tab = (router.query.tab as string) ?? tabs[0];
@@ -80,7 +80,7 @@ function VoiceFormTabs({ formId }: { formId: string }) {
         scrollButtons="auto" // This makes scroll buttons appear when there are more tabs than can fit
       >
         <Tab label="Info" sx={{ color: "var(--sugarhub-text-color)" }} />
-        <Tab label="Submissions" sx={{ color: "var(--sugarhub-text-color)" }} />
+        <Tab label="Inbox" sx={{ color: "var(--sugarhub-text-color)" }} />
       </Tabs>
 
       <TabPanel value={value} index={0}>

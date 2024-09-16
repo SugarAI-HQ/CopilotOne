@@ -5,12 +5,13 @@ import SubmissionAnswers from "~/components/voice_forms/submissions/answers";
 import { getLayout } from "~/components/Layouts/DashboardLayout";
 import Loading from "~/components/Layouts/loading";
 import { Typography, Box } from "@mui/material";
+import { NextPageWithLayout } from "~/pages/_app";
 import {
-  FormPreviewButton,
-  FormSubmissionsButton,
+  FormShareButton,
+  FormInboxButton,
 } from "~/components/voice_forms/buttons";
 
-const ShowSubmission = () => {
+const ShowSubmission: NextPageWithLayout = () => {
   const router = useRouter();
   const submissionId = router.query.submissionId as string;
   const formId = router.query.id as string;
@@ -22,7 +23,6 @@ const ShowSubmission = () => {
       onSuccess(updatedForm: any) {},
     },
   );
-  if (isLoading) return;
 
   return (
     <div className="w-full pt-3">
@@ -39,8 +39,8 @@ const ShowSubmission = () => {
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-          <FormPreviewButton voiceForm={voiceForm} />
-          <FormSubmissionsButton voiceForm={voiceForm} />
+          <FormShareButton voiceForm={voiceForm} />
+          <FormInboxButton voiceForm={voiceForm} />
         </Box>
       </Box>
       {isLoading && <Loading />}

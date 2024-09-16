@@ -17,7 +17,7 @@ import Loading from "~/components/Layouts/loading";
 import {
   formEditUrl,
   formPreviewUrl,
-  formSubmissionsUrl,
+  formInboxUrl,
 } from "~/components/voice_forms/buttons";
 
 import { Metadata } from "next";
@@ -191,11 +191,11 @@ const VoiceForms = ({
               <Button size="small" href={formEditUrl(form)}>
                 Edit
               </Button>
-              <Button size="small" href={formSubmissionsUrl(form)}>
-                Submissions
+              <Button size="small" href={formInboxUrl(form)}>
+                Inbox
               </Button>
               <Button size="small" href={formPreviewUrl(form)} target="_blank">
-                Preview
+                Share
               </Button>
             </CardActions>
           </Card>

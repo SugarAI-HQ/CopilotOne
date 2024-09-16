@@ -72,7 +72,7 @@ function ogImageResponse() {
           style={{
             position: "absolute",
             bottom: "0px",
-            right: "0px",
+            // right: "0px",
             opacity: "0.8",
           }}
         ></img>

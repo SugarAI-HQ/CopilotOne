@@ -5,8 +5,8 @@ import { TabPanel } from "~/components/Layouts/tabs";
 import QuestionList from "~/components/voice_forms/questions/list";
 import { FormDetails } from "./settings";
 import {
-  FormPreviewButton,
-  FormSubmissionsButton,
+  FormShareButton,
+  FormInboxButton,
 } from "~/components/voice_forms/buttons";
 
 export const VoiceEditTabs = ({
@@ -45,8 +45,8 @@ export const VoiceEditTabs = ({
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
-          <FormPreviewButton voiceForm={voiceForm} />
-          <FormSubmissionsButton voiceForm={voiceForm} />
+          <FormShareButton voiceForm={voiceForm} />
+          <FormInboxButton voiceForm={voiceForm} />
         </Box>
       </Box>
 
