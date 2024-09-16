@@ -44,6 +44,14 @@ const config = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: "/voice_forms/:id", // New route
+        destination: "/vf/:id", // The original page file
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(

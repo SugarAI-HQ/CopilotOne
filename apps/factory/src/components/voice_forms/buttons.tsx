@@ -15,6 +15,8 @@ export const formPreviewUrl = (vf: any) =>
   (process.env.NODE_ENV === "development"
     ? `http://localhost:4000`
     : `https://app.sugarai.dev`) + `/voice_forms/${vf?.id}`;
+// : `https://app.sugarai.dev`) + `/vf/${vf?.id}`;
+
 export const formInboxUrl = (vf: any) => `/dashboard/forms/${vf?.id}?tab=inbox`;
 export const formEditUrl = (vf: any) => `/dashboard/forms/${vf?.id}/edit`;
 

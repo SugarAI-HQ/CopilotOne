@@ -15,7 +15,7 @@ import {
   FormConfigDefaults,
   VoiceFormProvider,
 } from "@sugar-ai/core";
-import { VoiceFormComponent } from "@sugar-ai/copilot-one-js";
+import { VoiceFormComponent, Initializing } from "@sugar-ai/copilot-one-js";
 import { getCopilotConfig } from "~/utils/copilot";
 import { useRouter } from "next/router";
 import Header from "~/components/marketplace/header";
@@ -90,6 +90,7 @@ const VoiceFormShow: NextPageWithLayout<Props> = ({ voiceForm }: Props) => {
               <VoiceFormProvider
                 formId={id}
                 formConfigOverride={initFormConfig}
+                Loading={<Initializing />}
               >
                 <Suspense fallback={<p>Loading feed...</p>}>
                   <VoiceFormComponent showStartButton={true} />

@@ -83,8 +83,8 @@ function ogImageResponse() {
 
             <img
               width={500}
-              // src={"https://sugarcaneai.dev/images/sugar/logo-transparent.png"}
-              src={getLogoImage()}
+              src={"https://sugarcaneai.dev/images/sugar/logo-transparent.png"}
+              // src={getLogoImage()}
             ></img>
           </div>
         </div>
