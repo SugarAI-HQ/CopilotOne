@@ -54,9 +54,9 @@ export const env = createEnv({
 
     NEXT_PUBLIC_APP_URL: z.string().url(),
 
-    NEXT_PUBLIC_COPILOT_ENDPOINT: z.string().url(),
-    NEXT_PUBLIC_COPILOT_ID: z.string(),
-    NEXT_PUBLIC_COPILOT_SECRET: z.string(),
+    NEXT_PUBLIC_COPILOT_ENDPOINT: z.string().url().optional(),
+    NEXT_PUBLIC_COPILOT_ID: z.string().optional(),
+    NEXT_PUBLIC_COPILOT_SECRET: z.string().optional(),
   },
 
   /**

@@ -211,12 +211,15 @@ const QuestionList: React.FC<QuestionListProps> = ({
 
   const debouncedUpdateQuestionOrder = debounce(updateQuestionOrder, 2000);
 
+  const copilotConfig = getCopilotConfig();
+  console.log("copilotConfig", copilotConfig);
+
   return (
     <>
-      <CopilotProvider config={getCopilotConfig()}>
+      <CopilotProvider config={copilotConfig}>
         {isLoading && <Loading></Loading>}
-        {!isLoading &&
-          ((questions && questions.length == 0) || generate?.length > 0) && (
+        {(!isLoading && questions && questions.length == 1000) ||
+          (generate?.length > 0 && (
             <SchemaToJson
               schema={questionSchema}
               config={{
@@ -235,7 +238,7 @@ const QuestionList: React.FC<QuestionListProps> = ({
                 await onQuestions(voiceForm?.id, questions);
               }}
             />
-          )}
+          ))}
 
         {questions && (
           <div className="mt-4 rounded-lg border-2 border-gray-700 p-4 shadow-lg">

@@ -10,10 +10,10 @@ export function getCopilotConfig(
   const themeColor = color ?? "#0057FF";
 
   let copilotConfig: CopilotConfigType = {
-    copilotId: env.NEXT_PUBLIC_COPILOT_ID as string,
+    copilotId: env["NEXT_PUBLIC_COPILOT_ID"] as string,
     server: {
-      endpoint: env.NEXT_PUBLIC_COPILOT_ENDPOINT as string,
-      token: env.NEXT_PUBLIC_COPILOT_SECRET as string,
+      endpoint: env["NEXT_PUBLIC_COPILOT_ENDPOINT"] as string,
+      token: env["NEXT_PUBLIC_COPILOT_SECRET"] as string,
     },
     ai: {
       defaultPromptTemplate: copilotPackage,
@@ -42,6 +42,8 @@ export function getCopilotConfig(
       },
     },
   };
+
+  console.log("copilotConfig", copilotConfig);
 
   return copilotConfig;
 }
