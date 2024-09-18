@@ -19,7 +19,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, children, klass = "" }) => {
         className={`bg-gray-100 dark:bg-gray-900 rounded-lg p-4 w-full max-w-md mx-4 md:mx-0 relative ${klass ?? ""}`}
       >
         <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-3xl"
           onClick={onClose}
         >
           &times;

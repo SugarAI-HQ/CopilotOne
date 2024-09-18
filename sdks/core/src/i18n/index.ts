@@ -1,4 +1,7 @@
+import { LanguageCode } from "~/schema";
 import { Translations, i18nMessage } from "~/schema/message";
+
+const NOT_FOUND = "not found";
 
 export const FormTranslations: Translations = {
   permissionsGranted: {
@@ -114,6 +117,48 @@ export const FormTranslations: Translations = {
     de: "Die Antwort ist nicht korrekt. Bitte versuchen Sie es erneut.",
     zh: "答案不正确。请再试一次。",
   },
+  selectLanguage: {
+    en: "Select Language x",
+    hi: "भाषा चुनें",
+    "bn-IN": "ভাষা নির্বাচন করুন",
+    "te-IN": "భాషను ఎంచుకోండి",
+    "mr-IN": "भाषा निवडा",
+    "ta-IN": "மொழியைத் தேர்ந்தெடுக்கவும்",
+    "kn-IN": "ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "as-IN": "ভাষা বাচনি কৰক",
+    es: "Seleccionar idioma",
+    fr: "Sélectionner la langue",
+    de: "Sprache auswählen",
+    zh: "选择语言",
+  },
+  selectVoice: {
+    en: "Select Voice",
+    hi: "आवाज़ चुनें",
+    "bn-IN": "কণ্ঠ নির্বাচন করুন",
+    "te-IN": "శబ్దాన్ని ఎంచుకోండి",
+    "mr-IN": "आवाज निवडा",
+    "ta-IN": "குரலைத் தேர்ந்தெடுக்கவும்",
+    "kn-IN": "ಸ್ವರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "as-IN": "শব্দ বাচনি কৰক",
+    es: "Seleccionar voz",
+    fr: "Sélectionner la voix",
+    de: "Stimme auswählen",
+    zh: "选择语音",
+  },
+  close: {
+    en: "Close",
+    hi: "बंद करें",
+    "bn-IN": "বন্ধ করুন",
+    "te-IN": "మూసి వేయండి",
+    "mr-IN": "बंद करा",
+    "ta-IN": "மூடவும்",
+    "kn-IN": "ಮುಚ್ಚಿ",
+    "as-IN": "বন্ধ কৰক",
+    es: "Cerrar",
+    fr: "Fermer",
+    de: "Schließen",
+    zh: "关闭",
+  },
 };
 
 export function geti18nMessage(
@@ -133,3 +178,26 @@ export function geti18nMessage(
 
   return msg;
 }
+
+export const i18n = (key: string, language: LanguageCode): string => {
+  return extracti18nText(geti18nMessage(key), language);
+};
+
+export const extracti18nText = (
+  message: i18nMessage,
+  language: LanguageCode,
+) => {
+  const userLang: LanguageCode = language.split("-")[0] as LanguageCode;
+  let text = NOT_FOUND;
+  // text = message?.lang[language] ?? (message?.lang[userLang] as string);
+  text =
+    message?.lang[language] ||
+    (message?.lang[userLang] as string) ||
+    (message?.lang["en"] as string);
+  if (text == NOT_FOUND) {
+    console.error(
+      `i18n message not found for ${language}: ${JSON.stringify(message)}`,
+    );
+  }
+  return text;
+};

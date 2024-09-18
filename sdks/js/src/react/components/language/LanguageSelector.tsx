@@ -4,9 +4,15 @@ import { FaCaretDown } from "react-icons/fa";
 import { MdLanguage } from "react-icons/md";
 
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import { LanguageCode, languageCode, useLanguage } from "@sugar-ai/core";
+import {
+  extracti18nText,
+  geti18nMessage,
+  LanguageCode,
+  languageCode,
+  useLanguage,
+} from "@sugar-ai/core";
 import Modal from "../common/Modal";
-import { allLanguages } from "@sugar-ai/core";
+import { allLanguages, i18n } from "@sugar-ai/core";
 
 export const LanguageSelector: FC<{
   klass?: string;
@@ -23,14 +29,19 @@ export const LanguageSelector: FC<{
   useEffect(() => {
     if (language && voices.length > 0 && languagesEnabled.length > 0) {
       const allLanguages: LanguageCode[] = languageCode._def.values;
+      // DEV: console.log("[languages] selected", languages);
       const filteredLanguages = allLanguages.filter(
         (l) =>
           languagesEnabled.includes(l.split("-")[0] as LanguageCode) ||
           languagesEnabled.includes(l),
       );
+      // DEV: console.log("[languages] filtered", filteredLanguages);
       setLanguages(filteredLanguages);
 
+      DEV: console.log("[languages] voices", voices);
       const fv = shortlistVoices(voices, language);
+      DEV: console.log("[languages] filtered voices", fv);
+
       setFilteredVoices(fv);
     }
   }, [language, voices, languagesEnabled]);
@@ -52,9 +63,15 @@ export const LanguageSelector: FC<{
   ) => {
     const [shortLang, country] = language.split("-");
     let filteredVoices: SpeechSynthesisVoice[] = [];
+    DEV: console.log("[languages] shortLang", shortLang);
+    DEV: console.log("[languages] country", country);
 
     if (!country) {
-      filteredVoices = voices.filter((v) => v.lang.split("-")[0] === shortLang);
+      filteredVoices = voices.filter((v) => {
+        const l = toVoiceLang(v).split("-")[0];
+        // DEV: console.log("[languages] v.lang", v.lang);
+        return l == shortLang;
+      });
     } else {
       filteredVoices = voices.filter(
         (v) => v.lang.toLowerCase() === language.toLowerCase(),
@@ -135,7 +152,7 @@ export const LanguageSelector: FC<{
         <div className="p-4">
           <div className="mb-4">
             <p className="text-gray-800 dark:text-gray-200 text-lg font-semibold">
-              Select language
+              {i18n("selectLanguage", language)}
             </p>
             <select
               value={language}
@@ -153,7 +170,7 @@ export const LanguageSelector: FC<{
           </div>
           <div className="mb-4">
             <p className="text-gray-800 dark:text-gray-200 text-lg font-semibold">
-              Select voice
+              {i18n("selectVoice", language)}
             </p>
             <select
               value={voice?.name || ""}
@@ -181,4 +198,8 @@ function toHumanLang(lang: string) {
   let langStrShort = langsplits[1] || langsplits[0];
 
   return langStrShort;
+}
+
+function toVoiceLang(voice: SpeechSynthesisVoice): string {
+  return voice.lang.replace("_", "-");
 }

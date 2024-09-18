@@ -26,6 +26,7 @@ import {
   geti18nMessage,
   extracti18nText,
   QuestionTypesWithOptions,
+  i18n,
 } from "@sugar-ai/core";
 import Streamingi18nText from "../streaming/Streamingi18nText";
 import VoiceButtonWithStates from "~/react/assistants/components/voice";
@@ -483,7 +484,7 @@ export const VoiceQuestion: FC<{
               backgroundColor: voiceForm?.formConfig.voiceButton?.bgColor,
             }}
           >
-            {extracti18nText(geti18nMessage("submit"), language)}
+            {i18n("submit", language)}
           </button>
         )}
       </div>
