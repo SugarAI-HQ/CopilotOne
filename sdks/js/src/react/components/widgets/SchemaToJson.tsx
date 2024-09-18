@@ -21,7 +21,8 @@ export const SchemaToJson: FC<{
   config = { ...SchemaToJsonConfigDefaults, ...config };
 
   const [userInput, setUserInput] = useState<string>("");
-  const [jsonOutput, setJsonOutput] = useState<object | null>(null);
+  // const [jsonOutput, setJsonOutput] = useState<object | null>(null);
+  // const [jsonOutput, setJsonOutput] = useState<any>({});
   const [error, setError] = useState<string | null>(null);
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -50,7 +51,7 @@ export const SchemaToJson: FC<{
         "@samples": JSON.stringify(samples),
       });
 
-      setJsonOutput(output);
+      // setJsonOutput(output);
       setError(null);
       console.log(`output`, output);
       setIsLoading(false);
@@ -104,11 +105,11 @@ export const SchemaToJson: FC<{
 
       {error && <p className="text-red-500">{error}</p>}
 
-      {false && jsonOutput && (
+      {/* {jsonOutput && (
         <pre className="p-4 rounded-lg w-full overflow-x-auto">
           {JSON.stringify(jsonOutput, null, 2)}
         </pre>
-      )}
+      )} */}
     </div>
   );
 };

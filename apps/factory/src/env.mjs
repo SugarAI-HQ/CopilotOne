@@ -54,6 +54,9 @@ export const env = createEnv({
 
     NEXT_PUBLIC_APP_URL: z.string().url(),
 
+    NEXT_PUBLIC_COPILOT_ENDPOINT: z.string().url(),
+    NEXT_PUBLIC_COPILOT_ID: z.string(),
+    NEXT_PUBLIC_COPILOT_SECRET: z.string(),
   },
 
   /**
@@ -63,6 +66,10 @@ export const env = createEnv({
   runtimeEnv: {
     NEXT_PUBLIC_APP_LOGO: process.env.NEXT_PUBLIC_APP_LOGO,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+
+    NEXT_PUBLIC_COPILOT_ENDPOINT: process.env.NEXT_PUBLIC_COPILOT_ENDPOINT,
+    NEXT_PUBLIC_COPILOT_ID: process.env.NEXT_PUBLIC_COPILOT_ID,
+    NEXT_PUBLIC_COPILOT_SECRET: process.env.NEXT_PUBLIC_COPILOT_SECRET,
 
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,

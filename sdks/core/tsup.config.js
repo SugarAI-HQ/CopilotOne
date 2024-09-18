@@ -26,7 +26,7 @@ export default defineConfig((options) => {
       };
     },
 
-    // drop: ["debugger"],
+    drop: ["debugger"],
     // dropLabels: ["DEV", "TEST"],
 
     outExtension({ format }) {

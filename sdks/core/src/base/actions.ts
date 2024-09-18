@@ -355,8 +355,12 @@ export async function textToJson(
 
   // const response = { textOutput: jsonSampleResponse };
 
-  // console.log("response", response);
   const codeBlocks = extractCode(response.textOutput);
+  if (codeBlocks.length === 0) {
+    console.error(`No code block found in response: ${response.textOutput}`);
+    return [];
+  }
+
   const json = parseAndValidateJson(codeBlocks[0], schema);
   console.log("json", json);
   return json;

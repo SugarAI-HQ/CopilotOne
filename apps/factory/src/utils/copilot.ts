@@ -1,4 +1,5 @@
 import { type CopilotConfigType } from "@sugar-ai/core";
+import { env } from "~/env.mjs";
 
 export function getCopilotConfig(
   promptPackage: string | null = null,
@@ -9,10 +10,10 @@ export function getCopilotConfig(
   const themeColor = color ?? "#0057FF";
 
   let copilotConfig: CopilotConfigType = {
-    copilotId: process.env.NEXT_PUBLIC_COPILOT_ID as string,
+    copilotId: env.NEXT_PUBLIC_COPILOT_ID as string,
     server: {
-      endpoint: process.env.NEXT_PUBLIC_COPILOT_ENDPOINT as string,
-      token: process.env.NEXT_PUBLIC_COPILOT_SECRET as string,
+      endpoint: env.NEXT_PUBLIC_COPILOT_ENDPOINT as string,
+      token: env.NEXT_PUBLIC_COPILOT_SECRET as string,
     },
     ai: {
       defaultPromptTemplate: copilotPackage,
