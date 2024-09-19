@@ -1,0 +1,45 @@
+# Stage 3: Production Image
+FROM node:20.12-alpine AS prod-build
+
+LABEL org.opencontainers.image.authors="ankur@sugarai.dev"
+
+ENV NODE_ENV=production
+ENV PORT 80
+ENV HOSTNAME 0.0.0.0
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV PROJECT_PATH /app
+ARG PROJECT_NAME
+
+# Set working directory
+WORKDIR /app
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Install runtime dependencies
+RUN npm install next-runtime-env@1.7.4 --omit=optional --prefer-offline --no-audit
+RUN npm install sharp
+
+# Stage 4: Release Image
+FROM prod-build as release
+
+# Copy built files from build stage
+COPY apps/${PROJECT_NAME}/.next/standalone/ ./
+COPY apps/${PROJECT_NAME}/next.config.mjs ./
+COPY apps/${PROJECT_NAME}/package.json ./
+COPY apps/${PROJECT_NAME}/public* ./public
+COPY apps/${PROJECT_NAME}/.next ./.next
+COPY apps/${PROJECT_NAME}/prisma ./prisma
+
+# Copy additional files needed for production
+COPY apps/${PROJECT_NAME}/docker .
+RUN sed -i 's/"@sugar-ai\/core": "workspace:\*"/"@sugar-ai\/core": "0.0.8"/' package.json
+RUN chmod +x /app/entrypoint.sh
+
+# Set user permissions and expose port
+USER root
+EXPOSE $PORT
+
+# Healthcheck and entrypoint setup
+HEALTHCHECK --interval=5s --timeout=3s CMD wget -qO- http://localhost:$PORT/ || exit 1
+ENTRYPOINT [ "/app/entrypoint.sh" ]
+CMD ["node", "/app/server.js"]

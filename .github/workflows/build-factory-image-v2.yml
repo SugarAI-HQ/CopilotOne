@@ -1,16 +1,16 @@
-name: Build Factory Image v1
+name: Build Factory Image v2
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - develop
-      - main
-      - build-*
-      - prod
-  pull_request:
-    branches:
-      - main
+# on:
+#   workflow_dispatch:
+#   push:
+#     branches:
+#       - develop
+#       - main
+#       - build-*
+#       - prod
+#   pull_request:
+#     branches:
+#       - main
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
@@ -26,12 +26,22 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v4
         with:
           node-version: 20.12.2
           check-latest: true
-      # - name: Change to factory directory
-      #   run: cd apps/factory
+          cache: 'npm'
+          cache-dependency-path: apps/factory/package-lock.json
+
+      - name: Set up dependencies
+        run: sudo apt-get update && sudo apt-get install -y curl bash git python3 make g++ build-essential libvips-dev
+
+      - name: Run build script
+        run: |
+          chmod +x apps/factory/docker/build.sh
+          ./apps/factory/docker/build.sh
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -45,7 +55,7 @@ jobs:
         uses: docker/build-push-action@v5.1.0
         with:
           context: . # Specify the directory where Dockerfile is located
-          file: apps/factory/Dockerfile # Specify the path to your Dockerfi
+          file: apps/factory/Dockerfile2 # Specify the path to your Dockerfi
           build-args: |
             "PROJECT_NAME=factory"
           tags: |
