@@ -27,7 +27,7 @@ export function logLLMResponse(llm: string, response: any): void {
 export const getLogoImage = () => {
   // return env("NEXT_PUBLIC_APP_LOGO") as string;
   // return "/logos/sugarai-logo-3.svg";
-  return `${env("NEXT_PUBLIC_APP_URL") as string}/logos/sugarai-logo-3.svg`;
+  return `${env("NEXT_PUBLIC_APP_URL") as string}/logos/sugarai-logo-dark.svg`;
 };
 
 export const getAppUrl = () => {

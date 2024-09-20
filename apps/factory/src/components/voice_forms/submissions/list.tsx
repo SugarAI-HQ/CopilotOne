@@ -14,12 +14,15 @@ import Loading from "~/components/Layouts/loading";
 import SubmissionAnswers from "~/components/voice_forms/submissions/answers";
 import ReactTimeAgo from "react-timeago";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import DownloadIcon from "@mui/icons-material/Download";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const SubmissionsList = ({ formId }: { formId: string }) => {
   const router = useRouter();
 
   // State to handle modal visibility and submission data
   const [openModal, setOpenModal] = useState(false);
+
   const [selectedSubmissionId, setSelectedSubmissionId] = useState<
     string | null
   >(null);
@@ -29,6 +32,32 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
     isLoading,
     refetch,
   } = api.form.getSubmissions.useQuery({ formId }, { enabled: !!formId });
+
+  const exportMutation = api.form.exportSubmissions.useMutation();
+
+  const onDownload = React.useCallback(() => {
+    exportMutation.mutate(
+      {
+        formId: formId,
+      },
+      { onSuccess: handleDownload },
+    );
+  }, [exportMutation]);
+
+  const handleDownload = (data: any) => {
+    const base64Data = data.buffer;
+    const mediaType =
+      "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,";
+    const downloadLink = `${mediaType}${base64Data}`;
+
+    // Create an anchor element and trigger the download
+    const a = document.createElement("a");
+    a.href = downloadLink;
+    a.download = data.filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
 
   const { data: form, isLoading: isFormLoading } = api.form.getForm.useQuery(
     { formId: formId },
@@ -104,6 +133,13 @@ const SubmissionsList = ({ formId }: { formId: string }) => {
         <div className="mb-2 flex justify-end">
           <IconButton color="primary" onClick={() => refetch()}>
             <RefreshIcon />
+          </IconButton>
+          <IconButton color="primary" onClick={() => onDownload()}>
+            {exportMutation.isLoading ? (
+              <CircularProgress size="1.25rem" />
+            ) : (
+              <DownloadIcon />
+            )}
           </IconButton>
         </div>
         <DataGrid

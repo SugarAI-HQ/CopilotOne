@@ -23,11 +23,20 @@ import {
   createOrUpdateQuestionsResponse,
 } from "~/validators/form";
 import { TRPCError } from "@trpc/server";
-import { InputJsonValueType } from "~/generated/prisma-client-zod.ts";
+import {
+  InputJsonValueType,
+  FormSubmissionAnswers,
+} from "~/generated/prisma-client-zod.ts";
 import { validate as isUuid, v4 as uuidv4 } from "uuid";
 import { bulkUpdate } from "~/services/prisma"; // Adjust import paths as necessary
-import { defaultFormTranslations, geti18nMessage } from "@sugar-ai/core";
+import {
+  defaultFormTranslations,
+  geti18nMessage,
+  extracti18nText,
+} from "@sugar-ai/core";
 import { orderBy } from "lodash";
+import * as ExcelJS from "exceljs";
+import { format } from "date-fns/format";
 
 export const formRouter = createTRPCRouter({
   getForms: protectedProcedure
@@ -324,6 +333,146 @@ export const formRouter = createTRPCRouter({
       });
 
       return submissions;
+    }),
+
+  exportSubmissions: protectedProcedure
+    .input(getSubmissionsInput)
+    .mutation(async ({ ctx, input }) => {
+      const { formId } = input; // Extract the formId from the input
+
+      const form = await ctx.prisma.form.findUnique({
+        where: { id: formId },
+      });
+
+      if (!form) {
+        throw new Error("Form not found");
+      }
+
+      const formName = form.name; // Extract form name
+      const timestamp = format(new Date(), "yyyy-MM-dd_HH:mm:ss");
+      const fileName = `${formName.replace(/\s+/g, "_")}_${timestamp}.xlsx`;
+
+      // Execute the query
+      const submissions = await ctx.prisma.formSubmission.findMany({
+        where: { formId },
+        include: {
+          answers: {
+            include: {
+              question: true,
+            },
+          },
+        },
+      });
+
+      // Get unique questions based on submissions
+      const questions = submissions.flatMap((submission: any) =>
+        submission.answers.map((answer: any) => answer.question),
+      );
+
+      // Remove duplicates (by question id)
+      const uniqueQuestions = Array.from(
+        new Map(
+          questions.map((question: any) => [question.id, question]),
+        ).values(),
+      );
+
+      // Create a new workbook and worksheet
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet("Submissions");
+
+      // Define headers
+      const headers = [
+        { header: "Submission ID", key: "submission_id", width: 36 },
+        { header: "User ID", key: "user_id", width: 36 },
+        { header: "Client User ID", key: "client_user_id", width: 36 },
+        { header: "Form ID", key: "form_id", width: 36 },
+        { header: "Submission Time", key: "submission_time", width: 15 },
+        { header: "Duration", key: "duration", width: 15 },
+
+        // Metadata breakdown headers
+        { header: "OS Name", key: "os_name", width: 20 },
+        { header: "OS Version", key: "os_version", width: 15 },
+        { header: "Device Model", key: "device_model", width: 20 },
+        { header: "Device Vendor", key: "device_vendor", width: 20 },
+        { header: "Browser Name", key: "browser_name", width: 15 },
+        { header: "Browser Version", key: "browser_version", width: 15 },
+        { header: "Engine Name", key: "engine_name", width: 15 },
+        { header: "Engine Version", key: "engine_version", width: 15 },
+        // { header: "User Agent", key: "user_agent", width: 50 },
+      ];
+
+      // Add a column for each unique question with answer details
+      uniqueQuestions.forEach((question, index) => {
+        headers.push({
+          header: `1: ${extracti18nText(question.question_text, "en")}`, // Question text as header
+          key: `question_${index}`, // Unique key for each question
+          width: 50,
+        });
+        headers.push({
+          header: `${index}: By`, // Column for 'by'
+          key: `by_${index}`,
+          width: 20,
+        });
+        headers.push({
+          header: `${index}: Raw Answer`, // Column for 'rawAnswer'
+          key: `rawAnswer_${index}`,
+          width: 50,
+        });
+      });
+
+      // Set worksheet columns based on headers
+      worksheet.columns = headers;
+
+      // Add rows to the worksheet
+      submissions.forEach((submission: any) => {
+        const metadata = submission.metadata;
+
+        const rowData: any = {
+          submission_id: submission.id,
+          user_id: submission.userId,
+          client_user_id: submission.clientUserId,
+          form_id: submission.formId,
+          submission_time: submission.submittedAt
+            ? format(new Date(submission.submittedAt), "yyyy-MM-dd HH:mm:ss")
+            : "",
+          duration: submission.duration,
+
+          // Metadata breakdown
+          os_name: metadata.os?.name || "",
+          os_version: metadata.os?.version || "",
+          device_model: metadata.device?.model || "",
+          device_vendor: metadata.device?.vendor || "",
+          browser_name: metadata.browser?.name || "",
+          browser_version: metadata.browser?.version || "",
+          engine_name: metadata.engine?.name || "",
+          engine_version: metadata.engine?.version || "",
+          // user_agent: metadata.ua || "",
+        };
+
+        // Populate the answers for the corresponding questions
+        uniqueQuestions.forEach((question, index) => {
+          const qa = submission.answers.find(
+            (ans: any) => ans.question.id === question?.id,
+          );
+          const answer = qa?.answer;
+          rowData[`question_${index}`] = answer ? answer.evaluatedAnswer : "";
+          rowData[`by_${index}`] = answer ? answer.by : "";
+          rowData[`rawAnswer_${index}`] = answer ? answer.rawAnswer : "";
+        });
+
+        // Add the row data to the worksheet
+        worksheet.addRow(rowData);
+      });
+
+      // Generate a buffer from the workbook
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      // Return the buffer to the client
+      return {
+        // @ts-expect-error
+        buffer: buffer.toString("base64"),
+        filename: fileName,
+      };
     }),
 
   getSubmission: protectedProcedure

@@ -54,6 +54,7 @@
     "build": "^0.1.4",
     "caniuse-lite": "^1.0.30001641",
     "date-fns": "^3.6.0",
+    "exceljs": "^4.4.0",
     "humanize-string": "^3.0.0",
     "lodash.debounce": "^4.0.8",
     "memoizee": "^0.4.15",

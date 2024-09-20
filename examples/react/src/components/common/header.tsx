@@ -6,7 +6,7 @@ export const Header = () => {
           <div className="flex items-center">
             <img
               className="h-10 w-300"
-              src="https://sugarai.dev/_astro/logo-transparent.UspD8vKv.png"
+              src="https://docs.sugarai.dev/_astro/logo-transparent.UspD8vKv.png"
               alt="Sugar AI"
             />
             {/* <span className="ml-3 text-xl font-bold text-gray-900">
