@@ -48,6 +48,7 @@ export const runOcrAndExtractDetails = async (
     registerAction,
     unregisterAction,
     textToAction,
+    formConfig,
   );
 
   setIsEvaluating(false);
@@ -168,6 +169,7 @@ export const captureVoiceResponseAndEvaluate = async (
         registerAction,
         unregisterAction,
         textToAction,
+        formConfig,
       );
       DEV: console.log("aiEvaluationResponse", aiEvaluationResponse);
       finalResponse.qualificationScore =
@@ -309,11 +311,13 @@ const aiEvaluate = async (
   registerAction: Function,
   unregisterAction: Function,
   textToAction: Function,
+  formConfig: FormConfig,
 ): Promise<AiEvaluationResponse> => {
   //   setIsEvaluating(true);
 
-  const promptTemplate = process.env
-    .NEXT_PUBLIC_FORM_EVALUATION_PROMPT as string;
+  const promptTemplate =
+    (process.env.NEXT_PUBLIC_FORM_EVALUATION_PROMPT as string) ||
+    formConfig?.ai?.evaluationPromptTemplate;
   console.log(question);
   let options: string[] = [];
 

@@ -40,6 +40,12 @@ export type DisplayLocation = z.infer<typeof displayLocation>;
 export const formConfig = z.object({
   // embed: z.boolean().default(false),
 
+  ai: z
+    .object({
+      evaluationPromptTemplate: z.string().optional(),
+    })
+    .optional(),
+
   ui: z
     .object({
       displayMode: displayMode.optional().default(displayMode.Enum.fullscreen),
@@ -59,6 +65,9 @@ export const formConfig = z.object({
 export type FormConfig = z.infer<typeof formConfig>;
 
 export const FormConfigDefaults: FormConfig = {
+  ai: {
+    evaluationPromptTemplate: "sugar/voice-forms/evaluate-reponse/0.0.4",
+  },
   ui: {
     displayMode: displayMode.Enum.fullscreen,
     displayLocation: displayLocation.Enum.none,

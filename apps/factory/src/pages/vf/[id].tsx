@@ -24,6 +24,7 @@ import { ErrorBoundary } from "@sentry/nextjs";
 import { getAppUrl } from "~/utils/log";
 import { getLayout } from "~/components/Layouts/SiteLayout";
 import "@sugar-ai/copilot-one-js/style";
+import { env } from "next-runtime-env";
 
 // Component for rendering the VoiceForm page
 const VoiceFormShow: NextPageWithLayout<Props> = ({ voiceForm }: Props) => {
@@ -42,6 +43,10 @@ const VoiceFormShow: NextPageWithLayout<Props> = ({ voiceForm }: Props) => {
 
   const initFormConfig: FormConfig = {
     ...FormConfigDefaults,
+    ai: {
+      ...FormConfigDefaults.ai,
+      evaluationPromptTemplate: env("NEXT_PUBLIC_FORM_EVALUATION_PROMPT"),
+    },
     listen: {
       ...FormConfigDefaults.listen,
       record: record ? true : false,
