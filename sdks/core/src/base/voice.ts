@@ -107,7 +107,7 @@ export const findAvailableVoice = async (
       return;
     }
 
-    const voiceschanged = () => {
+    const voiceschanged = (event) => {
       voices = synth.getVoices();
       resolve(voices);
     };

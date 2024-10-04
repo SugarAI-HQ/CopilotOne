@@ -39,6 +39,7 @@ export const Streamingi18nText: ForwardRefRenderFunction<
   },
   ref,
 ) => {
+  auto = auto ?? false;
   const { language, voice, translations } = useLanguage();
   const { workflow } = useWorkflow();
   const [displayedText, setDisplayedText] = useState<string>("");
@@ -94,6 +95,7 @@ export const Streamingi18nText: ForwardRefRenderFunction<
 
   const speakAndRender = async (msg: i18nMessage, language: LanguageCode) => {
     const text = extracti18nText(msg, language);
+
     const { characters, renderTime } = getRenderData(
       text,
       formConfig?.characterPerSec,
@@ -102,13 +104,18 @@ export const Streamingi18nText: ForwardRefRenderFunction<
     setIsSpeaking(true);
 
     return Promise.all([
-      streamRender(characters, renderTime).catch((err) => console.log(err)),
+      streamRender(characters, renderTime).catch((err) => {
+        console.log(err);
+      }),
       speakMessageAsync(text, language, voice as SpeechSynthesisVoice).catch(
-        (err) => console.log(err),
+        (err) => {
+          console.log(err);
+        },
       ),
       waitForFastforward(renderTime),
     ])
       .catch((e) => {
+        console.error(e);
         if (e === FAST_FORWARD) {
           // ignore
         }
@@ -184,14 +191,14 @@ export const Streamingi18nText: ForwardRefRenderFunction<
   };
 
   const focusElement = () => {
-    if (elRef.current) {
+    if (elRef && elRef.current) {
       elRef.current.focus();
       elRef.current.classList.add("highlight");
     }
   };
 
   const unfocusElement = () => {
-    if (elRef.current) {
+    if (elRef && elRef.current) {
       elRef.current.classList.remove("highlight");
     }
   };
@@ -234,8 +241,8 @@ export const Streamingi18nText: ForwardRefRenderFunction<
         ref={elRef}
         tabIndex={-1}
         className={`${klasses} text-2xl whitespace-pre-wrap ${false ? "highlight" : ""}`}
-        onFocus={() => elRef.current?.classList.add("highlight")}
-        onBlur={() => elRef.current?.classList.remove("highlight")}
+        onFocus={() => elRef?.current?.classList.add("highlight")}
+        onBlur={() => elRef?.current?.classList.remove("highlight")}
         onClick={() => fastForward()}
         style={style}
       >
@@ -247,8 +254,8 @@ export const Streamingi18nText: ForwardRefRenderFunction<
     </div>
   );
 };
-
 export default forwardRef(Streamingi18nText);
+
 class FastForwardedError extends Error {
   constructor(message: string = "fast forwarded") {
     super(message);

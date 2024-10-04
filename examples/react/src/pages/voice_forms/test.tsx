@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { Suspense } from "react";
 import {
-  type CopilotConfigType,
+  CopilotConfigType,
   LanguageCode,
-  formConfig,
   FormConfig,
-} from "@sugar-ai/core";
-
-import {
-  extracti18nText,
-  geti18nMessage,
-  CopilotProvider,
   LanguageProvider,
   WorkflowProvider,
   FormConfigDefaults,
-  VoiceFormProvider,
+  displayMode,
+  displayLocation,
+  DisplayMode,
+  DisplayLocation,
+  Streamingi18nTextRef,
+  MessageWorkflow,
 } from "@sugar-ai/core";
 
-import { VoiceFormComponent, LanguageSelector } from "@sugar-ai/copilot-one-js";
+import { Streamingi18nText } from "@sugar-ai/copilot-one-js";
 
 import "@sugar-ai/copilot-one-js/style";
 import dynamic from "next/dynamic";
@@ -26,27 +24,26 @@ import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 import { Header } from "@/components/common/header";
+import { displayPartsToString } from "typescript";
+import { tree } from "next/dist/build/templates/app-page";
+import { LanguageSelector } from "@sugar-ai/copilot-one-js";
 
 const App: NextPage = () => {
   const router = useRouter();
-  let { id, formId, lang, show, color, record } = router.query as {
+  let { id, lang, show, color, record, mode, location } = router.query as {
     id: string;
     lang: LanguageCode;
     show: string;
     color: string;
     record: string;
-    formId: string;
+    mode: DisplayMode; // Display mode from the query
+    location?: DisplayLocation;
   };
 
   let showInUnSupportedBrowser = show ? true : false;
 
-  const [showStart, setShowStart] = useState<boolean>(true);
-
-  const [fd, setFd] = useState<any>(null);
-
   const copilotPackage = "sugar/copilotexample/todoexample/0.0.3";
   const themeColor = color ?? "#0057FF";
-  // const themeColor = "#3b83f6";
 
   let copilotConfig: CopilotConfigType = {
     copilotId: process.env.NEXT_PUBLIC_COPILOT_ID as string,
@@ -73,7 +70,6 @@ const App: NextPage = () => {
     },
     style: {
       container: { position: "bottom-center" },
-
       theme: { primaryColor: themeColor },
       voiceButton: {
         bgColor: themeColor,
@@ -81,45 +77,60 @@ const App: NextPage = () => {
       },
     },
   };
+
   const initFormConfig: FormConfig = {
     ...FormConfigDefaults,
+    ui: {
+      ...FormConfigDefaults.ui,
+      displayMode: mode ? mode : displayMode.Enum.fullscreen,
+      displayLocation: location ? location : displayLocation.Enum.none,
+    },
+
     listen: {
       ...FormConfigDefaults.listen,
       record: record ? true : false,
     },
     voiceButton: copilotConfig.style.voiceButton,
-    // userId: fd.userId,
   };
 
-  const [formConfig, setFormConfig] = useState<FormConfig>(initFormConfig);
+  const welcomeRef: RefObject<Streamingi18nTextRef> =
+    useRef<Streamingi18nTextRef>(null);
 
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (id) {
-      const data = getFormData(id);
-      setFd(data);
-    }
-  }, [id, router]);
+  const welcomeMessage = {
+    lang: { en: "Hi, I am John. How may I help you today?" },
+  };
+  const workflow = new MessageWorkflow();
+  workflow.addMessage(welcomeRef);
+
+  const [formConfig, setFormConfig] = useState<FormConfig>(initFormConfig);
 
   return (
     <>
       <Header />
-      <CopilotProvider config={copilotConfig}>
-        <UnsupportedBrowser forceShow={showInUnSupportedBrowser}>
-          <LanguageProvider defaultLang={"auto"} defaultVoiceLang={"auto"}>
-            <WorkflowProvider>
-              <VoiceFormProvider
-                formId={formId}
-                formConfigOverride={formConfig}
-              >
-                <Suspense fallback={<p>Loading feed...</p>}>
-                  {<VoiceFormComponent showStartButton={true} />}
-                </Suspense>
-              </VoiceFormProvider>
-            </WorkflowProvider>
-          </LanguageProvider>
-        </UnsupportedBrowser>
-      </CopilotProvider>
+
+      <UnsupportedBrowser forceShow={showInUnSupportedBrowser}>
+        <LanguageProvider defaultLang="en" defaultVoiceLang="auto">
+          <WorkflowProvider defaultWorklfow={workflow}>
+            <LanguageSelector
+              languagesEnabled={["en", "hi"]}
+              // xklass="fixed bottom-0 left-0 right-0"
+            />
+
+            <Streamingi18nText
+              ref={welcomeRef}
+              auto={false}
+              message={welcomeMessage}
+            />
+          </WorkflowProvider>
+          {/* <WorkflowProvider>
+            <Streamingi18nText
+              klasses="sai-vf-welcome-message"
+              auto={false}
+              message={welcomeMessage}
+            />
+          </WorkflowProvider> */}
+        </LanguageProvider>
+      </UnsupportedBrowser>
     </>
   );
 };

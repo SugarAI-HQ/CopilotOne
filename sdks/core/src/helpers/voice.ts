@@ -19,9 +19,12 @@ export const speakMessage = (
   reject?: (event: any) => void,
 ) => {
   root.saisynth = root.saisynth ?? root.speechSynthesis;
+
+  // cancel if any exising voice is being called out
+  // stopSpeaking();
+
   // let synth = root.saisynth;
   const utterance = new SpeechSynthesisUtterance(message);
-  utterances.push(utterance);
 
   utterance.voice = voice;
   utterance.lang = language;
@@ -29,31 +32,43 @@ export const speakMessage = (
   // Hack to handle the ios bug when onend not triggered
   let speechEnded = false;
   let boundaryTriggered = false;
-  const fallbackTimeout = 2000; // Time after last boundary to consider as end
+  let timeoutId: NodeJS.Timeout = setTimeout(() => {}, 10);
+  // const fallbackTimeout = 5000;
+  const boundaryFallbackTimeout = 2000; // Time after last boundary to consider as end
 
-  const checkEnd = () => {
+  const checkEnd = (reason: string = "unknown") => {
     if (!speechEnded) {
       console.warn(
-        `[Speaking](${utterances.length}) Speech ended due to fallback mechanism`,
+        `[Speaking](${utterances.length}) Speech ended due to ${reason}`,
       );
       resolve && resolve();
     }
   };
 
-  let timeoutId = setTimeout(checkEnd, fallbackTimeout);
+  // timeoutId = setTimeout(
+  //   () => checkEnd("global fallback timeout"),
+  //   fallbackTimeout,
+  // );
 
-  utterance.onboundary = (e) => {
-    // console.debug(`[Speaking](${utterances.length}) Boundary reached`, e);
+  const hackEnd = (e: any) => {
+    DEV: console.debug(`[Speaking](${utterances.length}) Boundary reached`, e);
     boundaryTriggered = true;
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(checkEnd, fallbackTimeout);
+    // timeoutId = setTimeout(checkEnd, boundaryFallbackTimeout);
+    timeoutId = setTimeout(() => checkEnd("boundary"), boundaryFallbackTimeout);
   };
+
+  utterance.onboundary = hackEnd;
+
   utterance.onend = () => {
-    //   DEV: console.debug(`[Speaking](${utterances.length}) Speech ended naturally`);
+    DEV: console.debug(
+      `[Speaking](${utterances.length}) Speech ended naturally`,
+    );
     speechEnded = true;
     clearTimeout(timeoutId);
     resolve && resolve();
   };
+
   utterance.onerror = (e) => {
     PROD: console.error(
       `[Speaking](${utterances.length}) Error ${JSON.stringify(e)}`,
@@ -64,26 +79,15 @@ export const speakMessage = (
     reject && reject(e);
   };
 
-  // utterance.onend = () => {
-  //   DEV: console.log(`[Speaking](${utterances.length}) speaking done`);
-  //   if (callback) callback();
-  //   alert("Speaking done");
-  // };
-
-  // utterance.onerror = (event) => {
-  //   DEV: console.error(
-  //     `[Speaking](${utterances.length}) Error ${JSON.stringify(event)}`,
-  //   );
-  //   if (failureCallback) failureCallback(event);
-  // };
-
   setTimeout(() => {
     console.log(
-      `[Speaking](${utterances.length}) ${voice?.name} in ${language}: ${message}`,
+      `[Speaking](${utterances.length}) ${voice?.name}(${voice?.lang}) in ${language}: ${message}`,
     );
     root.saisynth.speak(utterance);
     // root.addEventListener("unload", stopSpeaking());
-  }, 100);
+  }, 10);
+
+  utterances.push(utterance);
 };
 
 export const speakMessagex = (
@@ -150,15 +154,16 @@ export const speakMessagex = (
       reject && reject(e);
     },
   });
-
-  // // In case the `end` event is not triggered and `boundary` was not triggered
-  // setTimeout(() => {
-  //   if (!speechEnded && !boundaryTriggered) {
-  //     console.debug("Speech ended due to no boundary or end event");
-  //     resolve && resolve();
-  //   }
-  // }, fallbackTimeout + 500); // Small additional buffer
 };
+
+//   // // In case the `end` event is not triggered and `boundary` was not triggered
+//   // setTimeout(() => {
+//   //   if (!speechEnded && !boundaryTriggered) {
+//   //     console.debug("Speech ended due to no boundary or end event");
+//   //     resolve && resolve();
+//   //   }
+//   // }, fallbackTimeout + 500); // Small additional buffer
+// };
 
 export const speakMessageAsync = async (
   message: string,
@@ -185,5 +190,8 @@ export const speaki18nMessageAsync = async (
 
 export const stopSpeaking = () => {
   if (!root.saisynth) return;
-  root.saisynth.cancel();
+  if (root.saisynth.speaking) {
+    console.warn(`[Speaking](${utterances.length}) Cancelling speaking`);
+    root.saisynth.cancel();
+  }
 };

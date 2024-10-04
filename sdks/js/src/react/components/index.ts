@@ -8,7 +8,7 @@ export * from "./form/DisplayContainer";
 
 export * from "./language/LanguageSelector";
 
-export * from "./streaming/Streamingi18nText";
+export { default as Streamingi18nText } from "./streaming/Streamingi18nText";
 // export * from "./streaming/Streamingi18nHtml";
 
 export * from "./widgets/SchemaToJson";
