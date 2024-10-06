@@ -49,7 +49,7 @@ export const Streamingi18nText: ForwardRefRenderFunction<
 
   const elRef = useRef<HTMLParagraphElement>(null);
   const createRef = (): Streamingi18nTextRef => ({
-    startStreaming: handleStart,
+    start: start,
     focusElement: focusElement,
   });
   const selfRef = useRef<Streamingi18nTextRef | null>(null);
@@ -107,11 +107,14 @@ export const Streamingi18nText: ForwardRefRenderFunction<
       streamRender(characters, renderTime).catch((err) => {
         console.log(err);
       }),
-      speakMessageAsync(text, language, voice as SpeechSynthesisVoice).catch(
-        (err) => {
-          console.log(err);
-        },
-      ),
+      speakMessageAsync(
+        text,
+        language,
+        voice as SpeechSynthesisVoice,
+        renderTime,
+      ).catch((err) => {
+        console.log(err);
+      }),
       waitForFastforward(renderTime),
     ])
       .catch((e) => {
@@ -146,7 +149,7 @@ export const Streamingi18nText: ForwardRefRenderFunction<
     });
   };
 
-  const handleStart = async () => {
+  const start = async () => {
     if (!message && !messageKey) {
       return;
     }
@@ -207,7 +210,7 @@ export const Streamingi18nText: ForwardRefRenderFunction<
 
   useEffect(() => {
     if (auto && (message || messageKey) && language && language !== "auto") {
-      handleStart();
+      start();
     }
 
     return () => {
@@ -236,7 +239,7 @@ export const Streamingi18nText: ForwardRefRenderFunction<
   };
 
   return (
-    <div className="streaming-text block" onClick={handleStart}>
+    <div className="streaming-text block" onClick={start}>
       <h1
         ref={elRef}
         tabIndex={-1}

@@ -303,7 +303,7 @@ export const VoiceQuestion: FC<{
     // Speak the question
     if (qRef.current) {
       // qRef.current.focusElement();
-      await qRef.current.startStreaming();
+      await qRef.current.start();
     }
 
     // Speak the options
@@ -311,7 +311,7 @@ export const VoiceQuestion: FC<{
       const optionRef = optionRefs[i];
       if (optionRef.current) {
         // optionRef.current.focusElement();
-        await optionRef.current.startStreaming();
+        await optionRef.current.start();
       }
     }
   };

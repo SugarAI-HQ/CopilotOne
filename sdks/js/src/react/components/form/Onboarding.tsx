@@ -81,10 +81,12 @@ export const Onboarding: FC<{
             }}
             onClick={() => {
               setShowStart(false);
-              setShowStart((k) => {
-                setTimeout(() => start(), 1000);
-                return k;
-              });
+              start();
+              // Dont delay start, it break the TTS on IOS
+              // setShowStart((k) => {
+              //   setTimeout(() => start(), 1000);
+              //   return k;
+              // });
             }}
           >
             {voiceForm?.messages &&

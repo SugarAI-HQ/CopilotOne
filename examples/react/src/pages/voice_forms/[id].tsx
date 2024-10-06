@@ -25,7 +25,7 @@ import {
   VoiceFormComponent,
   LanguageSelector,
   Initializing,
-  DisplayContainer
+  DisplayContainer,
 } from "@sugar-ai/copilot-one-js";
 
 import "@sugar-ai/copilot-one-js/style";
@@ -37,7 +37,6 @@ import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 import { Header } from "@/components/common/header";
 import { displayPartsToString } from "typescript";
 
-
 const App: NextPage = () => {
   const router = useRouter();
   let { id, lang, show, color, record, mode, location } = router.query as {
@@ -47,7 +46,7 @@ const App: NextPage = () => {
     color: string;
     record: string;
     mode: DisplayMode; // Display mode from the query
-    location?: DisplayLocation
+    location?: DisplayLocation;
   };
 
   let showInUnSupportedBrowser = show ? true : false;
@@ -95,7 +94,7 @@ const App: NextPage = () => {
       displayMode: mode ? mode : displayMode.Enum.fullscreen,
       displayLocation: location ? location : displayLocation.Enum.none,
     },
-    
+
     listen: {
       ...FormConfigDefaults.listen,
       record: record ? true : false,
@@ -117,7 +116,10 @@ const App: NextPage = () => {
               Loading={<Initializing />}
             >
               <Suspense fallback={<p>Loading feed...</p>}>
-                <DisplayContainer displayMode={formConfig.ui?.displayMode} location={formConfig.ui?.displayLocation}>
+                <DisplayContainer
+                  displayMode={formConfig.ui?.displayMode}
+                  location={formConfig.ui?.displayLocation}
+                >
                   <VoiceFormComponent showStartButton={true} />
                 </DisplayContainer>
               </Suspense>

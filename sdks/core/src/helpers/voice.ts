@@ -15,6 +15,7 @@ export const speakMessage = (
   message: string,
   language: string,
   voice: SpeechSynthesisVoice,
+  timeout: number = 0,
   resolve?: () => void,
   reject?: (event: any) => void,
 ) => {
@@ -33,7 +34,7 @@ export const speakMessage = (
   let speechEnded = false;
   let boundaryTriggered = false;
   let timeoutId: NodeJS.Timeout = setTimeout(() => {}, 10);
-  // const fallbackTimeout = 5000;
+  const fallbackTimeout = timeout;
   const boundaryFallbackTimeout = 2000; // Time after last boundary to consider as end
 
   const checkEnd = (reason: string = "unknown") => {
@@ -45,10 +46,12 @@ export const speakMessage = (
     }
   };
 
-  // timeoutId = setTimeout(
-  //   () => checkEnd("global fallback timeout"),
-  //   fallbackTimeout,
-  // );
+  if (fallbackTimeout > 0) {
+    timeoutId = setTimeout(
+      () => checkEnd("global fallback timeout"),
+      fallbackTimeout + 500,
+    );
+  }
 
   const hackEnd = (e: any) => {
     DEV: console.debug(`[Speaking](${utterances.length}) Boundary reached`, e);
@@ -83,9 +86,10 @@ export const speakMessage = (
     console.log(
       `[Speaking](${utterances.length}) ${voice?.name}(${voice?.lang}) in ${language}: ${message}`,
     );
+
     root.saisynth.speak(utterance);
     // root.addEventListener("unload", stopSpeaking());
-  }, 10);
+  }, 20);
 
   utterances.push(utterance);
 };
@@ -169,9 +173,10 @@ export const speakMessageAsync = async (
   message: string,
   language: LanguageCode,
   voice: SpeechSynthesisVoice,
+  timeout: number = 0,
 ): Promise<void> => {
   return new Promise((resolve, reject) => {
-    speakMessage(message, language, voice, resolve, reject);
+    speakMessage(message, language, voice, timeout, resolve, reject);
   });
 };
 

@@ -20,7 +20,7 @@ export class MessageWorkflow {
     message: React.RefObject<Streamingi18nTextRef>,
   ): Promise<void> {
     if (message.current) {
-      await message.current.startStreaming();
+      await message.current.start();
     }
   }
 

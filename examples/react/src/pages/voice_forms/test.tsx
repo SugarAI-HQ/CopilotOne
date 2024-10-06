@@ -24,8 +24,6 @@ import { useRouter } from "next/router";
 import { NextPage } from "next";
 import { UnsupportedBrowser } from "@/components/UnsupportedBrowser";
 import { Header } from "@/components/common/header";
-import { displayPartsToString } from "typescript";
-import { tree } from "next/dist/build/templates/app-page";
 import { LanguageSelector } from "@sugar-ai/copilot-one-js";
 
 const App: NextPage = () => {
@@ -62,7 +60,7 @@ const App: NextPage = () => {
     nudges: {
       welcome: {
         textMode: "manual",
-        text: "Hi, I am John. How may I help you today?",
+        text: "Hello, How may I help you today?",
         delay: 1,
         enabled: true,
         chatHistorySize: 0,
@@ -85,7 +83,6 @@ const App: NextPage = () => {
       displayMode: mode ? mode : displayMode.Enum.fullscreen,
       displayLocation: location ? location : displayLocation.Enum.none,
     },
-
     listen: {
       ...FormConfigDefaults.listen,
       record: record ? true : false,
@@ -103,6 +100,7 @@ const App: NextPage = () => {
   workflow.addMessage(welcomeRef);
 
   const [formConfig, setFormConfig] = useState<FormConfig>(initFormConfig);
+  const [showStreamingText, setShowStreamingText] = useState(false); // Add state to control visibility
 
   return (
     <>
@@ -111,24 +109,31 @@ const App: NextPage = () => {
       <UnsupportedBrowser forceShow={showInUnSupportedBrowser}>
         <LanguageProvider defaultLang="en" defaultVoiceLang="auto">
           <WorkflowProvider defaultWorklfow={workflow}>
-            <LanguageSelector
-              languagesEnabled={["en", "hi"]}
-              // xklass="fixed bottom-0 left-0 right-0"
-            />
+            <LanguageSelector languagesEnabled={["en", "hi"]} />
+            <button
+              onClick={() => setShowStreamingText(true)} // Show Streamingi18nText on click
+              style={{
+                padding: "10px 20px",
+                fontSize: "16px",
+                backgroundColor: themeColor,
+                color: "#fff",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                margin: "20px",
+              }}
+            >
+              Start
+            </button>
 
-            <Streamingi18nText
-              ref={welcomeRef}
-              auto={false}
-              message={welcomeMessage}
-            />
+            {showStreamingText && ( // Conditionally render Streamingi18nText
+              <Streamingi18nText
+                ref={welcomeRef}
+                auto={false}
+                message={welcomeMessage}
+              />
+            )}
           </WorkflowProvider>
-          {/* <WorkflowProvider>
-            <Streamingi18nText
-              klasses="sai-vf-welcome-message"
-              auto={false}
-              message={welcomeMessage}
-            />
-          </WorkflowProvider> */}
         </LanguageProvider>
       </UnsupportedBrowser>
     </>

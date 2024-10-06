@@ -152,7 +152,7 @@ export type Streamingi18nTextProps = z.infer<typeof streamingi18nTextSchema>;
 
 // Define the Streamingi18nTextRef schema
 export const StreamingTextRefSchema = z.object({
-  startStreaming: z.function().returns(z.void()),
+  start: z.function().returns(z.void()),
   focusElement: z.function().returns(z.void()),
 });
 
@@ -216,7 +216,7 @@ export type Streamingi18nHtmlProps = z.infer<typeof streamingi18nHtmlSchema>;
 
 // Define the Streamingi18nHtmlRef schema
 export const StreamingHtmlRefSchema = z.object({
-  startStreaming: z.function().returns(z.void()),
+  start: z.function().returns(z.void()),
   focusElement: z.function().returns(z.void()),
 });
 
