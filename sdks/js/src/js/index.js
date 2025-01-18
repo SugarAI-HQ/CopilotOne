@@ -70,10 +70,15 @@ import {
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // If the node is an element node, traverse its children
           for (const childNode of node.childNodes) {
+            // Skip <script>, <style>, and other non-UI affecting tags
+            if (["SCRIPT", "STYLE", "NOSCRIPT"].includes(childNode.nodeName)) {
+              continue;
+            }
             text += extractText(childNode);
           }
         }
-        return text;
+
+        return text.trim(); // Trim final text to avoid unnecessary whitespace
       }
 
       // Function to check if a question-answer pair already exists

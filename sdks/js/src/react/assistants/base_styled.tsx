@@ -327,20 +327,23 @@ export const TextBoxContainer: FC<{
   }}
 `;
 
-export const TextBox: FC<{ color: string; bgColor: string }> = styled.input`
-  padding: 15px 32px 15px 8px;
-  border: 1px solid ${({ color }) => color};
-  border-radius: 5px;
-  outline: none;
-  width: 100%;
-  background: ${({ bgColor }) => bgColor};
-  // width: -webkit-fill-available; // Only on small screens
-  margin-left: 25px;
-  @media (max-width: 768px) {
+export const TextBox: FC<{ color: string; bgColor: string }> =
+  styled.input.withConfig({
+    shouldForwardProp: (prop) => !["color", "bgColor"].includes(prop),
+  })`
+    padding: 15px 32px 15px 8px;
+    border: 1px solid ${({ color }) => color};
+    border-radius: 5px;
+    outline: none;
     width: 100%;
+    background: ${({ bgColor }) => bgColor};
+    // width: -webkit-fill-available; // Only on small screens
     margin-left: 25px;
-  }
-`;
+    @media (max-width: 768px) {
+      width: 100%;
+      margin-left: 25px;
+    }
+  `;
 
 // Styled button
 export const TextBoxButton: FC<{ iskeyboard?: string }> = styled.button`

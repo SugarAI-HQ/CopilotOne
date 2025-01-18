@@ -111,12 +111,18 @@ export const TextAssistant = ({
       4,
       actions,
       actionCallbacks,
-    ).finally(() => {
-      setIsprocessing(false);
-    });
-    if (typeof aiResponse === "string") {
-      setAiResponse(aiResponse);
-    }
+    )
+      .then((aiResponse: any) => {
+        if (typeof aiResponse.textOutput === "string") {
+          setAiResponse(aiResponse.textOutput);
+        }
+      })
+      .finally(() => {
+        setIsprocessing(false);
+      });
+    // if (typeof aiResponse.textOutput === "string") {
+    //   setAiResponse(aiResponse.textOutput);
+    // }
   };
 
   const startSending = async () => {
